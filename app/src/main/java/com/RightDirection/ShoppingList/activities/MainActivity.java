@@ -30,8 +30,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         IOnDeleteItemListener, IOnClickItemListener {
 
-    // Тестирование системы контроля версий
-
     private ArrayList<ListItem> shoppingLists;
     private ListAdapter shoppingListsAdapter;
 
