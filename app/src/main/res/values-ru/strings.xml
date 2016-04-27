@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Список покупок</string>
+    <string name="action_edit_products_list">Продукты</string>
+    <string name="action_settings">Настройки</string>
+    <string name="addItemHint">Введите название продукта</string>
+    <string name="cross">Крест</string>
+    <string name="name">Наименование</string>
+    <string name="product_name_hint">Введите название продукта</string>
+    <string name="product_picture">Изображение продукта</string>
+    <string name="save">Сохранить</string>
+    <string name="input_shopping_list_name">Введите имя списка</string>
+    <string name="ok">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+</resources>
