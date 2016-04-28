@@ -14,4 +14,5 @@
     <string name="cancel">Отмена</string>
     <string name="new_product">Новый продукт</string>
     <string name="product_title">Продукт</string>
+    <string name="edit">Редактировать</string>
 </resources>

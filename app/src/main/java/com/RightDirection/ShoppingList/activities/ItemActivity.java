@@ -41,6 +41,8 @@ public class ItemActivity extends AppCompatActivity{
         else{
             setTitle(getString(R.string.product_title));
         }
+
+        // TODO: Сделать так, чтобы при открытии клавиатуры не скрывалась кнопка сохранения
     }
 
     private View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
@@ -61,5 +63,7 @@ public class ItemActivity extends AppCompatActivity{
             finish();
         }
     };
+
+
 }
 

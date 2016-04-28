@@ -3,12 +3,14 @@ package com.RightDirection.ShoppingList.helpers;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
@@ -81,13 +83,29 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
         mViewAndIdMatcher.put(imgDelete, item);
         mViewAndIdMatcher.put(productNameView, item);
 
+        // Установим видимость элементов управления в зависимости от типа родительской активности
+        if (mContext instanceof MainActivity){
+            imgDelete.setVisibility(View.INVISIBLE);
+
+            // Для основной активности выведем отдельную кнопку редактирования
+            ImageView imgEdit = (ImageView) listView.findViewById(R.id.imgEdit);
+            imgEdit.setVisibility(View.VISIBLE);
+            // Привяжем картинку редактирования к правому краю родительского элемента (вместо картинки-удаления)
+            RelativeLayout.LayoutParams layoutParams =(RelativeLayout.LayoutParams)imgEdit.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            imgEdit.setLayoutParams(layoutParams);
+            imgEdit.setOnClickListener(onImgEditClick);
+            // Добавим сопоставление элемента управления и id элемента списка
+            mViewAndIdMatcher.put(imgEdit, item);
+        }
+
         return listView;
     }
 
     private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            // Получим Id по элементу View
+            // Получим объект item по элементу View
             ListItem item = (ListItem)mViewAndIdMatcher.get(view);
 
             if(mContext instanceof ProductsListActivity){
@@ -110,9 +128,9 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
         @Override
         public void onClick(View view) {
 
-            if(mContext instanceof ProductsListActivity) {
-                ListItem item = (ListItem) mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) mViewAndIdMatcher.get(view);
 
+            if(mContext instanceof ProductsListActivity) {
                 ContentResolver contentResolver = mContext.getContentResolver();
                 Cursor cursor = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null, "_id = " + item.getId(), null, null);
                 if (cursor.moveToFirst()) {
@@ -120,13 +138,7 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
                 }
             }
             else if(mContext instanceof MainActivity) {
-                ListItem item = (ListItem) mViewAndIdMatcher.get(view);
-
-                ContentResolver contentResolver = mContext.getContentResolver();
-                Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, null, "_id = " + item.getId(), null, null);
-                if (cursor.moveToFirst()) {
-                    ((IOnClickItemListener) mContext).OnClickItem(cursor);
-                }
+                // Пока никаких действий не производим
             }
             else {
                 // Сообщим связанному классу об событии
@@ -135,4 +147,19 @@ public class ListAdapter extends ArrayAdapter<ListItem> {
         }
     };
 
+    private View.OnClickListener onImgEditClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Получим объект item по элементу View
+            ListItem item = (ListItem)mViewAndIdMatcher.get(view);
+
+            if(mContext instanceof MainActivity){
+                ContentResolver contentResolver = mContext.getContentResolver();
+                Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, null, "_id = " + item.getId(), null, null);
+                if (cursor.moveToFirst()) {
+                    ((IOnClickItemListener) mContext).OnClickItem(cursor);
+                }
+            }
+        }
+    };
 }

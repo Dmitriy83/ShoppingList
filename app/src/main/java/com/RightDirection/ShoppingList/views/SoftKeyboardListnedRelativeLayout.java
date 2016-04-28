@@ -23,16 +23,13 @@ public class SoftKeyboardListnedRelativeLayout extends RelativeLayout {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
 
         // Покажем/скроем кнопки в зависимости от того, отображается на экране клавиатура или нет
-        Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
         Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
         if (yOld > yNew) {
             // Keyboard is shown
-            btnSave.setVisibility(INVISIBLE);
             btnDeleteAllItems.setVisibility(INVISIBLE);
         }
         else {
             // Keyboard is hidden
-            btnSave.setVisibility(VISIBLE);
             btnDeleteAllItems.setVisibility(VISIBLE);
         }
     }
