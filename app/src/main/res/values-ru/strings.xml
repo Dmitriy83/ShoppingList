@@ -12,4 +12,6 @@
     <string name="input_shopping_list_name">Введите имя списка</string>
     <string name="ok">Подтвердить</string>
     <string name="cancel">Отмена</string>
+    <string name="new_product">Новый продукт</string>
+    <string name="product_title">Продукт</string>
 </resources>

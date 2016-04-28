@@ -33,6 +33,14 @@ public class ItemActivity extends AppCompatActivity{
         // Добавим обработчики кликов по кнопкам
         Button btnSaveProduct = (Button) findViewById(R.id.btnSaveProduct);
         btnSaveProduct.setOnClickListener(onBtnSaveProductClick);
+
+        // Установим заголовок формы
+        if (isNewItem){
+            setTitle(getString(R.string.new_product));
+        }
+        else{
+            setTitle(getString(R.string.product_title));
+        }
     }
 
     private View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {

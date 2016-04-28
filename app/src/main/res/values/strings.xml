@@ -11,4 +11,6 @@
     <string name="input_shopping_list_name">Input shopping list name</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="new_product">New product</string>
+    <string name="product_title">Product</string>
 </resources>
