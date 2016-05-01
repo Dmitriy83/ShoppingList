@@ -11,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
-import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
@@ -25,12 +25,12 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         IOnDeleteItemListener, IOnClickItemListener {
 
     private ArrayList<ListItem> productListItems;
-    private ListAdapter productListItemsAdapter;
+    private ListAdapterProductsList productListItemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_products_list_editing_form);
+        setContentView(R.layout.activity_products_list);
         setTitle(R.string.action_edit_products_list);
 
         // Добавим обработчики кликов по кнопкам
@@ -45,7 +45,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         productListItems = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        productListItemsAdapter = new ListAdapter(this, R.layout.list_item, productListItems);
+        productListItemsAdapter = new ListAdapterProductsList(this, R.layout.list_item_products_list, productListItems);
 
         // Привяжем адаптер к фрагменту
         productsListFragment.setListAdapter(productListItemsAdapter);

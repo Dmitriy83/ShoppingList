@@ -1,15 +1,12 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.app.FragmentManager;
-import android.app.LauncherActivity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,19 +16,20 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.helpers.ListAdapter;
+import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
 import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
+import com.RightDirection.ShoppingList.interfaces.IOnEditItemListener;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        IOnDeleteItemListener, IOnClickItemListener {
+        IOnDeleteItemListener, IOnClickItemListener, IOnEditItemListener {
 
     private ArrayList<ListItem> shoppingLists;
-    private ListAdapter shoppingListsAdapter;
+    private ListAdapterMainActivity shoppingListsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         shoppingLists = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списками покупок
-        shoppingListsAdapter = new ListAdapter(this, R.layout.list_item, shoppingLists);
+        shoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity, shoppingLists);
 
         // Привяжем адаптер к фрагменту
         shoppingListFragment.setListAdapter(shoppingListsAdapter);
@@ -141,6 +139,11 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void OnClickItem(Cursor cursor) {
+        // TODO: Реализовать открытие активности работы со списком "в магазине"
+    }
+
+    @Override
+    public void OnEditItem(Cursor cursor) {
         Intent intent = new Intent(this.getBaseContext(), ShoppingListActivity.class);
         intent.putExtra("isNewList", false);
         String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));

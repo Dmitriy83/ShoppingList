@@ -7,39 +7,35 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingList;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
 import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
-import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 
 import java.util.ArrayList;
 
-public class ShoppingListActivity extends AppCompatActivity implements IOnClickItemListener,
-        IOnNewItemAddedListener, IOnDeleteItemListener,
+public class ShoppingListActivity extends AppCompatActivity implements IOnNewItemAddedListener, IOnDeleteItemListener,
         InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<ListItem> shoppingListItems;
-    private ListAdapter shoppingListItemsAdapter;
+    private ListAdapterShoppingList shoppingListItemsAdapter;
     private boolean mIsNewList;
     private String mListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shopping_list_editing_form);
+        setContentView(R.layout.activity_shopping_list);
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
@@ -61,7 +57,7 @@ public class ShoppingListActivity extends AppCompatActivity implements IOnClickI
         shoppingListItems = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком покупок
-        shoppingListItemsAdapter = new ListAdapter(this, R.layout.list_item, shoppingListItems);
+        shoppingListItemsAdapter = new ListAdapterShoppingList(this, R.layout.list_item_shopping_list, shoppingListItems);
 
         // Привяжем адаптер к фрагменту
         shoppingListFragment.setListAdapter(shoppingListItemsAdapter);
@@ -150,11 +146,6 @@ public class ShoppingListActivity extends AppCompatActivity implements IOnClickI
 
     @Override
     public void onDialogNegativeClick() {
-
-    }
-
-    @Override
-    public void OnClickItem(Cursor cursor) {
 
     }
 

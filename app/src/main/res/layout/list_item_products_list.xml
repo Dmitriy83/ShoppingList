@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -11,17 +12,7 @@
         android:fadingEdge="vertical"
         android:textColor="#F000"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/imgEdit" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imgEdit"
-        android:layout_alignParentTop="true"
-        android:background="@android:drawable/ic_menu_edit"
-        android:layout_toLeftOf="@+id/imgDelete"
-        android:contentDescription="@string/edit"
-        android:visibility="invisible" />
+        android:layout_toLeftOf="@+id/imgDelete" />
 
     <ImageButton
         android:layout_width="wrap_content"
