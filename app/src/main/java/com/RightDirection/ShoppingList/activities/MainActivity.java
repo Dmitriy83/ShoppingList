@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
+        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
 
         // Создаем массив для хранения списков покупок
         shoppingLists = new ArrayList<>();
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     private View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ShoppingListActivity.class);
+            Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
             intent.putExtra("isNewList", true);
             startActivity(intent);
         }
@@ -139,12 +139,15 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void OnClickItem(Cursor cursor) {
-        // TODO: Реализовать открытие активности работы со списком "в магазине"
+        Intent intent = new Intent(this.getBaseContext(), ShoppingListInShopActivity.class);
+        String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
+        intent.putExtra("listId", itemId);
+        startActivity(intent);
     }
 
     @Override
     public void OnEditItem(Cursor cursor) {
-        Intent intent = new Intent(this.getBaseContext(), ShoppingListActivity.class);
+        Intent intent = new Intent(this.getBaseContext(), ShoppingListEditingActivity.class);
         intent.putExtra("isNewList", false);
         String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
         intent.putExtra("listId", itemId);

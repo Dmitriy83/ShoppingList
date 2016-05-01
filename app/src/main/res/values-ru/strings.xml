@@ -15,4 +15,5 @@
     <string name="new_product">Новый продукт</string>
     <string name="product_title">Продукт</string>
     <string name="edit">Редактировать</string>
+    <string name="in_shop">В магазине</string>
 </resources>

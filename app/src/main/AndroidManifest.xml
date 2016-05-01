@@ -17,9 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ShoppingListActivity" />
+        <activity android:name=".activities.ShoppingListEditingActivity" />
         <activity android:name=".activities.ProductsListActivity" />
         <activity android:name=".activities.ItemActivity" />
+        <activity android:name=".activities.ShoppingListInShopActivity" />
 
         <provider
             android:authorities="com.RightDirection.shoppinglistcontentprovider"

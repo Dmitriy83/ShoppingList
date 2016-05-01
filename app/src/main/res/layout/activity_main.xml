@@ -24,7 +24,7 @@
     <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/frgShoppingList"
+        android:id="@+id/frgShoppingLists"
         android:layout_below="@+id/appBar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

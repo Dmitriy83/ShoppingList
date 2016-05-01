@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ShoppingListActivity"
+    tools:context=".activities.ShoppingListEditingActivity"
     android:focusable="false"
     android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -22,7 +22,7 @@
     <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/frgShoppingListItem"
+        android:id="@+id/frgShoppingList"
         android:layout_below="@+id/newItemFragment"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
