@@ -1,5 +1,7 @@
 package com.RightDirection.ShoppingList.helpers;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,13 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.MainActivity;
-import com.RightDirection.ShoppingList.activities.ProductsListActivity;
 import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
 import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 import com.RightDirection.ShoppingList.interfaces.IOnEditItemListener;
@@ -70,6 +69,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
         productNameView.setText(name);
         productNameView.setOnClickListener(onProductNameViewClick);
+        productNameView.setOnLongClickListener(onProductNameViewLongClick);
 
         ImageView imgEdit = (ImageView) listView.findViewById(R.id.imgEdit);
         imgEdit.setOnClickListener(onImgEditClick);
@@ -90,6 +90,18 @@ public class ListAdapterMainActivity extends ListAdapter {
             if (cursor.moveToFirst()) {
                 ((IOnClickItemListener) mContext).OnClickItem(cursor);
             }
+        }
+    };
+
+    private View.OnLongClickListener onProductNameViewLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            // Получим объект item по элементу View
+            ListItem item = (ListItem)mViewAndIdMatcher.get(v);
+            // Сообщим связанному классу об событии
+            ((IOnDeleteItemListener) mContext).onDeleteItem(item);
+
+            return true;
         }
     };
 

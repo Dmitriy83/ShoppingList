@@ -11,6 +11,5 @@
         android:fadingEdge="vertical"
         android:textColor="#F000"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        />
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

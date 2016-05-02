@@ -15,4 +15,5 @@
     <string name="product_title">Product</string>
     <string name="edit">Edit</string>
     <string name="in_shop">In shop</string>
+    <string name="delete_shopping_list_question">Delete shopping list?</string>
 </resources>

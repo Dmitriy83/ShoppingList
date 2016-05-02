@@ -1,7 +1,11 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -133,8 +137,35 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void onDeleteItem(@Nullable ListItem item) {
-        FloatingActionButton fabAddNewShoppingList = (FloatingActionButton) findViewById(R.id.fabAddNewShoppingList);
-        Snackbar.make(fabAddNewShoppingList, "Delete button was pressed...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        final ListItem listItem = item;
+
+        // Выведем вопрос об удалении списка покупок
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setMessage(getString(R.string.delete_shopping_list_question));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        // Удалим запись из БД по id
+                        ContentResolver contentResolver = getContentResolver();
+                        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + listItem.getId(), null);
+                        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                                ShoppingListContentProvider.KEY_ID + "=" + listItem.getId(), null);
+
+                        // Обновим списки покупок
+                        onResume();
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        alertDialog.show();
     }
 
     @Override

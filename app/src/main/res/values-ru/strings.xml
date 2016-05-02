@@ -16,4 +16,5 @@
     <string name="product_title">Продукт</string>
     <string name="edit">Редактировать</string>
     <string name="in_shop">В магазине</string>
+    <string name="delete_shopping_list_question">Удалить список?</string>
 </resources>

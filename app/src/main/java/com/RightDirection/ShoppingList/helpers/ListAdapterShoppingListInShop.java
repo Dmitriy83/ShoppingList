@@ -1,7 +1,11 @@
 package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.support.design.widget.Snackbar;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,19 +22,6 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     public ListAdapterShoppingListInShop(Context context, int resource, List<ListItem> objects) {
         super(context, resource, objects);
-
-        // Проверим поддерживают ли вызвавшие активности требуемые интерфейсы
-        checkRequiredInterfaces(context);
-    }
-
-    private void checkRequiredInterfaces(Context context) {
-        /*
-        try {
-            IOnDeleteItemListener iOnDeleteItemListener = (IOnDeleteItemListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " должна поддерживать итерфейс IOnDeleteItemListener");
-        }
-        */
     }
 
     @Override
@@ -53,11 +44,37 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
 
         TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
+        productNameView.setOnTouchListener(onListItemTouch);
         productNameView.setText(name);
-
-        // Добавим сопоставление элемента управления и id элемента списка
-        mViewAndIdMatcher.put(productNameView, item);
 
         return listView;
     }
+
+    float mInitXTouch = 0;
+    float mEndXTouch = 0;
+
+    private View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN){
+                mInitXTouch = event.getX();
+            }
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL){
+                mEndXTouch = event.getX();
+                float distance = mEndXTouch - mInitXTouch;
+                TextView tv = (TextView)v;
+                if (distance > 50){
+                    // Покажем, что товар купили ("вычеркнем")
+                    tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                else if(distance < -50){
+                    // Покажем, что  товар еще не купили (до этого выделили ошибочно)
+                    tv.setPaintFlags(tv.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+            }
+            return true;
+        }
+
+
+    };
 }
