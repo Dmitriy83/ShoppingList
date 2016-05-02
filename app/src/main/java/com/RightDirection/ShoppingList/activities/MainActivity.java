@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Выведем вопрос об удалении списка покупок
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setMessage(getString(R.string.delete_shopping_list_question));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                         onResume();
                     }
                 });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
