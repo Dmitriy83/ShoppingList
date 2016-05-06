@@ -22,12 +22,12 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final Uri PRODUCTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/products");
     public static final Uri SHOPPING_LISTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglists");
     public static final Uri SHOPPING_LIST_CONTENT_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglistcontent");
-    public static final int PRODUCTS_ALL_ROWS = 1;
-    public static final int PRODUCTS_SINGLE_ROW = 2;
-    public static final int SHOPPING_LISTS_ALL_ROWS = 3;
-    public static final int SHOPPING_LISTS_SINGLE_ROW = 4;
-    public static final int SHOPPING_LIST_CONTENT_ALL_ROWS = 5;
-    public static final int SHOPPING_LIST_CONTENT_SINGLE_ROW = 6;
+    private static final int PRODUCTS_ALL_ROWS = 1;
+    private static final int PRODUCTS_SINGLE_ROW = 2;
+    private static final int SHOPPING_LISTS_ALL_ROWS = 3;
+    private static final int SHOPPING_LISTS_SINGLE_ROW = 4;
+    private static final int SHOPPING_LIST_CONTENT_ALL_ROWS = 5;
+    private static final int SHOPPING_LIST_CONTENT_SINGLE_ROW = 6;
     private static final UriMatcher uriMatcher;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -44,11 +44,11 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
-    public static final String DATABASE_NAME = "shoppingListDatabase.db";
-    public static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
-    public static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
-    public static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
-    public static final int DATABASE_VERSION = 5;
+    private static final String DATABASE_NAME = "shoppingListDatabase.db";
+    private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
+    private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
+    private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
+    private static final int DATABASE_VERSION = 5;
 
     @Override
     public boolean onCreate() {

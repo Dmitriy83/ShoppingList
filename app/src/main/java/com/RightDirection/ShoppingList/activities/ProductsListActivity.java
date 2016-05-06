@@ -20,6 +20,7 @@ import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
 import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         IOnDeleteItemListener, IOnClickItemListener {
@@ -88,6 +89,14 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
             productListItems.add(newListItem);
         }
 
+        // Отсортируем список по алфавиту
+        productListItemsAdapter.sort(new Comparator<ListItem>() {
+            @Override
+            public int compare(ListItem lhs, ListItem rhs) {
+                int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
+                return res;
+            }
+        });
         productListItemsAdapter.notifyDataSetChanged();
     }
 
