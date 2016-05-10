@@ -24,9 +24,9 @@ public class ItemActivity extends AppCompatActivity{
 
         // Получим значения из переданных параметров
         Intent sourceIntent = getIntent();
-        isNewItem = sourceIntent.getBooleanExtra("isNewItem", true);
-        itemId = sourceIntent.getStringExtra("itemId");
-        String name = sourceIntent.getStringExtra("Name");
+        isNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), true);
+        itemId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
+        String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
         EditText etProductName = (EditText) findViewById(R.id.etProductName);
         etProductName.setText(name);
 

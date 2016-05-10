@@ -15,7 +15,6 @@ import android.widget.Button;
 
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -23,7 +22,7 @@ import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 
 import java.util.ArrayList;
 
-public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener, IOnDeleteItemListener,
+public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
         InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<ListItem> shoppingListItems;
@@ -38,8 +37,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
-        mIsNewList = sourceIntent.getBooleanExtra("isNewList", false);
-        mListId = sourceIntent.getStringExtra("listId");
+        mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
+        mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
 
         // Добавим обработчики кликов по кнопкам
         Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
@@ -109,12 +108,6 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     @Override
     public void OnNewItemAdded(ListItem newItem) {
         shoppingListItems.add(0, newItem);
-        shoppingListItemsAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onDeleteItem(ListItem item) {
-        shoppingListItems.remove(item);
         shoppingListItemsAdapter.notifyDataSetChanged();
     }
 

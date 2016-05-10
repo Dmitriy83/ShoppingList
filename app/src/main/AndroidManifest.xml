@@ -21,6 +21,8 @@
         <activity android:name=".activities.ProductsListActivity" />
         <activity android:name=".activities.ItemActivity" />
         <activity android:name=".activities.ShoppingListInShopActivity" />
+        <activity android:name=".activities.ActionsSubmenuActivity"
+            android:theme="@style/Theme.Actions_Submenu_Theme"/>
 
         <provider
             android:authorities="com.RightDirection.shoppinglistcontentprovider"

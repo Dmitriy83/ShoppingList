@@ -3,10 +3,13 @@ package com.RightDirection.ShoppingList.views;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -29,14 +33,14 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     // Синхронизируемые массивы (по индексу в списке). Должны изменяться одновременно.
     // 1. Хранит объекты ListItem. Необходим для работы с базой данных
-    private ArrayList<ListItem> allProducts = new ArrayList<>();
+    private ArrayList<ListItem> mAllProducts = new ArrayList<>();
     // 2. Хранит имена объектов ListItem. Необходим для работы с AutoCompleteTextView
-    private ArrayList<String> allProductsNames = new ArrayList<>();
+    private ArrayList<String> mAllProductsNames = new ArrayList<>();
 
-    private ListItem currentItem = null;
-    private ArrayAdapter<String> adapter;
+    private ListItem mCurrentItem = null;
+    private ArrayAdapter<String> mAdapter;
 
-    private AutoCompleteTextView tvNewItem;
+    private AutoCompleteTextView mTvNewItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,18 +49,22 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         // Обновим список товаров из базы данных
         getLoaderManager().initLoader(0, null, this);
 
-        tvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
-        tvNewItem.setOnKeyListener(newItemEditTextOnKey);
-        tvNewItem.setOnItemClickListener(onItemClickListener);
+        mTvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
+        mTvNewItem.setOnKeyListener(newItemEditTextOnKey);
+        mTvNewItem.setOnItemClickListener(onItemClickListener);
 
         // Получим активность, к которой будет привязан адаптер
         Activity activity = getActivity();
-        adapter = new ArrayAdapter<>(activity, android.R.layout.select_dialog_item, allProductsNames);
+        mAdapter = new ArrayAdapter<>(activity, android.R.layout.select_dialog_item, mAllProductsNames);
 
         // Установим количество символов, которые пользователь должен ввести прежде чем выпадающий список будет показан
-        tvNewItem.setThreshold(1);
+        mTvNewItem.setThreshold(1);
 
-        tvNewItem.setAdapter(adapter);
+        mTvNewItem.setAdapter(mAdapter);
+
+        // Добавим обработчик нажатия для кнопки добавляния нового элемента в базу данных
+        Button btnAddProductToShoppingList = (Button) view.findViewById(R.id.btnAddProductToShoppingList);
+        btnAddProductToShoppingList.setOnClickListener(onBtnAddProductToShoppingListClickListener);
 
         return view;
     }
@@ -65,12 +73,15 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-                if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER) || (keyCode == KeyEvent.KEYCODE_ENTER))
+                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
                 {
-                    if (currentItem != null) {
-                        addItem();
-                        return true;
-                    }
+                    addItem();
+                    return true;
+                }
+                else if (keyCode == KeyEvent.KEYCODE_ENTER){
+                    createNewItem();
+                    addItem();
+                    return true;
                 }
             }
             return false;
@@ -78,20 +89,48 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     };
 
     private void addItem(){
-        onNewItemAddedListener.OnNewItemAdded(currentItem);
-        tvNewItem.setText("");
-        currentItem = null;
+        onNewItemAddedListener.OnNewItemAdded(mCurrentItem);
+        mTvNewItem.setText("");
+        mCurrentItem = null;
     }
 
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String name = adapter.getItem(position);
-            currentItem = allProducts.get(allProductsNames.indexOf(name));
+            String name = mAdapter.getItem(position);
+            mCurrentItem = mAllProducts.get(mAllProductsNames.indexOf(name));
             addItem();
         }
     };
+
+    private Button.OnClickListener onBtnAddProductToShoppingListClickListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            // Добавим новый товар в БД
+            createNewItem();
+
+            // Оповестим родительскую активность о выборе элемента
+            addItem();
+        }
+    };
+
+    private void createNewItem() {
+        // Добавим новый товар в БД
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        ContentValues contentValues = new ContentValues();
+
+        String newItemName = mTvNewItem.getText().toString();
+        contentValues.put(ShoppingListContentProvider.KEY_NAME, newItemName);
+        Uri insertedItemUri = contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
+        String insertedItemId = insertedItemUri.getPathSegments().get(1);
+
+        // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
+        mCurrentItem = new ListItem(insertedItemId, newItemName);
+        mAllProducts.add(mCurrentItem);
+        mAllProductsNames.add(newItemName);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -140,7 +179,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyIdIndex = data.getColumnIndexOrThrow("_id");
 
-        allProducts.clear();
+        mAllProducts.clear();
         while (data.moveToNext()){
             ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
             addProductInArrays(newListItem);
@@ -151,8 +190,8 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     public void onLoaderReset(Loader<Cursor> loader) {}
 
     private void addProductInArrays(ListItem newListItem){
-        allProducts.add(newListItem);
-        allProductsNames.add(newListItem.getName());
+        mAllProducts.add(newListItem);
+        mAllProductsNames.add(newListItem.getName());
     }
 }
 

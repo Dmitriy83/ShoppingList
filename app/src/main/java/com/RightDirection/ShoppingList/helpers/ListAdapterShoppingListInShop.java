@@ -2,19 +2,15 @@ package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.support.design.widget.Snackbar;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 
 import java.util.List;
 

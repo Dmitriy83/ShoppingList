@@ -1,36 +1,30 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.ContentResolver;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
-import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
-import com.RightDirection.ShoppingList.interfaces.IOnEditItemListener;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        IOnDeleteItemListener, IOnClickItemListener, IOnEditItemListener {
+public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<ListItem> shoppingLists;
     private ListAdapterMainActivity shoppingListsAdapter;
@@ -50,14 +44,15 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
 
         // Получим ссылки на фрагемнты
-        FragmentManager fragmentManager = getFragmentManager();
+        android.app.FragmentManager fragmentManager = getFragmentManager();
         ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
 
         // Создаем массив для хранения списков покупок
         shoppingLists = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списками покупок
-        shoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity, shoppingLists);
+        shoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
+                shoppingLists, getSupportFragmentManager());
 
         // Привяжем адаптер к фрагменту
         shoppingListFragment.setListAdapter(shoppingListsAdapter);
@@ -102,11 +97,10 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
-            intent.putExtra("isNewList", true);
+            intent.putExtra(String.valueOf(R.string.is_new_list), true);
             startActivity(intent);
         }
     };
-
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -133,55 +127,5 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
-    }
-
-    @Override
-    public void onDeleteItem(@Nullable ListItem item) {
-        final ListItem listItem = item;
-
-        // Выведем вопрос об удалении списка покупок
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setMessage(getString(R.string.delete_shopping_list_question));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                        // Удалим запись из БД по id
-                        ContentResolver contentResolver = getContentResolver();
-                        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + listItem.getId(), null);
-                        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                                ShoppingListContentProvider.KEY_ID + "=" + listItem.getId(), null);
-
-                        // Обновим списки покупок
-                        onResume();
-                    }
-                });
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-
-        alertDialog.show();
-    }
-
-    @Override
-    public void OnClickItem(Cursor cursor) {
-        Intent intent = new Intent(this.getBaseContext(), ShoppingListInShopActivity.class);
-        String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-        intent.putExtra("listId", itemId);
-        startActivity(intent);
-    }
-
-    @Override
-    public void OnEditItem(Cursor cursor) {
-        Intent intent = new Intent(this.getBaseContext(), ShoppingListEditingActivity.class);
-        intent.putExtra("isNewList", false);
-        String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-        intent.putExtra("listId", itemId);
-        startActivity(intent);
     }
 }

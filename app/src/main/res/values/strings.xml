@@ -16,4 +16,8 @@
     <string name="edit">Edit</string>
     <string name="in_shop">In shop</string>
     <string name="delete_shopping_list_question">Delete shopping list?</string>
+    <string name="list_id">listId</string>
+    <string name="is_new_item">isNewItem</string>
+    <string name="item_id">itemId</string>
+    <string name="is_new_list">isNewList</string>
 </resources>

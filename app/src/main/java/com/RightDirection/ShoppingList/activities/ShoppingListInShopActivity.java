@@ -30,7 +30,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
-        mListId = sourceIntent.getStringExtra("listId");
+        mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();

@@ -16,14 +16,11 @@ import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.interfaces.IOnClickItemListener;
-import com.RightDirection.ShoppingList.interfaces.IOnDeleteItemListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        IOnDeleteItemListener, IOnClickItemListener {
+public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<ListItem> productListItems;
     private ListAdapterProductsList productListItemsAdapter;
@@ -102,21 +99,4 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {}
-
-    @Override
-    public void onDeleteItem(ListItem item) {
-        onResume();
-    }
-
-    @Override
-    public void OnClickItem(Cursor cursor) {
-        // Откроем окно редактирования элемента списка продуктов
-        String productName = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_NAME));
-        String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-        Intent intent = new Intent(getBaseContext(), ItemActivity.class);
-        intent.putExtra("Name", productName);
-        intent.putExtra("itemId", itemId);
-        intent.putExtra("isNewItem", false);
-        startActivity(intent);
-    }
 }
