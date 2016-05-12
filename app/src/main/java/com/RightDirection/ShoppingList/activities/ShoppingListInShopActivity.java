@@ -9,17 +9,17 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<ListItem> shoppingListItems;
-    private ListAdapterShoppingListInShop shoppingListItemsAdapter;
+    private ArrayList<ListItem> mShoppingListItems;
+    private ListAdapterShoppingListInShop mShoppingListItemsAdapter;
     private String mListId;
 
     @Override
@@ -37,16 +37,31 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingListInShop);
 
         // Создаем массив для хранения списка покупок
-        shoppingListItems = new ArrayList<>();
+        if (savedInstanceState == null) {
+            mShoppingListItems = new ArrayList<>();
+        }
+        else{
+            mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+        }
 
         // Создадим новый адаптер для работы со списком покупок
-        shoppingListItemsAdapter = new ListAdapterShoppingListInShop(this, R.layout.list_item_shopping_list_in_shop, shoppingListItems);
+        mShoppingListItemsAdapter = new ListAdapterShoppingListInShop(this, R.layout.list_item_shopping_list_in_shop, mShoppingListItems);
 
-        // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(shoppingListItemsAdapter);
+        // Привяжем адаптер к фрагменту-списку
+        shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
 
-        // Заполним список покупок из базы данных
-        getLoaderManager().initLoader(0, null, this);
+        if (savedInstanceState == null) {
+            // Заполним список покупок из базы данных
+            getLoaderManager().initLoader(0, null, this);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
+        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -63,13 +78,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
 
-        shoppingListItems.clear();
+        mShoppingListItems.clear();
         while (data.moveToNext()){
             ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
-            shoppingListItems.add(newListItem);
+            mShoppingListItems.add(newListItem);
         }
 
-        shoppingListItemsAdapter.notifyDataSetChanged();
+        mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
     @Override

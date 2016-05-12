@@ -55,6 +55,8 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Необходимо перезапустить загрузчик, например, при смене ориентации экрана
         getLoaderManager().restartLoader(0, null, this);
     }
 

@@ -30,42 +30,21 @@ public class ListAdapterMainActivity extends ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Parameters parameters = new Parameters(position, convertView);
 
-        LinearLayout listView;
+        parameters.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
+        parameters.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
+        parameters.viewHolder.imgActions.setOnClickListener(onImgActionsClick);
+        // Привяжем к View объект ListItem
+        parameters.viewHolder.imgActions.setTag(parameters.item);
 
-        ListItem item = getItem(position);
-
-        String name = item.getName();
-
-        if (convertView == null){
-            listView = new LinearLayout(getContext());
-            String inflater = Context.LAYOUT_INFLATER_SERVICE;
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(inflater);
-            layoutInflater.inflate(mResource, listView, true);
-        }
-        else{
-            listView = (LinearLayout)convertView;
-        }
-
-        TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
-        productNameView.setText(name);
-        productNameView.setOnClickListener(onProductNameViewClick);
-        productNameView.setOnLongClickListener(onProductNameViewLongClick);
-        // Добавим сопоставление элемента управления и id элемента списка
-        mViewAndIdMatcher.put(productNameView, item);
-
-        ImageView imgActions = (ImageView) listView.findViewById(R.id.imgActions);
-        imgActions.setOnClickListener(onImgActionsClick);
-        // Добавим сопоставление элемента управления и id элемента списка
-        mViewAndIdMatcher.put(imgActions, item);
-
-        return listView;
+        return parameters.rowView;
     }
 
     private View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            ListItem item = (ListItem) mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) view.getTag();
             ContentResolver contentResolver = mContext.getContentResolver();
             Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                     null, "_id = " + item.getId(), null, null);
@@ -84,7 +63,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         @Override
         public boolean onLongClick(View v) {
             // Откроем список для редактирования
-            ListItem item = (ListItem) mViewAndIdMatcher.get(v);
+            ListItem item = (ListItem) v.getTag();
             ContentResolver contentResolver = mParentActivity.getContentResolver();
             Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                     null, "_id = " + item.getId(), null, null);
@@ -105,7 +84,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         public void onClick(View view) {
 
             // Получим объект item по элементу View
-            ListItem item = (ListItem)mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) view.getTag();
 
             // Определим координаты кнопки
             int[] location = {0, 0};
@@ -114,11 +93,11 @@ public class ListAdapterMainActivity extends ListAdapter {
             // Отобрази подменю выбора действия
             try {
                 ActionsSubmenuActivity.mCallingActivityAdapter = mListAdapter;
-                ActionsSubmenuActivity.mListItem = item;
 
                 notifyDataSetChanged();
                 Intent intent = new Intent(mParentActivity, ActionsSubmenuActivity.class);
                 intent.putExtra("y", location[1]);
+                intent.putExtra(String.valueOf(R.string.list_item), item);
                 mParentActivity.startActivity(intent);
             }
             finally{

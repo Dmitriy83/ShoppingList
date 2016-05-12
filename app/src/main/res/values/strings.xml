@@ -20,4 +20,7 @@
     <string name="is_new_item">isNewItem</string>
     <string name="item_id">itemId</string>
     <string name="is_new_list">isNewList</string>
+    <string name="list_item">list_item</string>
+    <string name="shopping_list_items">shopping_list_items</string>
+    <string name="shopping_list_item_and_view_matcher">shopping_list_item_and_view_matcher</string>
 </resources>

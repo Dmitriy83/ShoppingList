@@ -24,9 +24,9 @@ public class ActionsSubmenuActivity extends Activity {
 
     private int mY;
     private Context mContextForDialog;
+    private ListItem mListItem;
 
     public static ListAdapter mCallingActivityAdapter;
-    public static ListItem mListItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class ActionsSubmenuActivity extends Activity {
         // Получим значения из переданных параметров
         Intent sourceIntent = getIntent();
         mY = sourceIntent.getIntExtra("y", 0);
+        mListItem = sourceIntent.getParcelableExtra(String.valueOf(R.string.list_item));
 
         // Добавим обработчики кликов по кнопкам
         ImageButton imgEdit = (ImageButton) findViewById(R.id.imgEdit);
@@ -55,7 +56,7 @@ public class ActionsSubmenuActivity extends Activity {
         View view = getWindow().getDecorView();
         WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) view.getLayoutParams();
 
-        // Отключим затемнение заднего фона
+        // Отключим затемнение фона вокруг окна
         layoutParams.dimAmount=0.0f;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
 

@@ -1,19 +1,15 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.ListItem;
@@ -64,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Необходимо перезапустить загрузчик, например, при смене ориентации экрана
         getLoaderManager().restartLoader(0, null, this);
     }
 

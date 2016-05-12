@@ -26,41 +26,25 @@ public class ListAdapterProductsList extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LinearLayout listView;
+        Parameters parameters = new Parameters(position, convertView);
 
-        ListItem item = getItem(position);
+        parameters.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
+        parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        // Привяжем к View объект ListItem
+        parameters.viewHolder.imgDelete.setTag(parameters.item);
 
-        String name = item.getName();
+        return parameters.rowView;
+    }
 
-        if (convertView == null){
-            listView = new LinearLayout(getContext());
-            String inflater = Context.LAYOUT_INFLATER_SERVICE;
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(inflater);
-            layoutInflater.inflate(mResource, listView, true);
-        }
-        else{
-            listView = (LinearLayout)convertView;
-        }
-
-        TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
-        productNameView.setText(name);
-        productNameView.setOnClickListener(onProductNameViewClick);
-
-        ImageView imgDelete = (ImageView) listView.findViewById(R.id.imgDelete);
-        imgDelete.setOnClickListener(onImgDeleteClick);
-
-        // Добавим сопоставление элемента управления и id элемента списка
-        mViewAndIdMatcher.put(imgDelete, item);
-        mViewAndIdMatcher.put(productNameView, item);
-
-        return listView;
+    protected static class ViewHolder {
+        public TextView productName;
     }
 
     private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Получим объект item по элементу View
-            ListItem item = (ListItem)mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) view.getTag();
 
             // Удалим запись из БД по id
             // 1) Удаление из справочника продуктов
@@ -79,7 +63,7 @@ public class ListAdapterProductsList extends ListAdapter {
     private View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            ListItem item = (ListItem) mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) view.getTag();
 
             ContentResolver contentResolver = mContext.getContentResolver();
             Cursor cursor = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null, "_id = " + item.getId(), null, null);

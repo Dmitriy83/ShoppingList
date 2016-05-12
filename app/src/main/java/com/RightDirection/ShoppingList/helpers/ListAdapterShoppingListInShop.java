@@ -23,27 +23,19 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LinearLayout listView;
+        Parameters parameters = new Parameters(position, convertView);
 
-        ListItem item = getItem(position);
+        parameters.viewHolder.productNameView.setOnTouchListener(onListItemTouch);
 
-        String name = item.getName();
-
-        if (convertView == null){
-            listView = new LinearLayout(getContext());
-            String inflater = Context.LAYOUT_INFLATER_SERVICE;
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(inflater);
-            layoutInflater.inflate(mResource, listView, true);
+        // Отрисуем выбор товара
+        if (parameters.item.isChecked()){
+            setChecked(parameters.viewHolder.productNameView);
         }
         else{
-            listView = (LinearLayout)convertView;
+            setUnchecked(parameters.viewHolder.productNameView);
         }
 
-        TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
-        productNameView.setOnTouchListener(onListItemTouch);
-        productNameView.setText(name);
-
-        return listView;
+        return parameters.rowView;
     }
 
     float mInitXTouch = 0;
@@ -56,21 +48,31 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 mInitXTouch = event.getX();
             }
             if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL){
+                // Получим объект item по элементу View
+                ListItem item = (ListItem) v.getTag();
+
                 mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
-                TextView tv = (TextView)v;
                 if (distance > 50){
-                    // Покажем, что товар купили ("вычеркнем")
-                    tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    setChecked((TextView)v);
+                    item.setChecked();
                 }
                 else if(distance < -50){
-                    // Покажем, что  товар еще не купили (до этого выделили ошибочно)
-                    tv.setPaintFlags(tv.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    setUnchecked((TextView)v);
+                    item.setUnchecked();
                 }
             }
             return true;
         }
-
-
     };
+
+    private void setChecked(TextView v){
+        // Покажем, что товар купили ("вычеркнем")
+        v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
+    private void setUnchecked(TextView v){
+        // Покажем, что  товар еще не купили (до этого выделили ошибочно)
+        v.setPaintFlags(v.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+    }
 }

@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
         InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<ListItem> shoppingListItems;
-    private ListAdapterShoppingListEditing shoppingListItemsAdapter;
+    private ArrayList<ListItem> mShoppingListItems;
+    private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
     private String mListId;
 
@@ -51,19 +51,32 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         FragmentManager fragmentManager = getFragmentManager();
         ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
 
-        // Создаем массив для хранения списка покупок
-        shoppingListItems = new ArrayList<>();
+        if (savedInstanceState == null) {
+            // Создаем массив для хранения списка покупок
+            mShoppingListItems = new ArrayList<>();
+        }
+        else {
+            mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+        }
 
         // Создадим новый адаптер для работы со списком покупок
-        shoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, R.layout.list_item_shopping_list_editing, shoppingListItems);
+        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, R.layout.list_item_shopping_list_editing, mShoppingListItems);
 
         // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(shoppingListItemsAdapter);
+        shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
 
-        if (!mIsNewList) {
+        if (!mIsNewList && savedInstanceState == null) {
             // Заполним список покупок из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
+        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
     }
 
     private View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
@@ -86,7 +99,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                         ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null);
 
                 // Запишем составлящие списка покупок в базу данных
-                for (ListItem item: shoppingListItems) {
+                for (ListItem item: mShoppingListItems) {
                     contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, mListId);
                     contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
                     contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
@@ -100,15 +113,15 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     private View.OnClickListener onBtnDeleteAllItemsClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            shoppingListItems.clear();
-            shoppingListItemsAdapter.notifyDataSetChanged();
+            mShoppingListItems.clear();
+            mShoppingListItemsAdapter.notifyDataSetChanged();
         }
     };
 
     @Override
     public void OnNewItemAdded(ListItem newItem) {
-        shoppingListItems.add(0, newItem);
-        shoppingListItemsAdapter.notifyDataSetChanged();
+        mShoppingListItems.add(0, newItem);
+        mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -126,7 +139,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
 
             // Запишем составлящие списка покупок в базу данных
-            for (ListItem item: shoppingListItems) {
+            for (ListItem item: mShoppingListItems) {
                 contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, listId);
                 contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
                 contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
@@ -159,13 +172,13 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
 
-        shoppingListItems.clear();
+        mShoppingListItems.clear();
         while (data.moveToNext()){
             ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
-            shoppingListItems.add(newListItem);
+            mShoppingListItems.add(newListItem);
         }
 
-        shoppingListItemsAdapter.notifyDataSetChanged();
+        mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
     @Override

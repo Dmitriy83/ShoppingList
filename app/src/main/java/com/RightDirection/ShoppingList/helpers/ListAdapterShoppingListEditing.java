@@ -22,40 +22,19 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LinearLayout listView;
+        Parameters parameters = new Parameters(position, convertView);
+        parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        // Привяжем к View объект ListItem
+        parameters.viewHolder.imgDelete.setTag(parameters.item);
 
-        ListItem item = getItem(position);
-
-        String name = item.getName();
-
-        if (convertView == null){
-            listView = new LinearLayout(getContext());
-            String inflater = Context.LAYOUT_INFLATER_SERVICE;
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(inflater);
-            layoutInflater.inflate(mResource, listView, true);
-        }
-        else{
-            listView = (LinearLayout)convertView;
-        }
-
-        TextView productNameView = (TextView)listView.findViewById(R.id.itemName);
-        productNameView.setText(name);
-
-        ImageView imgDelete = (ImageView) listView.findViewById(R.id.imgDelete);
-        imgDelete.setOnClickListener(onImgDeleteClick);
-
-        // Добавим сопоставление элемента управления и id элемента списка
-        mViewAndIdMatcher.put(imgDelete, item);
-        mViewAndIdMatcher.put(productNameView, item);
-
-        return listView;
+        return parameters.rowView;
     }
 
     private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Получим объект item по элементу View
-            ListItem item = (ListItem)mViewAndIdMatcher.get(view);
+            ListItem item = (ListItem) view.getTag();
             // Удалим элемент списка
             remove(item);
             notifyDataSetChanged();
