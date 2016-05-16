@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +15,8 @@ import android.widget.EditText;
 import com.RightDirection.ShoppingList.R;
 
 public class InputListNameDialog extends DialogFragment{
+
+    private String mInitName = null;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -28,13 +32,16 @@ public class InputListNameDialog extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Используем класс-конструктор для удобного построения окна диалога
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), getActivity().getApplicationInfo().theme));
         // Получим "заполнитель" макета
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // Заполним и привяжем макет к диалогу
         // Передадим null в качестве родительского view, т.к. заполнение будет сделано в макете диалога
         View view = inflater.inflate(R.layout.input_new_list_name_dialog, null);
         final EditText inputNewListName = (EditText)view.findViewById(R.id.inputNewListName);
+        if (mInitName != null) {
+            inputNewListName.setText(mInitName);
+        }
         builder.setView(view);
 
         // Добавим кнопки-действия
@@ -65,5 +72,9 @@ public class InputListNameDialog extends DialogFragment{
             throw new ClassCastException(activity.toString()
                     + " must implement InputListNameDialogListener");
         }
+    }
+
+    public void setInitName(String name){
+        mInitName = name;
     }
 }

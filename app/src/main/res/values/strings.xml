@@ -23,4 +23,7 @@
     <string name="list_item">list_item</string>
     <string name="shopping_list_items">shopping_list_items</string>
     <string name="shopping_list_item_and_view_matcher">shopping_list_item_and_view_matcher</string>
+    <string name="in_shop_ending_work_message">Victory!</string>
+    <string name="in_developing">In developing...</string>
+    <string name="change_list_name">Change shopping list name</string>
 </resources>

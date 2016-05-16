@@ -8,9 +8,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -79,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         View view = findViewById(android.R.id.content);
         if (id == R.id.action_settings) {
-            Snackbar.make(view, "In developing...", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Toast toast = Toast.makeText(this, getString(R.string.in_developing), Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
             return true;
         }
         else if (id == R.id.action_edit_products_list) {

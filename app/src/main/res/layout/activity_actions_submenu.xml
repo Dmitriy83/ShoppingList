@@ -7,6 +7,13 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/imgChangeListName"
+        android:background="@android:drawable/ic_menu_sort_alphabetically"
+        android:contentDescription="@string/change_list_name" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imgEdit"
         android:background="@android:drawable/ic_menu_edit"
         android:contentDescription="@string/edit" />

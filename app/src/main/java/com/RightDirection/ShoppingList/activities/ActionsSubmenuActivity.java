@@ -2,7 +2,9 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,7 +22,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 
-public class ActionsSubmenuActivity extends Activity {
+public class ActionsSubmenuActivity extends Activity implements InputListNameDialog.IInputListNameDialogListener {
 
     private int mY;
     private Context mContextForDialog;
@@ -42,6 +44,9 @@ public class ActionsSubmenuActivity extends Activity {
         mListItem = sourceIntent.getParcelableExtra(String.valueOf(R.string.list_item));
 
         // Добавим обработчики кликов по кнопкам
+        ImageButton imgChangeListName = (ImageButton) findViewById(R.id.imgChangeListName);
+        imgChangeListName.setOnClickListener(onImgChangeListNameClick);
+
         ImageButton imgEdit = (ImageButton) findViewById(R.id.imgEdit);
         imgEdit.setOnClickListener(onImgEditClick);
 
@@ -66,20 +71,26 @@ public class ActionsSubmenuActivity extends Activity {
         getWindowManager().updateViewLayout(view, layoutParams);
     }
 
+    private View.OnClickListener onImgChangeListNameClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Откроем окно для ввода нового наименования списка/
+            // Сохранение будет производиться в методе onDialogPositiveClick
+            InputListNameDialog inputListNameDialog = new InputListNameDialog();
+            inputListNameDialog.setInitName(mListItem.getName());
+            FragmentManager fragmentManager = getFragmentManager();
+            inputListNameDialog.show(fragmentManager, null);
+        }
+    };
+
     private View.OnClickListener onImgEditClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            ContentResolver contentResolver = getContentResolver();
-            Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                    null, "_id = " + mListItem.getId(), null, null);
-            if (cursor.moveToFirst()) {
-                Intent intent = new Intent(getBaseContext(), ShoppingListEditingActivity.class);
-                intent.putExtra(String.valueOf(R.string.is_new_list), false);
-                String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-                intent.putExtra(String.valueOf(R.string.list_id), itemId);
-                startActivity(intent);
-            }
-            cursor.close();
+            Intent intent = new Intent(getBaseContext(), ShoppingListEditingActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_list), false);
+            intent.putExtra(String.valueOf(R.string.list_id), mListItem.getId());
+            startActivity(intent);
+
             finish();
         }
     };
@@ -123,4 +134,22 @@ public class ActionsSubmenuActivity extends Activity {
             setVisible(false); // Чтобы избежать "мигания" перед закрытием
         }
     };
+
+    @Override
+    public void onDialogPositiveClick(String listName) {
+        mListItem.setName(listName);
+
+        ContentResolver contentResolver = getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(ShoppingListContentProvider.KEY_NAME, mListItem.getName());
+        contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                values, ShoppingListContentProvider.KEY_ID +  " = " + mListItem.getId(), null);
+
+        finish();
+    }
+
+    @Override
+    public void onDialogNegativeClick() {
+        finish();
+    }
 }

@@ -64,17 +64,11 @@ public class ListAdapterMainActivity extends ListAdapter {
         public boolean onLongClick(View v) {
             // Откроем список для редактирования
             ListItem item = (ListItem) v.getTag();
-            ContentResolver contentResolver = mParentActivity.getContentResolver();
-            Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                    null, "_id = " + item.getId(), null, null);
-            if (cursor.moveToFirst()) {
-                Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
-                intent.putExtra(String.valueOf(R.string.is_new_list), false);
-                String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-                intent.putExtra(String.valueOf(R.string.list_id), itemId);
-                mParentActivity.startActivity(intent);
-            }
-            cursor.close();
+            Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_list), false);
+            intent.putExtra(String.valueOf(R.string.list_id), item.getId());
+            mParentActivity.startActivity(intent);
+
             return true;
         }
     };
