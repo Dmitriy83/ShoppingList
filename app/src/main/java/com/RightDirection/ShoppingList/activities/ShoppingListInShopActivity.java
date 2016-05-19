@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -25,8 +28,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_shopping_list_in_shop);
-        setTitle(getString(R.string.in_shop));
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
+
+        Button btnFilter = (Button)findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(onBtnFilterClick);
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
@@ -91,5 +99,21 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
     }
+
+    private View.OnClickListener onBtnFilterClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Button btnFilter = (Button)view;
+            if (mShoppingListItemsAdapter.isFiltered()) {
+                btnFilter.setText(R.string.hide_marked);
+                mShoppingListItemsAdapter.showMarked();
+            }
+            else{
+                btnFilter.setText(R.string.show_marked);
+                mShoppingListItemsAdapter.hideMarked();
+            }
+
+        }
+    };
 
 }

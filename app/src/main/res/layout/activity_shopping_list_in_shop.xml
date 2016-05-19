@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ShoppingListEditingActivity"
-    android:focusable="false"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    tools:context=".activities.ShoppingListInShopActivity"
+    android:focusable="false" >
 
     <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
         android:layout_width="wrap_content"

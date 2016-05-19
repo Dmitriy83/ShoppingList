@@ -2,34 +2,30 @@ package com.RightDirection.ShoppingList.helpers;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.support.v7.view.ContextThemeWrapper;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class ListAdapterShoppingListInShop extends ListAdapter {
 
-    List<ListItem> mListObjects;
+    private ArrayList<ListItem> mObjects;
+    private ArrayList<ListItem> mOriginalValues;
+    private boolean isFiltered;
 
-    public ListAdapterShoppingListInShop(Context context, int resource, List<ListItem> objects) {
+    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
 
-        mListObjects = objects;
+        mObjects = objects;
     }
 
     @Override
@@ -82,20 +78,17 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                     setUnchecked((TextView)v);
                     item.setUnchecked();
                 }
+
+                // Отфильтруем лист, если необходимо
+                if (isFiltered){hideMarked();}
             }
             return true;
         }
     };
 
-    private void setChecked(TextView v){
-        // Покажем, что товар купили ("вычеркнем")
-        v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        v.setBackgroundColor(Color.LTGRAY);
-    }
-
     private boolean allProductsChecked() {
         boolean allProductsChecked = true;
-        for (ListItem item: mListObjects) {
+        for (ListItem item: mObjects) {
             if (!item.isChecked()){
                 allProductsChecked = false;
                 break;
@@ -104,9 +97,54 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         return allProductsChecked;
     }
 
+    private void setChecked(TextView v){
+        // Покажем, что товар купили ("вычеркнем")
+        v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        v.setBackgroundColor(Color.LTGRAY);
+    }
+
     private void setUnchecked(TextView v){
         // Покажем, что  товар еще не купили (до этого выделили ошибочно)
         v.setPaintFlags(v.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         v.setBackgroundColor(Color.WHITE);
+    }
+
+    public boolean isFiltered(){
+        return isFiltered;
+    }
+
+    public void showMarked() {
+        isFiltered = false;
+
+        // Восстановим первоначальный список
+        mObjects.clear();
+        mObjects.addAll(mOriginalValues);
+
+        // Оповестим об изменении данных
+        this.notifyDataSetChanged();
+    }
+
+    public void hideMarked() {
+        isFiltered = true;
+
+        // При первом обращении сохраним первоначальный список
+        if (mOriginalValues == null){
+            mOriginalValues = new ArrayList<>(mObjects);
+        }
+
+        // Сначала восстановим первоначальный список, чтобы не потерять значения
+        mObjects.clear();
+        mObjects.addAll(mOriginalValues);
+
+        // Удалим элементы из списка
+        for (int i = mObjects.size() - 1; i >= 0; i -= 1) {
+            ListItem item = mObjects.get(i);
+            if (item.isChecked()){
+                mObjects.remove(item);
+            }
+        }
+
+        // Оповестим об изменении данных
+        this.notifyDataSetChanged();
     }
 }

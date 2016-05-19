@@ -14,7 +14,7 @@
     <string name="new_product">New product</string>
     <string name="product_title">Product</string>
     <string name="edit">Edit</string>
-    <string name="in_shop">In shop</string>
+    <string name="in_shop">"    "In shop</string>
     <string name="delete_shopping_list_question">Delete shopping list?</string>
     <string name="list_id">listId</string>
     <string name="is_new_item">isNewItem</string>
@@ -26,4 +26,7 @@
     <string name="in_shop_ending_work_message">Victory!</string>
     <string name="in_developing">In developing...</string>
     <string name="change_list_name">Change shopping list name</string>
+    <string name="filter">Filter</string>
+    <string name="hide_marked">Hide marked</string>
+    <string name="show_marked">Show marked</string>
 </resources>
