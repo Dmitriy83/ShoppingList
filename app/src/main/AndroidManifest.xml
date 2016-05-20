@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".activities.ShoppingListEditingActivity" />
         <activity android:name=".activities.ProductsListActivity"/>
-        <activity android:name=".activities.ItemActivity" />
+        <activity android:name=".activities.ItemActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize"/>
         <activity android:name=".activities.ShoppingListInShopActivity"
             android:theme="@style/AppTheme.InShop"/>
         <activity android:name=".activities.ActionsSubmenuActivity"
@@ -27,7 +28,8 @@
 
         <provider
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
-            android:name=".helpers.ShoppingListContentProvider"/>
+            android:name=".helpers.ShoppingListContentProvider"
+            android:exported="false"/>
 
     </application>
 
