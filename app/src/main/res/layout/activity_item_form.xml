@@ -30,5 +30,6 @@
         android:text="@string/save"
         android:id="@+id/btnSaveProduct"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/etProductName" />
+        android:layout_alignRight="@+id/etProductName"
+        />
 </RelativeLayout>

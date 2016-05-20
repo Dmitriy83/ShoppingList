@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
@@ -28,11 +29,17 @@ public class ItemActivity extends AppCompatActivity{
         itemId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
         String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
         EditText etProductName = (EditText) findViewById(R.id.etProductName);
-        etProductName.setText(name);
+        if (etProductName != null) {
+            etProductName.setText(name);
+        }
 
         // Добавим обработчики кликов по кнопкам
         Button btnSaveProduct = (Button) findViewById(R.id.btnSaveProduct);
-        btnSaveProduct.setOnClickListener(onBtnSaveProductClick);
+        if (btnSaveProduct != null) {
+            // Исключим вывод всего текста прописными (для Android старше 4)
+            btnSaveProduct.setTransformationMethod(null);
+            btnSaveProduct.setOnClickListener(onBtnSaveProductClick);
+        }
 
         // Установим заголовок формы
         if (isNewItem){
@@ -52,12 +59,13 @@ public class ItemActivity extends AppCompatActivity{
             ContentValues contentValues = new ContentValues();
 
             EditText etProductName = (EditText) findViewById(R.id.etProductName);
-            contentValues.put(ShoppingListContentProvider.KEY_NAME, etProductName.getText().toString());
-            if (isNewItem) {
-                contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
-            }
-            else {
-                contentResolver.update(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues, "_id = " + itemId, null);
+            if (etProductName != null) {
+                contentValues.put(ShoppingListContentProvider.KEY_NAME, etProductName.getText().toString());
+                if (isNewItem) {
+                    contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
+                } else {
+                    contentResolver.update(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues, "_id = " + itemId, null);
+                }
             }
 
             finish();

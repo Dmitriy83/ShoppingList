@@ -34,7 +34,11 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
         Button btnFilter = (Button)findViewById(R.id.btnFilter);
-        btnFilter.setOnClickListener(onBtnFilterClick);
+        if (btnFilter != null){
+            // Исключим вывод всего текста прописными (для Android старше 4)
+            btnFilter.setTransformationMethod(null);
+            btnFilter.setOnClickListener(onBtnFilterClick);
+        }
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
@@ -75,10 +79,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        CursorLoader cursorLoader = new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+        return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null ,null);
-
-        return cursorLoader;
     }
 
     @Override
