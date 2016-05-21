@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -25,9 +26,16 @@ public class ItemActivity extends AppCompatActivity{
 
         // Получим значения из переданных параметров
         Intent sourceIntent = getIntent();
-        isNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), true);
+        isNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
         itemId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
         String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
+
+        // Если это новый элемент, то сразу ототбразим клавиатуру для ввода наименования
+        if (isNewItem){
+            getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        }
+
         EditText etProductName = (EditText) findViewById(R.id.etProductName);
         if (etProductName != null) {
             etProductName.setText(name);

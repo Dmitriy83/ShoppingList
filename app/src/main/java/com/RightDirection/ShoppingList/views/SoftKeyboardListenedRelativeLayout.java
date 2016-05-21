@@ -10,13 +10,13 @@ import android.widget.RelativeLayout;
 
 import com.RightDirection.ShoppingList.R;
 
-public class SoftKeyboardListnedRelativeLayout extends RelativeLayout {
+public class SoftKeyboardListenedRelativeLayout extends RelativeLayout {
 
-    public SoftKeyboardListnedRelativeLayout(Context context) {
+    public SoftKeyboardListenedRelativeLayout(Context context) {
         super(context);
     }
 
-    public SoftKeyboardListnedRelativeLayout(Context context, AttributeSet attrs) {
+    public SoftKeyboardListenedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -26,21 +26,14 @@ public class SoftKeyboardListnedRelativeLayout extends RelativeLayout {
 
         // Покажем/скроем кнопки в зависимости от того, отображается на экране клавиатура или нет
         Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
-
-        if (yOld > yNew) {
-            // Keyboard is shown
-            btnDeleteAllItems.setVisibility(INVISIBLE);
-        }
-        else {
-            // Keyboard is hidden
-            btnDeleteAllItems.setVisibility(VISIBLE);
-        }
-
-        Button btnSaveProduct = (Button) findViewById(R.id.btnSaveProduct);
-        if (btnSaveProduct != null) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btnSaveProduct.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            btnSaveProduct.setLayoutParams(params);
+        if (btnDeleteAllItems != null) {
+            if (yOld > yNew) {
+                // Keyboard is shown
+                btnDeleteAllItems.setVisibility(INVISIBLE);
+            } else {
+                // Keyboard is hidden
+                btnDeleteAllItems.setVisibility(VISIBLE);
+            }
         }
     }
 }
