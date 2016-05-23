@@ -70,7 +70,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnFilter.setTransformationMethod(null);
             btnFilter.setOnClickListener(onBtnFilterClick);
-            if (savedInstanceState != null || mShoppingListItemsAdapter.isFiltered()) {
+            if (savedInstanceState != null && mShoppingListItemsAdapter.isFiltered()) {
                 btnFilter.setText(R.string.show_marked);
             }
             else{
