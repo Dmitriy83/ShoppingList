@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".activities.ShoppingListEditingActivity"
     android:focusable="false"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    android:id="@+id/shoppingListEditingContainerLayout"
+    >
 
     <fragment android:name="com.RightDirection.ShoppingList.views.InputNewItemFragment"
         android:layout_width="wrap_content"
@@ -16,36 +17,48 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        tools:layout="@layout/new_item_edit_text_fragment" />
+        tools:layout="@layout/new_item_edit_text_fragment"
+        />
 
     <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/frgShoppingList"
-        android:layout_below="@+id/newItemFragment"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnShoppingListDeleteAllItems"
-        android:background="@android:drawable/ic_menu_delete"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/btnSave"
-        android:layout_toStartOf="@+id/btnSave"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/newItemFragment"
         />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnShoppingListSave"
-        android:background="@android:drawable/ic_menu_save"
+        android:id="@+id/buttonsPanel"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        />
+        android:clipToPadding="false"
+        >
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnShoppingListDeleteAllItems"
+            android:background="@android:drawable/ic_menu_delete"
+            android:layout_alignParentBottom="true"
+            />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnShoppingListSave"
+            android:background="@android:drawable/ic_menu_save"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/btnShoppingListDeleteAllItems"
+            android:layout_toEndOf="@id/btnShoppingListDeleteAllItems"
+            />
+
+    </RelativeLayout>
 
 </com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout>

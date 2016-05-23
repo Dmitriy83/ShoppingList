@@ -19,6 +19,7 @@ import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
+import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.ArrayList;
 
@@ -161,10 +162,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             return null;
         }
 
-        CursorLoader cursorLoader = new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+        return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null ,null);
-
-        return cursorLoader;
     }
 
     @Override

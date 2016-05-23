@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.List;
 
@@ -44,6 +45,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public TextView productNameView;
         public ImageButton imgActions;
         public ImageButton imgDelete;
+        public SoftKeyboardListenedRelativeLayout parentRelativeLayout;
     }
 
     /**
@@ -54,7 +56,6 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public ListItem item;
         public ViewHolder viewHolder;
         public LinearLayout rowView;
-
 
         /**
          * Конструктор

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
         // Привяжем к View объект ListItem
         parameters.viewHolder.imgDelete.setTag(parameters.item);
+
+        if (parameters.viewHolder.parentRelativeLayout == null){
+            parameters.viewHolder.parentRelativeLayout = (SoftKeyboardListenedRelativeLayout)mParentActivity.findViewById(R.id.shoppingListEditingContainerLayout);
+        }
+        parameters.viewHolder.parentRelativeLayout.setButtonsPanelPadding();
 
         return parameters.rowView;
     }
