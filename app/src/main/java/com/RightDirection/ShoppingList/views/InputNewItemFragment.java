@@ -20,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -75,7 +74,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         return view;
     }
 
-    private AutoCompleteTextView.OnEditorActionListener newItemEditTextOnEditorActionListener = new AutoCompleteTextView.OnEditorActionListener() {
+    private final AutoCompleteTextView.OnEditorActionListener newItemEditTextOnEditorActionListener = new AutoCompleteTextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == 5) {
@@ -94,7 +93,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     }
 
 
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String name = mAdapter.getItem(position);
@@ -103,7 +102,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         }
     };
 
-    private Button.OnClickListener onBtnAddProductToShoppingListClickListener = new Button.OnClickListener() {
+    private final Button.OnClickListener onBtnAddProductToShoppingListClickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Добавим новый товар в БД

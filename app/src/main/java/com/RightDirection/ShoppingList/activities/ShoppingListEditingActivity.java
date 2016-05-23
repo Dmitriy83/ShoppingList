@@ -19,7 +19,6 @@ import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
-import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.ArrayList;
 
@@ -43,10 +42,14 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         // Добавим обработчики кликов по кнопкам
         Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
-        btnSave.setOnClickListener(onBtnSaveClick);
+        if (btnSave != null) {
+            btnSave.setOnClickListener(onBtnSaveClick);
+        }
 
         Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
-        btnDeleteAllItems.setOnClickListener(onBtnDeleteAllItemsClick);
+        if (btnDeleteAllItems != null) {
+            btnDeleteAllItems.setOnClickListener(onBtnDeleteAllItemsClick);
+        }
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
@@ -80,7 +83,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
     }
 
-    private View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
+    private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             if (mIsNewList) {
@@ -111,7 +114,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
     };
 
-    private View.OnClickListener onBtnDeleteAllItemsClick = new View.OnClickListener() {
+    private final View.OnClickListener onBtnDeleteAllItemsClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             mShoppingListItems.clear();

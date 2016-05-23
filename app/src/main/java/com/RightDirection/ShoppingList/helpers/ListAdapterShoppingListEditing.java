@@ -1,12 +1,8 @@
 package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -36,7 +32,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         return parameters.rowView;
     }
 
-    private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Получим объект item по элементу View

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,7 @@ public class InputListNameDialog extends DialogFragment{
     }
 
     // Use this instance of the interface to deliver action events
-    IInputListNameDialogListener mListener;
+    private IInputListNameDialogListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

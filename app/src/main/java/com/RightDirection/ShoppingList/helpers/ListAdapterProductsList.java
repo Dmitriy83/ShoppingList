@@ -4,12 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -36,11 +32,7 @@ public class ListAdapterProductsList extends ListAdapter {
         return parameters.rowView;
     }
 
-    protected static class ViewHolder {
-        public TextView productName;
-    }
-
-    private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Получим объект item по элементу View
@@ -60,24 +52,26 @@ public class ListAdapterProductsList extends ListAdapter {
         }
     };
 
-    private View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
+    private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ListItem item = (ListItem) view.getTag();
 
             ContentResolver contentResolver = mContext.getContentResolver();
             Cursor cursor = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null, "_id = " + item.getId(), null, null);
-            if (cursor.moveToFirst()) {
-                // Откроем окно редактирования элемента списка продуктов
-                String productName = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_NAME));
-                String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-                Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
-                intent.putExtra(String.valueOf(R.string.name), productName);
-                intent.putExtra(String.valueOf(R.string.item_id), itemId);
-                intent.putExtra(String.valueOf(R.string.is_new_item), false);
-                mParentActivity.startActivity(intent);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    // Откроем окно редактирования элемента списка продуктов
+                    String productName = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_NAME));
+                    String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
+                    Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
+                    intent.putExtra(String.valueOf(R.string.name), productName);
+                    intent.putExtra(String.valueOf(R.string.item_id), itemId);
+                    intent.putExtra(String.valueOf(R.string.is_new_item), false);
+                    mParentActivity.startActivity(intent);
+                }
+                cursor.close();
             }
-            cursor.close();
         }
     };
 }

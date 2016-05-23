@@ -7,12 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -41,25 +37,27 @@ public class ListAdapterMainActivity extends ListAdapter {
         return parameters.rowView;
     }
 
-    private View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
+    private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ListItem item = (ListItem) view.getTag();
             ContentResolver contentResolver = mContext.getContentResolver();
             Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                     null, "_id = " + item.getId(), null, null);
-            if (cursor.moveToFirst()) {
-                Activity parentActivity = (Activity)mContext;
-                Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
-                String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-                intent.putExtra(String.valueOf(R.string.list_id), itemId);
-                ActivityCompat.startActivity(parentActivity, intent, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    Activity parentActivity = (Activity) mContext;
+                    Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
+                    String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
+                    intent.putExtra(String.valueOf(R.string.list_id), itemId);
+                    ActivityCompat.startActivity(parentActivity, intent, null);
+                }
+                cursor.close();
             }
-            cursor.close();
         }
     };
 
-    private View.OnLongClickListener onProductNameViewLongClick = new View.OnLongClickListener() {
+    private final View.OnLongClickListener onProductNameViewLongClick = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
             // Откроем список для редактирования
@@ -73,7 +71,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         }
     };
 
-    private View.OnClickListener onImgActionsClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgActionsClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 

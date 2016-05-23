@@ -17,7 +17,6 @@ import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -115,7 +114,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     }
 
-    private View.OnClickListener onBtnFilterClick = new View.OnClickListener() {
+    private final View.OnClickListener onBtnFilterClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Button btnFilter = (Button)view;

@@ -33,7 +33,9 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
         // Добавим обработчики кликов по кнопкам
         FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabProductListAddProduct);
-        fabAddProduct.setOnClickListener(onFabAddProductClick);
+        if (fabAddProduct != null) {
+            fabAddProduct.setOnClickListener(onFabAddProductClick);
+        }
 
         // Получим ссылку на фрагемнт
         FragmentManager fragmentManager = getFragmentManager();
@@ -60,7 +62,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    private View.OnClickListener onFabAddProductClick = new View.OnClickListener() {
+    private final View.OnClickListener onFabAddProductClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ItemActivity.class);
@@ -71,10 +73,8 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader cursorLoader = new CursorLoader(this, ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
+        return new CursorLoader(this, ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
                 null, null, null ,null);
-
-        return cursorLoader;
     }
 
     @Override
@@ -92,8 +92,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         productListItemsAdapter.sort(new Comparator<ListItem>() {
             @Override
             public int compare(ListItem lhs, ListItem rhs) {
-                int res = String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
-                return res;
+                return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });
         productListItemsAdapter.notifyDataSetChanged();

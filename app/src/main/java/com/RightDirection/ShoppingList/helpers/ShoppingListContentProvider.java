@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,7 +61,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         // Вернем строку, которая идентифицирует MIME-тип пути источника данных
         switch(uriMatcher.match(uri)){
             case PRODUCTS_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.products";
@@ -75,7 +76,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         // Откроем базу данных для чтения/записи
         SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
 
@@ -94,7 +95,10 @@ public class ShoppingListContentProvider extends ContentProvider {
             Uri insertedID = ContentUris.withAppendedId(contentUri, id);
 
             // Оповестим все объекты ContentObserver об изменениях в наборе данных
-            getContext().getContentResolver().notifyChange(uri, null);
+            Context context = getContext();
+            if (context != null) {
+                context.getContentResolver().notifyChange(uri, null);
+            }
 
             return insertedID;
         }
@@ -104,7 +108,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         // Откроем базу данных для чтения/записи
         SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
 
@@ -121,13 +125,16 @@ public class ShoppingListContentProvider extends ContentProvider {
         int deleteCount = db.delete(tableName, selection, selectionArgs);
 
         // Оповестим все объекты ContentObserver об изменениях в наборе данных
-        getContext().getContentResolver().notifyChange(uri, null);
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
 
         return deleteCount;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         // Откроем базу данных для чтения/записи
         SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
 
@@ -141,14 +148,17 @@ public class ShoppingListContentProvider extends ContentProvider {
         int updateCount = db.update(tableName, values, selection, selectionArgs);
 
         // Оповестим все объекты ContentObserver об изменениях в наборе данных
-        getContext().getContentResolver().notifyChange(uri, null);
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
 
         return updateCount;
     }
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         // Откроем базу данных для чтения
         SQLiteDatabase db = sqLiteOpenHelper.getReadableDatabase();
 
@@ -166,9 +176,7 @@ public class ShoppingListContentProvider extends ContentProvider {
             queryBuilder.appendWhere(selection);
         }
 
-        Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, groupBy, having, sortOrder);
-
-        return cursor;
+        return queryBuilder.query(db, projection, selection, selectionArgs, groupBy, having, sortOrder);
     }
 
     private Uri getContentUri(Uri uri) {
@@ -237,10 +245,6 @@ public class ShoppingListContentProvider extends ContentProvider {
 
         public ShoppingListSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
-        }
-
-        public ShoppingListSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
-            super(context, name, factory, version, errorHandler);
         }
 
         // Вызывается, когда на диске нет базы данных, чтобы вспомогательный класс создал новую

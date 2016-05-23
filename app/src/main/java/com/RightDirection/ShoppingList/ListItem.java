@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class ListItem implements Parcelable {
 
-    private String id;
+    private final String id;
     private String name;
     private boolean checked;
 
@@ -14,7 +14,7 @@ public class ListItem implements Parcelable {
         this.name = name;
     }
 
-    protected ListItem(Parcel in) {
+    private ListItem(Parcel in) {
         id = in.readString();
         name = in.readString();
         checked = in.readByte() != 0;

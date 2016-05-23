@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Parcelable;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +14,6 @@ import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListAdapterShoppingListInShop extends ListAdapter {
 
@@ -47,10 +45,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         return parameters.rowView;
     }
 
-    float mInitXTouch = 0;
-    float mEndXTouch = 0;
+    private float mInitXTouch = 0;
+    private float mEndXTouch = 0;
 
-    private View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
+    private final View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN){

@@ -8,7 +8,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -66,12 +65,12 @@ public class ActionsSubmenuActivity extends Activity implements InputListNameDia
         layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
 
         // Отобразим в нужной позиции
-        layoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
+        layoutParams.gravity = Gravity.END | Gravity.TOP;
         layoutParams.y = mY;
         getWindowManager().updateViewLayout(view, layoutParams);
     }
 
-    private View.OnClickListener onImgChangeListNameClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgChangeListNameClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Откроем окно для ввода нового наименования списка/
@@ -83,7 +82,7 @@ public class ActionsSubmenuActivity extends Activity implements InputListNameDia
         }
     };
 
-    private View.OnClickListener onImgEditClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgEditClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(getBaseContext(), ShoppingListEditingActivity.class);
@@ -95,7 +94,7 @@ public class ActionsSubmenuActivity extends Activity implements InputListNameDia
         }
     };
 
-    private View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
+    private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             // Выведем вопрос об удалении списка покупок

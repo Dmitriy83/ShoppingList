@@ -4,7 +4,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Подключим обработчики
         FloatingActionButton fabAddNewShoppingList = (FloatingActionButton) findViewById(R.id.fabAddNewShoppingList);
-        fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
+        if (fabAddNewShoppingList != null) {
+            fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
+        }
 
         // Получим ссылки на фрагемнты
         android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
             toast.show();
             return true;
         }
-        else if (id == R.id.action_edit_products_list) {
+        else if (view != null && id == R.id.action_edit_products_list) {
             Intent intent = new Intent(view.getContext(), ProductsListActivity.class);
             startActivityForResult(intent, 0);
             return true;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         return super.onOptionsItemSelected(item);
     }
 
-    private View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
+    private final View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
@@ -106,10 +107,8 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader cursorLoader = new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+       return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 null, null, null ,null);
-
-        return cursorLoader;
     }
 
     @Override

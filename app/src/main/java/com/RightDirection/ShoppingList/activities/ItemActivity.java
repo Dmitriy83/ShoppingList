@@ -9,14 +9,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 
 public class ItemActivity extends AppCompatActivity{
 
-    public boolean isNewItem;
+    private boolean isNewItem;
     private String itemId;
 
     @Override
@@ -60,7 +59,7 @@ public class ItemActivity extends AppCompatActivity{
         // TODO: Сделать так, чтобы при открытии клавиатуры не скрывалась кнопка сохранения
     }
 
-    private View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
+    private final View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ContentResolver contentResolver = getContentResolver();

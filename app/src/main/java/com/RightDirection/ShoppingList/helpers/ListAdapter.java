@@ -18,13 +18,13 @@ import java.util.List;
 
 abstract public class ListAdapter extends ArrayAdapter<ListItem>{
 
-    int mResource;
-    Context mContext;
+    private final int mResource;
+    final Context mContext;
     FragmentManager mFragmentManager = null;
-    Activity mParentActivity;
-    ListAdapter mListAdapter; // для доступа из обработичиков событий
+    final Activity mParentActivity;
+    final ListAdapter mListAdapter; // для доступа из обработичиков событий
 
-    public ListAdapter(Context context, int resource, List<ListItem> objects, FragmentManager fragmentManager) {
+    ListAdapter(Context context, int resource, List<ListItem> objects, FragmentManager fragmentManager) {
         super(context, resource, objects);
         mResource = resource;
         mContext = context;
@@ -33,7 +33,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         mListAdapter = this;
     }
 
-    public ListAdapter(Context context, int resource, List<ListItem> objects) {
+    ListAdapter(Context context, int resource, List<ListItem> objects) {
         super(context, resource, objects);
         mResource = resource;
         mContext = context;
@@ -53,8 +53,8 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
      */
     class Parameters{
 
-        public ListItem item;
-        public ViewHolder viewHolder;
+        public final ListItem item;
+        public final ViewHolder viewHolder;
         public LinearLayout rowView;
 
         /**
