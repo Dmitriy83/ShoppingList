@@ -22,8 +22,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnFilter"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:background="#4e64d0"
-        android:text="Hide marked"
+        android:text="@string/hide_marked"
         android:textColor="#ffffff" />
 
 </RelativeLayout>

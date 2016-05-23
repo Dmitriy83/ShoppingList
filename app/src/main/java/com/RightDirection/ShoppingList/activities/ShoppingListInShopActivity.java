@@ -33,13 +33,6 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         setContentView(R.layout.activity_shopping_list_in_shop);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
-        Button btnFilter = (Button)findViewById(R.id.btnFilter);
-        if (btnFilter != null){
-            // Исключим вывод всего текста прописными (для Android старше 4)
-            btnFilter.setTransformationMethod(null);
-            btnFilter.setOnClickListener(onBtnFilterClick);
-        }
-
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
         mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
@@ -66,12 +59,32 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             // Заполним список покупок из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
+        else{
+            mShoppingListItemsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
+            ArrayList<ListItem> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
+            mShoppingListItemsAdapter.setOriginalValues(originalValues);
+        }
+
+        Button btnFilter = (Button)findViewById(R.id.btnFilter);
+        if (btnFilter != null){
+            // Исключим вывод всего текста прописными (для Android старше 4)
+            btnFilter.setTransformationMethod(null);
+            btnFilter.setOnClickListener(onBtnFilterClick);
+            if (savedInstanceState != null || mShoppingListItemsAdapter.isFiltered()) {
+                btnFilter.setText(R.string.show_marked);
+            }
+            else{
+                btnFilter.setText(R.string.hide_marked);
+            }
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
+        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mShoppingListItemsAdapter.getOriginalValues());
+        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.isFiltered());
 
         super.onSaveInstanceState(outState);
     }

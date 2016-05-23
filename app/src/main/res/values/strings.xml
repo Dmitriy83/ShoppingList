@@ -24,9 +24,11 @@
     <string name="shopping_list_items">shopping_list_items</string>
     <string name="shopping_list_item_and_view_matcher">shopping_list_item_and_view_matcher</string>
     <string name="in_shop_ending_work_message">Victory!</string>
-    <string name="in_developing">In developing...</string>
+    <string name="in_developing">In developing…</string>
     <string name="change_list_name">Change shopping list name</string>
     <string name="filter">Filter</string>
     <string name="hide_marked">Hide marked</string>
     <string name="show_marked">Show marked</string>
+    <string name="shopping_list_items_original_values">shopping_list_items_original_values</string>
+    <string name="is_filtered">is_filtered</string>
 </resources>

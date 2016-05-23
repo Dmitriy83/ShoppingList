@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Parcelable;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -113,6 +114,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         return isFiltered;
     }
 
+    public void setIsFiltered(boolean value){
+        isFiltered = value;
+    }
+
     public void showMarked() {
         isFiltered = false;
 
@@ -146,5 +151,13 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         // Оповестим об изменении данных
         this.notifyDataSetChanged();
+    }
+
+    public ArrayList<ListItem> getOriginalValues() {
+        return mOriginalValues;
+    }
+
+    public void setOriginalValues(ArrayList<ListItem> originalValues) {
+        mOriginalValues = originalValues;
     }
 }
