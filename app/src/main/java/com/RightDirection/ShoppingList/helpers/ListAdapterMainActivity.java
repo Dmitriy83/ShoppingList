@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,8 +19,8 @@ import java.util.List;
 
 public class ListAdapterMainActivity extends ListAdapter {
 
-    public ListAdapterMainActivity(Context context, int resource, List<ListItem> objects, FragmentManager fragmentManager) {
-        super(context, resource, objects, fragmentManager);
+    public ListAdapterMainActivity(Context context, int resource, List<ListItem> objects) {
+        super(context, resource, objects);
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -68,6 +69,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         // Привяжем адаптер к фрагменту
         shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
+        Log.i("setListAdapter", "setListAdapter called.");
 
         if (!mIsNewList && savedInstanceState == null) {
             // Заполним список покупок из базы данных
@@ -119,6 +121,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         public void onClick(View view) {
             mShoppingListItems.clear();
             mShoppingListItemsAdapter.notifyDataSetChanged();
+
+            Log.i("onBtnDeleteAllClick", "onBtnDeleteAllItemsClick called, notifyDataSetChanged called.");
         }
     };
 
@@ -126,6 +130,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     public void OnNewItemAdded(ListItem newItem) {
         mShoppingListItems.add(0, newItem);
         mShoppingListItemsAdapter.notifyDataSetChanged();
+
+        Log.i("OnNewItemAdded", "OnNewItemAdded called, notifyDataSetChanged called.");
     }
 
     @Override
@@ -181,6 +187,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
+        Log.i("onLoadFinished", "onLoadFinished called, notifyDataSetChanged called.");
     }
 
     @Override

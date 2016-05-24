@@ -44,12 +44,12 @@ public class SoftKeyboardListenedRelativeLayout extends RelativeLayout {
 
     public void setButtonsPanelPadding(){
         // Выполним действия в зависимости от того, отображается на экране клавиатура или нет
-        Button btnDeleteAllItems = (Button)findViewById(R.id.btnShoppingListDeleteAllItems);
+        Button btnSave = (Button)findViewById(R.id.btnShoppingListSave);
         RelativeLayout buttonsPanel = (RelativeLayout)findViewById(R.id.buttonsPanel);
         View shoppingListFragment = findViewById(R.id.frgShoppingList);
 
-        if (buttonsPanel != null && shoppingListFragment != null && btnDeleteAllItems != null
-               && (getHeight() - btnDeleteAllItems.getHeight() * 2) < shoppingListFragment.getHeight()) {
+        if (buttonsPanel != null && shoppingListFragment != null && btnSave != null
+               && (getHeight() - btnSave.getHeight() * 2) < shoppingListFragment.getHeight()) {
             // Сдвинем кнопку левее, чтобы не перекрывала кнопки удаления элементов
             buttonsPanel.setPadding(0, 0, getResources().getDimensionPixelSize(R.dimen.save_button_margin), 0);
         }

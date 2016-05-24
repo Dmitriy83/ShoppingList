@@ -29,4 +29,6 @@
     <string name="show_marked">Show marked</string>
     <string name="shopping_list_items_original_values">shopping_list_items_original_values</string>
     <string name="is_filtered">is_filtered</string>
+    <string name="all_products">all_products</string>
+    <string name="all_products_names">all_products_names</string>
 </resources>

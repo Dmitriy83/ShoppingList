@@ -1,6 +1,7 @@
 package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +13,8 @@ import java.util.List;
 
 public class ListAdapterShoppingListEditing extends ListAdapter {
 
+    private SoftKeyboardListenedRelativeLayout mParentRelativeLayout;
+
     public ListAdapterShoppingListEditing(Context context, int resource, List<ListItem> objects) {
         super(context, resource, objects);
     }
@@ -19,15 +22,21 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        //TODO: Разобраться, почему getView вызывается так много раз
+
         Parameters parameters = new Parameters(position, convertView);
         parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
         // Привяжем к View объект ListItem
         parameters.viewHolder.imgDelete.setTag(parameters.item);
 
-        if (parameters.viewHolder.parentRelativeLayout == null){
-            parameters.viewHolder.parentRelativeLayout = (SoftKeyboardListenedRelativeLayout)mParentActivity.findViewById(R.id.shoppingListEditingContainerLayout);
+        // Для отработки смещения кнопки сохранения списка при заполнении списка
+        if (mParentRelativeLayout == null) {
+            mParentRelativeLayout = (SoftKeyboardListenedRelativeLayout) mParentActivity.findViewById(R.id.shoppingListEditingContainerLayout);
         }
-        parameters.viewHolder.parentRelativeLayout.setButtonsPanelPadding();
+        if (position == getCount() - 1){ // Минимизируем вызов процедуры
+            Log.i("getView", "getView called, position: " + position + ".");
+            mParentRelativeLayout.setButtonsPanelPadding();
+        }
 
         return parameters.rowView;
     }
@@ -38,8 +47,9 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
             // Получим объект item по элементу View
             ListItem item = (ListItem) view.getTag();
             // Удалим элемент списка
-            remove(item);
-            notifyDataSetChanged();
+            remove(item); // Оповещение об изменении не нужно, т.к. оно вызывается в самом методе remove
+
+            Log.i("onImgDeleteClick", "onImgDeleteClick called, notifyDataSetChanged do not called.");
         }
     };
 }

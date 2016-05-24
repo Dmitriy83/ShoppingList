@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Создадим новый адаптер для работы со списками покупок
         shoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
-                shoppingLists, getSupportFragmentManager());
+                shoppingLists);
 
         // Привяжем адаптер к фрагменту
         shoppingListFragment.setListAdapter(shoppingListsAdapter);

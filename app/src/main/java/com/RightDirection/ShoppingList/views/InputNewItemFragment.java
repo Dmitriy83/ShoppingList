@@ -35,9 +35,9 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     // Синхронизируемые массивы (по индексу в списке). Должны изменяться одновременно.
     // 1. Хранит объекты ListItem. Необходим для работы с базой данных
-    private ArrayList<ListItem> mAllProducts = new ArrayList<>();
+    private ArrayList<ListItem> mAllProducts;
     // 2. Хранит имена объектов ListItem. Необходим для работы с AutoCompleteTextView
-    private ArrayList<String> mAllProductsNames = new ArrayList<>();
+    private ArrayList<String> mAllProductsNames;
 
     private ListItem mCurrentItem = null;
     private ArrayAdapter<String> mAdapter;
@@ -48,8 +48,16 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_item_edit_text_fragment, container, false);
 
-        // Обновим список товаров из базы данных
-        getLoaderManager().initLoader(0, null, this);
+        if (savedInstanceState == null) {
+            mAllProducts = new ArrayList<>();
+            mAllProductsNames = new ArrayList<>();
+        }
+        else{
+            mAllProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.all_products));
+            mAllProductsNames = savedInstanceState.getStringArrayList(String.valueOf(R.string.all_products_names));
+        }
+
+        mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.select_dialog_item, mAllProductsNames);
 
         mTvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
         if (mTvNewItem != null) {
@@ -62,16 +70,26 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
             btnAddProductToShoppingList.setOnClickListener(onBtnAddProductToShoppingListClickListener);
         }
 
-        // Получим активность, к которой будет привязан адаптер
-        Activity activity = getActivity();
-        mAdapter = new ArrayAdapter<>(activity, android.R.layout.select_dialog_item, mAllProductsNames);
-
         // Установим количество символов, которые пользователь должен ввести прежде чем выпадающий список будет показан
         mTvNewItem.setThreshold(1);
 
         mTvNewItem.setAdapter(mAdapter);
 
+        // Обновим список товаров из базы данных
+        if (savedInstanceState == null) {
+            getLoaderManager().initLoader(0, null, this);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Сохраним список продуктов для подбора
+        outState.putParcelableArrayList(String.valueOf(R.string.all_products), mAllProducts);
+        outState.putStringArrayList(String.valueOf(R.string.all_products_names), mAllProductsNames);
     }
 
     private final AutoCompleteTextView.OnEditorActionListener newItemEditTextOnEditorActionListener = new AutoCompleteTextView.OnEditorActionListener() {
@@ -128,8 +146,8 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
                 // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
                 mCurrentItem = new ListItem(insertedItemId, newItemName);
-                mAllProducts.add(mCurrentItem);
-                mAllProductsNames.add(newItemName);
+                addProductInArrays(mCurrentItem);
+                mAdapter.add(newItemName);
             }
         }
     }

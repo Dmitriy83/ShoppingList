@@ -2,7 +2,6 @@ package com.RightDirection.ShoppingList.helpers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.List;
 
@@ -20,18 +18,8 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
 
     private final int mResource;
     final Context mContext;
-    FragmentManager mFragmentManager = null;
     final Activity mParentActivity;
     final ListAdapter mListAdapter; // для доступа из обработичиков событий
-
-    ListAdapter(Context context, int resource, List<ListItem> objects, FragmentManager fragmentManager) {
-        super(context, resource, objects);
-        mResource = resource;
-        mContext = context;
-        mFragmentManager = fragmentManager;
-        mParentActivity = (Activity)context;
-        mListAdapter = this;
-    }
 
     ListAdapter(Context context, int resource, List<ListItem> objects) {
         super(context, resource, objects);
@@ -45,7 +33,6 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public TextView productNameView;
         public ImageButton imgActions;
         public ImageButton imgDelete;
-        public SoftKeyboardListenedRelativeLayout parentRelativeLayout;
     }
 
     /**
