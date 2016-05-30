@@ -145,7 +145,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
                 String insertedItemId = pathSegments.get(1);
 
                 // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
-                mCurrentItem = new ListItem(insertedItemId, newItemName);
+                mCurrentItem = new ListItem(insertedItemId, newItemName, null);
                 addProductInArrays(mCurrentItem);
                 mAdapter.add(newItemName);
             }
@@ -197,7 +197,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
         mAllProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), null);
             addProductInArrays(newListItem);
         }
     }

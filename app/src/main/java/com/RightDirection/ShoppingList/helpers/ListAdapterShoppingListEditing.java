@@ -22,19 +22,15 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        //TODO: Разобраться, почему getView вызывается так много раз
-
         Parameters parameters = new Parameters(position, convertView);
-        parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-        // Привяжем к View объект ListItem
-        parameters.viewHolder.imgDelete.setTag(parameters.item);
+        if (parameters.viewHolder != null && parameters.viewHolder.imgDelete != null)
+            parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
 
         // Для отработки смещения кнопки сохранения списка при заполнении списка
         if (mParentRelativeLayout == null) {
             mParentRelativeLayout = (SoftKeyboardListenedRelativeLayout) mParentActivity.findViewById(R.id.shoppingListEditingContainerLayout);
         }
         if (position == getCount() - 1){ // Минимизируем вызов процедуры
-            Log.i("getView", "getView called, position: " + position + ".");
             mParentRelativeLayout.setButtonsPanelPadding();
         }
 
@@ -48,8 +44,6 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
             ListItem item = (ListItem) view.getTag();
             // Удалим элемент списка
             remove(item); // Оповещение об изменении не нужно, т.к. оно вызывается в самом методе remove
-
-            Log.i("onImgDeleteClick", "onImgDeleteClick called, notifyDataSetChanged do not called.");
         }
     };
 }

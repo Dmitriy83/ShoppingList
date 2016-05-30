@@ -22,4 +22,5 @@
     <string name="change_list_name">Редактировать наименование</string>
     <string name="hide_marked">Скрыть выделенные</string>
     <string name="show_marked">Показать выделенные</string>
+    <string name="product_image">product_image</string>
 </resources>

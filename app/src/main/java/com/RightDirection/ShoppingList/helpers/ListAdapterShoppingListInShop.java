@@ -32,14 +32,16 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         Parameters parameters = new Parameters(position, convertView);
 
-        parameters.viewHolder.productNameView.setOnTouchListener(onListItemTouch);
+        if (parameters.viewHolder != null && parameters.viewHolder.productRepresent != null)
+            parameters.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
 
         // Отрисуем выбор товара
-        if (parameters.item.isChecked()){
-            setChecked(parameters.viewHolder.productNameView);
-        }
-        else{
-            setUnchecked(parameters.viewHolder.productNameView);
+        if (parameters.viewHolder != null && parameters.viewHolder.productNameView != null) {
+            if (parameters.item.isChecked()) {
+                setChecked(parameters.viewHolder.productNameView);
+            } else {
+                setUnchecked(parameters.viewHolder.productNameView);
+            }
         }
 
         return parameters.rowView;
@@ -60,9 +62,12 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
                 mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
+                ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
                 if (distance > 50){
-                    setChecked((TextView)v);
-                    item.setChecked();
+                    if (viewHolder != null && viewHolder.productNameView != null) {
+                        setChecked(viewHolder.productNameView);
+                        item.setChecked();
+                    }
 
                     // Если "вычеркнуты" все товары, выведем сообщение пользователю
                     if (allProductsChecked()){
@@ -74,12 +79,14 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                     }
                 }
                 else if(distance < -50){
-                    setUnchecked((TextView)v);
-                    item.setUnchecked();
+                    if (viewHolder != null && viewHolder.productNameView != null) {
+                        setUnchecked(viewHolder.productNameView);
+                        item.setUnchecked();
+                    }
                 }
 
                 // Отфильтруем лист, если необходимо
-                if (isFiltered){hideMarked();}
+                if (isFiltered) hideMarked();
             }
             return true;
         }

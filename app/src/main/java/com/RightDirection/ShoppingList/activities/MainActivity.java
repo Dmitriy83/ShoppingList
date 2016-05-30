@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         shoppingLists.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), null);
             shoppingLists.add(newListItem);
         }
 

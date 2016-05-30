@@ -24,10 +24,12 @@ public class ListAdapterProductsList extends ListAdapter {
 
         Parameters parameters = new Parameters(position, convertView);
 
-        parameters.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
-        parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-        // Привяжем к View объект ListItem
-        parameters.viewHolder.imgDelete.setTag(parameters.item);
+        if (parameters.viewHolder != null) {
+            if (parameters.viewHolder.productRepresent != null)
+                parameters.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
+            if (parameters.viewHolder.imgDelete != null)
+                parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        }
 
         return parameters.rowView;
     }
@@ -52,7 +54,7 @@ public class ListAdapterProductsList extends ListAdapter {
         }
     };
 
-    private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
+    private final View.OnClickListener onProductRepresentClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ListItem item = (ListItem) view.getTag();

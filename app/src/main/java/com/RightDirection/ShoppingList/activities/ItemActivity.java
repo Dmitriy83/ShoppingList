@@ -180,7 +180,7 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
         try {
             imageStream = getContentResolver().openInputStream(mImageUri);
             final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            ImageView imgProduct = (ImageView)findViewById(R.id.imgProduct);
+            ImageView imgProduct = (ImageView) findViewById(R.id.imgProduct);
             if (imgProduct != null) {
                 // Подгоним ширину и высоту элемента управления под картинку. Не забываем,
                 //  что максимальные размеры ограничены.
@@ -188,6 +188,14 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imgProduct.setLayoutParams(layoutParams);
+                // Скроем фоновую картинку
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    imgProduct.setBackground(null);
+                }
+                else{
+                    // TODO: Протестировать на старом HTC
+                    imgProduct.setBackgroundDrawable(null);
+                }
                 // Установим картинку
                 imgProduct.setImageBitmap(selectedImage);
             }

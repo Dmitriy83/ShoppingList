@@ -6,6 +6,8 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,7 +86,9 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
         productListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
+            Uri imageUri = getImageUri(data);
+
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), imageUri);
             productListItems.add(newListItem);
         }
 
@@ -96,6 +100,22 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
             }
         });
         productListItemsAdapter.notifyDataSetChanged();
+    }
+
+    @Nullable
+    private Uri getImageUri(Cursor data) {
+        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
+
+        String strImageUri = data.getString(keyPictureIndex);
+
+        Uri imageUri;
+        if (strImageUri != null){
+            imageUri = Uri.parse(strImageUri);
+        }
+        else{
+            imageUri = null;
+        }
+        return imageUri;
     }
 
     @Override

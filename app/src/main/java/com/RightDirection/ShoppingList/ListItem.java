@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,10 +9,12 @@ public class ListItem implements Parcelable {
     private final String id;
     private String name;
     private boolean checked;
+    private Uri imageUri;
 
-    public ListItem(String id, String name) {
+    public ListItem(String id, String name, Uri imageUri) {
         this.id = id;
         this.name = name;
+        this.imageUri = imageUri;
     }
 
     private ListItem(Parcel in) {
@@ -66,5 +69,9 @@ public class ListItem implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeByte((byte) (checked ? 1 : 0));
+    }
+
+    public Uri getImageUri() {
+        return imageUri;
     }
 }

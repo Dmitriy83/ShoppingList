@@ -8,6 +8,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -182,12 +183,29 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
+            Uri imageUri = getImageUri(data);
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), imageUri);
             mShoppingListItems.add(newListItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
         Log.i("onLoadFinished", "onLoadFinished called, notifyDataSetChanged called.");
+    }
+
+    @Nullable
+    private Uri getImageUri(Cursor data) {
+        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
+
+        String strImageUri = data.getString(keyPictureIndex);
+
+        Uri imageUri;
+        if (strImageUri != null){
+            imageUri = Uri.parse(strImageUri);
+        }
+        else{
+            imageUri = null;
+        }
+        return imageUri;
     }
 
     @Override

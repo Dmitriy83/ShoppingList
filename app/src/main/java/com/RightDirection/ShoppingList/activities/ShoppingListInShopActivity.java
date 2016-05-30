@@ -4,7 +4,9 @@ import android.app.FragmentManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -102,11 +104,28 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex));
+            Uri imageUri = getImageUri(data);
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), imageUri);
             mShoppingListItems.add(newListItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
+    }
+
+    @Nullable
+    private Uri getImageUri(Cursor data) {
+        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
+
+        String strImageUri = data.getString(keyPictureIndex);
+
+        Uri imageUri;
+        if (strImageUri != null){
+            imageUri = Uri.parse(strImageUri);
+        }
+        else{
+            imageUri = null;
+        }
+        return imageUri;
     }
 
     @Override

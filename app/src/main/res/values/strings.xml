@@ -31,4 +31,6 @@
     <string name="is_filtered">is_filtered</string>
     <string name="all_products">all_products</string>
     <string name="all_products_names">all_products_names</string>
+    <string name="product_image">product_image</string>
+    <string name="view_holder">view_holder</string>
 </resources>
