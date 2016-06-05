@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,6 +21,8 @@ import com.RightDirection.ShoppingList.R;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
+
+import com.squareup.picasso.Picasso;
 
 abstract public class ListAdapter extends ArrayAdapter<ListItem>{
 
@@ -101,29 +102,16 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
                 setProductImage(viewHolder.productImage, imageUri);
             }
         }
-
-        private void setProductImage(ImageView imgProduct, Uri imageUri){
-            final InputStream imageStream;
-            try {
-                imageStream = mContext.getContentResolver().openInputStream(imageUri);
-                final Bitmap image = BitmapFactory.decodeStream(imageStream);
-                if (imgProduct != null) {
-                    // Скроем фоновую картинку
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        imgProduct.setBackground(null);
-                    }
-                    else{
-                        imgProduct.setBackgroundDrawable(null);
-                    }
-                    // Установим картинку
-                    imgProduct.setImageBitmap(image);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
-
+    private void setProductImage(ImageView imgProduct, Uri imageUri){
+        if (imgProduct != null) {
+            // Установим картинку
+            Picasso.with(mContext)
+                    .load(imageUri)
+                    .placeholder(android.R.drawable.presence_online)
+                    .fit()
+                    .into(imgProduct);
+        }
+    }
 }

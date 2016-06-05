@@ -197,7 +197,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
         mAllProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), null);
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             addProductInArrays(newListItem);
         }
     }

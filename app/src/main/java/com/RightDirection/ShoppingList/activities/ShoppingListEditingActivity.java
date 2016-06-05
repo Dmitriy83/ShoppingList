@@ -131,8 +131,6 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     public void OnNewItemAdded(ListItem newItem) {
         mShoppingListItems.add(0, newItem);
         mShoppingListItemsAdapter.notifyDataSetChanged();
-
-        Log.i("OnNewItemAdded", "OnNewItemAdded called, notifyDataSetChanged called.");
     }
 
     @Override
@@ -183,29 +181,11 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            Uri imageUri = getImageUri(data);
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), imageUri);
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             mShoppingListItems.add(newListItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
-        Log.i("onLoadFinished", "onLoadFinished called, notifyDataSetChanged called.");
-    }
-
-    @Nullable
-    private Uri getImageUri(Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
-
-        String strImageUri = data.getString(keyPictureIndex);
-
-        Uri imageUri;
-        if (strImageUri != null){
-            imageUri = Uri.parse(strImageUri);
-        }
-        else{
-            imageUri = null;
-        }
-        return imageUri;
     }
 
     @Override

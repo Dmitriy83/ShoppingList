@@ -238,6 +238,22 @@ public class ShoppingListContentProvider extends ContentProvider {
         return selection;
     }
 
+    @Nullable
+    public static Uri getImageUri(Cursor data) {
+        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
+
+        String strImageUri = data.getString(keyPictureIndex);
+
+        Uri imageUri;
+        if (strImageUri != null){
+            imageUri = Uri.parse(strImageUri);
+        }
+        else{
+            imageUri = null;
+        }
+        return imageUri;
+    }
+
     class ShoppingListSQLiteOpenHelper extends SQLiteOpenHelper {
 
         private static final String TAG = "ShoppingListSQLite";

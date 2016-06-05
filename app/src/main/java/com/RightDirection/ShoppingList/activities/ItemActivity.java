@@ -27,6 +27,7 @@ import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -176,31 +177,14 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
     }
 
     private void setProductImage(){
-        final InputStream imageStream;
-        try {
-            imageStream = getContentResolver().openInputStream(mImageUri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            ImageView imgProduct = (ImageView) findViewById(R.id.imgProduct);
-            if (imgProduct != null) {
-                // Подгоним ширину и высоту элемента управления под картинку. Не забываем,
-                //  что максимальные размеры ограничены.
-                ViewGroup.LayoutParams layoutParams = imgProduct.getLayoutParams();
-                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                imgProduct.setLayoutParams(layoutParams);
-                // Скроем фоновую картинку
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    imgProduct.setBackground(null);
-                }
-                else{
-                    // TODO: Протестировать на старом HTC
-                    imgProduct.setBackgroundDrawable(null);
-                }
-                // Установим картинку
-                imgProduct.setImageBitmap(selectedImage);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        ImageView imgProduct = (ImageView) findViewById(R.id.imgProduct);
+        if (imgProduct != null) {
+            // Установим картинку
+            Picasso.with(this)
+                    .load(mImageUri)
+                    .placeholder(android.R.drawable.ic_menu_crop)
+                    .fit()
+                    .into(imgProduct);
         }
     }
 
