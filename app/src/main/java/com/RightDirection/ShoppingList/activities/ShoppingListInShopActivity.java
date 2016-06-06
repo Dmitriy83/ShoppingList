@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -71,7 +72,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnFilter.setTransformationMethod(null);
             btnFilter.setOnClickListener(onBtnFilterClick);
-            if (savedInstanceState != null && mShoppingListItemsAdapter.isFiltered()) {
+            if (savedInstanceState != null && mShoppingListItemsAdapter.ismIsFiltered()) {
                 btnFilter.setText(R.string.show_marked);
             }
             else{
@@ -85,14 +86,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mShoppingListItemsAdapter.getOriginalValues());
-        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.isFiltered());
+        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.ismIsFiltered());
 
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null ,null);
     }
@@ -104,40 +104,21 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            Uri imageUri = getImageUri(data);
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), imageUri);
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             mShoppingListItems.add(newListItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
-    @Nullable
-    private Uri getImageUri(Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
-
-        String strImageUri = data.getString(keyPictureIndex);
-
-        Uri imageUri;
-        if (strImageUri != null){
-            imageUri = Uri.parse(strImageUri);
-        }
-        else{
-            imageUri = null;
-        }
-        return imageUri;
-    }
-
     @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(android.content.Loader<Cursor> loader) {}
 
     private final View.OnClickListener onBtnFilterClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Button btnFilter = (Button)view;
-            if (mShoppingListItemsAdapter.isFiltered()) {
+            if (mShoppingListItemsAdapter.ismIsFiltered()) {
                 btnFilter.setText(R.string.hide_marked);
                 mShoppingListItemsAdapter.showMarked();
             }
@@ -148,5 +129,4 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         }
     };
-
 }

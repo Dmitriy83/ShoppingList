@@ -23,4 +23,7 @@
     <string name="hide_marked">Скрыть выделенные</string>
     <string name="show_marked">Показать выделенные</string>
     <string name="product_image">product_image</string>
+    <string name="pref_title">Настройка</string>
+    <string name="pref_cross_out_action">"Вычеркивать" товар</string>
+    <string name="pref_cross_out_action_summary">Помечать товар в списке покупок вычеркиванием или простым нажатием</string>
 </resources>

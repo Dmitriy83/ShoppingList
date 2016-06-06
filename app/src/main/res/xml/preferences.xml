@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:title="@string/pref_title"
+    android:key="pref_key_settings">
+    <CheckBoxPreference
+        android:key="@string/pref_key_cross_out_action"
+        android:summary="@string/pref_cross_out_action_summary"
+        android:title="@string/pref_cross_out_action"
+        android:defaultValue="true"/>
+</PreferenceScreen>

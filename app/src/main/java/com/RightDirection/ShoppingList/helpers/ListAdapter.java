@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -107,7 +108,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
     private void setProductImage(ImageView imgProduct, Uri imageUri){
         if (imgProduct != null) {
             // Установим картинку
-            Picasso.with(mContext)
+            Picasso.with(mParentActivity)
                     .load(imageUri)
                     .placeholder(android.R.drawable.presence_online)
                     .fit()

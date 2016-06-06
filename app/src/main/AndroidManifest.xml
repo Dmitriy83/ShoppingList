@@ -27,6 +27,7 @@
             android:theme="@style/AppTheme.InShop"/>
         <activity android:name=".activities.ActionsSubmenuActivity"
             android:theme="@style/Theme.Actions_Submenu_Theme"/>
+        <activity android:name=".activities.SettingsActivity"/>
 
         <provider
             android:authorities="com.RightDirection.shoppinglistcontentprovider"

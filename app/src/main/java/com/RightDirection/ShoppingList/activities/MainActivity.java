@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
@@ -82,14 +83,18 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         View view = findViewById(android.R.id.content);
         if (id == R.id.action_settings) {
-            Toast toast = Toast.makeText(this, getString(R.string.in_developing), Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-            return true;
+            if (view != null) {
+                Context context = view.getContext();
+                if (context != null) {
+                    Intent intent = new Intent(context, SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            }
         }
         else if (view != null && id == R.id.action_edit_products_list) {
             Intent intent = new Intent(view.getContext(), ProductsListActivity.class);
-            startActivityForResult(intent, 0);
+            startActivity(intent);
             return true;
         }
 

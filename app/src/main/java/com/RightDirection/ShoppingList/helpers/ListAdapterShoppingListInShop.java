@@ -2,8 +2,10 @@ package com.RightDirection.ShoppingList.helpers;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.preference.PreferenceManager;
 import android.support.v7.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,12 +21,16 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     private ArrayList<ListItem> mObjects;
     private ArrayList<ListItem> mOriginalValues;
-    private boolean isFiltered;
+    private boolean mIsFiltered;
+    private boolean mCrossOutProduct;
 
     public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
-
         mObjects = objects;
+
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mCrossOutProduct = sharedPref.getBoolean(mContext.getString(R.string.pref_key_cross_out_action), true);
     }
 
     @Override
@@ -38,9 +44,9 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         // Отрисуем выбор товара
         if (parameters.viewHolder != null && parameters.viewHolder.productNameView != null) {
             if (parameters.item.isChecked()) {
-                setChecked(parameters.viewHolder.productNameView);
+                setViewChecked(parameters.viewHolder.productNameView);
             } else {
-                setUnchecked(parameters.viewHolder.productNameView);
+                setViewUnchecked(parameters.viewHolder.productNameView);
             }
         }
 
@@ -53,44 +59,66 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     private final View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN){
+            if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN){
+                // Получим объект item, свзяанный с элементом View
+                ListItem item = (ListItem) v.getTag();
+                ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
+
+                if (!item.isChecked()){
+                    setViewAndItemChecked(item, viewHolder);
+                }
+                else if (item.isChecked()){
+                    setViewUnchecked(viewHolder.productNameView);
+                    item.setUnchecked();
+                }
+
+                // Отфильтруем лист, если необходимо
+                if (mIsFiltered) hideMarked();
+            }
+            else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN){
                 mInitXTouch = event.getX();
             }
-            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL){
-                // Получим объект item по элементу View
+            else if (mCrossOutProduct && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)){
+                // Получим объект item, свзяанный с элементом View
                 ListItem item = (ListItem) v.getTag();
 
                 mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
                 ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
                 if (distance > 50){
-                    if (viewHolder != null && viewHolder.productNameView != null) {
-                        setChecked(viewHolder.productNameView);
-                        item.setChecked();
-                    }
-
-                    // Если "вычеркнуты" все товары, выведем сообщение пользователю
-                    if (allProductsChecked()){
-                        //Toast.makeText(mParentActivity, mParentActivity.getString(R.string.in_shop_ending_work_message), Toast.LENGTH_SHORT).show();
-                        AlertDialog alertDialog = new AlertDialog.Builder(
-                                new ContextThemeWrapper(mParentActivity, mParentActivity.getApplicationInfo().theme)).create();
-                        alertDialog.setMessage(mParentActivity.getString(R.string.in_shop_ending_work_message));
-                        alertDialog.show();
-                    }
+                    setViewAndItemChecked(item, viewHolder);
                 }
                 else if(distance < -50){
                     if (viewHolder != null && viewHolder.productNameView != null) {
-                        setUnchecked(viewHolder.productNameView);
+                        setViewUnchecked(viewHolder.productNameView);
                         item.setUnchecked();
                     }
                 }
 
                 // Отфильтруем лист, если необходимо
-                if (isFiltered) hideMarked();
+                if (mIsFiltered) hideMarked();
             }
             return true;
         }
     };
+
+    private void setViewAndItemChecked(ListItem item, ViewHolder viewHolder) {
+        if (viewHolder != null && viewHolder.productNameView != null) {
+            setViewChecked(viewHolder.productNameView);
+            item.setChecked();
+        }
+        // Если "вычеркнуты" все товары, выведем сообщение пользователю
+        if (allProductsChecked()){
+            showVictoryDialog();
+        }
+    }
+
+    private void showVictoryDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                new ContextThemeWrapper(mParentActivity, mParentActivity.getApplicationInfo().theme)).create();
+        alertDialog.setMessage(mParentActivity.getString(R.string.in_shop_ending_work_message));
+        alertDialog.show();
+    }
 
     private boolean allProductsChecked() {
         boolean allProductsChecked = true;
@@ -103,28 +131,28 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         return allProductsChecked;
     }
 
-    private void setChecked(TextView v){
+    private void setViewChecked(TextView v){
         // Покажем, что товар купили ("вычеркнем")
         v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         v.setBackgroundColor(Color.LTGRAY);
     }
 
-    private void setUnchecked(TextView v){
+    private void setViewUnchecked(TextView v){
         // Покажем, что  товар еще не купили (до этого выделили ошибочно)
         v.setPaintFlags(v.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         v.setBackgroundColor(Color.WHITE);
     }
 
-    public boolean isFiltered(){
-        return isFiltered;
+    public boolean ismIsFiltered(){
+        return mIsFiltered;
     }
 
     public void setIsFiltered(boolean value){
-        isFiltered = value;
+        mIsFiltered = value;
     }
 
     public void showMarked() {
-        isFiltered = false;
+        mIsFiltered = false;
 
         // Восстановим первоначальный список
         mObjects.clear();
@@ -135,7 +163,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     }
 
     public void hideMarked() {
-        isFiltered = true;
+        mIsFiltered = true;
 
         // При первом обращении сохраним первоначальный список
         if (mOriginalValues == null){

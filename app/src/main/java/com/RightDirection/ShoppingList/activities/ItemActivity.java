@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +41,7 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
 
     private static final int PICK_IMAGE = 1;
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final String KEY_IMAGE_URI = "IMAGE_URI";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,18 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
             // Заполним картинку из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
+        else if (savedInstanceState != null){
+            // Восстановим URI картинки. Id восстановится из данных вызывающей активности.
+            mImageUri = savedInstanceState.getParcelable(KEY_IMAGE_URI);
+            setProductImage();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(KEY_IMAGE_URI, mImageUri);
+
+        super.onSaveInstanceState(outState);
     }
 
     private final View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
@@ -231,8 +245,6 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 }
 

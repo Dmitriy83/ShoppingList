@@ -17,10 +17,11 @@ public class ListItem implements Parcelable {
         this.imageUri = imageUri;
     }
 
-    private ListItem(Parcel in) {
+    protected ListItem(Parcel in) {
         id = in.readString();
         name = in.readString();
         checked = in.readByte() != 0;
+        imageUri = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
@@ -59,6 +60,10 @@ public class ListItem implements Parcelable {
         return checked;
     }
 
+    public Uri getImageUri() {
+        return imageUri;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -69,9 +74,6 @@ public class ListItem implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeByte((byte) (checked ? 1 : 0));
-    }
-
-    public Uri getImageUri() {
-        return imageUri;
+        dest.writeParcelable(imageUri, flags);
     }
 }
