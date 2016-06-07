@@ -25,15 +25,15 @@ public class ListAdapterMainActivity extends ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Parameters parameters = new Parameters(position, convertView);
+        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
 
-        parameters.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
-        parameters.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
-        parameters.viewHolder.imgActions.setOnClickListener(onImgActionsClick);
+        getViewInitializer.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
+        getViewInitializer.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
+        getViewInitializer.viewHolder.imgActions.setOnClickListener(onImgActionsClick);
         // Привяжем к View объект ListItem
-        parameters.viewHolder.imgActions.setTag(parameters.item);
+        getViewInitializer.viewHolder.imgActions.setTag(getViewInitializer.item);
 
-        return parameters.rowView;
+        return getViewInitializer.rowView;
     }
 
     private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {

@@ -22,16 +22,16 @@ public class ListAdapterProductsList extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Parameters parameters = new Parameters(position, convertView);
+        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
 
-        if (parameters.viewHolder != null) {
-            if (parameters.viewHolder.productRepresent != null)
-                parameters.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
-            if (parameters.viewHolder.imgDelete != null)
-                parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        if (getViewInitializer.viewHolder != null) {
+            if (getViewInitializer.viewHolder.productRepresent != null)
+                getViewInitializer.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
+            if (getViewInitializer.viewHolder.imgDelete != null)
+                getViewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
         }
 
-        return parameters.rowView;
+        return getViewInitializer.rowView;
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {

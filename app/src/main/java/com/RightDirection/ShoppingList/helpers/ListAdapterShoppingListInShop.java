@@ -36,21 +36,21 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Parameters parameters = new Parameters(position, convertView);
+        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
 
-        if (parameters.viewHolder != null && parameters.viewHolder.productRepresent != null)
-            parameters.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
+        if (getViewInitializer.viewHolder != null && getViewInitializer.viewHolder.productRepresent != null)
+            getViewInitializer.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
 
         // Отрисуем выбор товара
-        if (parameters.viewHolder != null && parameters.viewHolder.productNameView != null) {
-            if (parameters.item.isChecked()) {
-                setViewChecked(parameters.viewHolder.productNameView);
+        if (getViewInitializer.viewHolder != null && getViewInitializer.viewHolder.productNameView != null) {
+            if (getViewInitializer.item.isChecked()) {
+                setViewChecked(getViewInitializer.viewHolder.productNameView);
             } else {
-                setViewUnchecked(parameters.viewHolder.productNameView);
+                setViewUnchecked(getViewInitializer.viewHolder.productNameView);
             }
         }
 
-        return parameters.rowView;
+        return getViewInitializer.rowView;
     }
 
     private float mInitXTouch = 0;
@@ -59,7 +59,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     private final View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN){
+            if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_UP){
                 // Получим объект item, свзяанный с элементом View
                 ListItem item = (ListItem) v.getTag();
                 ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);

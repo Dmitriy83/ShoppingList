@@ -51,7 +51,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
     /**
      * Класс-структура для получения и передачи параметров (item, viewHolder, rowView)
      */
-    class Parameters{
+    class GetViewInitializer {
 
         public final ListItem item;
         public final ViewHolder viewHolder;
@@ -62,7 +62,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
          * @param position позиция элемента в списке
          * @param convertView View-контейнер
          */
-        Parameters(int position, View convertView){
+        GetViewInitializer(int position, View convertView){
             item = getItem(position);
             String name = item.getName();
 

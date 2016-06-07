@@ -1,7 +1,6 @@
 package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,9 +21,9 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Parameters parameters = new Parameters(position, convertView);
-        if (parameters.viewHolder != null && parameters.viewHolder.imgDelete != null)
-            parameters.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
+        if (getViewInitializer.viewHolder != null && getViewInitializer.viewHolder.imgDelete != null)
+            getViewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
 
         // Для отработки смещения кнопки сохранения списка при заполнении списка
         if (mParentRelativeLayout == null) {
@@ -34,7 +33,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
             mParentRelativeLayout.setButtonsPanelPadding();
         }
 
-        return parameters.rowView;
+        return getViewInitializer.rowView;
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
