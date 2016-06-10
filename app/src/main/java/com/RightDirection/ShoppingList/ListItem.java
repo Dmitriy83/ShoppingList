@@ -48,6 +48,10 @@ public class ListItem implements Parcelable {
         this.name = name;
     }
 
+    public void setImageUri(Uri imageUri) {
+        this.imageUri = imageUri;
+    }
+
     public void setChecked(){
         checked = true;
     }

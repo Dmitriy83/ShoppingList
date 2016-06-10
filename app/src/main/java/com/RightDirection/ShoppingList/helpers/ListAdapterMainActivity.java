@@ -15,11 +15,12 @@ import com.RightDirection.ShoppingList.activities.ActionsSubmenuActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListAdapterMainActivity extends ListAdapter {
 
-    public ListAdapterMainActivity(Context context, int resource, List<ListItem> objects) {
+    public ListAdapterMainActivity(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
     }
 

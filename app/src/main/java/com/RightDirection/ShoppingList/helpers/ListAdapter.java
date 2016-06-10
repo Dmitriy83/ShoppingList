@@ -21,6 +21,7 @@ import com.RightDirection.ShoppingList.R;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.squareup.picasso.Picasso;
@@ -31,13 +32,15 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
     final Context mContext;
     final Activity mParentActivity;
     final ListAdapter mListAdapter; // для доступа из обработичиков событий
+    public ArrayList<ListItem> mObjects;
 
-    ListAdapter(Context context, int resource, List<ListItem> objects) {
+    ListAdapter(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
         mResource = resource;
         mContext = context;
         mParentActivity = (Activity)context;
         mListAdapter = this;
+        mObjects = objects;
     }
 
     static class ViewHolder {
@@ -46,6 +49,18 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public ImageButton imgDelete;
         public ImageView productImage;
         public RelativeLayout productRepresent;
+    }
+
+    public void updateItem(String id, String name, Uri imageUri) {
+        for (ListItem item: mObjects) {
+            if (item.getId().equals(id)){
+                item.setName(name);
+                item.setImageUri(imageUri);
+            }
+        }
+
+        // Оповестим об изменении данных
+        this.notifyDataSetChanged();
     }
 
     /**

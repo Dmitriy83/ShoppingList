@@ -19,14 +19,12 @@ import java.util.ArrayList;
 
 public class ListAdapterShoppingListInShop extends ListAdapter {
 
-    private ArrayList<ListItem> mObjects;
     private ArrayList<ListItem> mOriginalValues;
     private boolean mIsFiltered;
     private boolean mCrossOutProduct;
 
     public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
-        mObjects = objects;
 
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);

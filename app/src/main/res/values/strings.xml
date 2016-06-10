@@ -37,4 +37,5 @@
     <string name="pref_cross_out_action">Cross out product</string>
     <string name="pref_key_cross_out_action">pref_key_cross_out_action</string>
     <string name="pref_cross_out_action_summary">Check a product by crossing out or just clicking</string>
+    <string name="item_image">item_image</string>
 </resources>

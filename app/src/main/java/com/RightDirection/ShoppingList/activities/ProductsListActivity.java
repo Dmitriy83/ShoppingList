@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
+import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -22,7 +22,7 @@ import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private ArrayList<ListItem> productListItems;
     private ListAdapterProductsList productListItemsAdapter;
@@ -52,7 +52,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         // Привяжем адаптер к фрагменту
         productsListFragment.setListAdapter(productListItemsAdapter);
 
-        // Обновим список товаров из базы данных
+        // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -68,7 +68,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ItemActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, Utils.NEED_TO_UPDATE);
         }
     };
 

@@ -8,7 +8,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +16,7 @@ import android.widget.Button;
 
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.views.ItemsListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -159,9 +159,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     @Override
-    public void onDialogNegativeClick() {
-
-    }
+    public void onDialogNegativeClick() {}
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -189,8 +187,25 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
+    public void onLoaderReset(android.content.Loader<Cursor> loader) {}
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case Utils.NEED_TO_UPDATE:
+                if (resultCode == RESULT_OK) {
+                    // Получим значения из переданных параметров
+                    String id = data.getStringExtra(String.valueOf(R.string.item_id));
+                    String name = data.getStringExtra(String.valueOf(R.string.name));
+                    String strImageUri = data.getStringExtra(String.valueOf(R.string.item_image));
+                    Uri imageUri = null;
+                    if (strImageUri != null){
+                        imageUri = Uri.parse(strImageUri);
+                    }
+                    mShoppingListItemsAdapter.updateItem(id, name, imageUri);
+                }
+        }
     }
-
 }

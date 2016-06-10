@@ -11,11 +11,12 @@ import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListAdapterProductsList extends ListAdapter {
 
-    public ListAdapterProductsList(Context context, int resource, List<ListItem> objects) {
+    public ListAdapterProductsList(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
     }
 
@@ -66,11 +67,13 @@ public class ListAdapterProductsList extends ListAdapter {
                     // Откроем окно редактирования элемента списка продуктов
                     String productName = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_NAME));
                     String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
+                    String itemImageUri = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_PICTURE));
                     Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
                     intent.putExtra(String.valueOf(R.string.name), productName);
                     intent.putExtra(String.valueOf(R.string.item_id), itemId);
+                    intent.putExtra(String.valueOf(R.string.item_image), itemImageUri);
                     intent.putExtra(String.valueOf(R.string.is_new_item), false);
-                    mParentActivity.startActivity(intent);
+                    mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
                 }
                 cursor.close();
             }

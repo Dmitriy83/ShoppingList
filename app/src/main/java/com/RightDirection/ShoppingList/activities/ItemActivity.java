@@ -1,26 +1,18 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,10 +22,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.squareup.picasso.Picasso;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-public class ItemActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
+public class ItemActivity extends AppCompatActivity{
 
     private Uri mImageUri;
     private boolean mIsNewItem;
@@ -52,12 +41,12 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
         Intent sourceIntent = getIntent();
         mIsNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
         mItemId = sourceIntent.getStringExtra(String.valueOf(R.string.item_id));
+        String strImageUri = sourceIntent.getStringExtra(String.valueOf(R.string.item_image));
         String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
 
         // Если это новый элемент, то сразу ототбразим клавиатуру для ввода наименования
         if (mIsNewItem){
             getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         }
 
         EditText etProductName = (EditText) findViewById(R.id.etProductName);
@@ -85,15 +74,15 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
             setTitle(getString(R.string.product_title));
         }
 
-        if (!mIsNewItem && savedInstanceState == null) {
+        if (!mIsNewItem && savedInstanceState == null && strImageUri != null) {
             // Заполним картинку из базы данных
-            getLoaderManager().initLoader(0, null, this);
+            mImageUri = Uri.parse(strImageUri);
         }
         else if (savedInstanceState != null){
             // Восстановим URI картинки. Id восстановится из данных вызывающей активности.
             mImageUri = savedInstanceState.getParcelable(KEY_IMAGE_URI);
-            setProductImage();
         }
+        setProductImage();
     }
 
     @Override
@@ -121,6 +110,11 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
                     contentResolver.update(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues,
                             ShoppingListContentProvider.KEY_ID + "=" + mItemId, null);
                 }
+                Intent intent = new Intent();
+                intent.putExtra(String.valueOf(R.string.item_id), mItemId);
+                intent.putExtra(String.valueOf(R.string.item_image), mImageUri.toString());
+                intent.putExtra(String.valueOf(R.string.name), etProductName.getText().toString());
+                setResult(RESULT_OK, intent);
             }
 
             finish();
@@ -221,30 +215,5 @@ public class ItemActivity extends AppCompatActivity implements android.app.Loade
             // permissions this app might request
         }
     }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (mIsNewItem){
-            return null;
-        }
-
-        return new CursorLoader(this, ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
-                null, ShoppingListContentProvider.KEY_ID + "=" + mItemId, null ,null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
-        if (data.moveToNext()){
-            String strImageUri = data.getString(keyPictureIndex);
-            if (strImageUri != null) {
-                mImageUri = Uri.parse(strImageUri);
-                setProductImage();
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {}
 }
 
