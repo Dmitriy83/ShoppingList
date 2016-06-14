@@ -43,7 +43,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         mObjects = objects;
     }
 
-    static class ViewHolder {
+    class ViewHolder {
         public TextView productNameView;
         public ImageButton imgActions;
         public ImageButton imgDelete;
@@ -106,7 +106,6 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
                 // Заполним текстовое поле
                 viewHolder.productNameView.setText(name);
             }
-            if (viewHolder.productImage != null) viewHolder.productImage.setTag(item);
             if (viewHolder.productRepresent != null) {
                 viewHolder.productRepresent.setTag(item);
                 viewHolder.productRepresent.setTag(R.string.view_holder, viewHolder);
@@ -114,7 +113,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
             if (viewHolder.imgDelete != null) viewHolder.imgDelete.setTag(item);
 
             Uri imageUri = item.getImageUri();
-            if (imageUri != null && viewHolder.productImage != null) {
+            if (viewHolder.productImage != null) {
                 setProductImage(viewHolder.productImage, imageUri);
             }
         }
