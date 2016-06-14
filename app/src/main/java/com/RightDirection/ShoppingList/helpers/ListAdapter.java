@@ -43,7 +43,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         mObjects = objects;
     }
 
-    class ViewHolder {
+    static class ViewHolder {
         public TextView productNameView;
         public ImageButton imgActions;
         public ImageButton imgDelete;
@@ -80,6 +80,8 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         GetViewInitializer(int position, View convertView){
             item = getItem(position);
             String name = item.getName();
+
+            Log.i("GET_VIEW_CALLING", "Position " + position + ", convertView " + convertView);
 
             rowView = (LinearLayout)convertView;
             if (rowView == null){
