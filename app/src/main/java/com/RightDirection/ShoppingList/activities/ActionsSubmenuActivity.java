@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -43,6 +44,9 @@ public class ActionsSubmenuActivity extends Activity implements InputListNameDia
         mListItem = sourceIntent.getParcelableExtra(String.valueOf(R.string.list_item));
 
         // Добавим обработчики кликов по кнопкам
+        ImageButton imgSendListByEmail = (ImageButton) findViewById(R.id.imgSendListByEmail);
+        imgSendListByEmail.setOnClickListener(onImgSendListByEmailClick);
+
         ImageButton imgChangeListName = (ImageButton) findViewById(R.id.imgChangeListName);
         imgChangeListName.setOnClickListener(onImgChangeListNameClick);
 
@@ -69,6 +73,15 @@ public class ActionsSubmenuActivity extends Activity implements InputListNameDia
         layoutParams.y = mY;
         getWindowManager().updateViewLayout(view, layoutParams);
     }
+
+    private final View.OnClickListener onImgSendListByEmailClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Создадим письмо с прикрепленным файлом сериализованного списка покупок и откроем его
+
+            finish();
+        }
+    };
 
     private final View.OnClickListener onImgChangeListNameClick = new View.OnClickListener() {
         @Override

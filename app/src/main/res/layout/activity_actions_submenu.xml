@@ -7,6 +7,13 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/imgSendListByEmail"
+        android:background="@android:drawable/ic_dialog_email"
+        android:contentDescription="@string/send_by_email" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imgChangeListName"
         android:background="@android:drawable/ic_menu_sort_alphabetically"
         android:contentDescription="@string/change_list_name" />
@@ -24,4 +31,5 @@
         android:id="@+id/imgDelete"
         android:contentDescription="@string/cross"
         android:background="@android:drawable/ic_menu_close_clear_cancel" />
+
 </LinearLayout>
