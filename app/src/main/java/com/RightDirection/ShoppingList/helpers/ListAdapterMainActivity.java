@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -85,7 +86,9 @@ public class ListAdapterMainActivity extends ListAdapter {
             //}
 
             // Start the CAB using the ActionMode.Callback defined above
-            mActionMode = mParentActivity.startActionMode(mActionModeCallback);
+            //mActionMode = mParentActivity.startActionMode(mActionModeCallback);
+            Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
+            if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
             return true;
         }
     };
