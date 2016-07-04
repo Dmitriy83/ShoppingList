@@ -16,12 +16,13 @@ import com.RightDirection.ShoppingList.R;
 public class InputListNameDialog extends DialogFragment{
 
     private String mInitName = null;
+    private String mId = null;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface IInputListNameDialogListener {
-        void onDialogPositiveClick(String listName);
+        void onDialogPositiveClick(String listName, String listId);
         void onDialogNegativeClick();
     }
 
@@ -46,7 +47,7 @@ public class InputListNameDialog extends DialogFragment{
         // Добавим кнопки-действия
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(inputNewListName.getText().toString());
+                        mListener.onDialogPositiveClick(inputNewListName.getText().toString(), mId);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -75,5 +76,9 @@ public class InputListNameDialog extends DialogFragment{
 
     public void setInitName(String name){
         mInitName = name;
+    }
+
+    public void setId(String id) {
+        mId = id;
     }
 }

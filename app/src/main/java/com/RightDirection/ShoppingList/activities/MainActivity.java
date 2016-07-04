@@ -1,5 +1,7 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -22,7 +24,8 @@ import com.RightDirection.ShoppingList.views.ItemsListFragment;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
+        InputListNameDialog.IInputListNameDialogListener{
 
     private ArrayList<ListItem> shoppingLists;
     private ListAdapterMainActivity shoppingListsAdapter;
@@ -134,4 +137,19 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
 
     }
+
+    @Override
+    public void onDialogPositiveClick(String listName, String listID) {
+
+        ContentResolver contentResolver = getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(ShoppingListContentProvider.KEY_NAME, listName);
+        contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                values, ShoppingListContentProvider.KEY_ID +  " = " + listID, null);
+
+        shoppingListsAdapter.updateItem(listID, listName, null);
+    }
+
+    @Override
+    public void onDialogNegativeClick() {}
 }

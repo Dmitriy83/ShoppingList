@@ -134,7 +134,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     @Override
-    public void onDialogPositiveClick(String listName) {
+    public void onDialogPositiveClick(String listName, String id) {
         // Сохраним список продуктов в БД
         ContentResolver contentResolver = getContentResolver();
         ContentValues contentValues = new ContentValues();

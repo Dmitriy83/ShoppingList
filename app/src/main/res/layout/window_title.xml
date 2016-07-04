@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:background="#4e64d0"
+    android:background="@android:color/holo_green_light"
     android:gravity="center">
 
     <TextView
@@ -23,7 +23,7 @@
         android:id="@+id/btnFilter"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="#4e64d0"
+        android:background="@android:color/holo_green_dark"
         android:text="@string/hide_marked"
         android:textColor="#ffffff" />
 

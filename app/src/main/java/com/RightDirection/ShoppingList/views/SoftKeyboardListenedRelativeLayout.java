@@ -30,12 +30,12 @@ public class SoftKeyboardListenedRelativeLayout extends RelativeLayout {
         if (yOld > yNew) {
             // Keyboard is shown
             if (btnDeleteAllItems != null) {
-                btnDeleteAllItems.setVisibility(INVISIBLE);
+                //btnDeleteAllItems.setVisibility(INVISIBLE);
             }
         } else {
             // Keyboard is hidden
             if (btnDeleteAllItems != null) {
-                btnDeleteAllItems.setVisibility(VISIBLE);
+                //btnDeleteAllItems.setVisibility(VISIBLE);
             }
         }
 

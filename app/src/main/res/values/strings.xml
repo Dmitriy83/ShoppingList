@@ -39,4 +39,5 @@
     <string name="pref_cross_out_action_summary">Check a product by crossing out or just clicking</string>
     <string name="item_image">item_image</string>
     <string name="send_by_email">Send by e-mail</string>
+    <string name="delete">Remove</string>
 </resources>

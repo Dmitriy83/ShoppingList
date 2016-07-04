@@ -3,21 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="false"
-    tools:context=".activities.MainActivity"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="false"
-        android:id="@+id/appBar">
+        android:id="@+id/appBar"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppTheme" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -27,7 +29,8 @@
         android:id="@+id/frgShoppingLists"
         android:layout_below="@+id/appBar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:choiceMode="singleChoice"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddNewShoppingList"

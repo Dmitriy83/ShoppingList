@@ -45,7 +45,6 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
 
     static class ViewHolder {
         public TextView productNameView;
-        public ImageButton imgActions;
         public ImageButton imgDelete;
         public ImageView productImage;
         public RelativeLayout productRepresent;
@@ -92,7 +91,6 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
                 // configure view holder
                 viewHolder = new ViewHolder();
                 viewHolder.productNameView = (TextView) rowView.findViewById(R.id.itemName);
-                viewHolder.imgActions = (ImageButton) rowView.findViewById(R.id.imgActions);
                 viewHolder.imgDelete = (ImageButton) rowView.findViewById(R.id.imgDelete);
                 viewHolder.productImage = (ImageView) rowView.findViewById(R.id.imgProduct);
                 viewHolder.productRepresent = (RelativeLayout) rowView.findViewById(R.id.productRepresent);

@@ -15,7 +15,8 @@
         android:layout_alignParentEnd="true"
         android:hint="@string/product_name_hint"
         android:inputType="textCapSentences"
-        android:imeOptions="flagNoExtractUi"/>
+        android:imeOptions="flagNoExtractUi"
+        android:textColor="@android:color/black" />
 
     <ImageView
         android:layout_width="300dp"
@@ -39,5 +40,5 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/etProductName"
         android:layout_alignEnd="@+id/etProductName"
-        />
+        android:textColor="@android:color/black" />
 </RelativeLayout>

@@ -2,5 +2,10 @@
 <resources>
     <color name="colorPrimary">#4e64d0</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#eac718</color>
+    <color name="colorAccent">#cfff40</color>
+    <color name="red">#FF0000</color>
+    <color name="white">#ffffff</color>
+    <color name="gray">#d1cbcb</color>
+    <color name="action_mode_background_color">#acd630</color>
+    <color name="popup_menu_background_color">#ffffff</color>
 </resources>
