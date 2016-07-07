@@ -4,20 +4,16 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
-import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.ArrayList;
 
 public class ListAdapterShoppingListEditing extends ListAdapter{
-
-    private SoftKeyboardListenedRelativeLayout mParentRelativeLayout;
 
     public ListAdapterShoppingListEditing(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
@@ -28,18 +24,10 @@ public class ListAdapterShoppingListEditing extends ListAdapter{
 
         GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
         if (getViewInitializer.viewHolder != null){
-             if (getViewInitializer.viewHolder.imgDelete != null)
+            if (getViewInitializer.viewHolder.imgDelete != null)
                 getViewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
             if (getViewInitializer.viewHolder.productRepresent != null)
                 getViewInitializer.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
-        }
-
-        // Для отработки смещения кнопки сохранения списка при заполнении списка
-        if (mParentRelativeLayout == null) {
-            mParentRelativeLayout = (SoftKeyboardListenedRelativeLayout) mParentActivity.findViewById(R.id.shoppingListEditingContainerLayout);
-        }
-        if (position == getCount() - 1){ // Минимизируем вызов процедуры
-            mParentRelativeLayout.setButtonsPanelPadding();
         }
 
         return getViewInitializer.rowView;

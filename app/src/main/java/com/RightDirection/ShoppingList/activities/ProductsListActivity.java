@@ -6,7 +6,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ItemsListFragment;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
@@ -41,7 +40,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
         // Получим ссылку на фрагемнт
         FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment productsListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgProductList);
+        ShoppingListFragment productsListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgProductList);
 
         // Создаем массив для хранения списка товаров
         productListItems = new ArrayList<>();

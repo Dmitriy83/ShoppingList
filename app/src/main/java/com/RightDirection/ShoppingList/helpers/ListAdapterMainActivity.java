@@ -81,14 +81,12 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView = view;
             mSelectedView.setSelected(true);
 
-            //if (mActionMode != null) {
-            //    return false;
-            //}
-
             // Start the CAB using the ActionMode.Callback defined above
             //mActionMode = mParentActivity.startActionMode(mActionModeCallback);
-            Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
-            if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
+            if (mActionMode == null) {
+                Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
+                if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
+            }
             return true;
         }
     };

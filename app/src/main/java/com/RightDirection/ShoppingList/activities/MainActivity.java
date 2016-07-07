@@ -6,24 +6,19 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.ItemsListFragment;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 
@@ -51,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Получим ссылки на фрагемнты
         android.app.FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
+        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
 
         // Создаем массив для хранения списков покупок
         shoppingLists = new ArrayList<>();

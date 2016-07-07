@@ -17,10 +17,11 @@ import android.widget.Button;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ItemsListFragment;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
+import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
 
 import java.util.ArrayList;
 
@@ -55,7 +56,11 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
+        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
+        // Добавим фрагемент в качестве Наблюдателя к родительскому контейнеру (для отслеживания события полной отрисовки дочерних элементов)
+        SoftKeyboardListenedRelativeLayout shoppingListEditingContainerLayout = (SoftKeyboardListenedRelativeLayout)findViewById(R.id.shoppingListEditingContainerLayout);
+        if (shoppingListEditingContainerLayout != null && shoppingListFragment != null)
+            shoppingListEditingContainerLayout.addObserver(shoppingListFragment);
 
         if (savedInstanceState == null) {
             // Создаем массив для хранения списка покупок
@@ -69,8 +74,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, R.layout.list_item_shopping_list_editing, mShoppingListItems);
 
         // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
-        Log.i("setListAdapter", "setListAdapter called.");
+        if (shoppingListFragment != null) shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
 
         if (!mIsNewList && savedInstanceState == null) {
             // Заполним список покупок из базы данных
@@ -208,4 +212,6 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                 }
         }
     }
+
+
 }

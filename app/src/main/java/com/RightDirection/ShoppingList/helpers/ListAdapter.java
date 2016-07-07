@@ -2,10 +2,7 @@ package com.RightDirection.ShoppingList.helpers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +16,7 @@ import android.widget.TextView;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.squareup.picasso.Picasso;
 
@@ -80,7 +74,8 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
             item = getItem(position);
             String name = item.getName();
 
-            Log.i("GET_VIEW_CALLING", "Position " + position + ", convertView " + convertView);
+            // Убедимся, что метод getView не вызывается лишнее количество раз
+            Log.d("GET_VIEW_CALLING", "Position " + position + ", convertView " + convertView);
 
             rowView = (LinearLayout)convertView;
             if (rowView == null){

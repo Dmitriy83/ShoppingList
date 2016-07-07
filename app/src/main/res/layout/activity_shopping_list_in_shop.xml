@@ -6,7 +6,7 @@
     tools:context=".activities.ShoppingListInShopActivity"
     android:focusable="false" >
 
-    <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
+    <fragment android:name="com.RightDirection.ShoppingList.views.ShoppingListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/frgShoppingListInShop"

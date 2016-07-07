@@ -20,7 +20,7 @@
         tools:layout="@layout/new_item_edit_text_fragment"
         />
 
-    <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
+    <fragment android:name="com.RightDirection.ShoppingList.views.ShoppingListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/frgShoppingList"
@@ -31,13 +31,12 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/buttonsPanel"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:clipToPadding="false"
-        >
+        android:clipToPadding="false">
 
         <Button
             style="?android:attr/buttonStyleSmall"

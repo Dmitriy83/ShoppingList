@@ -4,11 +4,8 @@ import android.app.FragmentManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -17,7 +14,7 @@ import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.ItemsListFragment;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 
@@ -41,7 +38,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingListInShop);
+        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingListInShop);
 
         // Создаем массив для хранения списка покупок
         if (savedInstanceState == null) {
