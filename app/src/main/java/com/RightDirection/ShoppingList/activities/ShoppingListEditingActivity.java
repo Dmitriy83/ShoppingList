@@ -6,8 +6,10 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -70,8 +72,13 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
         }
 
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean showImages = sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_images), true);
+        int listItemLayout = R.layout.list_item_shopping_list_editing;
+        if (!showImages) listItemLayout = R.layout.list_item_shopping_list_editing_without_image;
         // Создадим новый адаптер для работы со списком покупок
-        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, R.layout.list_item_shopping_list_editing, mShoppingListItems);
+        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mShoppingListItems);
 
         // Привяжем адаптер к фрагменту
         if (shoppingListFragment != null) shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.support.v7.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,6 +117,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 new ContextThemeWrapper(mParentActivity, mParentActivity.getApplicationInfo().theme)).create();
         alertDialog.setMessage(mParentActivity.getString(R.string.in_shop_ending_work_message));
         alertDialog.show();
+        // Установим выравнивание текста по середине
+        TextView messageText = (TextView)alertDialog.findViewById(android.R.id.message);
+        messageText.setGravity(Gravity.CENTER);
+        messageText.setTextSize(mParentActivity.getResources().getDimensionPixelSize(R.dimen.victory_text_size));
     }
 
     private boolean allProductsChecked() {

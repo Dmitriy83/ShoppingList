@@ -40,4 +40,6 @@
     <string name="item_image">item_image</string>
     <string name="send_by_email">Send by e-mail</string>
     <string name="delete">Remove</string>
+    <string name="pref_key_show_images">Show images</string>
+    <string name="pref_show_images">Show images</string>
 </resources>

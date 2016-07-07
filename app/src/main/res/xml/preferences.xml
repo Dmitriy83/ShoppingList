@@ -3,10 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:title="@string/pref_title"
-    android:key="pref_key_settings">
-    <CheckBoxPreference
+    android:key="pref_key_settings" >
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
         android:key="@string/pref_key_cross_out_action"
         android:summary="@string/pref_cross_out_action_summary"
         android:title="@string/pref_cross_out_action"
+        android:defaultValue="true"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_images"
+        android:title="@string/pref_show_images"
         android:defaultValue="true"/>
 </PreferenceScreen>
