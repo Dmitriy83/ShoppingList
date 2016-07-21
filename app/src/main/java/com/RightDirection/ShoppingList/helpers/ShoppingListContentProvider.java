@@ -4,16 +4,25 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class ShoppingListContentProvider extends ContentProvider {
 
@@ -28,15 +37,18 @@ public class ShoppingListContentProvider extends ContentProvider {
     private static final int SHOPPING_LISTS_SINGLE_ROW = 4;
     private static final int SHOPPING_LIST_CONTENT_ALL_ROWS = 5;
     private static final int SHOPPING_LIST_CONTENT_SINGLE_ROW = 6;
+    private static final int FILES = 7;
+
     private static final UriMatcher uriMatcher;
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "products", PRODUCTS_ALL_ROWS);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "products/#", PRODUCTS_SINGLE_ROW);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglists", SHOPPING_LISTS_ALL_ROWS);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglists/#", SHOPPING_LISTS_SINGLE_ROW);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent", SHOPPING_LIST_CONTENT_ALL_ROWS);
-        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent/#", SHOPPING_LIST_CONTENT_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "products",                 PRODUCTS_ALL_ROWS);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "products/#",               PRODUCTS_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglists",            SHOPPING_LISTS_ALL_ROWS);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglists/#",          SHOPPING_LISTS_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent",      SHOPPING_LIST_CONTENT_ALL_ROWS);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent/#",    SHOPPING_LIST_CONTENT_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "files/*",                  FILES);
     }
 
     public static final String KEY_ID = "_id";
@@ -301,6 +313,38 @@ public class ShoppingListContentProvider extends ContentProvider {
                         + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER);";
                 db.execSQL(queryCreateShoppingListContentTable);
             }
+        }
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
+
+        String LOG_TAG = "Provider - openFile";
+        Log.v(LOG_TAG, "Called with uri: '" + uri + "'." + uri.getLastPathSegment());
+
+        switch (uriMatcher.match(uri)) {
+            case FILES:
+                // The desired file name is specified by the last segment of the path
+                // E.g. 'content://com.stephendnicholas.gmailattach.provider/Test.txt'
+                // Take this and build the path to the file
+                Context context = getContext();
+                if (context != null) {
+                    String fileLocation = context.getCacheDir() + File.separator + uri.getLastPathSegment();
+
+                    // Create & return a ParcelFileDescriptor pointing to the file
+                    // Note: I don't care what mode they ask for - they're only getting
+                    // read only
+                    return ParcelFileDescriptor.open(new File(fileLocation), ParcelFileDescriptor.MODE_READ_ONLY);
+                }
+                else {
+                    Log.v(LOG_TAG, "getContext().getCacheDir() returned null.");
+                    return null;
+                }
+
+            // Otherwise unrecognised Uri
+            default:
+                Log.v(LOG_TAG, "Unsupported uri: '" + uri + "'.");
+                throw new FileNotFoundException("Unsupported uri: " + uri.toString());
         }
     }
 }

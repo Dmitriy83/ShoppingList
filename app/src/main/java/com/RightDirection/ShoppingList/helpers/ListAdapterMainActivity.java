@@ -8,9 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +28,17 @@ import com.RightDirection.ShoppingList.activities.InputListNameDialog;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class ListAdapterMainActivity extends ListAdapter {
@@ -152,6 +166,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     alertDialog.show();
 
                     return true;
+
                 case R.id.imgEdit:
 
                     Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
@@ -161,6 +176,7 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
+
                 case R.id.imgChangeListName:
 
                     // Откроем окно для ввода нового наименования списка/
@@ -173,12 +189,23 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
+
                 case R.id.imgSendListByEmail:
 
-                    Toast.makeText(mParentActivity, "Creating new e-mail...", Toast.LENGTH_SHORT).show();
+                    try{
+                        // Создадим JSON файл по списку покупок
+                        String fileName = "Shopping list '" + mSelectedItem.getName() + "'" + ".json";
+                        createShoppingListJSONfile(fileName);
+
+                        mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru", "Shopping list '" + mSelectedItem.getName() + "'", "", fileName));
+                    }
+                    catch(Exception e){
+                        System.out.println("Exception raises during sending mail. Discription: " + e);
+                    }
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
+
                 default:
                     return false;
             }
@@ -190,4 +217,44 @@ public class ListAdapterMainActivity extends ListAdapter {
             mActionMode = null;
         }
     };
+
+    private void createShoppingListJSONfile(String fileName) throws JSONException {
+
+        ContentResolver contentResolver = mParentActivity.getContentResolver();
+        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
+                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mSelectedItem.getId(), null ,null);
+
+        // Определим индексы колонок для считывания
+        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+
+        // Читаем данные из базы и записываем в объект JSON
+        JSONArray listItemsArray = new JSONArray();
+        while (data.moveToNext()){
+            JSONObject listItem = new JSONObject();
+
+            listItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
+            listItem.put(ShoppingListContentProvider.KEY_NAME, data.getString(keyNameIndex));
+
+            // Добавим объект JSON в массив
+            listItemsArray.put(listItem);
+        }
+
+        JSONObject shoppingList = new JSONObject();
+        shoppingList.put("id",      mSelectedItem.getId());
+        shoppingList.put("name",    mSelectedItem.getName());
+        shoppingList.put("items",   listItemsArray);
+
+        String jsonStr = shoppingList.toString();
+        Log.i("CREATING_JSON", jsonStr);
+
+        data.close();
+
+        // Запишем текст в файл
+        try {
+            Utils.createCachedFile(mContext, fileName, jsonStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

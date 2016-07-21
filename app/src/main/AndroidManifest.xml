@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.RightDirection.ShoppingList">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <application
         android:allowBackup="true"
@@ -29,7 +30,8 @@
         <provider
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:name=".helpers.ShoppingListContentProvider"
-            android:exported="false"/>
+            android:exported="false"
+            android:grantUriPermissions="true"/>
 
     </application>
 
