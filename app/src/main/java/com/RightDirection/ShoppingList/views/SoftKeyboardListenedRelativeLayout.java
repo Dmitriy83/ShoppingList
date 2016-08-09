@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RelativeLayout;
@@ -26,28 +27,6 @@ public class SoftKeyboardListenedRelativeLayout extends RelativeLayout implement
         observers = new ArrayList<>();
     }
 
-    @Override
-    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
-        super.onSizeChanged(xNew, yNew, xOld, yOld);
-
-        /*
-        // Выполним действия в зависимости от того, отображается на экране клавиатура или нет
-        Button btnDeleteAllItems = (Button)findViewById(R.id.btnShoppingListDeleteAllItems);
-
-        if (yOld > yNew) {
-            // Keyboard is shown
-            if (btnDeleteAllItems != null) {
-                btnDeleteAllItems.setVisibility(INVISIBLE);
-            }
-        } else {
-            // Keyboard is hidden
-            if (btnDeleteAllItems != null) {
-                btnDeleteAllItems.setVisibility(VISIBLE);
-            }
-        }
-        */
-    }
-
     /**
      * Implement this to do your drawing.
      *
@@ -61,16 +40,19 @@ public class SoftKeyboardListenedRelativeLayout extends RelativeLayout implement
         notifyObservers();
     }
 
-    private List<IObserver> observers;
+    /**
+    Реализуем интерфейс/шаблон Наблюдатель
+    */
+    protected List<IObserver> observers;
 
     @Override
     public void addObserver(IObserver observer) {
-        observers.add(observer);
+        if (observer != null) observers.add(observer);
     }
 
     @Override
     public void removeObserver(IObserver observer) {
-        observers.remove(observer);
+        if (observer != null) observers.remove(observer);
     }
 
     @Override

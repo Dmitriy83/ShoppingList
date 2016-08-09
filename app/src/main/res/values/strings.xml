@@ -43,4 +43,5 @@
     <string name="pref_key_show_images">Show images</string>
     <string name="pref_show_images">Show images</string>
     <string name="send_email">Send shopping list by email…</string>
+    <string name="receive_by_email">Receive shopping list by email…</string>
 </resources>

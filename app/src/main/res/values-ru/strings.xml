@@ -30,4 +30,5 @@
     <string name="delete">Удалить</string>
     <string name="pref_show_images">Показывать рисунки</string>
     <string name="send_email">Отправить список покупок по e-mail…</string>
+    <string name="receive_by_email">Получить список покупок по e-mail…</string>
 </resources>

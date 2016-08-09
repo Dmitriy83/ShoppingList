@@ -46,7 +46,7 @@ public class ShoppingListFragment extends android.app.ListFragment implements IO
         }
     }
 
-    public View getVisibleViewByPosition(int pos) {
+    private View getVisibleViewByPosition(int pos) {
         ListView listView = getListView();
 
         final int firstListItemPosition = listView.getFirstVisiblePosition();
@@ -74,7 +74,7 @@ public class ShoppingListFragment extends android.app.ListFragment implements IO
         return rect1.intersect(rect2);
     }
 
-    public void setButtonsPanelLeftPadding(int leftPadding){
+    private void setButtonsPanelLeftPadding(int leftPadding){
         RelativeLayout buttonsPanel = (RelativeLayout)getActivity().findViewById(R.id.buttonsPanel);
         if (buttonsPanel != null) buttonsPanel.setPadding(0, 0, leftPadding, 0);
     }

@@ -32,13 +32,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class ListAdapterMainActivity extends ListAdapter {
@@ -205,6 +199,13 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
+
+                case R.id.imgReceiveListByEmail:
+
+                    Toast.makeText(mParentActivity, "Receiving e-mail...", Toast.LENGTH_SHORT).show();
+
+                    //final Intent emailIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    //mParentActivity.startActivityForResult(emailIntent, 0);
 
                 default:
                     return false;
