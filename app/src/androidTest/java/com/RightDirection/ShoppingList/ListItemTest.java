@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class ListItemTest {
 
-    ListItem listItem;
+    private ListItem listItem;
 
     @Before
     public void setUp() throws Exception {

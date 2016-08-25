@@ -53,7 +53,6 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     }
 
     private float mInitXTouch = 0;
-    private float mEndXTouch = 0;
 
     private final View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
         @Override
@@ -81,7 +80,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 // Получим объект item, свзяанный с элементом View
                 ListItem item = (ListItem) v.getTag();
 
-                mEndXTouch = event.getX();
+                float mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
                 ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
                 if (distance > 50){

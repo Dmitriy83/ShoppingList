@@ -14,7 +14,7 @@ import com.RightDirection.ShoppingList.interfaces.IObserver;
 public class ShoppingListFragment extends android.app.ListFragment implements IObserver{
 
     @Override
-    public void layoutWasDrawed() {
+    public void layoutHasDrawn() {
         // Необходимо сместить кнопку сохранения списка, если она пересекается с одной или несколькими
         // кнопками удаления конкретного элемента списка
         Button btnShoppingListSave = (Button) getActivity().findViewById(R.id.btnShoppingListSave);

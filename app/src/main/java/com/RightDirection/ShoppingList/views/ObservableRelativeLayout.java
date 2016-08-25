@@ -2,9 +2,7 @@ package com.RightDirection.ShoppingList.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.RightDirection.ShoppingList.interfaces.IObservable;
@@ -43,7 +41,7 @@ public class ObservableRelativeLayout extends RelativeLayout implements IObserva
     /**
     Реализуем интерфейс/шаблон Наблюдатель
     */
-    protected List<IObserver> observers;
+    List<IObserver> observers;
 
     @Override
     public void addObserver(IObserver observer) {
@@ -58,7 +56,7 @@ public class ObservableRelativeLayout extends RelativeLayout implements IObserva
     @Override
     public void notifyObservers() {
         for (IObserver observer : observers)
-            observer.layoutWasDrawed();
+            observer.layoutHasDrawn();
     }
 }
 

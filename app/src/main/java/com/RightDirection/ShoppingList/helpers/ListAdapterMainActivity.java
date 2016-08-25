@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
@@ -37,9 +35,9 @@ import java.util.ArrayList;
 
 public class ListAdapterMainActivity extends ListAdapter {
 
-    ActionMode mActionMode;
-    ListItem mSelectedItem = null;
-    View mSelectedView;
+    private ActionMode mActionMode;
+    private ListItem mSelectedItem = null;
+    private View mSelectedView;
 
     public ListAdapterMainActivity(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);

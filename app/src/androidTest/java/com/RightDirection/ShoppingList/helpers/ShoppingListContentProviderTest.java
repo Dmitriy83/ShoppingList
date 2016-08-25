@@ -7,27 +7,26 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 public class ShoppingListContentProviderTest extends ProviderTestCase2{
 
-    String mListName = "newShoppingListTest", mProductName1 = "newProductTest1", mProductName2 = "newProductTest2";
-    long mListId = 0, mProductId1 = 0, mProductId2 = 0;
+    private String mListName = "newShoppingListTest";
+    private String mProductName1 = "newProductTest1";
+    private long mListId = 0;
+    private long mProductId1 = 0;
 
     public ShoppingListContentProviderTest() {
         super(ShoppingListContentProvider.class, ShoppingListContentProvider.AUTHORITY);
     }
 
-    @Test
+    //@Test // Для JUnit3 метод считается тестовым, если есть преффикс test
     public void testOperationsWithDataBase() throws Exception {
         MockContentResolver mockContentResolver = getMockContentResolver();
-        testInsertAndQuery(mockContentResolver);
-        testUpdate(mockContentResolver);
-        testDelete(mockContentResolver);
+        insertAndQuery(mockContentResolver);
+        update(mockContentResolver);
+        delete(mockContentResolver);
     }
 
-    public void testInsertAndQuery(MockContentResolver mockContentResolver) throws Exception {
+    private void insertAndQuery(MockContentResolver mockContentResolver) throws Exception {
         // Добавим новый список покупок
         ContentValues contentValues = new ContentValues();
         contentValues.put(ShoppingListContentProvider.KEY_NAME, mListName);
@@ -39,6 +38,7 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверим, что в таблице есть запись с именем mListName
         Cursor cursor = mockContentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI
                 , null, ShoppingListContentProvider.KEY_NAME + " = '" + mListName + "'", null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 1);
         cursor.close();
 
@@ -52,18 +52,21 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверим, что в таблице есть запись с именем нового продукта
         cursor = mockContentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI
                 , null, ShoppingListContentProvider.KEY_NAME + " = '" + mProductName1 + "'", null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 1);
         cursor.close();
 
+        String mProductName2 = "newProductTest2";
         contentValues.put(ShoppingListContentProvider.KEY_NAME, mProductName2);
         idUri = mockContentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
         assertNotNull(idUri);
-        mProductId2 = ContentUris.parseId(idUri);
+        long mProductId2 = ContentUris.parseId(idUri);
         assertTrue(mProductId2 > 0);
 
         // Проверим, что в таблице есть запись с именем нового продукта
         cursor = mockContentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI
                 , null, ShoppingListContentProvider.KEY_NAME + " = '" + mProductName2 + "'", null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 1);
         cursor.close();
 
@@ -87,11 +90,12 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
                         + " AND (" + ShoppingListContentProvider.KEY_PRODUCT_ID + " = " + mProductId1
                         + " OR " + ShoppingListContentProvider.KEY_PRODUCT_ID + " = " + mProductId2 + ")"
                 , null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 2);
         cursor.close();
     }
 
-    public void testUpdate(MockContentResolver mockContentResolver) throws Exception {
+    private void update(MockContentResolver mockContentResolver) throws Exception {
 
         // Изменяем имя списка покупок (добавляем суффикс Changed)
         ContentValues contentValues = new ContentValues();
@@ -103,6 +107,7 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверяем, что у списка со старым id изменилось имя
         Cursor cursor = mockContentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI
                 , null, ShoppingListContentProvider.KEY_NAME + " = '" + mListName + "'", null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 1);
 
         // Изменяем имя одного из продуктов (добавляем суффикс Changed)
@@ -114,10 +119,11 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверяем, что имя продукта изменилось (выборка по id)
         cursor = mockContentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI
                 , null, ShoppingListContentProvider.KEY_NAME + " = '" + mProductName1 + "'", null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 1);
     }
 
-    public void testDelete(MockContentResolver mockContentResolver) throws Exception {
+    private void delete(MockContentResolver mockContentResolver) throws Exception {
         // Удаляем один из тестовых продуктов
         mockContentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
                 ShoppingListContentProvider.KEY_NAME + " = '" + mProductName1 + "'", null);
@@ -125,11 +131,13 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверяем, что что продукт удалился из таблицы продуктов
         Cursor cursor = mockContentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_ID + " = " + mProductId1, null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 0);
 
         // Проверяем, что что продукт удалился из таблицы содержимого списка покупок
         cursor = mockContentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_PRODUCT_ID + " = " + mProductId1, null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 0);
 
         // Удаляем список покупок
@@ -139,11 +147,13 @@ public class ShoppingListContentProviderTest extends ProviderTestCase2{
         // Проверяем, что список покупок удалился
         cursor = mockContentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_ID + " = " + mListId, null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 0);
 
         // Проверяем, что нет записей по данному списку покупок и в таблице содержимого
         cursor = mockContentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + " = " + mListId, null, null);
+        assertNotNull(cursor);
         assertTrue(cursor.getCount() == 0);
     }
 }

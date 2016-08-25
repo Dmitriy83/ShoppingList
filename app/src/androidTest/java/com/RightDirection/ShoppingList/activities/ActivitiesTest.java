@@ -50,19 +50,19 @@ import static org.hamcrest.CoreMatchers.not;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ActivitiesTest {
 
-    static String mNewListName = "newTestShoppingList";
-    final static String mNewProductNamePattern = "testNewProduct";
-    static UiDevice mDevice = null;
-    static MainActivity mActivity = null;
+    private static String mNewListName = "newTestShoppingList";
+    private final static String mNewProductNamePattern = "testNewProduct";
+    private static UiDevice mDevice = null;
+    private static MainActivity mActivity = null;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+    public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
 
     /**
      * Процедура необходима для поиска объектов класса ListItem в ListAdapter по имени
      */
-    public static Matcher<Object> withItemValue(final String value) {
+    private static Matcher<Object> withItemValue(final String value) {
         return new BoundedMatcher<Object, ListItem>(ListItem.class) {
             @Override
             public void describeTo(Description description) {

@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 
 public class ObservableRelativeLayoutTest {
 
-    ObservableRelativeLayout mRelativeLayout;
+    private ObservableRelativeLayout mRelativeLayout;
 
     @Mock IObserver mObserver;
 
@@ -31,7 +31,7 @@ public class ObservableRelativeLayoutTest {
         mRelativeLayout = (ObservableRelativeLayout)activity.findViewById(R.id.shoppingListEditingContainerLayout);
         mObserver = new IObserver() {
             @Override
-            public void layoutWasDrawed() {
+            public void layoutHasDrawn() {
 
             }
         };

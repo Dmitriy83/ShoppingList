@@ -12,7 +12,6 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListAdapterProductsList extends ListAdapter {
 

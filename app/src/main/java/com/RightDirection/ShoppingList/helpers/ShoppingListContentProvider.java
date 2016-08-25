@@ -4,7 +4,6 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,10 +18,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 
 public class ShoppingListContentProvider extends ContentProvider {
 
@@ -57,7 +52,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
-    public static final String DATABASE_NAME = "shoppingListDatabase.db";
+    private static final String DATABASE_NAME = "shoppingListDatabase.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";

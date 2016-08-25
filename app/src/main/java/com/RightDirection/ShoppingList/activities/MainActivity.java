@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         InputListNameDialog.IInputListNameDialogListener{
 
     private ArrayList<ListItem> mShoppingLists;
-    protected ListAdapterMainActivity mShoppingListsAdapter;
+    private ListAdapterMainActivity mShoppingListsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
