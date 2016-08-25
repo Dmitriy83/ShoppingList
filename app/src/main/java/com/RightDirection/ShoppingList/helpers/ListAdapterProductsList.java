@@ -42,13 +42,9 @@ public class ListAdapterProductsList extends ListAdapter {
             ListItem item = (ListItem) view.getTag();
 
             // Удалим запись из БД по id
-            // 1) Удаление из справочника продуктов
             ContentResolver contentResolver = mContext.getContentResolver();
             contentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
                         ShoppingListContentProvider.KEY_ID + "=" + item.getId(), null);
-            // 2) Удаление ссылок на удаленный продукт
-            contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                    ShoppingListContentProvider.KEY_PRODUCT_ID + "=" + item.getId(), null);
 
             remove(item);
             notifyDataSetChanged();

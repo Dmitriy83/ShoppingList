@@ -16,7 +16,7 @@
         android:layout_toLeftOf="@+id/btnAddProductToShoppingList"
         android:layout_toStartOf="@+id/btnAddProductToShoppingList"
         android:inputType="textCapSentences"
-        android:imeOptions="flagNoExtractUi"
+        android:imeOptions="flagNoExtractUi|actionDone"
         android:textColor="@android:color/black" />
 
     <Button

@@ -28,6 +28,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     private ShoppingListSQLiteOpenHelper sqLiteOpenHelper;
 
+    public static final String AUTHORITY = "com.RightDirection.shoppinglistcontentprovider";
     public static final Uri PRODUCTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/products");
     public static final Uri SHOPPING_LISTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglists");
     public static final Uri SHOPPING_LIST_CONTENT_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglistcontent");
@@ -56,7 +57,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
-    private static final String DATABASE_NAME = "shoppingListDatabase.db";
+    public static final String DATABASE_NAME = "shoppingListDatabase.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
@@ -91,15 +92,11 @@ public class ShoppingListContentProvider extends ContentProvider {
         // Откроем базу данных для чтения/записи
         SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
 
-        // Чтобы добавить в базу данных пустую строку с помощью пустого объекта ContentValues, используйте
-        // параметр nullColumnHack, указав название столбца, значение которого может равняться null.
-        String nullColumnHack = null;
-
         // Установим таблицу и CONTENT_URI
         String tableName = getTableName(uri, false);
         Uri contentUri = getContentUri(uri);
 
-        long id = db.insert(tableName, nullColumnHack, values);
+        long id = db.insert(tableName, null, values);
 
         if (id > -1) {
             // Создадим и вернем путь к только что вставленной строке
@@ -132,16 +129,53 @@ public class ShoppingListContentProvider extends ContentProvider {
         // Чтобы удалить все строки и вернуть значение, передадим 1
         if (selection == null) selection = "1";
 
+        // Если удаляется запись таблиц SHOPPING_LISTS или PRODUCTS, то необходимо удалить также подчиненные
+        // записи таблицы SHOPPING_LISTS_CONTENT
+        switch(uriMatcher.match(uri)){
+            case PRODUCTS_SINGLE_ROW:
+            case PRODUCTS_ALL_ROWS:
+                deleteSubRows(PRODUCTS_CONTENT_URI, KEY_PRODUCT_ID, selection, selectionArgs);
+                break;
+            case SHOPPING_LISTS_SINGLE_ROW:
+            case SHOPPING_LISTS_ALL_ROWS:
+                deleteSubRows(SHOPPING_LISTS_CONTENT_URI, KEY_SHOPPING_LIST_ID, selection, selectionArgs);
+                break;
+            default: break;
+        }
+
         // Выполним удаление
         int deleteCount = db.delete(tableName, selection, selectionArgs);
 
         // Оповестим все объекты ContentObserver об изменениях в наборе данных
         Context context = getContext();
-        if (context != null) {
-            context.getContentResolver().notifyChange(uri, null);
-        }
+        if (context != null) context.getContentResolver().notifyChange(uri, null);
 
         return deleteCount;
+    }
+
+    /**
+    Удаление подчиненных строк из таблицы SHOPPING_LIST_CONTENT
+     */
+    private void deleteSubRows(Uri mainTableUri, String key, String selection, String[] selectionArgs) {
+        // Определим id списка (или списков, если удаление проивзодится, например, по имени) для удаления
+        Cursor cursor = query(mainTableUri, new String[]{KEY_ID}, selection, selectionArgs, null);
+        if (cursor != null) {
+            String subSelection = "";
+            boolean firstRaw = true;
+            while (cursor.moveToNext()) {
+                String listId = cursor.getString(cursor.getColumnIndex(KEY_ID));
+                if (firstRaw){
+                    firstRaw = false;
+                }
+                else{
+                    subSelection += " OR ";
+                }
+                subSelection += key + " = " + listId;
+            }
+            cursor.close();
+
+            delete(SHOPPING_LIST_CONTENT_CONTENT_URI, subSelection, null);
+        }
     }
 
     @Override
@@ -251,19 +285,48 @@ public class ShoppingListContentProvider extends ContentProvider {
     }
 
     @Nullable
-    public static Uri getImageUri(Cursor data) {
+    public static Uri getImageUri(@NonNull Cursor data) {
         int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
 
         String strImageUri = data.getString(keyPictureIndex);
 
-        Uri imageUri;
+        Uri imageUri = null;
         if (strImageUri != null){
             imageUri = Uri.parse(strImageUri);
         }
-        else{
-            imageUri = null;
-        }
         return imageUri;
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
+
+        String LOG_TAG = "Provider - openFile";
+        Log.v(LOG_TAG, "Called with uri: '" + uri + "'." + uri.getLastPathSegment());
+
+        switch (uriMatcher.match(uri)) {
+            case FILES:
+                // The desired file name is specified by the last segment of the path
+                // E.g. 'content://com.stephendnicholas.gmailattach.provider/Test.txt'
+                // Take this and build the path to the file
+                Context context = getContext();
+                if (context != null) {
+                    String fileLocation = context.getCacheDir() + File.separator + uri.getLastPathSegment();
+
+                    // Create & return a ParcelFileDescriptor pointing to the file
+                    // Note: I don't care what mode they ask for - they're only getting
+                    // read only
+                    return ParcelFileDescriptor.open(new File(fileLocation), ParcelFileDescriptor.MODE_READ_ONLY);
+                }
+                else {
+                    Log.v(LOG_TAG, "getContext().getCacheDir() returned null.");
+                    return null;
+                }
+
+                // Otherwise unrecognised Uri
+            default:
+                Log.v(LOG_TAG, "Unsupported uri: '" + uri + "'.");
+                throw new FileNotFoundException("Unsupported uri: " + uri.toString());
+        }
     }
 
     class ShoppingListSQLiteOpenHelper extends SQLiteOpenHelper {
@@ -313,38 +376,6 @@ public class ShoppingListContentProvider extends ContentProvider {
                         + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER);";
                 db.execSQL(queryCreateShoppingListContentTable);
             }
-        }
-    }
-
-    @Override
-    public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
-
-        String LOG_TAG = "Provider - openFile";
-        Log.v(LOG_TAG, "Called with uri: '" + uri + "'." + uri.getLastPathSegment());
-
-        switch (uriMatcher.match(uri)) {
-            case FILES:
-                // The desired file name is specified by the last segment of the path
-                // E.g. 'content://com.stephendnicholas.gmailattach.provider/Test.txt'
-                // Take this and build the path to the file
-                Context context = getContext();
-                if (context != null) {
-                    String fileLocation = context.getCacheDir() + File.separator + uri.getLastPathSegment();
-
-                    // Create & return a ParcelFileDescriptor pointing to the file
-                    // Note: I don't care what mode they ask for - they're only getting
-                    // read only
-                    return ParcelFileDescriptor.open(new File(fileLocation), ParcelFileDescriptor.MODE_READ_ONLY);
-                }
-                else {
-                    Log.v(LOG_TAG, "getContext().getCacheDir() returned null.");
-                    return null;
-                }
-
-            // Otherwise unrecognised Uri
-            default:
-                Log.v(LOG_TAG, "Unsupported uri: '" + uri + "'.");
-                throw new FileNotFoundException("Unsupported uri: " + uri.toString());
         }
     }
 }

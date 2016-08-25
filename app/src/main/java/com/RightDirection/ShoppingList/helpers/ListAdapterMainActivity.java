@@ -139,8 +139,6 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                                     // Удалим запись из БД по id
                                     ContentResolver contentResolver = mParentActivity.getContentResolver();
-                                    contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                                            ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mSelectedItem.getId(), null);
                                     contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                                             ShoppingListContentProvider.KEY_ID + "=" + mSelectedItem.getId(), null);
 

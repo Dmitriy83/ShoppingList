@@ -23,7 +23,7 @@ import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
-import com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout;
+import com.RightDirection.ShoppingList.views.ObservableRelativeLayout;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         FragmentManager fragmentManager = getFragmentManager();
         ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
         // Добавим фрагемент в качестве Наблюдателя к родительскому контейнеру (для отслеживания события полной отрисовки дочерних элементов)
-        SoftKeyboardListenedRelativeLayout shoppingListEditingContainerLayout = (SoftKeyboardListenedRelativeLayout)findViewById(R.id.shoppingListEditingContainerLayout);
+        ObservableRelativeLayout shoppingListEditingContainerLayout = (ObservableRelativeLayout)findViewById(R.id.shoppingListEditingContainerLayout);
         if (shoppingListEditingContainerLayout != null && shoppingListFragment != null)
             shoppingListEditingContainerLayout.addObserver(shoppingListFragment);
 
@@ -94,7 +94,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         super.onSaveInstanceState(outState);
 
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
+        outState.putParcelableArrayList(String .valueOf(R.string.shopping_list_items), mShoppingListItems);
     }
 
     private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
@@ -152,7 +152,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         // Заполним значения для сохранения в базе данных
         if (mIsNewList) {
-            // Запишем новый списко покупок в таблицу SHOPPING_LISTS
+            // Запишем новый список покупок в таблицу SHOPPING_LISTS
             contentValues.put(ShoppingListContentProvider.KEY_NAME, listName);
             Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
             long listId = ContentUris.parseId(insertedId);

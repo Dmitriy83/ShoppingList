@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.views;
 
 import android.app.Activity;
 import android.support.test.rule.ActivityTestRule;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
@@ -14,9 +15,9 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 
-public class SoftKeyboardListenedRelativeLayoutTest {
+public class ObservableRelativeLayoutTest {
 
-    SoftKeyboardListenedRelativeLayout mRelativeLayout;
+    ObservableRelativeLayout mRelativeLayout;
 
     @Mock IObserver mObserver;
 
@@ -27,7 +28,7 @@ public class SoftKeyboardListenedRelativeLayoutTest {
     @Before
     public void setUp() throws Exception {
         Activity activity = mActivityRule.getActivity();
-        mRelativeLayout = (SoftKeyboardListenedRelativeLayout)activity.findViewById(R.id.shoppingListEditingContainerLayout);
+        mRelativeLayout = (ObservableRelativeLayout)activity.findViewById(R.id.shoppingListEditingContainerLayout);
         mObserver = new IObserver() {
             @Override
             public void layoutWasDrawed() {
@@ -37,12 +38,14 @@ public class SoftKeyboardListenedRelativeLayoutTest {
     }
 
     @Test
+    @SmallTest
     public void testAddObserver() throws Exception {
         mRelativeLayout.addObserver(mObserver);
         assertEquals(2, mRelativeLayout.observers.size());
     }
 
     @Test
+    @SmallTest
     public void testRemoveObserver() throws Exception {
         // Протестируем удаление из списка отсутствующего элемента
         mRelativeLayout.removeObserver(mObserver);
@@ -58,6 +61,7 @@ public class SoftKeyboardListenedRelativeLayoutTest {
     }
 
     @Test
+    @SmallTest
     public void testNotifyObservers() throws Exception {
         mRelativeLayout.notifyObservers();
 

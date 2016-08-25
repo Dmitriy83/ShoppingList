@@ -15,7 +15,7 @@ import com.RightDirection.ShoppingList.R;
 
 public class InputListNameDialog extends DialogFragment{
 
-    private String mInitName = null;
+    private String mInitName = "";
     private String mId = null;
 
     /* The activity that creates an instance of this dialog fragment must
@@ -39,9 +39,8 @@ public class InputListNameDialog extends DialogFragment{
         // Передадим null в качестве родительского view, т.к. заполнение будет сделано в макете диалога
         View view = inflater.inflate(R.layout.input_new_list_name_dialog, null);
         final EditText inputNewListName = (EditText)view.findViewById(R.id.inputNewListName);
-        if (mInitName != null) {
-            inputNewListName.setText(mInitName);
-        }
+        inputNewListName.setText(mInitName);
+
         builder.setView(view);
 
         // Добавим кнопки-действия

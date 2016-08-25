@@ -13,15 +13,15 @@ import com.RightDirection.ShoppingList.interfaces.IObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoftKeyboardListenedRelativeLayout extends RelativeLayout implements IObservable{
+public class ObservableRelativeLayout extends RelativeLayout implements IObservable{
 
-    public SoftKeyboardListenedRelativeLayout(Context context) {
+    public ObservableRelativeLayout(Context context) {
         super(context);
         setWillNotDraw(false);
         observers = new ArrayList<>();
     }
 
-    public SoftKeyboardListenedRelativeLayout(Context context, AttributeSet attrs) {
+    public ObservableRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
         observers = new ArrayList<>();

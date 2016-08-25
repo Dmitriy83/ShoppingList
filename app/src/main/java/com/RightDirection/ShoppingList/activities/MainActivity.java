@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputListNameDialog.IInputListNameDialogListener{
 
-    private ArrayList<ListItem> shoppingLists;
-    private ListAdapterMainActivity shoppingListsAdapter;
+    private ArrayList<ListItem> mShoppingLists;
+    protected ListAdapterMainActivity mShoppingListsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
 
         // Создаем массив для хранения списков покупок
-        shoppingLists = new ArrayList<>();
+        mShoppingLists = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списками покупок
-        shoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
-                shoppingLists);
+        mShoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
+                mShoppingLists);
 
         // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(shoppingListsAdapter);
+        shoppingListFragment.setListAdapter(mShoppingListsAdapter);
 
         // Заполним списки покупок из базы данных
         getLoaderManager().initLoader(0, null, this);
@@ -122,13 +122,13 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
 
-        shoppingLists.clear();
+        mShoppingLists.clear();
         while (data.moveToNext()){
             ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), null);
-            shoppingLists.add(newListItem);
+            mShoppingLists.add(newListItem);
         }
 
-        shoppingListsAdapter.notifyDataSetChanged();
+        mShoppingListsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 values, ShoppingListContentProvider.KEY_ID +  " = " + listID, null);
 
-        shoppingListsAdapter.updateItem(listID, listName, null);
+        mShoppingListsAdapter.updateItem(listID, listName, null);
     }
 
     @Override
