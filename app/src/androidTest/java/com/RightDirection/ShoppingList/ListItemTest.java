@@ -73,4 +73,21 @@ public class ListItemTest {
         ListItem listItemConverted = (ListItem)listItemParcelable;
         assertEquals(listItem, listItemConverted);
     }
+
+    @Test
+    public void testSetGetCount() throws Exception {
+        assertEquals(1, listItem.getCount(), 0);
+        listItem.setCount(7);
+        assertEquals(7, listItem.getCount(), 0);
+        listItem.setCount(0);
+        assertEquals(0, listItem.getCount(), 0);
+        listItem.setCount(3);
+        assertEquals(3, listItem.getCount(), 0);
+        listItem.setCount(-5);
+        assertEquals(3, listItem.getCount(), 0);
+        listItem.setCount("5");
+        assertEquals(5, listItem.getCount(), 0);
+        listItem.setCount("s5");
+        assertEquals(5, listItem.getCount(), 0);
+    }
 }

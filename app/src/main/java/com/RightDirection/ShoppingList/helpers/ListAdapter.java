@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +44,11 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public ImageButton imgDelete;
         public ImageView productImage;
         public RelativeLayout productRepresent;
+
+        public ImageButton imgDecrease;
+        public ImageButton imgIncrease;
+        public EditText etCount;
+        public TextView txtCount;
     }
 
     public void updateItem(String id, String name, Uri imageUri) {
@@ -59,7 +66,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
     /**
      * Класс-структура для получения и передачи параметров (item, viewHolder, rowView)
      */
-    class GetViewInitializer {
+    class ViewInitializer {
 
         public final ListItem item;
         public final ViewHolder viewHolder;
@@ -70,9 +77,10 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
          * @param position позиция элемента в списке
          * @param convertView View-контейнер
          */
-        GetViewInitializer(int position, View convertView){
+        ViewInitializer(int position, View convertView){
             item = getItem(position);
             String name = item.getName();
+            Float count = item.getCount();
 
             // Убедимся, что метод getView не вызывается лишнее количество раз
             Log.d("GET_VIEW_CALLING", "Position " + position + ", convertView " + convertView);
@@ -85,10 +93,12 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
                 layoutInflater.inflate(mResource, rowView, true);
                 // configure view holder
                 viewHolder = new ViewHolder();
-                viewHolder.productNameView = (TextView) rowView.findViewById(R.id.itemName);
+                viewHolder.productNameView = (TextView) rowView.findViewById(R.id.txtName);
                 viewHolder.imgDelete = (ImageButton) rowView.findViewById(R.id.imgDelete);
                 viewHolder.productImage = (ImageView) rowView.findViewById(R.id.imgProduct);
                 viewHolder.productRepresent = (RelativeLayout) rowView.findViewById(R.id.productRepresent);
+                viewHolder.etCount = (EditText) rowView.findViewById(R.id.etCount);
+                viewHolder.txtCount = (TextView) rowView.findViewById(R.id.txtCount);
                 rowView.setTag(viewHolder);
             }
             else{
@@ -110,6 +120,15 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
             Uri imageUri = item.getImageUri();
             if (viewHolder.productImage != null) {
                 setProductImage(viewHolder.productImage, imageUri);
+            }
+
+            if (viewHolder.etCount != null){
+                viewHolder.etCount.setTag(item);
+                viewHolder.etCount.setText(String.format(Locale.ENGLISH, "%.1f", count));
+            }
+            if (viewHolder.txtCount != null){
+                viewHolder.txtCount.setTag(item);
+                viewHolder.txtCount.setText(String.format(Locale.ENGLISH, "%.1f", count));
             }
         }
     }

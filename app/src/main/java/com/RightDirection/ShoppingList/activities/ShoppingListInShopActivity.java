@@ -76,11 +76,11 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnFilter.setTransformationMethod(null);
             btnFilter.setOnClickListener(onBtnFilterClick);
-            if (savedInstanceState != null && mShoppingListItemsAdapter.ismIsFiltered()) {
-                btnFilter.setText(R.string.show_marked);
+            if (savedInstanceState != null && mShoppingListItemsAdapter.isFiltered()) {
+                btnFilter.setSelected(true);
             }
             else{
-                btnFilter.setText(R.string.hide_marked);
+                btnFilter.setSelected(false);
             }
         }
     }
@@ -90,7 +90,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
         outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mShoppingListItemsAdapter.getOriginalValues());
-        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.ismIsFiltered());
+        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.isFiltered());
 
         super.onSaveInstanceState(outState);
     }
@@ -105,10 +105,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex),
+                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
             mShoppingListItems.add(newListItem);
         }
 
@@ -122,12 +124,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         @Override
         public void onClick(View view) {
             Button btnFilter = (Button)view;
-            if (mShoppingListItemsAdapter.ismIsFiltered()) {
-                btnFilter.setText(R.string.hide_marked);
+            if (mShoppingListItemsAdapter.isFiltered()) {
+                btnFilter.setSelected(false);
                 mShoppingListItemsAdapter.showMarked();
             }
             else{
-                btnFilter.setText(R.string.show_marked);
+                btnFilter.setSelected(true);
                 mShoppingListItemsAdapter.hideMarked();
             }
 

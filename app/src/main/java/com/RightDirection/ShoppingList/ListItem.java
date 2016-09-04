@@ -3,6 +3,7 @@ package com.RightDirection.ShoppingList;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Editable;
 
 public class ListItem implements Parcelable {
 
@@ -10,11 +11,20 @@ public class ListItem implements Parcelable {
     private String name;
     private boolean checked;
     private Uri imageUri;
+    private float count;
 
     public ListItem(String id, String name, Uri imageUri) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
+        this.count = 1;
+    }
+
+    public ListItem(String id, String name, Uri imageUri, float count) {
+        this.id = id;
+        this.name = name;
+        this.imageUri = imageUri;
+        this.count = count;
     }
 
     protected ListItem(Parcel in) {
@@ -22,6 +32,7 @@ public class ListItem implements Parcelable {
         name = in.readString();
         checked = in.readByte() != 0;
         imageUri = in.readParcelable(Uri.class.getClassLoader());
+        count = in.readFloat();
     }
 
     public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
@@ -79,5 +90,25 @@ public class ListItem implements Parcelable {
         dest.writeString(name);
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeParcelable(imageUri, flags);
+        dest.writeFloat(count);
+    }
+
+    public void setCount(float count) {
+        if (count >= 0) {
+            this.count = count;
+        }
+    }
+
+    public float getCount() {
+        return count;
+    }
+
+    public void setCount(String stringCount) {
+        try {
+            float count = Float.valueOf(stringCount);
+            setCount(count);
+        } catch (NumberFormatException e){
+            // Не меняем количество
+        }
     }
 }

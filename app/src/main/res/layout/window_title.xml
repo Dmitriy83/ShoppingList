@@ -4,27 +4,28 @@
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_green_light"
-    android:gravity="center">
+    android:padding="10dp"
+    android:gravity="center"
+    >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/in_shop"
         android:id="@+id/title"
         android:textColor="#ffffff"
-        android:textSize="@dimen/abc_text_size_title_material"
         android:layout_alignBottom="@+id/btnFilter"
-        android:gravity="center" />
+        android:gravity="center"
+        style="@style/AppThemeNoActionBar"
+        android:textSize="@dimen/abc_text_size_title_material_toolbar" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:id="@+id/btnFilter"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:color/holo_green_dark"
-        android:text="@string/hide_marked"
-        android:textColor="#ffffff" />
+        android:background="@xml/filter_button_selector"
+        />
 
 </RelativeLayout>

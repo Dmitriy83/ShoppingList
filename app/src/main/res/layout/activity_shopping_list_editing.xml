@@ -27,6 +27,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/newItemFragment"
+        android:descendantFocusability="afterDescendants"
         />
 
     <RelativeLayout

@@ -13,8 +13,8 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:id="@+id/itemName"
+            android:layout_height="@dimen/normal_size"
+            android:id="@+id/txtName"
             android:padding="10dp"
             android:textColor="#F000"
             android:layout_alignParentRight="true"
@@ -24,13 +24,48 @@
     </RelativeLayout>
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
         android:id="@+id/imgDelete"
         android:contentDescription="@string/cross"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:drawable/ic_menu_close_clear_cancel" />
+        android:background="@drawable/ic_delete" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/productRepresent"
+        android:layout_toLeftOf="@+id/imgDelete"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center">
+        <ImageButton
+            android:layout_width="@dimen/normal_size"
+            android:layout_height="@dimen/normal_size"
+            android:id="@+id/imgDecrease"
+            android:contentDescription="@string/decrease"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/ic_remove_circle" />
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="@dimen/normal_size"
+            android:layout_toRightOf="@+id/imgDecrease"
+            android:id="@+id/etCount"
+            android:hint=""
+            android:gravity="right"
+            android:digits="0123456789."/>
+
+        <ImageButton
+            android:layout_width="@dimen/normal_size"
+            android:layout_height="@dimen/normal_size"
+            android:id="@+id/imgIncrease"
+            android:contentDescription="@string/increase"
+            android:layout_toRightOf="@+id/etCount"
+            android:background="@drawable/ic_add_circle" />
+    </RelativeLayout>
 
 </RelativeLayout>

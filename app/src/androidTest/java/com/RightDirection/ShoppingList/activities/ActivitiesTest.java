@@ -2,8 +2,12 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.action.MotionEvents;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.test.suitebuilder.annotation.MediumTest;
@@ -16,10 +20,12 @@ import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.views.CustomCheckBoxPreference;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,8 +40,13 @@ import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static android.support.test.espresso.Espresso.onView;
@@ -82,8 +93,8 @@ public class ActivitiesTest {
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         ContentResolver contentResolver = mActivity.getContentResolver();
 
         contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
@@ -94,7 +105,12 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
-    public void testAddNewShoppingList(){
+    public void testAddAndEditNewShoppingList(){
+        addNewShoppingList();
+        editNewShoppingList();
+    }
+
+    public void addNewShoppingList(){
         // Нажмем на кнопку добавления нового списка покупок
         onView(withId(R.id.fabAddNewShoppingList)).perform(click());
 
@@ -138,9 +154,7 @@ public class ActivitiesTest {
         onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
     }
 
-    @Test
-    @MediumTest
-    public void testOpenShoppingListForEditing() {
+    public void editNewShoppingList() {
         // Длинный клик на новом списке покупок
         onData(withItemValue(mNewListName)).perform(longClick());
 
@@ -166,7 +180,110 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
+    public void testShoppingListEditingActivity_ProductsCountEnter() {
+        addNewShoppingList();
+
+        // Длинный клик на новом списке покупок
+        onData(withItemValue(mNewListName)).perform(longClick());
+
+        // В меню действий нажимаем кнопку редактирования списка
+        onView(withId(R.id.imgEdit)).perform(click());
+
+        // Проверяем, что открылась активность редактирования списка покупок
+        onView(withId(R.id.btnShoppingListSave)).check(matches(isDisplayed()));
+
+        // На одном из элементов проверяем, что количество = 1
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .check(matches(withText("1.0")));
+
+        // Нажимаем два раза на кнопку "Increase"
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+                .perform(click())
+                .perform(click());
+
+        // Проверяем, что в текстовом поле отображается число 3
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .check(matches(withText("3.0")));
+
+        // Нажимаем кнопку "Decrease"
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgDecrease))
+                .perform(click());
+
+        // Проверяем, что в текстовом поле отображается число 2
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .check(matches(withText("2.0")));
+
+        // Вводим в текстовое поле количество 5
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .perform(clearText())
+                .perform(typeText("5.0"));
+
+        // Попытаемся ввести не число
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .perform(typeText("Not number"))
+        // Проверяем, что в окне снова отображается 5
+                .check(matches(withText("5.0")));
+
+        // Выбираем другой элемент списка. С помощью кнопки добавим количество до 11
+        for (int i=0; i<10; i++) {
+            onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.imgIncrease))
+                    .perform(click());
+        }
+
+        // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+                .check(matches(withText("5.0")));
+        onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.etCount))
+                .check(matches(withText("11.0")));
+
+        // Сохраняем список покупок
+        onView(withId(R.id.btnShoppingListSave)).perform(click());
+
+        // Проверяем, что снова открылась активность MainActivity
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+
+        // Проверяем, что в таблице содержимого списка покупок для редактированных элементов проставлено корректное количество
+        ContentResolver contentResolver = mActivity.getContentResolver();
+        Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, ShoppingListContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
+                + ShoppingListContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
+                null, null);
+        assertNotNull(cursor);
+        assertTrue(cursor.getCount() == 2);
+        int keyCountIndex = cursor.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+        int keyNameIndex = cursor.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        while (cursor.moveToNext()) {
+            if (cursor.getString(keyNameIndex).equals(mNewProductNamePattern + "1")) {
+                assertEquals("5", cursor.getString(keyCountIndex));
+            }
+            else if (cursor.getString(keyNameIndex).equals(mNewProductNamePattern + "2")) {
+                assertEquals("11", cursor.getString(keyCountIndex));
+            }
+        }
+        cursor.close();
+
+        testShoppingListInShopActivity_CountAppearing();
+    }
+
+    public void testShoppingListInShopActivity_CountAppearing() {
+        // Клик на новом списке покупок
+        onData(withItemValue(mNewListName)).perform(click());
+
+        // Проверяем, что открылась активность "В магазине"
+        onView(withId(R.id.btnFilter)).check(matches(isDisplayed()));
+
+        // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+                .check(matches(withText("5.0")));
+        onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.txtCount))
+                .check(matches(withText("11.0")));
+    }
+
+    @Test
+    @MediumTest
     public void testRenameShoppingList() {
+        addNewShoppingList();
+
         // Длинный клик на новом списке покупок
         onData(withItemValue(mNewListName)).perform(longClick());
 
@@ -185,7 +302,82 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
+    public void testActivityInShop() {
+        addNewShoppingList();
+        editNewShoppingList();
+
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean crossOutProduct = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_cross_out_action), true);
+        if (!crossOutProduct) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_cross_out_action))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+
+        // Клик на новом списке покупок -> Переход к активности "В магазине"
+        onData(withItemValue(mNewListName)).perform(click());
+
+        // Пробуем вычеркнуть товары обычным нажатие. Проверяем, что окно "Победа!" не отобразилось
+        for (int i = 1; i <= 3; i++){
+            onData(withItemValue(mNewProductNamePattern + i)).perform(click());
+        }
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(doesNotExist());
+
+        // Вычеркиванием все товары
+        for (int i = 1; i <= 3; i++){
+            onData(withItemValue(mNewProductNamePattern + i)).perform(swipeRight());
+        }
+        // Проверяем, что появилось окно с надписью "Победа!"
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+
+        // Возвращаемся к основной активности
+        pressBack();
+        pressBack();
+
+        // Заходим в Настройки
+        openSettings();
+
+        // Меняем настроку "вычеркивания"
+        onView(withText(mActivity.getString(R.string.pref_cross_out_action))).perform(click());
+
+        // Возвращаемся к основной активности
+        pressBack();
+
+        // Клик на новом списке покупок -> Переход к активности "В магазине"
+        onData(withItemValue(mNewListName)).perform(click());
+
+        // Вычеркиванием все товары
+        for (int i = 1; i <= 3; i++){
+            onData(withItemValue(mNewProductNamePattern + i)).perform(click());
+        }
+        // Проверяем, что появилось окно с надписью "Победа!"
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+
+        // Возвращаемся к основной активности
+        pressBack();
+        pressBack();
+    }
+
+    public void openSettings() {
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Выбираем "Настройки"
+        onView(withText(mActivity.getString(R.string.action_settings))).perform(click());
+
+        // Проверяем, что открылась форма настроек
+        onView(withText(mActivity.getString(R.string.pref_cross_out_action))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @MediumTest
     public void testSendByEmail() {
+        addNewShoppingList();
+
         // Длинный клик на новом списке покупок
         onData(withItemValue(mNewListName)).perform(longClick());
 
@@ -202,32 +394,10 @@ public class ActivitiesTest {
     @Test
     @MediumTest
     public void testDeleteShoppingList() {
-        // Нажмем на кнопку добавления нового списка покупок
-        onView(withId(R.id.fabAddNewShoppingList)).perform(click());
-
-        // Проверяем, что открылась активность редактирования списка покупок
-        onView(withId(R.id.btnShoppingListSave)).check(matches(isDisplayed()));
-
-        // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Плюс"
-        String textForTyping = mNewProductNamePattern + "1";
-        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
-        onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
-        // Проверим, что элемент появился в списке
-        onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
-
-        // См. описание в процедуре testAddNewShoppingList
-        onView(withId(R.id.newItemEditText)).perform(closeSoftKeyboard());
-
-        // Сохраним список покупок
-        onView(withId(R.id.btnShoppingListSave)).perform(click());
-
-        // Введем имя нового списка
-        String newListNameForDeleting = mNewListName + "(for deleting)";
-        onView(withId(R.id.inputNewListName)).perform(typeText(newListNameForDeleting));
-        onView(withText(mActivity.getString(R.string.ok))).perform(click());
+        addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(newListNameForDeleting)).perform(longClick());
+        onData(withItemValue(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
         onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
@@ -235,10 +405,10 @@ public class ActivitiesTest {
         // Отклоняем удаление
         onView(withText(mActivity.getString(R.string.cancel))).perform(click());
         // Проверяем, что список покупок не исчез
-        onData(withItemValue(newListNameForDeleting)).check(matches(isDisplayed()));
+        onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(newListNameForDeleting)).perform(longClick());
+        onData(withItemValue(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
         onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
@@ -249,7 +419,7 @@ public class ActivitiesTest {
         // Вариант из https://google.github.io/android-testing-support-library/docs/espresso/advanced/#asserting-that-a-view-is-not-present
         // не подходит для ListFragment. На вопрос http://stackoverflow.com/questions/39015672/how-to-assert-that-a-data-item-is-not-in-a-listfragment-with-espresso
         // ответа не получил. Поэтому реализовал свой метод для проверки.
-        checkDataNotExistInList(newListNameForDeleting);
+        checkDataNotExistInList(mNewListName);
     }
 
     private void checkDataNotExistInList(String text) {
@@ -265,14 +435,7 @@ public class ActivitiesTest {
     @Test
     @MediumTest
     public void testOpenSettings() {
-        // Нажимаем на кнопку вызова подменю
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        // Выбираем "Настройки"
-        onView(withText(mActivity.getString(R.string.action_settings))).perform(click());
-
-        // Проверяем, что открылась форма настроек
-        onView(withText(mActivity.getString(R.string.pref_cross_out_action))).check(matches(isDisplayed()));
+        openSettings();
     }
 
     @Test

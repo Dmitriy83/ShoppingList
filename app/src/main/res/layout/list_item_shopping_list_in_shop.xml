@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/imgProduct"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
@@ -15,14 +15,23 @@
         android:contentDescription="@string/product_image" />
 
     <TextView
-        android:id="@+id/itemName"
+        android:id="@+id/txtName"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@+id/imgProduct"
+        android:layout_height="@dimen/normal_size"
         android:layout_toRightOf="@+id/imgProduct"
         android:padding="10dp"
+        android:layout_toStartOf="@+id/txtCount"
+        android:layout_toLeftOf="@+id/txtCount"
         android:textColor="#F000" />
+
+    <TextView
+        android:id="@+id/txtCount"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/normal_size"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:textColor="#F000"
+        android:gravity="right|end" />
 
 </RelativeLayout>

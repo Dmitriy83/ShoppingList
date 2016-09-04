@@ -45,12 +45,12 @@ public class ListAdapterMainActivity extends ListAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
+        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
 
-        getViewInitializer.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
-        getViewInitializer.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
+        viewInitializer.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
+        viewInitializer.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
 
-        return getViewInitializer.rowView;
+        return viewInitializer.rowView;
     }
 
     private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
@@ -104,7 +104,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.context_menu, menu);
+            inflater.inflate(R.menu.main_activity_context_menu, menu);
             return true;
         }
 
@@ -187,7 +187,8 @@ public class ListAdapterMainActivity extends ListAdapter {
                         String fileName = "Shopping list '" + mSelectedItem.getName() + "'" + ".json";
                         createShoppingListJSONfile(fileName);
 
-                        mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru", "Shopping list '" + mSelectedItem.getName() + "'", "", fileName));
+                        mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru",
+                                "Shopping list '" + mSelectedItem.getName() + "'", "", fileName));
                     }
                     catch(Exception e){
                         System.out.println("Exception raises during sending mail. Discription: " + e);

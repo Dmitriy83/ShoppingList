@@ -6,13 +6,13 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:id="@+id/itemName"
+        android:id="@+id/txtName"
         android:padding="10dp"
         android:scrollbars="vertical"
         android:fadingEdge="vertical"
         android:textColor="#F000"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@color/element_highlight"/>
+        android:background="@color/item_selector"/>
 
 </RelativeLayout>

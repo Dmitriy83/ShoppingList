@@ -5,4 +5,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="save_button_margin">90px</dimen>
     <dimen name="victory_text_size">40px</dimen>
+    <dimen name="normal_size">40dp</dimen>
 </resources>

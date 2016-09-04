@@ -4,16 +4,24 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class ListAdapterShoppingListEditing extends ListAdapter{
+public class ListAdapterShoppingListEditing extends ListAdapter {
+
+    Timer mTimer;
+    IncrementTimerTask mTimerTask;
 
     public ListAdapterShoppingListEditing(Context context, int resource, ArrayList<ListItem> objects) {
         super(context, resource, objects);
@@ -22,15 +30,33 @@ public class ListAdapterShoppingListEditing extends ListAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
-        if (getViewInitializer.viewHolder != null){
-            if (getViewInitializer.viewHolder.imgDelete != null)
-                getViewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-            if (getViewInitializer.viewHolder.productRepresent != null)
-                getViewInitializer.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
+        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
+        if (viewInitializer.viewHolder != null){
+            if (viewInitializer.viewHolder.imgDecrease == null) viewInitializer.viewHolder.imgDecrease
+                    = (ImageButton) viewInitializer.rowView.findViewById(R.id.imgDecrease);
+            if (viewInitializer.viewHolder.imgIncrease == null) viewInitializer.viewHolder.imgIncrease
+                    = (ImageButton) viewInitializer.rowView.findViewById(R.id.imgIncrease);
+
+            if (viewInitializer.viewHolder.imgDelete != null)
+                viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+            if (viewInitializer.viewHolder.productRepresent != null)
+                viewInitializer.viewHolder.productRepresent.setOnLongClickListener(onProductRepresentLongClick);
+            if (viewInitializer.viewHolder.imgDecrease != null) {
+                viewInitializer.viewHolder.imgDecrease.setTag(R.id.item, viewInitializer.item);
+                viewInitializer.viewHolder.imgDecrease.setTag(R.id.etCount, viewInitializer.viewHolder.etCount);
+                viewInitializer.viewHolder.imgDecrease.setOnTouchListener(onImgDecreaseTouch);
+            }
+            if (viewInitializer.viewHolder.imgIncrease != null) {
+                viewInitializer.viewHolder.imgIncrease.setTag(R.id.item, viewInitializer.item);
+                viewInitializer.viewHolder.imgIncrease.setTag(R.id.etCount, viewInitializer.viewHolder.etCount);
+                viewInitializer.viewHolder.imgIncrease.setOnTouchListener(onImgIncreaseTouch);
+            }
+            if (viewInitializer.viewHolder.etCount != null) {
+                viewInitializer.viewHolder.etCount.setOnFocusChangeListener(onEtCountFocusChange);
+            }
         }
 
-        return getViewInitializer.rowView;
+        return viewInitializer.rowView;
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
@@ -43,9 +69,126 @@ public class ListAdapterShoppingListEditing extends ListAdapter{
         }
     };
 
-    private final View.OnClickListener onProductRepresentClick = new View.OnClickListener() {
+    private final View.OnFocusChangeListener onEtCountFocusChange = new View.OnFocusChangeListener() {
         @Override
-        public void onClick(View view) {
+        public void onFocusChange(View view, boolean hasFocus) {
+            if (!hasFocus) {
+                // Получим объект item по элементу View
+                ListItem item = (ListItem) view.getTag();
+                // Изменим количество
+                EditText etCount = (EditText) view;
+                item.setCount(etCount.getText().toString());
+            }
+        }
+    };
+
+    private final View.OnTouchListener onImgIncreaseTouch = new View.OnTouchListener() {
+        private final static int INCREMENT = 1;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            if (!(event.getAction() == MotionEvent.ACTION_DOWN
+                    || event.getAction() == MotionEvent.ACTION_UP
+                    || event.getAction() == MotionEvent.ACTION_CANCEL)){
+                return false;
+            }
+
+            onTouchEvent(view, event, INCREMENT);
+            return true;
+        }
+    };
+
+    private final View.OnTouchListener onImgDecreaseTouch = new View.OnTouchListener() {
+        private final static int INCREMENT = -1;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            if (!(event.getAction() == MotionEvent.ACTION_DOWN
+                    || event.getAction() == MotionEvent.ACTION_UP
+                    || event.getAction() == MotionEvent.ACTION_CANCEL)){
+                return false;
+            }
+
+            onTouchEvent(view, event, INCREMENT);
+            return true;
+        }
+    };
+
+    void onTouchEvent(View view, MotionEvent event, int increment){
+        if (event.getAction() == MotionEvent.ACTION_DOWN){
+            changeCount(view, increment);
+            startTimer(view, increment, 1000, 100, false);
+        }else{
+            stopTimer();
+        }
+    }
+
+    void startTimer(View view, int increment, int delay, int period, boolean accelerated){
+        mTimer = new Timer();
+        mTimerTask = new IncrementTimerTask(view, increment, accelerated);
+        mTimer.schedule(mTimerTask, delay, period);
+    }
+
+    void stopTimer(){
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+
+    class IncrementTimerTask extends TimerTask {
+        private static final long ACCELERATE_PERIOD = 5000;
+        View mView;
+        int mIncrement = 0;
+        long mStartTime = 0;
+        boolean mAccelerated;
+
+        public IncrementTimerTask(View view, int increment, boolean accelerated){
+            mView = view;
+            mIncrement = increment;
+            mStartTime = System.currentTimeMillis();
+            mAccelerated = accelerated;
+        }
+
+        @Override
+        public void run() {
+            if (!mAccelerated) {
+                long period = System.currentTimeMillis() - mStartTime;
+                if (period > ACCELERATE_PERIOD) {
+                    // Ускорим приращение, перезапустив таймер
+                    stopTimer();
+                    startTimer(mView, mIncrement, 0, 20, true);
+                }
+            }
+
+            mParentActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    changeCount(mView, mIncrement);
+                }
+            });
+        }
+    }
+
+    public void changeCount(View view, int increment){
+        // Получим объект item по элементу View
+        ListItem item = (ListItem) view.getTag(R.id.item);
+
+        // Если текстовое поле находится в фокусе, то сначала нужно получить значение из него
+        EditText etCount = (EditText) view.getTag(R.id.etCount);
+        String etCountText = etCount.getText().toString();
+        if (!etCountText.equals(String.valueOf(item.getCount())))
+            item.setCount(etCount.getText().toString());
+
+        // Изменим количество
+        item.setCount(item.getCount() + increment);
+        etCount.setText(String.valueOf(item.getCount()));
+    }
+
+
+    private final View.OnLongClickListener onProductRepresentLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
             ListItem item = (ListItem) view.getTag();
 
             ContentResolver contentResolver = mContext.getContentResolver();
@@ -65,6 +208,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter{
                 }
                 cursor.close();
             }
+            return false;
         }
     };
 }

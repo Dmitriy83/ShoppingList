@@ -35,21 +35,21 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        GetViewInitializer getViewInitializer = new GetViewInitializer(position, convertView);
+        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
 
-        if (getViewInitializer.viewHolder != null && getViewInitializer.viewHolder.productRepresent != null)
-            getViewInitializer.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
+        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productRepresent != null)
+            viewInitializer.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
 
         // Отрисуем выбор товара
-        if (getViewInitializer.viewHolder != null && getViewInitializer.viewHolder.productNameView != null) {
-            if (getViewInitializer.item.isChecked()) {
-                setViewChecked(getViewInitializer.viewHolder.productNameView);
+        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productNameView != null) {
+            if (viewInitializer.item.isChecked()) {
+                setViewChecked(viewInitializer.viewHolder);
             } else {
-                setViewUnchecked(getViewInitializer.viewHolder.productNameView);
+                setViewUnchecked(viewInitializer.viewHolder);
             }
         }
 
-        return getViewInitializer.rowView;
+        return viewInitializer.rowView;
     }
 
     private float mInitXTouch = 0;
@@ -66,7 +66,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                     setViewAndItemChecked(item, viewHolder);
                 }
                 else if (item.isChecked()){
-                    setViewUnchecked(viewHolder.productNameView);
+                    setViewUnchecked(viewHolder);
                     item.setUnchecked();
                 }
 
@@ -87,8 +87,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                     setViewAndItemChecked(item, viewHolder);
                 }
                 else if(distance < -50){
-                    if (viewHolder != null && viewHolder.productNameView != null) {
-                        setViewUnchecked(viewHolder.productNameView);
+                    if (viewHolder != null) {
+                        setViewUnchecked(viewHolder);
                         item.setUnchecked();
                     }
                 }
@@ -101,8 +101,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     };
 
     private void setViewAndItemChecked(ListItem item, ViewHolder viewHolder) {
-        if (viewHolder != null && viewHolder.productNameView != null) {
-            setViewChecked(viewHolder.productNameView);
+        if (viewHolder != null) {
+            setViewChecked(viewHolder);
             item.setChecked();
         }
         // Если "вычеркнуты" все товары, выведем сообщение пользователю
@@ -133,19 +133,27 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         return allProductsChecked;
     }
 
-    private void setViewChecked(TextView v){
+    private void setViewChecked(ViewHolder vh){
         // Покажем, что товар купили ("вычеркнем")
-        v.setPaintFlags(v.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        v.setBackgroundColor(Color.LTGRAY);
+        vh.productNameView.setPaintFlags(vh.productNameView.getPaintFlags()
+                | Paint.STRIKE_THRU_TEXT_FLAG);
+        vh.productNameView.setBackgroundColor(Color.LTGRAY);
+
+        // Установим такой же цвет и для количества
+        vh.txtCount.setBackgroundColor(Color.LTGRAY);
     }
 
-    private void setViewUnchecked(TextView v){
+    private void setViewUnchecked(ViewHolder vh){
         // Покажем, что  товар еще не купили (до этого выделили ошибочно)
-        v.setPaintFlags(v.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-        v.setBackgroundColor(Color.WHITE);
+        vh.productNameView.setPaintFlags(vh.productNameView.getPaintFlags()
+                & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        vh.productNameView.setBackgroundColor(Color.WHITE);
+
+        // Установим такой же цвет и для количества
+        vh.txtCount.setBackgroundColor(Color.WHITE);
     }
 
-    public boolean ismIsFiltered(){
+    public boolean isFiltered(){
         return mIsFiltered;
     }
 

@@ -14,11 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
+import com.RightDirection.ShoppingList.views.InputNewItemFragment;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
@@ -100,6 +102,14 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
+            // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
+            // данный момент редактируется количество с помощью клавиватуры (сохранение количества
+            // происходит при потере фокуса)
+            AutoCompleteTextView textView = (AutoCompleteTextView)findViewById(R.id.newItemEditText);
+            if (textView != null)
+                textView.requestFocus();
+
             if (mIsNewList) {
                 // Откроем окно для ввода наименования нового списка/
                 // Сохранение будет производиться в методе onDialogPositiveClick
@@ -120,6 +130,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                 for (ListItem item: mShoppingListItems) {
                     contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, mListId);
                     contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
+                    contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
                     contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
                 }
 
@@ -162,6 +173,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             for (ListItem item: mShoppingListItems) {
                 contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, listId);
                 contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
+                contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
                 contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
             }
         }
@@ -187,10 +199,12 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex),
+                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
             mShoppingListItems.add(newListItem);
         }
 

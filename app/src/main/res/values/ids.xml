@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="etCount" type="id" />
+    <item name="btnIncrease" type="id" />
+    <item name="btnDecrease" type="id" />
+    <item name="btnCountEditingModeExit" type="id" />
+    <item name="txtCount" type="id" />
+    <item name="itemId" type="id" />
+    <item name="item" type="id" />
+</resources>

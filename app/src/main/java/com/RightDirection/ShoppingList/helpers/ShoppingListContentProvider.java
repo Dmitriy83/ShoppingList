@@ -52,11 +52,12 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
+    public static final String KEY_COUNT = "COUNT";
     private static final String DATABASE_NAME = "shoppingListDatabase.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     @Override
     public boolean onCreate() {
@@ -202,11 +203,8 @@ public class ShoppingListContentProvider extends ContentProvider {
         // Откроем базу данных для чтения
         SQLiteDatabase db = sqLiteOpenHelper.getReadableDatabase();
 
-        // При необходимости заменим следующие переменные SQL-выражениями
-        String groupBy = null;
-        String having = null;
-
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
         // Установим таблицу
         queryBuilder.setTables(getTableName(uri, true));
 
@@ -216,7 +214,7 @@ public class ShoppingListContentProvider extends ContentProvider {
             queryBuilder.appendWhere(selection);
         }
 
-        return queryBuilder.query(db, projection, selection, selectionArgs, groupBy, having, sortOrder);
+        return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     private Uri getContentUri(Uri uri) {
@@ -272,7 +270,8 @@ public class ShoppingListContentProvider extends ContentProvider {
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LIST_CONTENT_SINGLE_ROW:
                 String rowID = uri.getPathSegments().get(1);
-                selection = KEY_ID + "=" + rowID + (!TextUtils.isEmpty(selection)? " AND (" + selection + ")": "");
+                selection = KEY_ID + "=" + rowID
+                        + (!TextUtils.isEmpty(selection)? " AND (" + selection + ")": "");
             default: break;
         }
 
@@ -352,7 +351,8 @@ public class ShoppingListContentProvider extends ContentProvider {
             // Таблица "Состав списка покупок"
             String queryCreateShoppingListContentTable = "CREATE TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
                     + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER);";
+                    + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER, "
+                    + KEY_COUNT + " REAL);";
             db.execSQL(queryCreateShoppingListContentTable);
         }
 
@@ -370,6 +370,13 @@ public class ShoppingListContentProvider extends ContentProvider {
                         + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER);";
                 db.execSQL(queryCreateShoppingListContentTable);
+            }
+
+            if (newVersion == 6) {
+                // Добавим колонку в таблицу SHOPPING_LIST_CONTENT
+                String queryAddColumn = "ALTER TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
+                        + " ADD COLUMN '" + KEY_COUNT + "' DEFAULT 1;";
+                db.execSQL(queryAddColumn);
             }
         }
     }

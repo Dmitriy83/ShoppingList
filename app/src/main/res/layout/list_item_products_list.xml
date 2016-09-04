@@ -12,8 +12,8 @@
         android:id="@+id/productRepresent">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/normal_size"
+            android:layout_height="@dimen/normal_size"
             android:id="@+id/imgProduct"
             android:contentDescription="@string/product_image"
             android:background="@android:drawable/presence_online"
@@ -23,8 +23,8 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:id="@+id/itemName"
+            android:layout_height="@dimen/normal_size"
+            android:id="@+id/txtName"
             android:padding="10dp"
             android:textColor="#F000"
             android:layout_toRightOf="@+id/imgProduct"
@@ -34,8 +34,8 @@
     </RelativeLayout>
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
         android:id="@+id/imgDelete"
         android:contentDescription="@string/cross"
         android:layout_alignParentTop="true"

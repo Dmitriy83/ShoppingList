@@ -14,7 +14,7 @@
     <string name="new_product">New product</string>
     <string name="product_title">Product</string>
     <string name="edit">Edit</string>
-    <string name="in_shop">"    "In shop</string>
+    <string name="in_shop">" "In shop</string>
     <string name="delete_shopping_list_question">Delete shopping list?</string>
     <string name="list_id">listId</string>
     <string name="is_new_item">isNewItem</string>
@@ -44,4 +44,6 @@
     <string name="pref_show_images">Show images</string>
     <string name="send_email">Send shopping list by email…</string>
     <string name="receive_by_email">Receive shopping list by email…</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
 </resources>

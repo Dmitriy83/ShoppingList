@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.RightDirection.ShoppingList.interfaces.IObservable;
 import com.RightDirection.ShoppingList.interfaces.IObserver;
