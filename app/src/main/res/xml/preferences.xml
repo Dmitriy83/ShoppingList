@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:title="@string/pref_title"
-    android:key="pref_key_settings" >
+    android:key="pref_key_settings">
     <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
         android:key="@string/pref_key_cross_out_action"
         android:summary="@string/pref_cross_out_action_summary"
@@ -14,4 +14,29 @@
         android:key="@string/pref_key_show_images"
         android:title="@string/pref_show_images"
         android:defaultValue="true"/>
+
+    <PreferenceScreen
+        android:key="email_settings"
+        android:title="@string/email_settings_to_load_shopping_lists"
+        android:persistent="false">
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_host"
+            android:title="@string/email_host"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_port"
+            android:title="@string/email_port"
+            android:inputType="number"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_login"
+            android:title="@string/email_login"
+            android:inputType="textEmailAddress"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreferenceForPassword
+            android:key="@string/pref_key_email_password"
+            android:title="@string/email_password"
+            android:inputType="textPassword"/>
+    </PreferenceScreen>
+
 </PreferenceScreen>

@@ -1,0 +1,453 @@
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/inspectionProfiles/Project_Default.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
++++ .idea/inspectionProfiles/Project_Default.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -0,0 +1,10 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="AndroidLintGradleCompatible" enabled="false" level="ERROR" enabled_by_default="false" />
++    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
++      <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />
++      <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
++    </inspection_tool>
++  </profile>
++</component>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/profiles_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/inspectionProfiles/profiles_settings.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
++++ .idea/inspectionProfiles/profiles_settings.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -0,0 +1,7 @@
++<component name="InspectionProjectProfileManager">
++  <settings>
++    <option name="PROJECT_PROFILE" value="Project Default" />
++    <option name="USE_PROJECT_PROFILE" value="true" />
++    <version value="1.0" />
++  </settings>
++</component>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/build.gradle	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -9,6 +9,8 @@
+         targetSdkVersion 23
+         versionCode 1
+         versionName "1.0"
++
++        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+     }
+     buildTypes {
+         release {
+@@ -23,7 +25,20 @@
+ dependencies {
+     compile fileTree(dir: 'libs', include: ['*.jar'])
+     testCompile 'junit:junit:4.12'
+-    compile 'com.android.support:appcompat-v7:23.4.0'
+-    compile 'com.android.support:design:23.4.0'
++
++    compile 'com.android.support:appcompat-v7:24.1.1'
++    compile 'com.android.support:design:24.1.1'
+     compile 'com.squareup.picasso:picasso:2.5.2'
++
++    androidTestCompile 'com.android.support.test:runner:0.3'
++    androidTestCompile 'com.android.support.test:rules:0.3'
++    androidTestCompile 'com.android.support:support-annotations:24.1.1'
++
++    // required if you want to use Mockito for unit tests
++    testCompile "org.mockito:mockito-core:2.0.91-beta"
++    androidTestCompile "org.mockito:mockito-core:2.0.91-beta"
++
++    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
++    // add this for intent mocking support
++    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
+ }
+Index: app/src/androidTest/java/com/RightDirection/ShoppingList/ListItemTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/androidTest/java/com/RightDirection/ShoppingList/ListItemTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
++++ app/src/androidTest/java/com/RightDirection/ShoppingList/ListItemTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -0,0 +1,76 @@
++package com.RightDirection.ShoppingList;
++
++import android.net.Uri;
++import android.os.Parcelable;
++
++import org.junit.Before;
++import org.junit.Test;
++
++import static org.junit.Assert.*;
++
++public class ListItemTest {
++
++    ListItem listItem;
++
++    @Before
++    public void setUp() throws Exception {
++        listItem = new ListItem("testId", "testName", Uri.parse("testStringUri"));
++    }
++
++    @Test
++    public void testGetId() throws Exception {
++        assertEquals("testId", listItem.getId());
++    }
++
++    @Test
++    public void testGetName() throws Exception {
++        assertEquals("testName", listItem.getName());
++    }
++
++    @Test
++    public void testSetName() throws Exception {
++        listItem.setName("testNameChanged");
++        assertEquals("testNameChanged", listItem.getName());
++    }
++
++    @Test
++    public void testSetImageUri() throws Exception {
++        listItem.setImageUri(Uri.parse("testStringUriChanged"));
++        assertEquals(Uri.parse("testStringUriChanged"), listItem.getImageUri());
++    }
++
++    @Test
++    public void testSetChecked() throws Exception {
++        assertFalse(listItem.isChecked());
++        listItem.setChecked();
++        assertTrue(listItem.isChecked());
++    }
++
++    @Test
++    public void testSetUnchecked() throws Exception {
++        listItem.setUnchecked();
++        assertFalse(listItem.isChecked());
++    }
++
++    @Test
++    public void testIsChecked() throws Exception {
++        assertFalse(listItem.isChecked());
++    }
++
++    @Test
++    public void testGetImageUri() throws Exception {
++        assertEquals(Uri.parse("testStringUri"), listItem.getImageUri());
++    }
++
++    @Test
++    public void testDescribeContents() throws Exception {
++        assertEquals(0, listItem.describeContents());
++    }
++
++    @Test
++    public void testWriteToParcel() throws Exception {
++        Parcelable listItemParcelable = listItem;
++        ListItem listItemConverted = (ListItem)listItemParcelable;
++        assertEquals(listItem, listItemConverted);
++    }
++}
+\ No newline at end of file
+Index: app/src/androidTest/java/com/RightDirection/ShoppingList/views/ShoppingListFragmentTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/androidTest/java/com/RightDirection/ShoppingList/views/ShoppingListFragmentTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
++++ app/src/androidTest/java/com/RightDirection/ShoppingList/views/ShoppingListFragmentTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -0,0 +1,14 @@
++package com.RightDirection.ShoppingList.views;
++
++import org.junit.Test;
++
++import static org.junit.Assert.*;
++
++public class ShoppingListFragmentTest {
++
++    @Test
++    public void testLayoutWasDrawed() throws Exception {
++
++    }
++
++}
+\ No newline at end of file
+Index: app/src/androidTest/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayoutTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/androidTest/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayoutTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
++++ app/src/androidTest/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayoutTest.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -0,0 +1,71 @@
++package com.RightDirection.ShoppingList.views;
++
++import android.app.Activity;
++import android.support.test.rule.ActivityTestRule;
++
++import com.RightDirection.ShoppingList.R;
++import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
++import com.RightDirection.ShoppingList.interfaces.IObserver;
++
++import org.junit.Before;
++import org.junit.Rule;
++import org.junit.Test;
++import org.mockito.Mock;
++
++import static org.junit.Assert.*;
++
++public class SoftKeyboardListenedRelativeLayoutTest {
++
++    SoftKeyboardListenedRelativeLayout mRelativeLayout;
++
++    @Mock IObserver mObserver;
++
++    @Rule
++    public ActivityTestRule<ShoppingListEditingActivity> mActivityRule = new ActivityTestRule<>(
++            ShoppingListEditingActivity.class);
++
++    @Before
++    public void setUp() throws Exception {
++        Activity activity = mActivityRule.getActivity();
++        mRelativeLayout = (SoftKeyboardListenedRelativeLayout)activity.findViewById(R.id.shoppingListEditingContainerLayout);
++        mObserver = new IObserver() {
++            @Override
++            public void layoutWasDrawed() {
++
++            }
++        };
++    }
++
++    @Test
++    public void testAddObserver() throws Exception {
++        mRelativeLayout.addObserver(mObserver);
++        assertEquals(2, mRelativeLayout.observers.size());
++    }
++
++    @Test
++    public void testRemoveObserver() throws Exception {
++        // Протестируем удаление из списка отсутствующего элемента
++        mRelativeLayout.removeObserver(mObserver);
++        assertEquals(1, mRelativeLayout.observers.size());
++
++        // Добавим новый элемент, чтобы потом удалить его
++        mRelativeLayout.addObserver(mObserver);
++        assertEquals(2, mRelativeLayout.observers.size());
++
++        // Удалим и проверим, что в списке нет элементов
++        mRelativeLayout.removeObserver(mObserver);
++        assertEquals(1, mRelativeLayout.observers.size());
++    }
++
++    @Test
++    public void testNotifyObservers() throws Exception {
++        mRelativeLayout.notifyObservers();
++
++        mRelativeLayout.addObserver(mObserver);
++        mRelativeLayout.notifyObservers();
++
++        mRelativeLayout.removeObserver(mObserver);
++        mRelativeLayout.addObserver(null);
++        mRelativeLayout.notifyObservers();
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/RightDirection/ShoppingList/activities/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/activities/MainActivity.java	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/java/com/RightDirection/ShoppingList/activities/MainActivity.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -150,4 +150,9 @@
+ 
+     @Override
+     public void onDialogNegativeClick() {}
++
++    @Override
++    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
++        super.onActivityResult(requestCode, resultCode, data);
++    }
+ }
+Index: app/src/main/java/com/RightDirection/ShoppingList/helpers/ListAdapterMainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/helpers/ListAdapterMainActivity.java	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/java/com/RightDirection/ShoppingList/helpers/ListAdapterMainActivity.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -32,13 +32,7 @@
+ import org.json.JSONException;
+ import org.json.JSONObject;
+ 
+-import java.io.BufferedReader;
+-import java.io.File;
+-import java.io.FileNotFoundException;
+ import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.InputStreamReader;
+-import java.io.OutputStreamWriter;
+ import java.util.ArrayList;
+ 
+ public class ListAdapterMainActivity extends ListAdapter {
+@@ -205,6 +199,13 @@
+ 
+                     mode.finish(); // Action picked, so close the CAB
+                     return true;
++
++                case R.id.imgReceiveListByEmail:
++
++                    Toast.makeText(mParentActivity, "Receiving e-mail...", Toast.LENGTH_SHORT).show();
++
++                    //final Intent emailIntent = new Intent(Intent.ACTION_GET_CONTENT);
++                    //mParentActivity.startActivityForResult(emailIntent, 0);
+ 
+                 default:
+                     return false;
+Index: app/src/main/java/com/RightDirection/ShoppingList/views/ShoppingListFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/views/ShoppingListFragment.java	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/java/com/RightDirection/ShoppingList/views/ShoppingListFragment.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -46,7 +46,7 @@
+         }
+     }
+ 
+-    public View getVisibleViewByPosition(int pos) {
++    private View getVisibleViewByPosition(int pos) {
+         ListView listView = getListView();
+ 
+         final int firstListItemPosition = listView.getFirstVisiblePosition();
+@@ -74,7 +74,7 @@
+         return rect1.intersect(rect2);
+     }
+ 
+-    public void setButtonsPanelLeftPadding(int leftPadding){
++    private void setButtonsPanelLeftPadding(int leftPadding){
+         RelativeLayout buttonsPanel = (RelativeLayout)getActivity().findViewById(R.id.buttonsPanel);
+         if (buttonsPanel != null) buttonsPanel.setPadding(0, 0, leftPadding, 0);
+     }
+Index: app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayout.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayout.java	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayout.java	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -2,6 +2,7 @@
+ 
+ import android.content.Context;
+ import android.graphics.Canvas;
++import android.support.annotation.NonNull;
+ import android.util.AttributeSet;
+ import android.util.Log;
+ import android.widget.RelativeLayout;
+@@ -26,28 +27,6 @@
+         observers = new ArrayList<>();
+     }
+ 
+-    @Override
+-    protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
+-        super.onSizeChanged(xNew, yNew, xOld, yOld);
+-
+-        /*
+-        // Выполним действия в зависимости от того, отображается на экране клавиатура или нет
+-        Button btnDeleteAllItems = (Button)findViewById(R.id.btnShoppingListDeleteAllItems);
+-
+-        if (yOld > yNew) {
+-            // Keyboard is shown
+-            if (btnDeleteAllItems != null) {
+-                btnDeleteAllItems.setVisibility(INVISIBLE);
+-            }
+-        } else {
+-            // Keyboard is hidden
+-            if (btnDeleteAllItems != null) {
+-                btnDeleteAllItems.setVisibility(VISIBLE);
+-            }
+-        }
+-        */
+-    }
+-
+     /**
+      * Implement this to do your drawing.
+      *
+@@ -61,16 +40,19 @@
+         notifyObservers();
+     }
+ 
+-    private List<IObserver> observers;
++    /**
++    Реализуем интерфейс/шаблон Наблюдатель
++    */
++    protected List<IObserver> observers;
+ 
+     @Override
+     public void addObserver(IObserver observer) {
+-        observers.add(observer);
++        if (observer != null) observers.add(observer);
+     }
+ 
+     @Override
+     public void removeObserver(IObserver observer) {
+-        observers.remove(observer);
++        if (observer != null) observers.remove(observer);
+     }
+ 
+     @Override
+Index: app/src/main/res/menu/context_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/menu/context_menu.xml	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/res/menu/context_menu.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -8,6 +8,11 @@
+         android:title="@string/send_by_email"
+         android:showAsAction="always"
+         tools:ignore="AppCompatResource" />
++    <item android:id="@+id/imgReceiveListByEmail"
++        android:icon="@android:drawable/ic_menu_upload"
++        android:title="@string/receive_by_email"
++        android:showAsAction="always"
++        tools:ignore="AppCompatResource" />
+     <item android:id="@+id/imgChangeListName"
+         android:icon="@android:drawable/ic_menu_sort_alphabetically"
+         android:title="@string/change_list_name"
+\ No newline at end of file
+Index: app/src/main/res/values-ru/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-ru/strings.xml	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/res/values-ru/strings.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -30,4 +30,5 @@
+     <string name="delete">Удалить</string>
+     <string name="pref_show_images">Показывать рисунки</string>
+     <string name="send_email">Отправить список покупок по e-mail…</string>
++    <string name="receive_by_email">Получить список покупок по e-mail…</string>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision edbafc5e98f90e8b07075da7436c7a2fff8f195d)
++++ app/src/main/res/values/strings.xml	(revision 9e988c57936e9c369febd57d243e77d814aa0708)
+@@ -43,4 +43,5 @@
+     <string name="pref_key_show_images">Show images</string>
+     <string name="pref_show_images">Show images</string>
+     <string name="send_email">Send shopping list by email…</string>
++    <string name="receive_by_email">Receive shopping list by email…</string>
+ </resources>

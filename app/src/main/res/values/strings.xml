@@ -46,4 +46,18 @@
     <string name="receive_by_email">Receive shopping list by email…</string>
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
+    <string name="email_settings_to_load_shopping_lists">Email setting to load shopping lists</string>
+    <string name="pref_key_email_host">pref_key_email_host</string>
+    <string name="email_host">Email host</string>
+    <string name="pref_key_email_port">pref_key_email_port</string>
+    <string name="email_port">Email port</string>
+    <string name="pref_key_email_login">pref_key_email_login</string>
+    <string name="email_login">Email login</string>
+    <string name="pref_key_email_password">pref_key_email_password</string>
+    <string name="email_password">Email password</string>
+    <string name="json_file_identifier">Shopping list</string>
+    <string name="wrong_email_protocol_exception_message">Supports only IMAP protocol</string>
+    <string name="not_assigned">Not assigned</string>
+    <string name="password_mask">******</string>
+    <string name="action_receive_shopping_list_by_email">Receive shopping list by email</string>
 </resources>

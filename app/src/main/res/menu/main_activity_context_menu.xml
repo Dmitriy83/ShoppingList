@@ -8,11 +8,6 @@
         android:title="@string/send_by_email"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
-    <item android:id="@+id/imgReceiveListByEmail"
-        android:icon="@android:drawable/ic_menu_upload"
-        android:title="@string/receive_by_email"
-        android:showAsAction="always"
-        tools:ignore="AppCompatResource" />
     <item android:id="@+id/imgChangeListName"
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
         android:title="@string/change_list_name"

@@ -1,11 +1,12 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,14 +14,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.RightDirection.ShoppingList.EmailReceiver;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.WrongEmailProtocolException;
+import com.RightDirection.ShoppingList.helpers.DBUtils;
 import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputListNameDialog.IInputListNameDialogListener{
@@ -83,20 +90,42 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         int id = item.getItemId();
 
         View view = findViewById(android.R.id.content);
+        if (view == null) return super.onOptionsItemSelected(item);
+
         if (id == R.id.action_settings) {
-            if (view != null) {
-                Context context = view.getContext();
+            Context context = view.getContext();
                 if (context != null) {
                     Intent intent = new Intent(context, SettingsActivity.class);
                     startActivity(intent);
                     return true;
                 }
-            }
         }
-        else if (view != null && id == R.id.action_edit_products_list) {
+        else if (id == R.id.action_edit_products_list) {
             Intent intent = new Intent(view.getContext(), ProductsListActivity.class);
             startActivity(intent);
             return true;
+        }
+        else if (id == R.id.action_receive_shopping_list_by_email) {
+            try {
+                // Получим параметры подключения из настроек приложения
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String host = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_host), "");
+                String port = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_port), "");
+                String userName = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_login), "");
+                String password = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_password), "");
+
+                // В отдельном потоке скачем и обработаем электронные письма
+                asyncTaskDownloadEmail asyncTaskDownloadEmail = new asyncTaskDownloadEmail();
+                EmailReceiver receiver = new EmailReceiver(this);
+                receiver.setServerProperties(host, port);
+                receiver.setLogin(userName);
+                receiver.setPassword(password);
+                asyncTaskDownloadEmail.execute(receiver);
+            } catch (WrongEmailProtocolException e) {
+                e.printStackTrace();
+                Toast.makeText(this, getString(R.string.wrong_email_protocol_exception_message),
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -138,13 +167,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void onDialogPositiveClick(String listName, String listID) {
-
-        ContentResolver contentResolver = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(ShoppingListContentProvider.KEY_NAME, listName);
-        contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                values, ShoppingListContentProvider.KEY_ID +  " = " + listID, null);
-
+        DBUtils.renameShoppingList(this, listID, listName);
         mShoppingListsAdapter.updateItem(listID, listName, null);
     }
 
@@ -154,5 +177,51 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, Boolean>{
+        @Override
+        protected Boolean doInBackground(EmailReceiver... params) {
+
+            if (params.length <= 0) return false;
+
+            try {
+                EmailReceiver receiver = params[0];
+                ArrayList<String> fileNames = receiver.getShoppingListsJSONFilesFromUnreadEmails();
+
+                // Загружаем новый списков покупок
+                for (String fileName: fileNames) {
+                    String jsonStr = Utils.getStringFromFile(fileName);
+
+                    ArrayList<ListItem> listItems = Utils.getListItemsArrayFromJSON(jsonStr);
+
+                    // Сначала нужно добавить новые продукты из списка в базу данных.
+                    // Синхронизацияя должна производиться по полю Name
+                    DBUtils.addNotExistingProductsToDB(getApplicationContext(), listItems);
+
+                    // Установим для элементов списка правильные идентификаторы из базы данных
+                    // (поиск по реквизиту Name)
+                    listItems = DBUtils.setIdFromDB(getApplicationContext(), listItems);
+
+                    Calendar calendar = Calendar.getInstance();
+                    String newListName = Utils.getListNameFromJSON(jsonStr)
+                            + calendar.getTime().toString();
+                    DBUtils.saveNewShoppingList(getApplicationContext(), newListName, listItems);
+                }
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+
+            // В случае, успешной загрузки оповестим адаптер об изменении
+            if (success) mShoppingListsAdapter.notifyDataSetChanged();
+        }
     }
 }

@@ -184,11 +184,12 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     try{
                         // Создадим JSON файл по списку покупок
-                        String fileName = "Shopping list '" + mSelectedItem.getName() + "'" + ".json";
-                        createShoppingListJSONfile(fileName);
+                        String fileName = mParentActivity.getString(R.string.json_file_identifier) + " '" + mSelectedItem.getName() + "'" + ".json";
+                        Utils.createShoppingListJSONFile(getContext(), mSelectedItem, fileName);
 
                         mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru",
-                                "Shopping list '" + mSelectedItem.getName() + "'", "", fileName));
+                                mParentActivity.getString(R.string.json_file_identifier)
+                                        + " '" + mSelectedItem.getName() + "'", "", fileName));
                     }
                     catch(Exception e){
                         System.out.println("Exception raises during sending mail. Discription: " + e);
@@ -196,13 +197,6 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-
-                case R.id.imgReceiveListByEmail:
-
-                    Toast.makeText(mParentActivity, "Receiving e-mail...", Toast.LENGTH_SHORT).show();
-
-                    //final Intent emailIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    //mParentActivity.startActivityForResult(emailIntent, 0);
 
                 default:
                     return false;
@@ -215,44 +209,4 @@ public class ListAdapterMainActivity extends ListAdapter {
             mActionMode = null;
         }
     };
-
-    private void createShoppingListJSONfile(String fileName) throws JSONException {
-
-        ContentResolver contentResolver = mParentActivity.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mSelectedItem.getId(), null ,null);
-
-        // Определим индексы колонок для считывания
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-
-        // Читаем данные из базы и записываем в объект JSON
-        JSONArray listItemsArray = new JSONArray();
-        while (data.moveToNext()){
-            JSONObject listItem = new JSONObject();
-
-            listItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
-            listItem.put(ShoppingListContentProvider.KEY_NAME, data.getString(keyNameIndex));
-
-            // Добавим объект JSON в массив
-            listItemsArray.put(listItem);
-        }
-
-        JSONObject shoppingList = new JSONObject();
-        shoppingList.put("id",      mSelectedItem.getId());
-        shoppingList.put("name",    mSelectedItem.getName());
-        shoppingList.put("items",   listItemsArray);
-
-        String jsonStr = shoppingList.toString();
-        Log.i("CREATING_JSON", jsonStr);
-
-        data.close();
-
-        // Запишем текст в файл
-        try {
-            Utils.createCachedFile(mContext, fileName, jsonStr);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

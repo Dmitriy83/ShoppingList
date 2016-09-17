@@ -7,7 +7,7 @@ import android.text.Editable;
 
 public class ListItem implements Parcelable {
 
-    private final String id;
+    private String id;
     private String name;
     private boolean checked;
     private Uri imageUri;
@@ -110,5 +110,9 @@ public class ListItem implements Parcelable {
         } catch (NumberFormatException e){
             // Не меняем количество
         }
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

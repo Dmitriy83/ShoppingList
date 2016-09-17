@@ -1,18 +1,38 @@
 package com.RightDirection.ShoppingList.helpers;
 
+//Класс с глобальными константами и методами
+
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.RightDirection.ShoppingList.ListItem;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 
-/*
-Класс с глобальными константами и методами
+/**
+ * Класс с глобальными константами и методами
  */
 public class Utils {
     public static final int NEED_TO_UPDATE = 1;
@@ -24,6 +44,80 @@ public class Utils {
     }
 
     private Utils() {}
+
+    public static void createShoppingListJSONFile(Context context, ListItem shoppingList, String fileName) throws JSONException {
+
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
+                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + shoppingList.getId(), null ,null);
+
+        // Определим индексы колонок для считывания
+        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+
+        // Читаем данные из базы и записываем в объект JSON
+        JSONArray listItemsArray = new JSONArray();
+        while (data.moveToNext()){
+            JSONObject listItem = new JSONObject();
+
+            listItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
+            listItem.put(ShoppingListContentProvider.KEY_NAME, data.getString(keyNameIndex));
+            listItem.put(ShoppingListContentProvider.KEY_COUNT, data.getString(keyCountIndex));
+
+            // Добавим объект JSON в массив
+            listItemsArray.put(listItem);
+        }
+
+        JSONObject shoppingListJSON = new JSONObject();
+        shoppingListJSON.put(ShoppingListContentProvider.KEY_PRODUCT_ID,    shoppingList.getId());
+        shoppingListJSON.put(ShoppingListContentProvider.KEY_NAME,          shoppingList.getName());
+        shoppingListJSON.put("items",   listItemsArray);
+
+        String jsonStr = shoppingListJSON.toString();
+        Log.i("CREATING_JSON", jsonStr);
+
+        data.close();
+
+        // Запишем текст в файл
+        try {
+            Utils.createCachedFile(context, fileName, jsonStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getListNameFromJSON(String jsonStr) throws JSONException {
+        JSONObject json = new JSONObject(jsonStr);
+        return json.getString(ShoppingListContentProvider.KEY_NAME);
+    }
+
+    public static ArrayList<ListItem> getListItemsArrayFromJSON(String jsonStr) throws JSONException {
+        ArrayList<ListItem> result = new ArrayList<>();
+
+        JSONObject jObject = new JSONObject(jsonStr);
+        JSONArray jArray = jObject.getJSONArray("items");
+        for (int i = 0; i < jArray.length(); i++) {
+            JSONObject jItem = jArray.getJSONObject(i);
+
+            String itemId = jItem.getString(ShoppingListContentProvider.KEY_PRODUCT_ID);
+            String itemName = jItem.getString(ShoppingListContentProvider.KEY_NAME);
+
+            float count = 1;
+            try {
+                String itemCount = jItem.getString(ShoppingListContentProvider.KEY_COUNT);
+                if (!itemCount.isEmpty()) {
+                    count = Float.parseFloat(itemCount);
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+            result.add(new ListItem(itemId, itemName, null, count));
+        }
+
+        return result;
+    }
 
     public static void createCachedFile(Context context, String fileName, String content) throws IOException {
 
@@ -61,5 +155,23 @@ public class Utils {
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
 
         return emailIntent;
+    }
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    public static String getStringFromFile (String filePath) throws Exception {
+        FileInputStream fileInputStream = new FileInputStream(new File(filePath));
+        String ret = convertStreamToString(fileInputStream);
+        fileInputStream.close();
+        return ret;
     }
 }

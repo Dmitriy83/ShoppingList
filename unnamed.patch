@@ -1,0 +1,225 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(date 1463761452000)
++++ app/build.gradle	(date 1463828130000)
+@@ -2,11 +2,11 @@
+ 
+ android {
+     compileSdkVersion 23
+-    buildToolsVersion "23.0.0"
++    buildToolsVersion '23.0.1'
+     defaultConfig {
+         applicationId 'com.RightDirection.ShoppingList'
+         minSdkVersion 15
+-        targetSdkVersion 15
++        targetSdkVersion 23
+         versionCode 1
+         versionName "1.0"
+     }
+@@ -23,6 +23,6 @@
+ dependencies {
+     compile fileTree(dir: 'libs', include: ['*.jar'])
+     testCompile 'junit:junit:4.12'
+-    compile 'com.android.support:appcompat-v7:23.2.1'
+-    compile 'com.android.support:design:23.2.1'
++    compile 'com.android.support:appcompat-v7:23.4.0'
++    compile 'com.android.support:design:23.4.0'
+ }
+Index: app/src/main/java/com/RightDirection/ShoppingList/activities/ItemActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/activities/ItemActivity.java	(date 1463761452000)
++++ app/src/main/java/com/RightDirection/ShoppingList/activities/ItemActivity.java	(date 1463828130000)
+@@ -6,6 +6,7 @@
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.view.View;
++import android.view.WindowManager;
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.RelativeLayout;
+@@ -25,9 +26,16 @@
+ 
+         // Получим значения из переданных параметров
+         Intent sourceIntent = getIntent();
+-        isNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), true);
++        isNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
+         itemId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
+         String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
++
++        // Если это новый элемент, то сразу ототбразим клавиатуру для ввода наименования
++        if (isNewItem){
++            getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
++
++        }
++
+         EditText etProductName = (EditText) findViewById(R.id.etProductName);
+         if (etProductName != null) {
+             etProductName.setText(name);
+Index: app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListnedRelativeLayout.java
+===================================================================
+--- app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListnedRelativeLayout.java	(date 1463761452000)
++++ app/src/main/java/com/RightDirection/ShoppingList/views/SoftKeyboardListenedRelativeLayout.java	(date 1463828130000)
+@@ -10,13 +10,13 @@
+ 
+ import com.RightDirection.ShoppingList.R;
+ 
+-public class SoftKeyboardListnedRelativeLayout extends RelativeLayout {
++public class SoftKeyboardListenedRelativeLayout extends RelativeLayout {
+ 
+-    public SoftKeyboardListnedRelativeLayout(Context context) {
++    public SoftKeyboardListenedRelativeLayout(Context context) {
+         super(context);
+     }
+ 
+-    public SoftKeyboardListnedRelativeLayout(Context context, AttributeSet attrs) {
++    public SoftKeyboardListenedRelativeLayout(Context context, AttributeSet attrs) {
+         super(context, attrs);
+     }
+ 
+@@ -26,21 +26,14 @@
+ 
+         // Покажем/скроем кнопки в зависимости от того, отображается на экране клавиатура или нет
+         Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
+-
++        if (btnDeleteAllItems != null) {
+-        if (yOld > yNew) {
+-            // Keyboard is shown
+-            btnDeleteAllItems.setVisibility(INVISIBLE);
++            if (yOld > yNew) {
++                // Keyboard is shown
++                btnDeleteAllItems.setVisibility(INVISIBLE);
+-        }
+-        else {
++            } else {
+-            // Keyboard is hidden
+-            btnDeleteAllItems.setVisibility(VISIBLE);
+-        }
++                // Keyboard is hidden
++                btnDeleteAllItems.setVisibility(VISIBLE);
++            }
+-
+-        Button btnSaveProduct = (Button) findViewById(R.id.btnSaveProduct);
+-        if (btnSaveProduct != null) {
+-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btnSaveProduct.getLayoutParams();
+-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+-            btnSaveProduct.setLayoutParams(params);
+         }
+     }
+ }
+Index: app/src/main/res/layout/activity_item_form.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_item_form.xml	(date 1463761452000)
++++ app/src/main/res/layout/activity_item_form.xml	(date 1463828130000)
+@@ -9,16 +9,20 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:id="@+id/etProductName"
++        android:layout_alignParentStart="true"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentRight="true"
++        android:layout_alignParentEnd="true"
+         android:hint="@string/product_name_hint"
+-        android:inputType="textCapSentences" />
++        android:inputType="textCapSentences"
++        android:imeOptions="flagNoExtractUi"/>
+ 
+     <ImageView
+         android:layout_width="200dp"
+         android:layout_height="200dp"
+         android:id="@+id/imageView"
+         android:layout_below="@+id/etProductName"
++        android:layout_alignParentStart="true"
+         android:layout_alignParentLeft="true"
+         android:contentDescription="@string/product_picture"
+         android:background="@android:drawable/ic_menu_crop" />
+@@ -31,5 +35,6 @@
+         android:id="@+id/btnSaveProduct"
+         android:layout_alignParentBottom="true"
+         android:layout_alignRight="@+id/etProductName"
++        android:layout_alignEnd="@+id/etProductName"
+         />
+ </RelativeLayout>
+Index: app/src/main/res/layout/activity_shopping_list_editing.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_shopping_list_editing.xml	(date 1463761452000)
++++ app/src/main/res/layout/activity_shopping_list_editing.xml	(date 1463828130000)
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<com.RightDirection.ShoppingList.views.SoftKeyboardListnedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+@@ -34,6 +34,7 @@
+         android:background="@android:drawable/ic_menu_delete"
+         android:layout_alignParentBottom="true"
+         android:layout_toLeftOf="@+id/btnSave"
++        android:layout_toStartOf="@+id/btnSave"
+         />
+ 
+     <Button
+@@ -44,6 +45,7 @@
+         android:background="@android:drawable/ic_menu_save"
+         android:layout_alignParentBottom="true"
+         android:layout_alignParentRight="true"
++        android:layout_alignParentEnd="true"
+         />
+ 
+-</com.RightDirection.ShoppingList.views.SoftKeyboardListnedRelativeLayout>
++</com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout>
+Index: app/src/main/res/layout/input_new_list_name_dialog.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/input_new_list_name_dialog.xml	(date 1463761452000)
++++ app/src/main/res/layout/input_new_list_name_dialog.xml	(date 1463828130000)
+@@ -11,6 +11,7 @@
+         android:text=""
+         android:hint="@string/input_shopping_list_name"
+         android:id="@+id/inputNewListName"
+-        android:inputType="textCapSentences"/>
++        android:inputType="textCapSentences"
++        android:imeOptions="flagNoExtractUi"/>
+ 
+ </LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/new_item_edit_text_fragment.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/new_item_edit_text_fragment.xml	(date 1463761452000)
++++ app/src/main/res/layout/new_item_edit_text_fragment.xml	(date 1463828130000)
+@@ -14,7 +14,9 @@
+         android:layout_alignParentStart="true"
+         android:hint="@string/addItemHint"
+         android:layout_toLeftOf="@+id/btnAddProductToShoppingList"
+-        android:inputType="textCapSentences" />
++        android:layout_toStartOf="@+id/btnAddProductToShoppingList"
++        android:inputType="textCapSentences"
++        android:imeOptions="flagNoExtractUi"/>
+ 
+     <Button
+         style="?android:attr/buttonStyleSmall"
+@@ -23,6 +25,7 @@
+         android:id="@+id/btnAddProductToShoppingList"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentRight="true"
++        android:layout_alignParentEnd="true"
+         android:background="@android:drawable/ic_menu_add" />
+ 
+ </RelativeLayout>
+\ No newline at end of file
