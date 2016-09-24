@@ -16,13 +16,13 @@ import com.RightDirection.ShoppingList.R;
 public class InputListNameDialog extends DialogFragment{
 
     private String mInitName = "";
-    private String mId = null;
+    private long mId;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface IInputListNameDialogListener {
-        void onDialogPositiveClick(String listName, String listId);
+        void onDialogPositiveClick(String listName, long listId);
         void onDialogNegativeClick();
     }
 
@@ -77,7 +77,7 @@ public class InputListNameDialog extends DialogFragment{
         mInitName = name;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         mId = id;
     }
 }

@@ -3,24 +3,23 @@ package com.RightDirection.ShoppingList;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Editable;
 
 public class ListItem implements Parcelable {
 
-    private String id;
+    private long id;
     private String name;
     private boolean checked;
     private Uri imageUri;
     private float count;
 
-    public ListItem(String id, String name, Uri imageUri) {
+    public ListItem(long id, String name, Uri imageUri) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
         this.count = 1;
     }
 
-    public ListItem(String id, String name, Uri imageUri, float count) {
+    public ListItem(long id, String name, Uri imageUri, float count) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
@@ -28,7 +27,7 @@ public class ListItem implements Parcelable {
     }
 
     protected ListItem(Parcel in) {
-        id = in.readString();
+        id = in.readLong();
         name = in.readString();
         checked = in.readByte() != 0;
         imageUri = in.readParcelable(Uri.class.getClassLoader());
@@ -47,7 +46,7 @@ public class ListItem implements Parcelable {
         }
     };
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -86,7 +85,7 @@ public class ListItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeParcelable(imageUri, flags);
@@ -112,7 +111,7 @@ public class ListItem implements Parcelable {
         }
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

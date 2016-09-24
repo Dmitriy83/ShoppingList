@@ -3,13 +3,10 @@ package com.RightDirection.ShoppingList.helpers;
 //Класс с глобальными константами и методами
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -28,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 /**
@@ -100,7 +96,7 @@ public class Utils {
         for (int i = 0; i < jArray.length(); i++) {
             JSONObject jItem = jArray.getJSONObject(i);
 
-            String itemId = jItem.getString(ShoppingListContentProvider.KEY_PRODUCT_ID);
+            long itemId = jItem.getLong(ShoppingListContentProvider.KEY_PRODUCT_ID);
             String itemName = jItem.getString(ShoppingListContentProvider.KEY_NAME);
 
             float count = 1;

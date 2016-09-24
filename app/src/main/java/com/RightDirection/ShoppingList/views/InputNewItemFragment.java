@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -144,7 +143,8 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         if (insertedItemUri != null) {
             List<String> pathSegments = insertedItemUri.getPathSegments();
             if (pathSegments != null) {
-                String insertedItemId = pathSegments.get(1);
+
+                long insertedItemId = Long.parseLong(pathSegments.get(1));
 
                 // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
                 mCurrentItem = new ListItem(insertedItemId, newItemName, null);
@@ -199,7 +199,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
         mAllProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             addProductInArrays(newListItem);
         }
     }

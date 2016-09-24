@@ -16,11 +16,10 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
-
-import com.squareup.picasso.Picasso;
 
 abstract public class ListAdapter extends ArrayAdapter<ListItem>{
 
@@ -51,9 +50,9 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
         public TextView txtCount;
     }
 
-    public void updateItem(String id, String name, Uri imageUri) {
+    public void updateItem(long id, String name, Uri imageUri) {
         for (ListItem item: mObjects) {
-            if (item.getId().equals(id)){
+            if (item.getId() == id){
                 item.setName(name);
                 item.setImageUri(imageUri);
             }

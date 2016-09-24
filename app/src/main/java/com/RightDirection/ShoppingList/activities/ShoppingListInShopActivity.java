@@ -109,7 +109,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex),
+            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex),
                     ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
             mShoppingListItems.add(newListItem);
         }

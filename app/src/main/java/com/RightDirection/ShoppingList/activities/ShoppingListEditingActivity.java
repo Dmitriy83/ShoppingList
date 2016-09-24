@@ -9,23 +9,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.InputNewItemFragment;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
-import com.RightDirection.ShoppingList.ListItem;
-import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.views.ObservableRelativeLayout;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     private ArrayList<ListItem> mShoppingListItems;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
-    private String mListId;
+    private long mListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
         mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
-        mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
+        mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), 0);
 
         // Добавим обработчики кликов по кнопкам
         Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
@@ -156,7 +155,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     @Override
-    public void onDialogPositiveClick(String listName, String id) {
+    public void onDialogPositiveClick(String listName, long id) {
         // Сохраним список продуктов в БД
         ContentResolver contentResolver = getContentResolver();
         ContentValues contentValues = new ContentValues();
@@ -203,7 +202,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex),
+            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex),
                     ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
             mShoppingListItems.add(newListItem);
         }
@@ -222,7 +221,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    String id = data.getStringExtra(String.valueOf(R.string.item_id));
+                    long id = data.getLongExtra(String.valueOf(R.string.item_id), 0);
                     String name = data.getStringExtra(String.valueOf(R.string.name));
                     String strImageUri = data.getStringExtra(String.valueOf(R.string.item_image));
                     Uri imageUri = null;

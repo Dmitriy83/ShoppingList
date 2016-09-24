@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +26,7 @@ import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         mShoppingLists.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), null);
+            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), null);
             mShoppingLists.add(newListItem);
         }
 
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     }
 
     @Override
-    public void onDialogPositiveClick(String listName, String listID) {
+    public void onDialogPositiveClick(String listName, long listID) {
         DBUtils.renameShoppingList(this, listID, listName);
         mShoppingListsAdapter.updateItem(listID, listName, null);
     }
@@ -179,11 +180,13 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, Boolean>{
+    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ListItem>>{
         @Override
-        protected Boolean doInBackground(EmailReceiver... params) {
+        protected ArrayList<ListItem> doInBackground(EmailReceiver... params) {
 
-            if (params.length <= 0) return false;
+            ArrayList<ListItem> loadedShoppingLists = new ArrayList<>();
+
+            if (params.length <= 0) return loadedShoppingLists;
 
             try {
                 EmailReceiver receiver = params[0];
@@ -204,24 +207,33 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                     listItems = DBUtils.setIdFromDB(getApplicationContext(), listItems);
 
                     Calendar calendar = Calendar.getInstance();
-                    String newListName = Utils.getListNameFromJSON(jsonStr)
-                            + calendar.getTime().toString();
-                    DBUtils.saveNewShoppingList(getApplicationContext(), newListName, listItems);
+                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+                    String newListName = Utils.getListNameFromJSON(jsonStr) + " "
+                            + getString(R.string.loaded) + " "
+                            + dateFormat.format(calendar.getTime());
+                    long newListId = DBUtils.saveNewShoppingList(getApplicationContext(), newListName, listItems);
+
+                    loadedShoppingLists.add(new ListItem(newListId, newListName, null));
                 }
 
-                return true;
+                return loadedShoppingLists;
             } catch (Exception e) {
                 e.printStackTrace();
-                return false;
+                return loadedShoppingLists;
             }
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
+        protected void onPostExecute(ArrayList<ListItem> loadedShoppingLists) {
+            super.onPostExecute(loadedShoppingLists);
 
             // В случае, успешной загрузки оповестим адаптер об изменении
-            if (success) mShoppingListsAdapter.notifyDataSetChanged();
+            if (loadedShoppingLists.size() > 0) {
+                for (ListItem newShoppingList: loadedShoppingLists) {
+                    mShoppingListsAdapter.add(newShoppingList);
+                }
+                mShoppingListsAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

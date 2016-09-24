@@ -6,17 +6,17 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
-import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.helpers.Utils;
+import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -85,7 +85,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
         productListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             productListItems.add(newListItem);
         }
 

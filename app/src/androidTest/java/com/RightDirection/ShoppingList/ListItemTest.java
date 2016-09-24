@@ -6,7 +6,9 @@ import android.os.Parcelable;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ListItemTest {
 
@@ -14,12 +16,12 @@ public class ListItemTest {
 
     @Before
     public void setUp() throws Exception {
-        listItem = new ListItem("testId", "testName", Uri.parse("testStringUri"));
+        listItem = new ListItem(999999, "testName", Uri.parse("testStringUri"));
     }
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("testId", listItem.getId());
+        assertEquals(999999, listItem.getId());
     }
 
     @Test

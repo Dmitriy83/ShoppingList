@@ -7,54 +7,50 @@ import android.database.Cursor;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.action.MotionEvents;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
-import android.test.suitebuilder.annotation.MediumTest;
-
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.CustomCheckBoxPreference;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
-import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
-import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 
@@ -83,6 +79,23 @@ public class ActivitiesTest {
             @Override
             public boolean matchesSafely(ListItem item) {
                 return item.getName().equals(String.valueOf(value));
+            }
+        };
+    }
+
+    /**
+     * Процедура необходима для поиска объектов класса ListItem в ListAdapter по части имени
+     */
+    private static Matcher<Object> withItemValueContains(final String value) {
+        return new BoundedMatcher<Object, ListItem>(ListItem.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("contains value " + value);
+            }
+
+            @Override
+            public boolean matchesSafely(ListItem item) {
+                return item.getName().contains(String.valueOf(value));
             }
         };
     }
@@ -375,7 +388,7 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
-    public void testSendByEmail() {
+    public void testSendReceiveEmail() throws UiObjectNotFoundException {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
@@ -389,6 +402,28 @@ public class ActivitiesTest {
         assertTrue(emailSubject.exists());
         UiObject emailAttachments = mDevice.findObject(new UiSelector().text("Shopping list '" + mNewListName + "'.json"));
         assertTrue(emailAttachments.exists());
+        UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+        btnSend.click();
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Подождем 5 секунд, чтобы письмо появилось на сервере
+        timeout(5000);
+
+        // Выбираем "Настройки"
+        onView(withText(mActivity.getString(R.string.action_receive_shopping_list_by_email))).perform(click());
+
+        // Проверим появление загруженного списка
+        onData(withItemValueContains(mActivity.getString(R.string.loaded))).check(matches(isDisplayed()));
+    }
+
+    private void timeout(int duration) {
+        long startDate = new Date().getTime();
+        long now = new Date().getTime();
+        while ((now - startDate) < duration){
+            now = new Date().getTime();
+        }
     }
 
     @Test
@@ -464,12 +499,5 @@ public class ActivitiesTest {
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
-    }
-
-    @Ignore("Пока не готов")
-    @Test
-    @MediumTest
-    public void testReceiveShoppingListByEmail() {
-
     }
 }

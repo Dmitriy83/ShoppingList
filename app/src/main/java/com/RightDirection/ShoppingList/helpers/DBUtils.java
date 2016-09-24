@@ -24,7 +24,7 @@ public class DBUtils {
 
     private DBUtils() {}
 
-    public static void saveNewShoppingList(Context context, String name, ArrayList<ListItem> elements) {
+    public static long saveNewShoppingList(Context context, String name, ArrayList<ListItem> elements) {
         // Сохраним список продуктов в БД
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
@@ -34,6 +34,7 @@ public class DBUtils {
         contentValues.put(ShoppingListContentProvider.KEY_NAME, name);
         Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
         long listId = ContentUris.parseId(insertedId);
+
         contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
 
         // Запишем составлящие списка покупок в базу данных
@@ -43,6 +44,8 @@ public class DBUtils {
             contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
             contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
+
+        return listId;
     }
 
     public static void updateShoppingList(Context context, String id, ArrayList<ListItem> elements) {
@@ -70,7 +73,7 @@ public class DBUtils {
                 ShoppingListContentProvider.KEY_ID + "=" + id, null);
     }
 
-    public static void renameShoppingList(Context context, String id, String newName){
+    public static void renameShoppingList(Context context, long id, String newName){
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put(ShoppingListContentProvider.KEY_NAME, newName);
@@ -131,7 +134,7 @@ public class DBUtils {
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
         int i = 0;
         while (data.moveToNext()){
-            listItems.get(i).setId(data.getString(keyIdIndex));
+            listItems.get(i).setId(data.getLong(keyIdIndex));
             i++;
         }
         data.close();

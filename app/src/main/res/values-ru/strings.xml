@@ -41,4 +41,6 @@
     <string name="wrong_email_protocol_exception_message">Поддерживается только протокол IMAP</string>
     <string name="not_assigned">Не назначен</string>
     <string name="action_receive_shopping_list_by_email">Получить лист покупок по эл. почте</string>
+    <string name="send">Отправить</string>
+    <string name="загружен">loaded</string>
 </resources>

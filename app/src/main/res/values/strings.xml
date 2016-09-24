@@ -60,4 +60,6 @@
     <string name="not_assigned">Not assigned</string>
     <string name="password_mask">******</string>
     <string name="action_receive_shopping_list_by_email">Receive shopping list by email</string>
+    <string name="send">Send</string>
+    <string name="loaded">loaded</string>
 </resources>
