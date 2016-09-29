@@ -1,7 +1,7 @@
 package com.RightDirection.ShoppingList.interfaces;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 
 public interface IOnNewItemAddedListener{
-    void OnNewItemAdded(ListItem newItem);
+    void OnNewItemAdded(Product newItem);
 }

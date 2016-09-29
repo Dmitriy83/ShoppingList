@@ -463,7 +463,8 @@ public class ActivitiesTest {
         assertNotNull(shoppingListFragment);
         ListAdapter listAdapter = (ListAdapter) shoppingListFragment.getListAdapter();
         for (int i = 0; i < listAdapter.getCount(); i++) {
-            assertThat("Item is in the list", text, is(not(listAdapter.getItem(i).getName())));
+            ListItem listItem = (ListItem)listAdapter.getItem(i);
+            assertThat("Item is in the list", text, is(not(listItem.getName())));
         }
     }
 

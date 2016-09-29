@@ -17,10 +17,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.EmailReceiver;
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.ShoppingList;
 import com.RightDirection.ShoppingList.WrongEmailProtocolException;
-import com.RightDirection.ShoppingList.helpers.DBUtils;
 import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
@@ -33,7 +33,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputListNameDialog.IInputListNameDialogListener{
 
-    private ArrayList<ListItem> mShoppingLists;
+    private ArrayList<ShoppingList> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
 
     @Override
@@ -154,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         mShoppingLists.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), null);
-            mShoppingLists.add(newListItem);
+            ShoppingList newShoppingList = new ShoppingList(data.getLong(keyIdIndex), data.getString(keyNameIndex), null);
+            mShoppingLists.add(newShoppingList);
         }
 
         mShoppingListsAdapter.notifyDataSetChanged();
@@ -168,7 +168,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void onDialogPositiveClick(String listName, long listID) {
-        DBUtils.renameShoppingList(this, listID, listName);
+        // Создадим вспомогательный объект ShoppingList и вызовем команду переименования
+        ShoppingList renamedSL = new ShoppingList(listID, listName, null);
+        renamedSL.renameInDB(getApplicationContext());
         mShoppingListsAdapter.updateItem(listID, listName, null);
     }
 
@@ -180,11 +182,11 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ListItem>>{
+    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{
         @Override
-        protected ArrayList<ListItem> doInBackground(EmailReceiver... params) {
+        protected ArrayList<ShoppingList> doInBackground(EmailReceiver... params) {
 
-            ArrayList<ListItem> loadedShoppingLists = new ArrayList<>();
+            ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
 
             if (params.length <= 0) return loadedShoppingLists;
 
@@ -196,24 +198,29 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 for (String fileName: fileNames) {
                     String jsonStr = Utils.getStringFromFile(fileName);
 
-                    ArrayList<ListItem> listItems = Utils.getListItemsArrayFromJSON(jsonStr);
+                    ArrayList<Product> products = Utils.getProductsFromJSON(jsonStr);
 
-                    // Сначала нужно добавить новые продукты из списка в базу данных.
-                    // Синхронизацияя должна производиться по полю Name
-                    DBUtils.addNotExistingProductsToDB(getApplicationContext(), listItems);
-
-                    // Установим для элементов списка правильные идентификаторы из базы данных
-                    // (поиск по реквизиту Name)
-                    listItems = DBUtils.setIdFromDB(getApplicationContext(), listItems);
-
+                    // Сформируем имя нового списка покупок
                     Calendar calendar = Calendar.getInstance();
                     DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
                     String newListName = Utils.getListNameFromJSON(jsonStr) + " "
                             + getString(R.string.loaded) + " "
                             + dateFormat.format(calendar.getTime());
-                    long newListId = DBUtils.saveNewShoppingList(getApplicationContext(), newListName, listItems);
 
-                    loadedShoppingLists.add(new ListItem(newListId, newListName, null));
+                    // Создадим  новый объект-лист покупок
+                    ShoppingList newShoppingList = new ShoppingList(-1, newListName, null, 1, products);
+
+                    // Сначала нужно добавить новые продукты из списка в базу данных.
+                    // Синхронизацияя должна производиться по полю Name
+                    newShoppingList.addNotExistingProductsToDB(getApplicationContext());
+
+                    // Установим для элементов списка правильные идентификаторы из базы данных
+                    // (поиск по реквизиту Name)
+                    newShoppingList.setProductsIdFromDB(getApplicationContext());
+
+                    // Сохраним новый лист покупок в базе данных
+                    newShoppingList.addToDB(getApplicationContext());
+                    loadedShoppingLists.add(newShoppingList);
                 }
 
                 return loadedShoppingLists;
@@ -224,12 +231,12 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         }
 
         @Override
-        protected void onPostExecute(ArrayList<ListItem> loadedShoppingLists) {
+        protected void onPostExecute(ArrayList<ShoppingList> loadedShoppingLists) {
             super.onPostExecute(loadedShoppingLists);
 
             // В случае, успешной загрузки оповестим адаптер об изменении
             if (loadedShoppingLists.size() > 0) {
-                for (ListItem newShoppingList: loadedShoppingLists) {
+                for (ShoppingList newShoppingList: loadedShoppingLists) {
                     mShoppingListsAdapter.add(newShoppingList);
                 }
                 mShoppingListsAdapter.notifyDataSetChanged();

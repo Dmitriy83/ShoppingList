@@ -10,7 +10,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
+import com.RightDirection.ShoppingList.ShoppingList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +42,7 @@ public class Utils {
 
     private Utils() {}
 
-    public static void createShoppingListJSONFile(Context context, ListItem shoppingList, String fileName) throws JSONException {
+    public static void createShoppingListJSONFile(Context context, ShoppingList shoppingList, String fileName) throws JSONException {
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
@@ -88,8 +89,8 @@ public class Utils {
         return json.getString(ShoppingListContentProvider.KEY_NAME);
     }
 
-    public static ArrayList<ListItem> getListItemsArrayFromJSON(String jsonStr) throws JSONException {
-        ArrayList<ListItem> result = new ArrayList<>();
+    public static ArrayList<Product> getProductsFromJSON(String jsonStr) throws JSONException {
+        ArrayList<Product> result = new ArrayList<>();
 
         JSONObject jObject = new JSONObject(jsonStr);
         JSONArray jArray = jObject.getJSONArray("items");
@@ -109,7 +110,7 @@ public class Utils {
                 e.printStackTrace();
             }
 
-            result.add(new ListItem(itemId, itemName, null, count));
+            result.add(new Product(itemId, itemName, null, count));
         }
 
         return result;

@@ -13,18 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 
 import java.util.ArrayList;
 
 public class ListAdapterShoppingListInShop extends ListAdapter {
 
-    private ArrayList<ListItem> mOriginalValues;
+    private ArrayList<Product> mOriginalValues;
     private boolean mIsFiltered;
     private boolean mCrossOutProduct;
 
-    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<ListItem> objects) {
+    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<Product> objects) {
         super(context, resource, objects);
 
         // Прочитаем настройки приложения
@@ -38,7 +38,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
 
         if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productRepresent != null)
-            viewInitializer.viewHolder.productRepresent.setOnTouchListener(onListItemTouch);
+            viewInitializer.viewHolder.productRepresent.setOnTouchListener(onProductTouch);
 
         // Отрисуем выбор товара
         if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productNameView != null) {
@@ -54,12 +54,12 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     private float mInitXTouch = 0;
 
-    private final View.OnTouchListener onListItemTouch = new View.OnTouchListener() {
+    private final View.OnTouchListener onProductTouch = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_UP){
                 // Получим объект item, свзяанный с элементом View
-                ListItem item = (ListItem) v.getTag();
+                Product item = (Product) v.getTag();
                 ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
 
                 if (!item.isChecked()){
@@ -78,7 +78,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
             }
             else if (mCrossOutProduct && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)){
                 // Получим объект item, свзяанный с элементом View
-                ListItem item = (ListItem) v.getTag();
+                Product item = (Product) v.getTag();
 
                 float mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
@@ -100,7 +100,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
     };
 
-    private void setViewAndItemChecked(ListItem item, ViewHolder viewHolder) {
+    private void setViewAndItemChecked(Product item, ViewHolder viewHolder) {
         if (viewHolder != null) {
             setViewChecked(viewHolder);
             item.setChecked();
@@ -124,7 +124,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     private boolean allProductsChecked() {
         boolean allProductsChecked = true;
-        for (ListItem item: mObjects) {
+        for (Product item: (ArrayList<Product>)mObjects) {
             if (!item.isChecked()){
                 allProductsChecked = false;
                 break;
@@ -186,7 +186,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         // Удалим элементы из списка
         for (int i = mObjects.size() - 1; i >= 0; i -= 1) {
-            ListItem item = mObjects.get(i);
+            Product item = (Product)mObjects.get(i);
             if (item.isChecked()){
                 mObjects.remove(item);
             }
@@ -196,11 +196,11 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         this.notifyDataSetChanged();
     }
 
-    public ArrayList<ListItem> getOriginalValues() {
+    public ArrayList<Product> getOriginalValues() {
         return mOriginalValues;
     }
 
-    public void setOriginalValues(ArrayList<ListItem> originalValues) {
+    public void setOriginalValues(ArrayList<Product> originalValues) {
         mOriginalValues = originalValues;
     }
 }

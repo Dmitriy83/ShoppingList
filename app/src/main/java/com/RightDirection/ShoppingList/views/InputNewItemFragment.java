@@ -3,13 +3,10 @@ package com.RightDirection.ShoppingList.views;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,13 +19,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class InputNewItemFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -36,11 +32,11 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     // Синхронизируемые массивы (по индексу в списке). Должны изменяться одновременно.
     // 1. Хранит объекты ListItem. Необходим для работы с базой данных
-    private ArrayList<ListItem> mAllProducts;
+    private ArrayList<Product> mAllProducts;
     // 2. Хранит имена объектов ListItem. Необходим для работы с AutoCompleteTextView
     private ArrayList<String> mAllProductsNames;
 
-    private ListItem mCurrentItem = null;
+    private Product mCurrentItem = null;
     private ArrayAdapter<String> mAdapter;
 
     private AutoCompleteTextView mTvNewItem;
@@ -134,24 +130,14 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     private void createNewItem() {
         // Добавим новый товар в БД
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        ContentValues contentValues = new ContentValues();
-
         String newItemName = mTvNewItem.getText().toString();
-        contentValues.put(ShoppingListContentProvider.KEY_NAME, newItemName);
-        Uri insertedItemUri = contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
-        if (insertedItemUri != null) {
-            List<String> pathSegments = insertedItemUri.getPathSegments();
-            if (pathSegments != null) {
+        Product newProduct = new Product(-1, newItemName, null); // id будет назначено при сохранении продукта в БД
+        newProduct.addToDB(getActivity());
 
-                long insertedItemId = Long.parseLong(pathSegments.get(1));
-
-                // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
-                mCurrentItem = new ListItem(insertedItemId, newItemName, null);
-                addProductInArrays(mCurrentItem);
-                mAdapter.add(newItemName);
-            }
-        }
+        // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
+        mCurrentItem = newProduct;
+        addProductInArrays(mCurrentItem);
+        mAdapter.add(newItemName);
     }
 
     @Override
@@ -199,7 +185,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
         mAllProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            Product newListItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
             addProductInArrays(newListItem);
         }
     }
@@ -207,7 +193,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {}
 
-    private void addProductInArrays(ListItem newListItem){
+    private void addProductInArrays(Product newListItem){
         mAllProducts.add(newListItem);
         mAllProductsNames.add(newListItem.getName());
     }

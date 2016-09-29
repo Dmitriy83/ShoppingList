@@ -21,15 +21,15 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Locale;
 
-abstract public class ListAdapter extends ArrayAdapter<ListItem>{
+abstract public class ListAdapter extends ArrayAdapter{
 
     private final int mResource;
     final Context mContext;
     final Activity mParentActivity;
     final ListAdapter mListAdapter; // для доступа из обработичиков событий
-    public ArrayList<ListItem> mObjects;
+    public ArrayList mObjects;
 
-    ListAdapter(Context context, int resource, ArrayList<ListItem> objects) {
+    ListAdapter(Context context, int resource, ArrayList objects) {
         super(context, resource, objects);
         mResource = resource;
         mContext = context;
@@ -51,7 +51,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
     }
 
     public void updateItem(long id, String name, Uri imageUri) {
-        for (ListItem item: mObjects) {
+        for (ListItem item: (ArrayList<ListItem>)mObjects) {
             if (item.getId() == id){
                 item.setName(name);
                 item.setImageUri(imageUri);
@@ -77,7 +77,7 @@ abstract public class ListAdapter extends ArrayAdapter<ListItem>{
          * @param convertView View-контейнер
          */
         ViewInitializer(int position, View convertView){
-            item = getItem(position);
+            item = (ListItem) getItem(position);
             String name = item.getName();
             Float count = item.getCount();
 

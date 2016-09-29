@@ -1,9 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.app.FragmentManager;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +14,9 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.ShoppingList;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
@@ -31,7 +29,7 @@ import java.util.ArrayList;
 public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
         InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<ListItem> mShoppingListItems;
+    private ArrayList<Product> mShoppingListItems;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
     private long mListId;
@@ -118,20 +116,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             }
             else {
                 // Обновим текущий список покупок
-                ContentResolver contentResolver = getContentResolver();
-                ContentValues contentValues = new ContentValues();
-
-                // Сначала удалим все записи редактируемого списка покупок из БД
-                contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                        ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null);
-
-                // Запишем составлящие списка покупок в базу данных
-                for (ListItem item: mShoppingListItems) {
-                    contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, mListId);
-                    contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-                    contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
-                    contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
-                }
+                ShoppingList shoppingList = new ShoppingList(mListId, "", null, mShoppingListItems);
+                shoppingList.updateInDB(getApplicationContext());
 
                 finish();
             }
@@ -149,7 +135,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     };
 
     @Override
-    public void OnNewItemAdded(ListItem newItem) {
+    public void OnNewItemAdded(Product newItem) {
         mShoppingListItems.add(0, newItem);
         mShoppingListItemsAdapter.notifyDataSetChanged();
     }
@@ -157,25 +143,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     @Override
     public void onDialogPositiveClick(String listName, long id) {
         // Сохраним список продуктов в БД
-        ContentResolver contentResolver = getContentResolver();
-        ContentValues contentValues = new ContentValues();
-
-        // Заполним значения для сохранения в базе данных
-        if (mIsNewList) {
-            // Запишем новый список покупок в таблицу SHOPPING_LISTS
-            contentValues.put(ShoppingListContentProvider.KEY_NAME, listName);
-            Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
-            long listId = ContentUris.parseId(insertedId);
-            contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
-
-            // Запишем составлящие списка покупок в базу данных
-            for (ListItem item: mShoppingListItems) {
-                contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, listId);
-                contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-                contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
-                contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
-            }
-        }
+        ShoppingList shoppingList = new ShoppingList(mListId, listName, null, mShoppingListItems);
+        shoppingList.addToDB(getApplicationContext());
 
         finish();
     }
@@ -202,7 +171,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+            Product newListItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
                     ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
             mShoppingListItems.add(newListItem);
         }

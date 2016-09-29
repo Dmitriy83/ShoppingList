@@ -11,7 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
@@ -23,8 +23,8 @@ import java.util.Comparator;
 
 public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private ArrayList<ListItem> productListItems;
-    private ListAdapterProductsList productListItemsAdapter;
+    private ArrayList<Product> mProducts;
+    private ListAdapterProductsList mProductsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +43,13 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         ShoppingListFragment productsListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgProductList);
 
         // Создаем массив для хранения списка товаров
-        productListItems = new ArrayList<>();
+        mProducts = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        productListItemsAdapter = new ListAdapterProductsList(this, R.layout.list_item_products_list, productListItems);
+        mProductsAdapter = new ListAdapterProductsList(this, R.layout.list_item_products_list, mProducts);
 
         // Привяжем адаптер к фрагменту
-        productsListFragment.setListAdapter(productListItemsAdapter);
+        productsListFragment.setListAdapter(mProductsAdapter);
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
@@ -83,20 +83,20 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
 
-        productListItems.clear();
+        mProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
-            productListItems.add(newListItem);
+            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            mProducts.add(newProduct);
         }
 
         // Отсортируем список по алфавиту
-        productListItemsAdapter.sort(new Comparator<ListItem>() {
+        mProductsAdapter.sort(new Comparator<Product>() {
             @Override
-            public int compare(ListItem lhs, ListItem rhs) {
+            public int compare(Product lhs, Product rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });
-        productListItemsAdapter.notifyDataSetChanged();
+        mProductsAdapter.notifyDataSetChanged();
     }
 
     @Override

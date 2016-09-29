@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -6,84 +6,112 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 
 import java.util.ArrayList;
 
-/**
- * Класс с глобальными методами работы с базой данных "Списка покупок"
- */
-public class DBUtils {
+public class ShoppingList extends ListItem implements IDataBaseOperations {
 
-    private static DBUtils ourInstance = new DBUtils();
+    ArrayList<Product> mProducts;
 
-    public static DBUtils getInstance() {
-        return ourInstance;
+    public ShoppingList(long id, String name, Uri imageUri) {
+        super(id, name, imageUri);
     }
 
-    private DBUtils() {}
+    public ShoppingList(long id, String name, Uri imageUri, float count) {
+        super(id, name, imageUri, count);
+    }
 
-    public static long saveNewShoppingList(Context context, String name, ArrayList<ListItem> elements) {
+    public ShoppingList(long id, String name, Uri imageUri,  ArrayList<Product> products) {
+        super(id, name, imageUri);
+        mProducts = products;
+    }
+
+    public ShoppingList(long id, String name, Uri imageUri, float count,  ArrayList<Product> products) {
+        super(id, name, imageUri, count);
+        mProducts = products;
+    }
+
+    protected ShoppingList(Parcel in) {
+        super(in);
+    }
+
+    public void addProduct(Product product){
+        mProducts.add(product);
+    }
+
+    public ArrayList<Product> getProducts(){
+        return mProducts;
+    }
+
+    public void setProducts(ArrayList<Product> products){
+        mProducts = products;
+    }
+
+    @Override
+    public void addToDB(Context context) {
         // Сохраним список продуктов в БД
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
 
         // Заполним значения для сохранения в базе данных
         // и запишем новый список покупок в таблицу SHOPPING_LISTS
-        contentValues.put(ShoppingListContentProvider.KEY_NAME, name);
+        contentValues.put(ShoppingListContentProvider.KEY_NAME, getName());
         Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
-        long listId = ContentUris.parseId(insertedId);
+        setId(ContentUris.parseId(insertedId));
 
         contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
 
         // Запишем составлящие списка покупок в базу данных
-        for (ListItem item : elements) {
-            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, listId);
+        for (Product item : mProducts) {
+            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
             contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
-
-        return listId;
     }
 
-    public static void updateShoppingList(Context context, String id, ArrayList<ListItem> elements) {
+    @Override
+    public void removeFromDB(Context context) {
+        // Удалим запись из БД по id
+        ContentResolver contentResolver = context.getContentResolver();
+        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                ShoppingListContentProvider.KEY_ID + "=" + getId(), null);
+    }
+
+    @Override
+    public void updateInDB(Context context) {
         // Обновим текущий список покупок
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
 
         // Сначала удалим все записи редактируемого списка покупок из БД
         contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + id, null);
+                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
 
         // Запишем составлящие списка покупок в базу данных
-        for (ListItem item: elements) {
-            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, id);
+        for (ListItem item: mProducts) {
+            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
             contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
     }
 
-    public static void deleteShoppingList(Context context, String id){
-        // Удалим запись из БД по id
-        ContentResolver contentResolver = context.getContentResolver();
-        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_ID + "=" + id, null);
-    }
-
-    public static void renameShoppingList(Context context, long id, String newName){
+    public void renameInDB(Context context){
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
-        values.put(ShoppingListContentProvider.KEY_NAME, newName);
+        values.put(ShoppingListContentProvider.KEY_NAME, getName());
         contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                values, ShoppingListContentProvider.KEY_ID +  " = " + id, null);
+                values, ShoppingListContentProvider.KEY_ID +  " = " + getId(), null);
     }
 
-    public static void addNotExistingProductsToDB(Context context, ArrayList<ListItem> listItems) {
+    public void addNotExistingProductsToDB(Context context) {
         // Создадим строку условия
-        String where = getWhereConditionForName(listItems);
+        String where = getWhereConditionForName();
 
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
@@ -100,8 +128,8 @@ public class DBUtils {
 
         // Добавим несуществующие продукты в базу данных
         ContentValues contentValues = new ContentValues();
-        for (int i = 0; i < listItems.size(); i++) {
-            String name = listItems.get(i).getName();
+        for (int i = 0; i < mProducts.size(); i++) {
+            String name = mProducts.get(i).getName();
             if (!foundProducts.contains(name)){
                 contentValues.put(ShoppingListContentProvider.KEY_NAME, name);
                 contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
@@ -109,22 +137,9 @@ public class DBUtils {
         }
     }
 
-    private static String getWhereConditionForName(ArrayList<ListItem> products) {
-        String where = null;
-        if (products.size() > 0) {
-            where = ShoppingListContentProvider.KEY_NAME + " IN (";
-            where += "'" + products.get(0).getName() + "'";
-            for (int i = 1; i < products.size(); i++) {
-                where += ",'" + products.get(i).getName() + "'";
-            }
-            where += ")";
-        }
-        return where;
-    }
-
-    public static ArrayList<ListItem> setIdFromDB(Context context, ArrayList<ListItem> listItems) {
+    public void setProductsIdFromDB(Context context) {
         // Создадим строку условия
-        String where = getWhereConditionForName(listItems);
+        String where = getWhereConditionForName();
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null,
@@ -134,10 +149,22 @@ public class DBUtils {
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
         int i = 0;
         while (data.moveToNext()){
-            listItems.get(i).setId(data.getLong(keyIdIndex));
+            mProducts.get(i).setId(data.getLong(keyIdIndex));
             i++;
         }
         data.close();
-        return listItems;
+    }
+
+    private String getWhereConditionForName() {
+        String where = null;
+        if (mProducts.size() > 0) {
+            where = ShoppingListContentProvider.KEY_NAME + " IN (";
+            where += "'" + mProducts.get(0).getName() + "'";
+            for (int i = 1; i < mProducts.size(); i++) {
+                where += ",'" + mProducts.get(i).getName() + "'";
+            }
+            where += ")";
+        }
+        return where;
     }
 }

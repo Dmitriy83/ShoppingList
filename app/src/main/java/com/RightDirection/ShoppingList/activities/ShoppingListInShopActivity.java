@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-import com.RightDirection.ShoppingList.ListItem;
+import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<ListItem> mShoppingListItems;
-    private ListAdapterShoppingListInShop mShoppingListItemsAdapter;
-    private String mListId;
+    private ArrayList<Product> mProducts;
+    private ListAdapterShoppingListInShop mProductsAdapter;
+    private long mListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
-        mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
+        mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), -1);
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
@@ -44,10 +44,10 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         // Создаем массив для хранения списка покупок
         if (savedInstanceState == null) {
-            mShoppingListItems = new ArrayList<>();
+            mProducts = new ArrayList<>();
         }
         else{
-            mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
         }
 
         // Прочитаем настройки приложения
@@ -56,19 +56,19 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         int listItemLayout = R.layout.list_item_shopping_list_in_shop;
         if (!showImages) listItemLayout = R.layout.list_item_shopping_list_in_shop_without_image;
         // Создадим новый адаптер для работы со списком покупок
-        mShoppingListItemsAdapter = new ListAdapterShoppingListInShop(this, listItemLayout, mShoppingListItems);
+        mProductsAdapter = new ListAdapterShoppingListInShop(this, listItemLayout, mProducts);
 
         // Привяжем адаптер к фрагменту-списку
-        shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
+        shoppingListFragment.setListAdapter(mProductsAdapter);
 
         if (savedInstanceState == null) {
             // Заполним список покупок из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
         else{
-            mShoppingListItemsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
-            ArrayList<ListItem> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
-            mShoppingListItemsAdapter.setOriginalValues(originalValues);
+            mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
+            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
+            mProductsAdapter.setOriginalValues(originalValues);
         }
 
         Button btnFilter = (Button)findViewById(R.id.btnFilter);
@@ -76,7 +76,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnFilter.setTransformationMethod(null);
             btnFilter.setOnClickListener(onBtnFilterClick);
-            if (savedInstanceState != null && mShoppingListItemsAdapter.isFiltered()) {
+            if (savedInstanceState != null && mProductsAdapter.isFiltered()) {
                 btnFilter.setSelected(true);
             }
             else{
@@ -88,9 +88,9 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mShoppingListItemsAdapter.getOriginalValues());
-        outState.putBoolean(String.valueOf(R.string.is_filtered), mShoppingListItemsAdapter.isFiltered());
+        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mProducts);
+        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mProductsAdapter.getOriginalValues());
+        outState.putBoolean(String.valueOf(R.string.is_filtered), mProductsAdapter.isFiltered());
 
         super.onSaveInstanceState(outState);
     }
@@ -107,14 +107,14 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
 
-        mShoppingListItems.clear();
+        mProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
                     ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
-            mShoppingListItems.add(newListItem);
+            mProducts.add(newProduct);
         }
 
-        mShoppingListItemsAdapter.notifyDataSetChanged();
+        mProductsAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -124,13 +124,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         @Override
         public void onClick(View view) {
             Button btnFilter = (Button)view;
-            if (mShoppingListItemsAdapter.isFiltered()) {
+            if (mProductsAdapter.isFiltered()) {
                 btnFilter.setSelected(false);
-                mShoppingListItemsAdapter.showMarked();
+                mProductsAdapter.showMarked();
             }
             else{
                 btnFilter.setSelected(true);
-                mShoppingListItemsAdapter.hideMarked();
+                mProductsAdapter.hideMarked();
             }
 
         }

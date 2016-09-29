@@ -155,7 +155,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     private void deleteSubRows(Uri mainTableUri, String key, String selection, String[] selectionArgs) {
         // Определим id списка (или списков, если удаление проивзодится, например, по имени) для удаления
         Cursor cursor = query(mainTableUri, new String[]{KEY_ID}, selection, selectionArgs, null);
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             String subSelection = "";
             boolean firstRaw = true;
             while (cursor.moveToNext()) {

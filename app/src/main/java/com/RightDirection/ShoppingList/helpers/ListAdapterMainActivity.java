@@ -3,43 +3,34 @@ package com.RightDirection.ShoppingList.helpers;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.ShoppingList;
 import com.RightDirection.ShoppingList.activities.InputListNameDialog;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ListAdapterMainActivity extends ListAdapter {
 
     private ActionMode mActionMode;
-    private ListItem mSelectedItem = null;
+    private ShoppingList mSelectedItem = null;
     private View mSelectedView;
 
-    public ListAdapterMainActivity(Context context, int resource, ArrayList<ListItem> objects) {
+    public ListAdapterMainActivity(Context context, int resource, ArrayList<ShoppingList> objects) {
         super(context, resource, objects);
     }
 
@@ -60,20 +51,11 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView = view;
             mSelectedView.setSelected(true);
 
-            ListItem item = (ListItem) view.getTag();
-            ContentResolver contentResolver = mContext.getContentResolver();
-            Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                    null, "_id = " + item.getId(), null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    Activity parentActivity = (Activity) mContext;
-                    Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
-                    String itemId = cursor.getString(cursor.getColumnIndex(ShoppingListContentProvider.KEY_ID));
-                    intent.putExtra(String.valueOf(R.string.list_id), itemId);
-                    ActivityCompat.startActivity(parentActivity, intent, null);
-                }
-                cursor.close();
-            }
+            ShoppingList item = (ShoppingList) view.getTag();
+            Activity parentActivity = (Activity) mContext;
+            Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
+            intent.putExtra(String.valueOf(R.string.list_id), item.getId());
+            ActivityCompat.startActivity(parentActivity, intent, null);
         }
     };
 
@@ -81,7 +63,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         @Override
         public boolean onLongClick(View view) {
 
-            mSelectedItem = (ListItem) view.getTag();
+            mSelectedItem = (ShoppingList) view.getTag();
 
             if (mSelectedView != null) mSelectedView.setSelected(false);
             mSelectedView = view;
@@ -136,9 +118,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                                     dialog.dismiss();
 
                                     // Удалим запись из БД по id
-                                    ContentResolver contentResolver = mParentActivity.getContentResolver();
-                                    contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                                            ShoppingListContentProvider.KEY_ID + "=" + mSelectedItem.getId(), null);
+                                    mSelectedItem.removeFromDB(mParentActivity);
 
                                     // Обновим списки покупок
                                     remove(mSelectedItem);
