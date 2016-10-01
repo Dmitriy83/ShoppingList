@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
@@ -136,8 +137,14 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
     @Override
     public void OnNewItemAdded(Product newItem) {
-        mShoppingListItems.add(0, newItem);
-        mShoppingListItemsAdapter.notifyDataSetChanged();
+        // Если элемент уже присутствует в списке, то добавлять не нужно
+        if (!mShoppingListItems.contains(newItem)) {
+            mShoppingListItems.add(0, newItem);
+            mShoppingListItemsAdapter.notifyDataSetChanged();
+        }else{
+            // Сообщим о том, что элемент уже есть в списке
+            Toast.makeText(this, "Item was added before", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
