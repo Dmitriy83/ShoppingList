@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Заполним меню (добавим элементы из menu_main.xml).
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
         return true;
     }
 

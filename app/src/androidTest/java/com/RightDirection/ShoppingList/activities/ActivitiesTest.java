@@ -123,12 +123,12 @@ public class ActivitiesTest {
         editNewShoppingList();
     }
 
-    public void addNewShoppingList(){
+    private void addNewShoppingList(){
         // Нажмем на кнопку добавления нового списка покупок
         onView(withId(R.id.fabAddNewShoppingList)).perform(click());
 
         // Проверяем, что открылась активность редактирования списка покупок
-        onView(withId(R.id.btnShoppingListSave)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Плюс"
         String textForTyping = mNewProductNamePattern + "1";
@@ -154,7 +154,7 @@ public class ActivitiesTest {
         onView(withId(R.id.newItemEditText)).perform(closeSoftKeyboard());
 
         // Сохраним список покупок
-        onView(withId(R.id.btnShoppingListSave)).perform(click());
+        onView(withId(R.id.action_save_list)).perform(click());
 
         // Введем имя нового списка
         onView(withId(R.id.inputNewListName)).perform(typeText(mNewListName));
@@ -167,7 +167,7 @@ public class ActivitiesTest {
         onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
     }
 
-    public void editNewShoppingList() {
+    private void editNewShoppingList() {
         // Длинный клик на новом списке покупок
         onData(withItemValue(mNewListName)).perform(longClick());
 
@@ -175,7 +175,7 @@ public class ActivitiesTest {
         onView(withId(R.id.imgEdit)).perform(click());
 
         // Проверяем, что открылась активность редактирования списка покупок
-        onView(withId(R.id.btnShoppingListSave)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // Добавляем третий элемент в список покупок (нажатием на кнопку "Плюс")
         String textForTyping = mNewProductNamePattern + "3";
@@ -185,7 +185,7 @@ public class ActivitiesTest {
         onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
 
         // Сохраняем список покупок
-        onView(withId(R.id.btnShoppingListSave)).perform(click());
+        onView(withId(R.id.action_save_list)).perform(click());
 
         // Проверяем, что снова открылась активность MainActivity
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
@@ -203,7 +203,7 @@ public class ActivitiesTest {
         onView(withId(R.id.imgEdit)).perform(click());
 
         // Проверяем, что открылась активность редактирования списка покупок
-        onView(withId(R.id.btnShoppingListSave)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // На одном из элементов проверяем, что количество = 1
         onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
@@ -250,7 +250,7 @@ public class ActivitiesTest {
                 .check(matches(withText("11.0")));
 
         // Сохраняем список покупок
-        onView(withId(R.id.btnShoppingListSave)).perform(click());
+        onView(withId(R.id.action_save_list)).perform(click());
 
         // Проверяем, что снова открылась активность MainActivity
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
@@ -278,12 +278,12 @@ public class ActivitiesTest {
         testShoppingListInShopActivity_CountAppearing();
     }
 
-    public void testShoppingListInShopActivity_CountAppearing() {
+    private void testShoppingListInShopActivity_CountAppearing() {
         // Клик на новом списке покупок
         onData(withItemValue(mNewListName)).perform(click());
 
         // Проверяем, что открылась активность "В магазине"
-        onView(withId(R.id.btnFilter)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_filter)).check(matches(isDisplayed()));
 
         // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
         onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
@@ -375,7 +375,7 @@ public class ActivitiesTest {
         pressBack();
     }
 
-    public void openSettings() {
+    private void openSettings() {
         // Нажимаем на кнопку вызова подменю
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 

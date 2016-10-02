@@ -9,10 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.Product;
@@ -22,7 +22,6 @@ import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
-import com.RightDirection.ShoppingList.views.ObservableRelativeLayout;
 import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
@@ -45,25 +44,6 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
         mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), 0);
 
-        // Добавим обработчики кликов по кнопкам
-        Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
-        if (btnSave != null) {
-            btnSave.setOnClickListener(onBtnSaveClick);
-        }
-
-        Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
-        if (btnDeleteAllItems != null) {
-            btnDeleteAllItems.setOnClickListener(onBtnDeleteAllItemsClick);
-        }
-
-        // Получим ссылки на фрагемнты
-        FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
-        // Добавим фрагемент в качестве Наблюдателя к родительскому контейнеру (для отслеживания события полной отрисовки дочерних элементов)
-        ObservableRelativeLayout shoppingListEditingContainerLayout = (ObservableRelativeLayout)findViewById(R.id.shoppingListEditingContainerLayout);
-        if (shoppingListEditingContainerLayout != null && shoppingListFragment != null)
-            shoppingListEditingContainerLayout.addObserver(shoppingListFragment);
-
         if (savedInstanceState == null) {
             // Создаем массив для хранения списка покупок
             mShoppingListItems = new ArrayList<>();
@@ -80,6 +60,9 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mShoppingListItems);
 
+        // Получим ссылки на фрагемнты
+        FragmentManager fragmentManager = getFragmentManager();
+        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
         // Привяжем адаптер к фрагменту
         if (shoppingListFragment != null) shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
 
@@ -97,43 +80,32 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         outState.putParcelableArrayList(String .valueOf(R.string.shopping_list_items), mShoppingListItems);
     }
 
-    private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private void saveList(){
+        // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
+        // данный момент редактируется количество с помощью клавиватуры (сохранение количества
+        // происходит при потере фокуса)
+        AutoCompleteTextView textView = (AutoCompleteTextView)findViewById(R.id.newItemEditText);
+        if (textView != null)
+            textView.requestFocus();
 
-            // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
-            // данный момент редактируется количество с помощью клавиватуры (сохранение количества
-            // происходит при потере фокуса)
-            AutoCompleteTextView textView = (AutoCompleteTextView)findViewById(R.id.newItemEditText);
-            if (textView != null)
-                textView.requestFocus();
-
-            if (mIsNewList) {
-                // Откроем окно для ввода наименования нового списка/
-                // Сохранение будет производиться в методе onDialogPositiveClick
-                InputListNameDialog inputListNameDialog = new InputListNameDialog();
-                FragmentManager fragmentManager = getFragmentManager();
-                inputListNameDialog.show(fragmentManager, null);
-            }
-            else {
-                // Обновим текущий список покупок
-                ShoppingList shoppingList = new ShoppingList(mListId, "", null, mShoppingListItems);
-                shoppingList.updateInDB(getApplicationContext());
-
-                finish();
-            }
+        if (mIsNewList) {
+            // Откроем окно для ввода наименования нового списка/
+            // Сохранение будет производиться в методе onDialogPositiveClick
+            InputListNameDialog inputListNameDialog = new InputListNameDialog();
+            FragmentManager fragmentManager = getFragmentManager();
+            inputListNameDialog.show(fragmentManager, null);
         }
-    };
-
-    private final View.OnClickListener onBtnDeleteAllItemsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mShoppingListItems.clear();
-            mShoppingListItemsAdapter.notifyDataSetChanged();
-
-            Log.i("onBtnDeleteAllClick", "onBtnDeleteAllItemsClick called, notifyDataSetChanged called.");
+        else {
+            // Обновим текущий список покупок
+            ShoppingList shoppingList = new ShoppingList(mListId, "", null, mShoppingListItems);
+            shoppingList.updateInDB(getApplicationContext());
         }
-    };
+    }
+
+    private void removeAllItems(){
+        mShoppingListItems.clear();
+        mShoppingListItemsAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void OnNewItemAdded(Product newItem) {
@@ -152,7 +124,6 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Сохраним список продуктов в БД
         ShoppingList shoppingList = new ShoppingList(mListId, listName, null, mShoppingListItems);
         shoppingList.addToDB(getApplicationContext());
-
         finish();
     }
 
@@ -209,5 +180,38 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_shopping_list_editing_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Обработаем нажатие на элемент подменю.
+        int id = item.getItemId();
+
+        View view = findViewById(android.R.id.content);
+        if (view == null) return super.onOptionsItemSelected(item);
+
+        if (id == R.id.action_save_list) {
+            saveList();
+            if (!mIsNewList) finish();
+        }
+        else if (id == R.id.action_remove_all_items) {
+            removeAllItems();
+        }
+        else if (id == R.id.action_go_to_in_shop_activity) {
+            // Сначала сохраним список покупок
+            saveList();
+
+            // Перейдем к активности "В магазине"
+            Intent intent = new Intent(this, ShoppingListInShopActivity.class);
+            intent.putExtra(String.valueOf(R.string.list_id), mListId);
+            startActivity(intent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

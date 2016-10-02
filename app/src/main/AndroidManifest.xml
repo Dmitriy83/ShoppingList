@@ -26,7 +26,7 @@
         <activity android:name=".activities.ItemActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize"/>
         <activity android:name=".activities.ShoppingListInShopActivity"
-            android:theme="@style/AppTheme.InShop"/>
+            />
         <activity android:name=".activities.SettingsActivity"/>
 
         <provider

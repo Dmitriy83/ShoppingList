@@ -8,9 +8,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
@@ -30,9 +30,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_shopping_list_in_shop);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
+
+        // Установка доработанного меню
+        //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        //setContentView(R.layout.activity_shopping_list_in_shop);
+        //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
@@ -69,19 +72,6 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
             ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
             mProductsAdapter.setOriginalValues(originalValues);
-        }
-
-        Button btnFilter = (Button)findViewById(R.id.btnFilter);
-        if (btnFilter != null){
-            // Исключим вывод всего текста прописными (для Android старше 4)
-            btnFilter.setTransformationMethod(null);
-            btnFilter.setOnClickListener(onBtnFilterClick);
-            if (savedInstanceState != null && mProductsAdapter.isFiltered()) {
-                btnFilter.setSelected(true);
-            }
-            else{
-                btnFilter.setSelected(false);
-            }
         }
     }
 
@@ -120,19 +110,54 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {}
 
-    private final View.OnClickListener onBtnFilterClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Button btnFilter = (Button)view;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_shopping_list_in_shop_menu, menu);
+
+        // Установим иконку Фильтра в нужное значение при открытии
+        if (mProductsAdapter.isFiltered()) {
+            setFilterItemSelected(menu.getItem(1));
+        }
+        else{
+            setFilterItemUnselected(menu.getItem(1));
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Обработаем нажатие на элемент подменю.
+        int id = item.getItemId();
+        View view = findViewById(android.R.id.content);
+        if (view == null) return super.onOptionsItemSelected(item);
+
+        if (id == R.id.action_filter) {
             if (mProductsAdapter.isFiltered()) {
-                btnFilter.setSelected(false);
+                setFilterItemUnselected(item);
                 mProductsAdapter.showMarked();
             }
             else{
-                btnFilter.setSelected(true);
+                setFilterItemSelected(item);
                 mProductsAdapter.hideMarked();
             }
-
         }
-    };
+        else if (id == R.id.action_edit_shopping_list) {
+            Intent intent = new Intent(this, ShoppingListEditingActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_list), false);
+            intent.putExtra(String.valueOf(R.string.list_id), mListId);
+            startActivity(intent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setFilterItemSelected(MenuItem menuItem){
+        menuItem.setIcon(R.drawable.ic_clear_filter);
+    }
+
+    private void setFilterItemUnselected(MenuItem menuItem){
+        menuItem.setIcon(R.drawable.ic_filter);
+    }
 }

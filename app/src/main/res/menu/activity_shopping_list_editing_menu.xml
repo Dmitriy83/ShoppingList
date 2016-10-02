@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.ShoppingListEditingActivity">
+    <item
+        android:id="@+id/action_save_list"
+        android:orderInCategory="003"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/action_save_list"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_remove_all_items"
+        android:orderInCategory="002"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/action_remove_all_items"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_go_to_in_shop_activity"
+        android:orderInCategory="001"
+        android:icon="@drawable/ic_in_shop"
+        android:title="@string/action_go_to_in_shop_activity"
+        app:showAsAction="always" />
+</menu>

@@ -62,4 +62,9 @@
     <string name="action_receive_shopping_list_by_email">Receive shopping list by email</string>
     <string name="send">Send</string>
     <string name="loaded">loaded</string>
+    <string name="action_save_list">Save list</string>
+    <string name="action_remove_all_items">Remove all items</string>
+    <string name="action_go_to_in_shop_activity">Go to in shop activity</string>
+    <string name="action_filter">filter</string>
+    <string name="action_edit_shopping_list">Edit shopping list</string>
 </resources>

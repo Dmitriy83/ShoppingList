@@ -86,7 +86,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.main_activity_context_menu, menu);
+            inflater.inflate(R.menu.activity_main_context_menu, menu);
             return true;
         }
 
