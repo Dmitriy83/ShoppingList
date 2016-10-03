@@ -44,12 +44,8 @@ public class ItemActivity extends AppCompatActivity{
             Intent sourceIntent = getIntent();
             mIsNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
             long id = sourceIntent.getLongExtra(String.valueOf(R.string.item_id), -1);
-            String strImageUri = sourceIntent.getStringExtra(String.valueOf(R.string.item_image));
+            Uri imageUri = sourceIntent.getParcelableExtra(String.valueOf(R.string.item_image));
             String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
-            Uri imageUri = null;
-            if (strImageUri != null){
-                imageUri = Uri.parse(strImageUri);
-            }
 
             mProduct = new Product(id, name, imageUri);
         }
@@ -100,8 +96,9 @@ public class ItemActivity extends AppCompatActivity{
         @Override
         public void onClick(View view) {
             EditText etProductName = (EditText) findViewById(R.id.etProductName);
-            mProduct.setName(etProductName.getText().toString());
             if (etProductName != null) {
+                mProduct.setName(etProductName.getText().toString());
+
                 if (mIsNewItem) {
                     mProduct.addToDB(getApplicationContext());
                 } else {
@@ -111,7 +108,7 @@ public class ItemActivity extends AppCompatActivity{
                 intent.putExtra(String.valueOf(R.string.item_id), mProduct.getId());
                 intent.putExtra(String.valueOf(R.string.name), mProduct.getName());
                 String strImageUri = null;
-                if (mProduct.getImageUri() != null){
+                if (mProduct.getImageUri() != null) {
                     strImageUri = mProduct.getImageUri().toString();
                 }
                 intent.putExtra(String.valueOf(R.string.item_image), strImageUri);
