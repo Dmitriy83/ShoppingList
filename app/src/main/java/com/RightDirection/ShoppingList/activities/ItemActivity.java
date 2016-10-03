@@ -107,11 +107,7 @@ public class ItemActivity extends AppCompatActivity{
                 Intent intent = new Intent();
                 intent.putExtra(String.valueOf(R.string.item_id), mProduct.getId());
                 intent.putExtra(String.valueOf(R.string.name), mProduct.getName());
-                String strImageUri = null;
-                if (mProduct.getImageUri() != null) {
-                    strImageUri = mProduct.getImageUri().toString();
-                }
-                intent.putExtra(String.valueOf(R.string.item_image), strImageUri);
+                intent.putExtra(String.valueOf(R.string.item_image), mProduct.getImageUri());
                 setResult(RESULT_OK, intent);
             }
 

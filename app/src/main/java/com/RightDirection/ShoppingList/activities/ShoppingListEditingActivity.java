@@ -170,11 +170,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                     // Получим значения из переданных параметров
                     long id = data.getLongExtra(String.valueOf(R.string.item_id), 0);
                     String name = data.getStringExtra(String.valueOf(R.string.name));
-                    String strImageUri = data.getStringExtra(String.valueOf(R.string.item_image));
-                    Uri imageUri = null;
-                    if (strImageUri != null){
-                        imageUri = Uri.parse(strImageUri);
-                    }
+                    Uri imageUri = data.getParcelableExtra(String.valueOf(R.string.item_image));
                     mShoppingListItemsAdapter.updateItem(id, name, imageUri);
                 }
         }
