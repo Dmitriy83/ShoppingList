@@ -43,4 +43,6 @@
     <string name="action_receive_shopping_list_by_email">Получить лист покупок по эл. почте</string>
     <string name="send">Отправить</string>
     <string name="загружен">loaded</string>
+    <string name="loading">Загрузка…</string>
+    <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
 </resources>

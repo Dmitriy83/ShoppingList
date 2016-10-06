@@ -1,7 +1,6 @@
 package com.RightDirection.ShoppingList;
 
 import android.content.Context;
-import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
+import javax.mail.search.SearchTerm;
 
 /**
  * Получение электронных писем
@@ -34,7 +34,7 @@ import javax.mail.search.FlagTerm;
  */
 public class EmailReceiver{
 
-    Properties mProperties;
+    private Properties mProperties;
     private String mLogin;
     private String mPassword;
     private String mProtocol;
@@ -93,12 +93,18 @@ public class EmailReceiver{
                 String.valueOf(port));
     }
 
-
-    public ArrayList<String> getShoppingListsJSONFilesFromUnreadEmails() throws IOException {
+    public ArrayList<String> getShoppingListsJSONFilesFromEmails() throws IOException {
 
         ArrayList<String> fileNames = new ArrayList<>();
 
-        Message[] messages = downloadMessages(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+        /*
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date dayBefore = calendar.getTime();
+        SearchTerm term = new ReceivedDateTerm(ComparisonTerm.GT, dayBefore);
+        */
+        FlagTerm term = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
+        Message[] messages = downloadMessages(term);
         for (int i = 0; i < messages.length; i++) {
             Message msg = messages[i];
             try {
@@ -145,7 +151,7 @@ public class EmailReceiver{
 
             // Открываем папку "Входящие"
             mFolderInbox = mStore.getFolder("INBOX");
-            mFolderInbox.open(Folder.READ_ONLY);
+            mFolderInbox.open(Folder.READ_WRITE); // При READ_WRITE считанные письма автоматически пометятся как прочитанные
 
             // Получим только непрочитанные сообщения. Для протокола POP3 не работает
             // (см. http://stackoverflow.com/questions/5925944/how-to-retrieve-gmail-sub-folders-labels-using-pop3)
@@ -159,6 +165,53 @@ public class EmailReceiver{
         }
 
         return new Message[]{};
+    }
+
+    private Message[] downloadMessages(SearchTerm searchTerm){
+        Session session = Session.getDefaultInstance(mProperties);
+
+        try {
+            // Установка соед инения с хранилищем сообщений
+            mStore = session.getStore(mProtocol);
+            mStore.connect(mLogin, mPassword);
+
+            // Открываем папку "Входящие"
+            mFolderInbox = mStore.getFolder("INBOX");
+            mFolderInbox.open(Folder.READ_WRITE);
+
+            // Получим только непрочитанные сообщения. Для протокола POP3 не работает
+            // (см. http://stackoverflow.com/questions/5925944/how-to-retrieve-gmail-sub-folders-labels-using-pop3)
+            return mFolderInbox.search(searchTerm);
+        } catch (NoSuchProviderException ex) {
+            System.out.println("No provider for protocol: " + mProtocol);
+            ex.printStackTrace();
+        } catch (MessagingException ex) {
+            System.out.println("Could not connect to the message store");
+            ex.printStackTrace();
+        }
+
+        return new Message[]{};
+    }
+
+    public class ShoppingListsSearchTerm extends SearchTerm {
+        private Date afterDate;
+
+        public ShoppingListsSearchTerm(Date afterDate) {
+            this.afterDate = afterDate;
+        }
+
+        @Override
+        public boolean match(Message message) {
+            try {
+                if (message.getSentDate().after(afterDate)) {
+                    return true;
+                }
+            } catch (MessagingException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        }
+
     }
 
     private void closeConnection(){

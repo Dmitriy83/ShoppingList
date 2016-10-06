@@ -501,4 +501,82 @@ public class ActivitiesTest {
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
     }
+
+    @Test
+    @MediumTest
+    public void testSwitchingBetweenInShopAndEditActivity(){
+        // Сначала проверим переключение в уже сохраненном списке
+        addNewShoppingList();
+
+        // Длинный клик на новом списке покупок
+        onData(withItemValue(mNewListName)).perform(longClick());
+
+        // В меню действий нажимаем кнопку редактирования списка
+        onView(withId(R.id.imgEdit)).perform(click());
+
+        // Нажимаем два раза на кнопку "Increase"
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+                .perform(click())
+                .perform(click());
+
+        // Переключаемся на активность "В магазине"
+        onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
+
+        // Проверяем, что в текстовом поле отображается число 3
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+                .check(matches(withText("3.0")));
+
+        // Переключаемся на активность "Редактирование списка"
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        // Проверяем, что открылась активность редактирования списка покупок
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
+
+        pressBack();
+        pressBack(); // вернулись к основной активности
+
+        // Проверим работу переключения для несохраненного списка
+        // Нажмем на кнопку добавления нового списка покупок
+        onView(withId(R.id.fabAddNewShoppingList)).perform(click());
+
+        // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Плюс"
+        String textForTyping = mNewProductNamePattern + "1";
+        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
+        onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
+
+        // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Готово"
+        textForTyping = mNewProductNamePattern + "2";
+        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping), pressImeActionButton());
+
+        // Нажимаем два раза на кнопку "Increase"
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+                .perform(click());
+
+        // "Глюк" Espresso - если не закрыть клавиатуру перед вызововм диалгового окна, то
+        // Espresso в большинстве случаев не открывает клавиатуру при печати в текстовом поле
+        // inputNewListName диалогового окна, однако пытается произвести действия с диалоговым
+        // окном в том месте, как будто оно было смещено (видимо, действия производятся
+        // по координатам экрана). Из-за этого вместо печати текста в поле диалогового окна,
+        // например, может открыться Activity редактирования товара и текст начнет набираться
+        // в текстовом поле этой Activity. Принудительное закрытие клавиатуры перед нажатием
+        // кнопки сохранения списка решает эту проблему.
+        onView(withId(R.id.newItemEditText)).perform(closeSoftKeyboard());
+
+        // Переключаемся на активность "В магазине"
+        onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
+
+        // Введем имя нового списка
+        onView(withId(R.id.inputNewListName)).perform(typeText(mNewListName));
+        onView(withText(mActivity.getString(R.string.ok))).perform(click());
+
+        // Проверяем, что в активности "В магазине" в текстовом поле отображается число 2
+        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+                .check(matches(withText("2.0")));
+
+        // Переключаемся на активность "Редактирование списка"
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        // Проверяем, что открылась активность редактирования списка покупок
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
+    }
 }

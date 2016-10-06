@@ -122,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 receiver.setLogin(userName);
                 receiver.setPassword(password);
                 asyncTaskDownloadEmail.execute(receiver);
+
+                // Сообщим пользователю о начале загрузки
+                Toast.makeText(this, getString(R.string.loading), Toast.LENGTH_LONG).show();
             } catch (WrongEmailProtocolException e) {
                 e.printStackTrace();
                 Toast.makeText(this, getString(R.string.wrong_email_protocol_exception_message),
@@ -192,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
             try {
                 EmailReceiver receiver = params[0];
-                ArrayList<String> fileNames = receiver.getShoppingListsJSONFilesFromUnreadEmails();
+                ArrayList<String> fileNames = receiver.getShoppingListsJSONFilesFromEmails();
 
                 // Загружаем новый списков покупок
                 for (String fileName: fileNames) {
@@ -240,6 +243,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                     mShoppingListsAdapter.add(newShoppingList);
                 }
                 mShoppingListsAdapter.notifyDataSetChanged();
+            }else{
+                Toast.makeText(getApplicationContext(), getString(R.string.no_emails_for_loading),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

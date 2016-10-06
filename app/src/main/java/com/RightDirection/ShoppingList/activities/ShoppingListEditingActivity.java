@@ -33,6 +33,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
     private long mListId;
+    private boolean mGoToInShop = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         outState.putParcelableArrayList(String .valueOf(R.string.shopping_list_items), mShoppingListItems);
     }
 
-    private void saveList(){
+    private void saveListAndFinish(){
         // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
         // данный момент редактируется количество с помощью клавиватуры (сохранение количества
         // происходит при потере фокуса)
@@ -99,6 +100,15 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             // Обновим текущий список покупок
             ShoppingList shoppingList = new ShoppingList(mListId, "", null, mShoppingListItems);
             shoppingList.updateInDB(getApplicationContext());
+
+            if (mGoToInShop) {
+                // Перейдем к активности "В магазине"
+                Intent intent = new Intent(this, ShoppingListInShopActivity.class);
+                intent.putExtra(String.valueOf(R.string.list_id), mListId);
+                startActivity(intent);
+            }
+
+            finish();
         }
     }
 
@@ -122,8 +132,16 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     @Override
     public void onDialogPositiveClick(String listName, long id) {
         // Сохраним список продуктов в БД
-        ShoppingList shoppingList = new ShoppingList(mListId, listName, null, mShoppingListItems);
+        ShoppingList shoppingList = new ShoppingList(-1, listName, null, mShoppingListItems);
         shoppingList.addToDB(getApplicationContext());
+
+        if (mGoToInShop) {
+            // Перейдем к активности "В магазине"
+            Intent intent = new Intent(this, ShoppingListInShopActivity.class);
+            intent.putExtra(String.valueOf(R.string.list_id), shoppingList.getId());
+            startActivity(intent);
+        }
+
         finish();
     }
 
@@ -191,21 +209,15 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         if (view == null) return super.onOptionsItemSelected(item);
 
         if (id == R.id.action_save_list) {
-            saveList();
-            if (!mIsNewList) finish();
+            saveListAndFinish();
         }
         else if (id == R.id.action_remove_all_items) {
             removeAllItems();
         }
         else if (id == R.id.action_go_to_in_shop_activity) {
-            // Сначала сохраним список покупок
-            saveList();
-
-            // Перейдем к активности "В магазине"
-            Intent intent = new Intent(this, ShoppingListInShopActivity.class);
-            intent.putExtra(String.valueOf(R.string.list_id), mListId);
-            startActivity(intent);
-            finish();
+            // Cохраним список покупок и перейдем к активности "В магазине"
+            mGoToInShop = true;
+            saveListAndFinish();
         }
 
         return super.onOptionsItemSelected(item);

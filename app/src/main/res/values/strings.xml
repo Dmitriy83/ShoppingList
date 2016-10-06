@@ -67,4 +67,6 @@
     <string name="action_go_to_in_shop_activity">Go to in shop activity</string>
     <string name="action_filter">filter</string>
     <string name="action_edit_shopping_list">Edit shopping list</string>
+    <string name="loading">Loading…</string>
+    <string name="no_emails_for_loading">There are not any emails for loading</string>
 </resources>
