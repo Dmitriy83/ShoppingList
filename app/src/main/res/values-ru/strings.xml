@@ -45,4 +45,5 @@
     <string name="загружен">loaded</string>
     <string name="loading">Загрузка…</string>
     <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
+    <string name="json_file_identifier">Shopping_list</string>
 </resources>

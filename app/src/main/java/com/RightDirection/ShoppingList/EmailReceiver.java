@@ -98,6 +98,8 @@ public class EmailReceiver{
         ArrayList<String> fileNames = new ArrayList<>();
 
         /*
+        * Получение писем по дате работает почему-то гораздо дольше, чем получение непрочитанных писем.
+        * Поэтому пока будем использовать вариант чтения непрочитанных писем.
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);
         Date dayBefore = calendar.getTime();
