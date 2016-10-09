@@ -31,7 +31,8 @@
             android:layout_toRightOf="@+id/imgProduct"
             android:layout_toEndOf="@+id/imgProduct"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:textSize="@dimen/text_size_normal" />
     </RelativeLayout>
 
     <ImageButton
@@ -63,12 +64,13 @@
 
         <EditText
             android:layout_width="100dp"
-            android:layout_height="@dimen/normal_size"
+            android:layout_height="40dp"
             android:layout_toRightOf="@+id/imgDecrease"
             android:id="@+id/etCount"
             android:hint=""
             android:gravity="right"
-            android:digits="0123456789."/>
+            android:digits="0123456789."
+            android:textSize="@dimen/text_size_normal" />
 
         <ImageButton
             android:layout_width="@dimen/normal_size"

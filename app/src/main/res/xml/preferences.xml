@@ -8,7 +8,7 @@
         android:key="@string/pref_key_cross_out_action"
         android:summary="@string/pref_cross_out_action_summary"
         android:title="@string/pref_cross_out_action"
-        android:defaultValue="true"/>
+        android:defaultValue="false"/>
 
     <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
         android:key="@string/pref_key_show_images"

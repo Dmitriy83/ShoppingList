@@ -4,22 +4,22 @@
     >
 
     <item android:id="@+id/imgSendListByEmail"
-        android:icon="@android:drawable/ic_dialog_email"
+        android:icon="@drawable/ic_send_by_email"
         android:title="@string/send_by_email"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
     <item android:id="@+id/imgChangeListName"
-        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:icon="@drawable/ic_rename"
         android:title="@string/change_list_name"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
     <item android:id="@+id/imgEdit"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_edit"
         android:title="@string/edit"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
     <item android:id="@+id/imgDelete"
-        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:icon="@drawable/ic_remove_list"
         android:title="@string/delete"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />

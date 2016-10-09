@@ -17,7 +17,7 @@
     <string name="edit">Редактировать</string>
     <string name="in_shop">" "В магазине</string>
     <string name="delete_shopping_list_question">Удалить список?</string>
-    <string name="in_shop_ending_work_message">Победа!</string>
+    <string name="in_shop_ending_work_message">Все куплено</string>
     <string name="in_developing">В разработке…</string>
     <string name="change_list_name">Редактировать наименование</string>
     <string name="hide_marked">Скрыть выделенные</string>
@@ -42,8 +42,10 @@
     <string name="not_assigned">Не назначен</string>
     <string name="action_receive_shopping_list_by_email">Получить лист покупок по эл. почте</string>
     <string name="send">Отправить</string>
-    <string name="загружен">loaded</string>
+    <string name="loaded">загружен</string>
     <string name="loading">Загрузка…</string>
     <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
     <string name="json_file_identifier">Shopping_list</string>
+    <string name="action_help">Справка</string>
+    <string name="new_list">Новый список</string>
 </resources>

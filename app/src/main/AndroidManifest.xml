@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.RightDirection.ShoppingList">
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,23 +19,23 @@
             android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ShoppingListEditingActivity"
-            />
-        <activity android:name=".activities.ProductsListActivity"/>
-        <activity android:name=".activities.ItemActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustResize"/>
-        <activity android:name=".activities.ShoppingListInShopActivity"
-            />
-        <activity android:name=".activities.SettingsActivity"/>
+        <activity android:name=".activities.ShoppingListEditingActivity" />
+        <activity android:name=".activities.ProductsListActivity" />
+        <activity
+            android:name=".activities.ItemActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity android:name=".activities.ShoppingListInShopActivity" />
+        <activity android:name=".activities.SettingsActivity" />
 
         <provider
-            android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:name=".helpers.ShoppingListContentProvider"
+            android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:exported="false"
-            android:grantUriPermissions="true"/>
+            android:grantUriPermissions="true" />
 
     </application>
 

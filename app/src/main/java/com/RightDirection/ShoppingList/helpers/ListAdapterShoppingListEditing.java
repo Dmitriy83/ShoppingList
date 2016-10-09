@@ -1,7 +1,10 @@
 package com.RightDirection.ShoppingList.helpers;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
 
 import java.util.ArrayList;
@@ -189,12 +193,27 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         public boolean onLongClick(View view) {
             Product item = (Product) view.getTag();
 
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
-            intent.putExtra(String.valueOf(R.string.name), item.getName());
-            intent.putExtra(String.valueOf(R.string.item_id), item.getId());
-            intent.putExtra(String.valueOf(R.string.item_image), item.getImageUri());
-            intent.putExtra(String.valueOf(R.string.is_new_item), false);
-            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mParentActivity);
+            boolean showImages = sharedPref.getBoolean(mParentActivity.getString(R.string.pref_key_show_images), true);
+
+            if (showImages) {
+                // Откроем активность редактирования продукта
+                Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
+                intent.putExtra(String.valueOf(R.string.name), item.getName());
+                intent.putExtra(String.valueOf(R.string.item_id), item.getId());
+                intent.putExtra(String.valueOf(R.string.item_image), item.getImageUri());
+                intent.putExtra(String.valueOf(R.string.is_new_item), false);
+                mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+            }else {
+                // Откроем окно для ввода нового наименования продукта
+                // Сохранение будет производиться в методе onDialogPositiveClick
+                InputNameDialog inputNameDialog = new InputNameDialog();
+                inputNameDialog.setInitName(item.getName());
+                inputNameDialog.setId(item.getId());
+                inputNameDialog.setItIsProduct();
+                FragmentManager fragmentManager = mParentActivity.getFragmentManager();
+                inputNameDialog.show(fragmentManager, null);
+            }
 
             return false;
         }

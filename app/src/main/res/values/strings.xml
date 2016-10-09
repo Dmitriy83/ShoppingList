@@ -22,7 +22,7 @@
     <string name="is_new_list">isNewList</string>
     <string name="list_item">list_item</string>
     <string name="shopping_list_items">shopping_list_items</string>
-    <string name="in_shop_ending_work_message">Victory!</string>
+    <string name="in_shop_ending_work_message">Done</string>
     <string name="in_developing">In developing…</string>
     <string name="change_list_name">Change shopping list name</string>
     <string name="hide_marked">Hide marked</string>
@@ -69,4 +69,8 @@
     <string name="action_edit_shopping_list">Edit shopping list</string>
     <string name="loading">Loading…</string>
     <string name="no_emails_for_loading">There are not any emails for loading</string>
+    <string name="action_help">Help</string>
+    <string name="list_name">list_name</string>
+    <string name="new_list">New list</string>
+    <string name="help_string">Help</string>
 </resources>

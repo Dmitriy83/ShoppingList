@@ -398,9 +398,9 @@ public class ActivitiesTest {
         onView(withId(R.id.imgSendListByEmail)).perform(click());
 
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
-        UiObject emailSubject = mDevice.findObject(new UiSelector().text("Shopping list '" + mNewListName + "'"));
+        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
         assertTrue(emailSubject.exists());
-        UiObject emailAttachments = mDevice.findObject(new UiSelector().text("Shopping list '" + mNewListName + "'.json"));
+        UiObject emailAttachments = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'.json"));
         assertTrue(emailAttachments.exists());
         UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
         btnSend.click();

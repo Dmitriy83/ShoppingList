@@ -20,7 +20,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignParentStart="true"
+            android:textSize="@dimen/text_size_normal"/>
     </RelativeLayout>
 
     <ImageButton
@@ -57,7 +58,8 @@
             android:id="@+id/etCount"
             android:hint=""
             android:gravity="right"
-            android:digits="0123456789."/>
+            android:digits="0123456789."
+            android:textSize="@dimen/text_size_normal"/>
 
         <ImageButton
             android:layout_width="@dimen/normal_size"

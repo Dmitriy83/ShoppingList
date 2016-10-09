@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_edit_shopping_list"
         android:orderInCategory="001"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_edit"
         android:title="@string/action_edit_shopping_list"
         app:showAsAction="always" />
     <item

@@ -22,7 +22,8 @@
         android:padding="10dp"
         android:layout_toStartOf="@+id/txtCount"
         android:layout_toLeftOf="@+id/txtCount"
-        android:textColor="#F000" />
+        android:textColor="#F000"
+        android:textSize="@dimen/text_size_normal"/>
 
     <TextView
         android:id="@+id/txtCount"

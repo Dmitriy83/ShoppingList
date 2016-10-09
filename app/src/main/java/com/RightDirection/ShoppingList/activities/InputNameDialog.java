@@ -13,8 +13,9 @@ import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
 
-public class InputListNameDialog extends DialogFragment{
+public class InputNameDialog extends DialogFragment{
 
+    private boolean mIsProduct = false;
     private String mInitName = "";
     private long mId;
 
@@ -22,7 +23,7 @@ public class InputListNameDialog extends DialogFragment{
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface IInputListNameDialogListener {
-        void onDialogPositiveClick(String listName, long listId);
+        void onDialogPositiveClick(String listName, long listId, boolean isProduct);
         void onDialogNegativeClick();
     }
 
@@ -46,7 +47,7 @@ public class InputListNameDialog extends DialogFragment{
         // Добавим кнопки-действия
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(inputNewListName.getText().toString(), mId);
+                        mListener.onDialogPositiveClick(inputNewListName.getText().toString(), mId, mIsProduct);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -79,5 +80,9 @@ public class InputListNameDialog extends DialogFragment{
 
     public void setId(long id) {
         mId = id;
+    }
+
+    public void setItIsProduct() {
+        mIsProduct = true;
     }
 }

@@ -25,6 +25,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     private ArrayList<Product> mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;
     private long mListId;
+    private String mListName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
         mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), -1);
+
+        // Установим заголовок активности
+        mListName = sourceIntent.getStringExtra(String.valueOf(R.string.list_name));
+        if (mListName != null) {
+            setTitle(mListName);
+        }
 
         // Получим ссылки на фрагемнты
         FragmentManager fragmentManager = getFragmentManager();
@@ -146,6 +153,9 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             Intent intent = new Intent(this, ShoppingListEditingActivity.class);
             intent.putExtra(String.valueOf(R.string.is_new_list), false);
             intent.putExtra(String.valueOf(R.string.list_id), mListId);
+            if (mListName != null){
+                intent.putExtra(String.valueOf(R.string.list_name), mListName);
+            }
             startActivity(intent);
             finish();
         }

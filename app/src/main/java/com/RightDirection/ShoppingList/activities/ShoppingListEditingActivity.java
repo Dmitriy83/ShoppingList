@@ -27,12 +27,13 @@ import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 import java.util.ArrayList;
 
 public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
-        InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
+        InputNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<Product> mShoppingListItems;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
     private long mListId;
+    private String mListName;
     private boolean mGoToInShop = false;
 
     @Override
@@ -44,6 +45,16 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         Intent sourceIntent = getIntent();
         mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
         mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), 0);
+
+        // Установим заголовок активности
+        if (mIsNewList){
+            setTitle(getString(R.string.new_list));
+        }else{
+            mListName = sourceIntent.getStringExtra(String.valueOf(R.string.list_name));
+            if (mListName != null){
+                setTitle(mListName);
+            }
+        }
 
         if (savedInstanceState == null) {
             // Создаем массив для хранения списка покупок
@@ -92,9 +103,9 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         if (mIsNewList) {
             // Откроем окно для ввода наименования нового списка/
             // Сохранение будет производиться в методе onDialogPositiveClick
-            InputListNameDialog inputListNameDialog = new InputListNameDialog();
+            InputNameDialog inputNameDialog = new InputNameDialog();
             FragmentManager fragmentManager = getFragmentManager();
-            inputListNameDialog.show(fragmentManager, null);
+            inputNameDialog.show(fragmentManager, null);
         }
         else {
             // Обновим текущий список покупок
@@ -105,6 +116,9 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                 // Перейдем к активности "В магазине"
                 Intent intent = new Intent(this, ShoppingListInShopActivity.class);
                 intent.putExtra(String.valueOf(R.string.list_id), mListId);
+                if (mListName != null){
+                    intent.putExtra(String.valueOf(R.string.list_name), mListName);
+                }
                 startActivity(intent);
             }
 
@@ -130,19 +144,30 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     @Override
-    public void onDialogPositiveClick(String listName, long id) {
-        // Сохраним список продуктов в БД
-        ShoppingList shoppingList = new ShoppingList(-1, listName, null, mShoppingListItems);
-        shoppingList.addToDB(getApplicationContext());
+    public void onDialogPositiveClick(String name, long id, boolean isProduct) {
 
-        if (mGoToInShop) {
-            // Перейдем к активности "В магазине"
-            Intent intent = new Intent(this, ShoppingListInShopActivity.class);
-            intent.putExtra(String.valueOf(R.string.list_id), shoppingList.getId());
-            startActivity(intent);
+        if (isProduct) {
+            // Создадим вспомогательный объект Product и вызовем команду переименования
+            Product renamedProduct = new Product(id, name, null);
+            renamedProduct.renameInDB(getApplicationContext());
+            mShoppingListItemsAdapter.updateItem(id, name, null);
+        }else {
+            // Сохраним список продуктов в БД
+            ShoppingList shoppingList = new ShoppingList(-1, name, null, mShoppingListItems);
+            shoppingList.addToDB(getApplicationContext());
+
+            if (mGoToInShop) {
+                // Перейдем к активности "В магазине"
+                Intent intent = new Intent(this, ShoppingListInShopActivity.class);
+                intent.putExtra(String.valueOf(R.string.list_id), shoppingList.getId());
+                if (name != null){
+                    intent.putExtra(String.valueOf(R.string.list_name), name);
+                }
+                startActivity(intent);
+            }
+
+            finish();
         }
-
-        finish();
     }
 
     @Override

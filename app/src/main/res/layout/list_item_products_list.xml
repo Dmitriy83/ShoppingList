@@ -30,7 +30,8 @@
             android:layout_toRightOf="@+id/imgProduct"
             android:layout_toEndOf="@+id/imgProduct"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:textSize="@dimen/text_size_normal"/>
     </RelativeLayout>
 
     <ImageButton
@@ -41,6 +42,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:drawable/ic_menu_close_clear_cancel" />
+        android:background="@drawable/ic_delete" />
 
 </RelativeLayout>

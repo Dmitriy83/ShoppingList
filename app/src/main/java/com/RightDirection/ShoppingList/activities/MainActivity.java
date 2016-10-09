@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        InputListNameDialog.IInputListNameDialogListener{
+        InputNameDialog.IInputListNameDialogListener{
 
     private ArrayList<ShoppingList> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
@@ -131,6 +131,11 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                         Toast.LENGTH_LONG).show();
             }
         }
+        else if (id == R.id.action_help) {
+            Toast.makeText(this, getString(R.string.help_string),
+                    Toast.LENGTH_LONG).show();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -170,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     }
 
     @Override
-    public void onDialogPositiveClick(String listName, long listID) {
+    public void onDialogPositiveClick(String listName, long listID, boolean isProduct) {
         // Создадим вспомогательный объект ShoppingList и вызовем команду переименования
         ShoppingList renamedSL = new ShoppingList(listID, listName, null);
         renamedSL.renameInDB(getApplicationContext());

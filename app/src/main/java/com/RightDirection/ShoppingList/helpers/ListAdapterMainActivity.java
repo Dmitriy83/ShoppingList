@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.ShoppingList;
-import com.RightDirection.ShoppingList.activities.InputListNameDialog;
+import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 
@@ -55,6 +55,7 @@ public class ListAdapterMainActivity extends ListAdapter {
             Activity parentActivity = (Activity) mContext;
             Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
             intent.putExtra(String.valueOf(R.string.list_id), item.getId());
+            intent.putExtra(String.valueOf(R.string.list_name), item.getName());
             ActivityCompat.startActivity(parentActivity, intent, null);
         }
     };
@@ -142,6 +143,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
                     intent.putExtra(String.valueOf(R.string.is_new_list), false);
                     intent.putExtra(String.valueOf(R.string.list_id), mSelectedItem.getId());
+                    intent.putExtra(String.valueOf(R.string.list_name), mSelectedItem.getName());
                     mParentActivity.startActivity(intent);
 
                     mode.finish(); // Action picked, so close the CAB
@@ -151,11 +153,11 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     // Откроем окно для ввода нового наименования списка/
                     // Сохранение будет производиться в методе onDialogPositiveClick
-                    InputListNameDialog inputListNameDialog = new InputListNameDialog();
-                    inputListNameDialog.setInitName(mSelectedItem.getName());
-                    inputListNameDialog.setId(mSelectedItem.getId());
+                    InputNameDialog inputNameDialog = new InputNameDialog();
+                    inputNameDialog.setInitName(mSelectedItem.getName());
+                    inputNameDialog.setId(mSelectedItem.getId());
                     FragmentManager fragmentManager = mParentActivity.getFragmentManager();
-                    inputListNameDialog.show(fragmentManager, null);
+                    inputNameDialog.show(fragmentManager, null);
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;

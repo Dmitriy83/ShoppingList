@@ -5,13 +5,13 @@
     <item
         android:id="@+id/action_save_list"
         android:orderInCategory="003"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_save"
         android:title="@string/action_save_list"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_remove_all_items"
         android:orderInCategory="002"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@drawable/ic_remove_items"
         android:title="@string/action_remove_all_items"
         app:showAsAction="always" />
     <item

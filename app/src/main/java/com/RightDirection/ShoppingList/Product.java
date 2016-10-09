@@ -55,4 +55,12 @@ public class Product extends ListItem implements IDataBaseOperations {
         contentResolver.update(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues,
                 ShoppingListContentProvider.KEY_ID + "=" + getId(), null);
     }
+
+    public void renameInDB(Context context){
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(ShoppingListContentProvider.KEY_NAME, getName());
+        contentResolver.update(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
+                values, ShoppingListContentProvider.KEY_ID +  " = " + getId(), null);
+    }
 }
