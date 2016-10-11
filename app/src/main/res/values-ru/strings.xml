@@ -17,7 +17,7 @@
     <string name="edit">Редактировать</string>
     <string name="in_shop">" "В магазине</string>
     <string name="delete_shopping_list_question">Удалить список?</string>
-    <string name="in_shop_ending_work_message">Все куплено</string>
+    <string name="in_shop_ending_work_message">Готово</string>
     <string name="in_developing">В разработке…</string>
     <string name="change_list_name">Редактировать наименование</string>
     <string name="hide_marked">Скрыть выделенные</string>

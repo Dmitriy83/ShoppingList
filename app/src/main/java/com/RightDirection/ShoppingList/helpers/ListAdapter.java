@@ -137,7 +137,7 @@ abstract public class ListAdapter extends ArrayAdapter{
             // Установим картинку
             Picasso.with(mParentActivity)
                     .load(imageUri)
-                    .placeholder(android.R.drawable.presence_online)
+                    .placeholder(R.drawable.ic_default_product_image)
                     .fit()
                     .into(imgProduct);
         }

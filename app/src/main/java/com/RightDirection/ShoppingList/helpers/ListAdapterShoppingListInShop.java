@@ -139,8 +139,9 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 | Paint.STRIKE_THRU_TEXT_FLAG);
         vh.productNameView.setBackgroundColor(Color.LTGRAY);
 
-        // Установим такой же цвет и для количества
+        // Установим такой же цвет и для количества и для картинки
         vh.txtCount.setBackgroundColor(Color.LTGRAY);
+        vh.productImage.setBackgroundColor(Color.LTGRAY);
     }
 
     private void setViewUnchecked(ViewHolder vh){
@@ -149,8 +150,9 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         vh.productNameView.setBackgroundColor(Color.WHITE);
 
-        // Установим такой же цвет и для количества
+        // Установим такой же цвет и для количества и для картинки
         vh.txtCount.setBackgroundColor(Color.WHITE);
+        vh.productImage.setBackgroundColor(Color.WHITE);
     }
 
     public boolean isFiltered(){

@@ -16,7 +16,6 @@
             android:layout_height="@dimen/normal_size"
             android:id="@+id/imgProduct"
             android:contentDescription="@string/product_image"
-            android:background="@android:drawable/presence_online"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true" />

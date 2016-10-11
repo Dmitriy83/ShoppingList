@@ -16,6 +16,8 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.activities.ItemActivity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -183,7 +185,9 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
             item.setCount(etCount.getText().toString());
 
         // Изменим количество
-        item.setCount(item.getCount() + increment);
+        float count = new BigDecimal(item.getCount() + increment)
+                .setScale(1, RoundingMode.HALF_UP).floatValue();
+        item.setCount(count);
         etCount.setText(String.valueOf(item.getCount()));
     }
 
