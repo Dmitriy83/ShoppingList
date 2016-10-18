@@ -37,8 +37,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
 
-        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productRepresent != null)
-            viewInitializer.viewHolder.productRepresent.setOnTouchListener(onProductTouch);
+        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.represent != null)
+            viewInitializer.viewHolder.represent.setOnTouchListener(onProductTouch);
 
         // Отрисуем выбор товара
         if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productNameView != null) {
@@ -141,7 +141,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         // Установим такой же цвет и для количества и для картинки
         vh.txtCount.setBackgroundColor(Color.LTGRAY);
-        vh.productImage.setBackgroundColor(Color.LTGRAY);
+        if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.LTGRAY);
     }
 
     private void setViewUnchecked(ViewHolder vh){
@@ -152,7 +152,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         // Установим такой же цвет и для количества и для картинки
         vh.txtCount.setBackgroundColor(Color.WHITE);
-        vh.productImage.setBackgroundColor(Color.WHITE);
+        if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.WHITE);
     }
 
     public boolean isFiltered(){

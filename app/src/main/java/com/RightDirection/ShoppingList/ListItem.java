@@ -12,6 +12,13 @@ public class ListItem implements Parcelable {
     private Uri imageUri;
     private float count;
 
+    public ListItem(long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.imageUri = null;
+        this.count = 1;
+    }
+
     public ListItem(long id, String name, Uri imageUri) {
         this.id = id;
         this.name = name;

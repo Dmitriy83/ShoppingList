@@ -51,4 +51,5 @@
     <string name="HelpInShop">Чтобы вычеркнуть товар проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
     <string name="pref_key_show_help_screens">Показывать подсказки</string>
     <string name="got_it">Запомнил</string>
+    <string name="action_edit_categories_list">Категории</string>
 </resources>

@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                         Toast.LENGTH_LONG).show();
             }
         }
-        else if (id == R.id.action_help) {
-            Toast.makeText(this, getString(R.string.help_string),
-                    Toast.LENGTH_LONG).show();
+        else if (id == R.id.action_edit_categories_list) {
+            Intent intent = new Intent(view.getContext(), CategoriesListActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         mShoppingLists.clear();
         while (data.moveToNext()){
-            ShoppingList newShoppingList = new ShoppingList(data.getLong(keyIdIndex), data.getString(keyNameIndex), null);
+            ShoppingList newShoppingList = new ShoppingList(data.getLong(keyIdIndex), data.getString(keyNameIndex));
             mShoppingLists.add(newShoppingList);
         }
 
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     public void onDialogPositiveClick(String listName, long listID, boolean isProduct) {
         // Создадим вспомогательный объект ShoppingList и вызовем команду переименования
-        ShoppingList renamedSL = new ShoppingList(listID, listName, null);
+        ShoppingList renamedSL = new ShoppingList(listID, listName);
         renamedSL.renameInDB(getApplicationContext());
         mShoppingListsAdapter.updateItem(listID, listName, null);
     }
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                             + dateFormat.format(calendar.getTime());
 
                     // Создадим  новый объект-лист покупок
-                    ShoppingList newShoppingList = new ShoppingList(-1, newListName, null, 1, products);
+                    ShoppingList newShoppingList = new ShoppingList(-1, newListName, products);
 
                     // Сначала нужно добавить новые продукты из списка в базу данных.
                     // Синхронизацияя должна производиться по полю Name

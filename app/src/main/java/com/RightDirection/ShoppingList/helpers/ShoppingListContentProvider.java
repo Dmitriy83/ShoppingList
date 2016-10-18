@@ -27,6 +27,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final Uri PRODUCTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/products");
     public static final Uri SHOPPING_LISTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglists");
     public static final Uri SHOPPING_LIST_CONTENT_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglistcontent");
+    public static final Uri CATEGORIES_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/categories");
     private static final int PRODUCTS_ALL_ROWS = 1;
     private static final int PRODUCTS_SINGLE_ROW = 2;
     private static final int SHOPPING_LISTS_ALL_ROWS = 3;
@@ -34,6 +35,8 @@ public class ShoppingListContentProvider extends ContentProvider {
     private static final int SHOPPING_LIST_CONTENT_ALL_ROWS = 5;
     private static final int SHOPPING_LIST_CONTENT_SINGLE_ROW = 6;
     private static final int FILES = 7;
+    private static final int CATEGORIES_ALL_ROWS = 8;
+    private static final int CATEGORIES_SINGLE_ROW = 9;
 
     private static final UriMatcher uriMatcher;
     static {
@@ -45,6 +48,8 @@ public class ShoppingListContentProvider extends ContentProvider {
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent",      SHOPPING_LIST_CONTENT_ALL_ROWS);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "shoppinglistcontent/#",    SHOPPING_LIST_CONTENT_SINGLE_ROW);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "files/*",                  FILES);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "categories",               CATEGORIES_ALL_ROWS);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "categories/#",             CATEGORIES_SINGLE_ROW);
     }
 
     public static final String KEY_ID = "_id";
@@ -53,11 +58,13 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
     public static final String KEY_COUNT = "COUNT";
+    public static final String KEY_CATEGORY = "CATEGORY";
     private static final String DATABASE_NAME = "shoppingListDatabase.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
-    private static final int DATABASE_VERSION = 6;
+    private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
+    private static final int DATABASE_VERSION = 7;
 
     @Override
     public boolean onCreate() {
@@ -78,6 +85,8 @@ public class ShoppingListContentProvider extends ContentProvider {
             case SHOPPING_LISTS_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.shoppinglists";
             case SHOPPING_LIST_CONTENT_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.shoppinglistcontent";
             case SHOPPING_LIST_CONTENT_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.shoppinglistcontent";
+            case CATEGORIES_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.categories";
+            case CATEGORIES_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.categories";
             default: throw new IllegalArgumentException("Неподдерживаемый URI:" + uri);
         }
     }
@@ -232,6 +241,10 @@ public class ShoppingListContentProvider extends ContentProvider {
             case SHOPPING_LIST_CONTENT_ALL_ROWS:
                 contentUri = SHOPPING_LIST_CONTENT_CONTENT_URI;
                 break;
+            case CATEGORIES_ALL_ROWS:
+            case CATEGORIES_SINGLE_ROW:
+                contentUri = CATEGORIES_CONTENT_URI;
+                break;
             default: break;
         }
         return contentUri;
@@ -259,6 +272,10 @@ public class ShoppingListContentProvider extends ContentProvider {
                     tableName = SHOPPING_LIST_CONTENT_TABLE_NAME;
                 }
                 break;
+            case CATEGORIES_ALL_ROWS:
+            case CATEGORIES_SINGLE_ROW:
+                tableName = CATEGORIES_TABLE_NAME;
+                break;
             default: break;
         }
         return tableName;
@@ -269,6 +286,7 @@ public class ShoppingListContentProvider extends ContentProvider {
             case PRODUCTS_SINGLE_ROW:
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LIST_CONTENT_SINGLE_ROW:
+            case CATEGORIES_SINGLE_ROW:
                 String rowID = uri.getPathSegments().get(1);
                 selection = KEY_ID + "=" + rowID
                         + (!TextUtils.isEmpty(selection)? " AND (" + selection + ")": "");
@@ -336,10 +354,16 @@ public class ShoppingListContentProvider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
             // Создадим таблицы, если они не были созданы ранее
 
+            // Таблица "Категориии"
+            String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
+                    + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_NAME + ");";
+            db.execSQL(queryCreateCategoriesTable);
+
             // Таблица "Продукты"
             String queryCreateProductsTable = "CREATE TABLE " + PRODUCTS_TABLE_NAME
                     + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_NAME + ", " + KEY_PICTURE + ");";
+                    + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY + ");";
             db.execSQL(queryCreateProductsTable);
 
             // Таблица "Списки покупок"
@@ -376,6 +400,19 @@ public class ShoppingListContentProvider extends ContentProvider {
                 // Добавим колонку в таблицу SHOPPING_LIST_CONTENT
                 String queryAddColumn = "ALTER TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
                         + " ADD COLUMN '" + KEY_COUNT + "' DEFAULT 1;";
+                db.execSQL(queryAddColumn);
+            }
+
+            if (newVersion == 7) {
+                // Создадим таблицу "Категории"
+                String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
+                        + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + KEY_NAME + ");";
+                db.execSQL(queryCreateCategoriesTable);
+
+                // Добавим колонку в таблицу PRODUCTS
+                String queryAddColumn = "ALTER TABLE " + PRODUCTS_TABLE_NAME
+                        + " ADD COLUMN '" + KEY_CATEGORY + "' DEFAULT NULL;";
                 db.execSQL(queryAddColumn);
             }
         }

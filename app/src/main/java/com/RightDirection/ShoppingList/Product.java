@@ -12,6 +12,10 @@ import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 
 public class Product extends ListItem implements IDataBaseOperations {
 
+    public Product(long id, String name) {
+        super(id, name);
+    }
+
     public Product(long id, String name, Uri imageUri) {
         super(id, name, imageUri);
     }
@@ -56,6 +60,7 @@ public class Product extends ListItem implements IDataBaseOperations {
                 ShoppingListContentProvider.KEY_ID + "=" + getId(), null);
     }
 
+    @Override
     public void renameInDB(Context context){
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();

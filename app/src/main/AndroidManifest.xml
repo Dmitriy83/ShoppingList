@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".activities.ShoppingListEditingActivity" />
         <activity android:name=".activities.ProductsListActivity" />
+        <activity android:name=".activities.CategoriesListActivity" />
         <activity
             android:name=".activities.ItemActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
@@ -37,6 +38,9 @@
             android:exported="false"
             android:grantUriPermissions="true" />
 
+        <activity android:name=".activities.HelpShoppingListInShopActivity"
+            android:theme="@style/AppThemeDialog">
+        </activity>
     </application>
 
 </manifest>

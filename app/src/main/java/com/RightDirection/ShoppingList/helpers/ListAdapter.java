@@ -42,7 +42,7 @@ abstract public class ListAdapter extends ArrayAdapter{
         public TextView productNameView;
         public ImageButton imgDelete;
         public ImageView productImage;
-        public RelativeLayout productRepresent;
+        public RelativeLayout represent;
 
         public ImageButton imgDecrease;
         public ImageButton imgIncrease;
@@ -95,7 +95,7 @@ abstract public class ListAdapter extends ArrayAdapter{
                 viewHolder.productNameView = (TextView) rowView.findViewById(R.id.txtName);
                 viewHolder.imgDelete = (ImageButton) rowView.findViewById(R.id.imgDelete);
                 viewHolder.productImage = (ImageView) rowView.findViewById(R.id.imgProduct);
-                viewHolder.productRepresent = (RelativeLayout) rowView.findViewById(R.id.productRepresent);
+                viewHolder.represent = (RelativeLayout) rowView.findViewById(R.id.productRepresent);
                 viewHolder.etCount = (EditText) rowView.findViewById(R.id.etCount);
                 viewHolder.txtCount = (TextView) rowView.findViewById(R.id.txtCount);
                 rowView.setTag(viewHolder);
@@ -110,9 +110,9 @@ abstract public class ListAdapter extends ArrayAdapter{
                 // Заполним текстовое поле
                 viewHolder.productNameView.setText(name);
             }
-            if (viewHolder.productRepresent != null) {
-                viewHolder.productRepresent.setTag(item);
-                viewHolder.productRepresent.setTag(R.string.view_holder, viewHolder);
+            if (viewHolder.represent != null) {
+                viewHolder.represent.setTag(item);
+                viewHolder.represent.setTag(R.string.view_holder, viewHolder);
             }
             if (viewHolder.imgDelete != null) viewHolder.imgDelete.setTag(item);
 

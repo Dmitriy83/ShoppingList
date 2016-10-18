@@ -17,21 +17,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     ArrayList<Product> mProducts;
 
-    public ShoppingList(long id, String name, Uri imageUri) {
-        super(id, name, imageUri);
+    public ShoppingList(long id, String name) {
+        super(id, name);
     }
 
-    public ShoppingList(long id, String name, Uri imageUri, float count) {
-        super(id, name, imageUri, count);
-    }
-
-    public ShoppingList(long id, String name, Uri imageUri,  ArrayList<Product> products) {
-        super(id, name, imageUri);
-        mProducts = products;
-    }
-
-    public ShoppingList(long id, String name, Uri imageUri, float count,  ArrayList<Product> products) {
-        super(id, name, imageUri, count);
+    public ShoppingList(long id, String name, ArrayList<Product> products) {
+        super(id, name);
         mProducts = products;
     }
 
@@ -101,6 +92,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
     }
 
+    @Override
     public void renameInDB(Context context){
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();

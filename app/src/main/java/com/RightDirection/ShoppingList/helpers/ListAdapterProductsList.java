@@ -25,8 +25,8 @@ public class ListAdapterProductsList extends ListAdapter {
         ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
 
         if (viewInitializer.viewHolder != null) {
-            if (viewInitializer.viewHolder.productRepresent != null)
-                viewInitializer.viewHolder.productRepresent.setOnClickListener(onProductRepresentClick);
+            if (viewInitializer.viewHolder.represent != null)
+                viewInitializer.viewHolder.represent.setOnClickListener(onProductRepresentClick);
             if (viewInitializer.viewHolder.imgDelete != null)
                 viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
         }

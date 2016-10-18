@@ -8,4 +8,6 @@ public interface IDataBaseOperations {
     public void removeFromDB(Context context);
 
     public void updateInDB(Context context);
+
+    public void renameInDB(Context context);
 }

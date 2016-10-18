@@ -80,6 +80,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
             mProductsAdapter.setOriginalValues(originalValues);
         }
+
+        // Откроем подсказку, если необходимо
+        boolean showHelp = sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
+        if (showHelp){
+            Intent intent = new Intent(this, HelpShoppingListInShopActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

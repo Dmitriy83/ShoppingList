@@ -109,7 +109,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
         else {
             // Обновим текущий список покупок
-            ShoppingList shoppingList = new ShoppingList(mListId, "", null, mShoppingListItems);
+            ShoppingList shoppingList = new ShoppingList(mListId, "", mShoppingListItems);
             shoppingList.updateInDB(getApplicationContext());
 
             if (mGoToInShop) {
@@ -153,7 +153,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             mShoppingListItemsAdapter.updateItem(id, name, null);
         }else {
             // Сохраним список продуктов в БД
-            ShoppingList shoppingList = new ShoppingList(-1, name, null, mShoppingListItems);
+            ShoppingList shoppingList = new ShoppingList(-1, name, mShoppingListItems);
             shoppingList.addToDB(getApplicationContext());
 
             if (mGoToInShop) {

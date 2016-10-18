@@ -43,8 +43,8 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
 
             if (viewInitializer.viewHolder.imgDelete != null)
                 viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-            if (viewInitializer.viewHolder.productRepresent != null)
-                viewInitializer.viewHolder.productRepresent.setOnLongClickListener(onProductRepresentLongClick);
+            if (viewInitializer.viewHolder.represent != null)
+                viewInitializer.viewHolder.represent.setOnLongClickListener(onProductRepresentLongClick);
             if (viewInitializer.viewHolder.imgDecrease != null) {
                 viewInitializer.viewHolder.imgDecrease.setTag(R.id.item, viewInitializer.item);
                 viewInitializer.viewHolder.imgDecrease.setTag(R.id.etCount, viewInitializer.viewHolder.etCount);

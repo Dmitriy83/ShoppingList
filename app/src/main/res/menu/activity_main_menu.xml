@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MainActivity">
     <item
+        android:id="@+id/action_edit_categories_list"
+        android:orderInCategory="99"
+        android:title="@string/action_edit_categories_list"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_edit_products_list"
         android:orderInCategory="100"
         android:title="@string/action_edit_products_list"
@@ -16,10 +21,5 @@
         android:id="@+id/action_settings"
         android:orderInCategory="102"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_help"
-        android:orderInCategory="103"
-        android:title="@string/action_help"
         app:showAsAction="never" />
 </menu>
