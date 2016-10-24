@@ -72,9 +72,9 @@
             android:id="@+id/etCount"
             android:hint=""
             android:gravity="end"
-            android:digits="0123456789."
             android:textSize="@dimen/text_size_normal"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            />
 
         <ImageButton
             android:layout_width="@dimen/normal_size"
