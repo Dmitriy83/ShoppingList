@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
@@ -20,18 +20,14 @@ public class ListAdapterProductsList extends ListAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
-        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
-
-        if (viewInitializer.viewHolder != null) {
-            if (viewInitializer.viewHolder.represent != null)
-                viewInitializer.viewHolder.represent.setOnClickListener(onProductRepresentClick);
-            if (viewInitializer.viewHolder.imgDelete != null)
-                viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-        }
-
-        return viewInitializer.rowView;
+        ViewHolder viewHolder = (ViewHolder) holder;
+        if (viewHolder.represent != null)
+            viewHolder.represent.setOnClickListener(onProductRepresentClick);
+        if (viewHolder.imgDelete != null)
+            viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
@@ -43,7 +39,6 @@ public class ListAdapterProductsList extends ListAdapter {
             item.removeFromDB(mParentActivity);
             // Удалим из списка
             remove(item);
-            notifyDataSetChanged();
         }
     };
 

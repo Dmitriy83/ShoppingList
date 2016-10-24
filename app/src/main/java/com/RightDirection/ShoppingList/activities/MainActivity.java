@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +26,6 @@ import com.RightDirection.ShoppingList.WrongEmailProtocolException;
 import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -52,19 +53,21 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
             fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
         }
 
-        // Получим ссылки на фрагемнты
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingLists);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvShoppingLists);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Создаем массив для хранения списков покупок
         mShoppingLists = new ArrayList<>();
-
         // Создадим новый адаптер для работы со списками покупок
         mShoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
                 mShoppingLists);
 
-        // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(mShoppingListsAdapter);
+        // Привяжем адаптер к элементу управления
+        recyclerView.setAdapter(mShoppingListsAdapter);
 
         // Заполним списки покупок из базы данных
         getLoaderManager().initLoader(0, null, this);

@@ -1,6 +1,5 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -8,16 +7,17 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.Category;
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterCategoriesList;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class CategoriesListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -37,9 +37,12 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
             fabAddProduct.setOnClickListener(onFabAddCategoryClick);
         }
 
-        // Получим ссылку на фрагемнт
-        FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment categoriesListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgCategoriesList);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvCategories);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Создаем массив для хранения списка товаров
         mCategories = new ArrayList<>();
@@ -48,7 +51,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         mCategoriesAdapter = new ListAdapterCategoriesList(this, R.layout.list_item_products_list, mCategories);
 
         // Привяжем адаптер к фрагменту
-        categoriesListFragment.setListAdapter(mCategoriesAdapter);
+        recyclerView.setAdapter(mCategoriesAdapter);
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
@@ -89,9 +92,9 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         }
 
         // Отсортируем список по алфавиту
-        mCategoriesAdapter.sort(new Comparator<Product>() {
+        Collections.sort(mCategories, new Comparator<Category>() {
             @Override
-            public int compare(Product lhs, Product rhs) {
+            public int compare(Category lhs, Category rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });

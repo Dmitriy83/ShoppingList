@@ -77,4 +77,5 @@
     <string name="pref_key_show_help_screens">Show help</string>
     <string name="got_it">Got it</string>
     <string name="action_edit_categories_list">Categories</string>
+    <string name="item_already_added">Item was added before</string>
 </resources>

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId 'com.RightDirection.ShoppingList'
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
@@ -32,13 +32,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:recyclerview-v7:25.0.0'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:24.2.1'
+    androidTestCompile 'com.android.support:support-annotations:25.0.0'
 
     // required if you want to use Mockito for unit tests
     testCompile "org.mockito:mockito-core:2.0.91-beta"
@@ -47,7 +48,14 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     // add this for intent mocking support
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
 
     // Set this dependency to build and run UI Automator tests
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+}
+
+configurations.all {
+    resolutionStrategy.force 'com.android.support:recyclerview-v7:25.0.0'
+    resolutionStrategy.force 'com.android.support:appcompat-v7:25.0.0'
+    resolutionStrategy.force 'com.android.support:design:25.0.0'
 }

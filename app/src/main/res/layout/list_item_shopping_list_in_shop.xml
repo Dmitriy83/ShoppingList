@@ -2,23 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productRepresent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/imgProduct"
-        android:layout_width="@dimen/normal_size"
-        android:layout_height="@dimen/normal_size"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/product_image"
-        android:background="@color/white" />
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/normal_size"
         android:layout_toRightOf="@+id/imgProduct"
+        android:layout_toEndOf="@+id/imgProduct"
         android:padding="10dp"
         android:layout_toStartOf="@+id/txtCount"
         android:layout_toLeftOf="@+id/txtCount"
@@ -33,6 +24,25 @@
         android:layout_alignParentRight="true"
         android:padding="10dp"
         android:textColor="#F000"
-        android:gravity="right|end" />
+        android:gravity="end" />
+
+    <ImageView
+        android:id="@+id/imgProduct"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
+        android:contentDescription="@string/product_image"
+        android:background="@color/white"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border_color"
+        android:layout_below="@+id/txtName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></LinearLayout>
 
 </RelativeLayout>

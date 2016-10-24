@@ -52,4 +52,5 @@
     <string name="pref_key_show_help_screens">Показывать подсказки</string>
     <string name="got_it">Запомнил</string>
     <string name="action_edit_categories_list">Категории</string>
+    <string name="item_already_added">Товар уже в списке</string>
 </resources>

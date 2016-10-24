@@ -7,12 +7,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 
@@ -28,28 +29,27 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         super(context, resource, objects);
 
         // Прочитаем настройки приложения
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mCrossOutProduct = sharedPref.getBoolean(mContext.getString(R.string.pref_key_cross_out_action), true);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mParentActivity);
+        mCrossOutProduct = sharedPref.getBoolean(mParentActivity.getString(R.string.pref_key_cross_out_action), true);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
-        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
-
-        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.represent != null)
-            viewInitializer.viewHolder.represent.setOnTouchListener(onProductTouch);
+        ViewHolder viewHolder = (ViewHolder)holder;
+        if (viewHolder != null && viewHolder.represent != null)
+            viewHolder.represent.setOnTouchListener(onProductTouch);
 
         // Отрисуем выбор товара
-        if (viewInitializer.viewHolder != null && viewInitializer.viewHolder.productNameView != null) {
-            if (viewInitializer.item.isChecked()) {
-                setViewChecked(viewInitializer.viewHolder);
+        if (viewHolder != null && viewHolder.productNameView != null) {
+            ListItem item = (ListItem)mObjects.get(position);
+            if (item.isChecked()) {
+                setViewChecked(viewHolder);
             } else {
-                setViewUnchecked(viewInitializer.viewHolder);
+                setViewUnchecked(viewHolder);
             }
         }
-
-        return viewInitializer.rowView;
     }
 
     private float mInitXTouch = 0;

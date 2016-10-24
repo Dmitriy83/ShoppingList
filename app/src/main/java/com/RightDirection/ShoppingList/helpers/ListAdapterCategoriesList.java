@@ -1,8 +1,8 @@
 package com.RightDirection.ShoppingList.helpers;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.Category;
 
@@ -15,18 +15,14 @@ public class ListAdapterCategoriesList extends ListAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
-        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
-
-        if (viewInitializer.viewHolder != null) {
-            if (viewInitializer.viewHolder.represent != null)
-                viewInitializer.viewHolder.represent.setOnClickListener(onRepresentClick);
-            if (viewInitializer.viewHolder.imgDelete != null)
-                viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-        }
-
-        return viewInitializer.rowView;
+        ViewHolder viewHolder = (ViewHolder) holder;
+        if (viewHolder.represent != null)
+            viewHolder.represent.setOnClickListener(onRepresentClick);
+        if (viewHolder.imgDelete != null)
+            viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
@@ -38,7 +34,6 @@ public class ListAdapterCategoriesList extends ListAdapter {
             item.removeFromDB(mParentActivity);
             // Удалим из списка
             remove(item);
-            notifyDataSetChanged();
         }
     };
 

@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
@@ -32,35 +31,23 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
-        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
-        if (viewInitializer.viewHolder != null){
-            if (viewInitializer.viewHolder.imgDecrease == null) viewInitializer.viewHolder.imgDecrease
-                    = (ImageButton) viewInitializer.rowView.findViewById(R.id.imgDecrease);
-            if (viewInitializer.viewHolder.imgIncrease == null) viewInitializer.viewHolder.imgIncrease
-                    = (ImageButton) viewInitializer.rowView.findViewById(R.id.imgIncrease);
-
-            if (viewInitializer.viewHolder.imgDelete != null)
-                viewInitializer.viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
-            if (viewInitializer.viewHolder.represent != null)
-                viewInitializer.viewHolder.represent.setOnLongClickListener(onProductRepresentLongClick);
-            if (viewInitializer.viewHolder.imgDecrease != null) {
-                viewInitializer.viewHolder.imgDecrease.setTag(R.id.item, viewInitializer.item);
-                viewInitializer.viewHolder.imgDecrease.setTag(R.id.etCount, viewInitializer.viewHolder.etCount);
-                viewInitializer.viewHolder.imgDecrease.setOnTouchListener(onImgDecreaseTouch);
-            }
-            if (viewInitializer.viewHolder.imgIncrease != null) {
-                viewInitializer.viewHolder.imgIncrease.setTag(R.id.item, viewInitializer.item);
-                viewInitializer.viewHolder.imgIncrease.setTag(R.id.etCount, viewInitializer.viewHolder.etCount);
-                viewInitializer.viewHolder.imgIncrease.setOnTouchListener(onImgIncreaseTouch);
-            }
-            if (viewInitializer.viewHolder.etCount != null) {
-                viewInitializer.viewHolder.etCount.setOnFocusChangeListener(onEtCountFocusChange);
-            }
+        ViewHolder viewHolder = (ViewHolder) holder;
+        if (viewHolder.imgDelete != null)
+            viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+        if (viewHolder.represent != null)
+            viewHolder.represent.setOnLongClickListener(onProductRepresentLongClick);
+        if (viewHolder.imgDecrease != null) {
+            viewHolder.imgDecrease.setOnTouchListener(onImgDecreaseTouch);
         }
-
-        return viewInitializer.rowView;
+        if (viewHolder.imgIncrease != null) {
+            viewHolder.imgIncrease.setOnTouchListener(onImgIncreaseTouch);
+        }
+        if (viewHolder.etCount != null) {
+            viewHolder.etCount.setOnFocusChangeListener(onEtCountFocusChange);
+        }
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {

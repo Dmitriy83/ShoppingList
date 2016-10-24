@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +24,6 @@ import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 
@@ -72,11 +73,14 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mShoppingListItems);
 
-        // Получим ссылки на фрагемнты
-        FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Привяжем адаптер к фрагменту
-        if (shoppingListFragment != null) shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
+        recyclerView.setAdapter(mShoppingListItemsAdapter);
 
         if (!mIsNewList && savedInstanceState == null) {
             // Заполним список покупок из базы данных
@@ -139,7 +143,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             mShoppingListItemsAdapter.notifyDataSetChanged();
         }else{
             // Сообщим о том, что элемент уже есть в списке
-            Toast.makeText(this, "Item was added before", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.item_already_added), Toast.LENGTH_LONG).show();
         }
     }
 

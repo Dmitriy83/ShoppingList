@@ -1,6 +1,5 @@
 package com.RightDirection.ShoppingList.helpers;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -8,13 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.ShoppingList;
@@ -35,13 +34,12 @@ public class ListAdapterMainActivity extends ListAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewInitializer viewInitializer = new ViewInitializer(position, convertView);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
 
-        viewInitializer.viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
-        viewInitializer.viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
-
-        return viewInitializer.rowView;
+        ViewHolder viewHolder = (ViewHolder)holder;
+        viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
+        viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
     }
 
     private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
@@ -52,11 +50,10 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView.setSelected(true);
 
             ShoppingList item = (ShoppingList) view.getTag();
-            Activity parentActivity = (Activity) mContext;
-            Intent intent = new Intent(parentActivity, ShoppingListInShopActivity.class);
+            Intent intent = new Intent(mParentActivity, ShoppingListInShopActivity.class);
             intent.putExtra(String.valueOf(R.string.list_id), item.getId());
             intent.putExtra(String.valueOf(R.string.list_name), item.getName());
-            ActivityCompat.startActivity(parentActivity, intent, null);
+            ActivityCompat.startActivity(mParentActivity, intent, null);
         }
     };
 
@@ -123,7 +120,6 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                                     // Обновим списки покупок
                                     remove(mSelectedItem);
-                                    notifyDataSetChanged();
 
                                     mActionMode.finish(); // Action picked, so close the CAB
                                 }
@@ -167,7 +163,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     try{
                         // Создадим JSON файл по списку покупок
                         String fileName = mParentActivity.getString(R.string.json_file_identifier) + " '" + mSelectedItem.getName() + "'" + ".json";
-                        Utils.createShoppingListJSONFile(getContext(), mSelectedItem, fileName);
+                        Utils.createShoppingListJSONFile(mParentActivity, mSelectedItem, fileName);
 
                         mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru",
                                 mParentActivity.getString(R.string.json_file_identifier)
@@ -191,4 +187,5 @@ public class ListAdapterMainActivity extends ListAdapter {
             mActionMode = null;
         }
     };
+
 }

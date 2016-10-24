@@ -1,6 +1,5 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.app.FragmentManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +7,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
 
@@ -48,9 +48,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             setTitle(mListName);
         }
 
-        // Получим ссылки на фрагемнты
-        FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgShoppingListInShop);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Создаем массив для хранения списка покупок
         if (savedInstanceState == null) {
@@ -69,7 +72,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         mProductsAdapter = new ListAdapterShoppingListInShop(this, listItemLayout, mProducts);
 
         // Привяжем адаптер к фрагменту-списку
-        shoppingListFragment.setListAdapter(mProductsAdapter);
+        recyclerView.setAdapter(mProductsAdapter);
 
         if (savedInstanceState == null) {
             // Заполним список покупок из базы данных

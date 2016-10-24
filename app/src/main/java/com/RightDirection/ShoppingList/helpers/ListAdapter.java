@@ -3,14 +3,13 @@ package com.RightDirection.ShoppingList.helpers;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,33 +20,127 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Locale;
 
-abstract public class ListAdapter extends ArrayAdapter{
+abstract public class ListAdapter extends RecyclerView.Adapter{
 
     private final int mResource;
-    final Context mContext;
-    final Activity mParentActivity;
     final ListAdapter mListAdapter; // для доступа из обработичиков событий
     public ArrayList mObjects;
+    Activity mParentActivity;
 
     ListAdapter(Context context, int resource, ArrayList objects) {
-        super(context, resource, objects);
+        super();
+
         mResource = resource;
-        mContext = context;
-        mParentActivity = (Activity)context;
         mListAdapter = this;
         mObjects = objects;
+        mParentActivity = (Activity)context;
     }
 
-    static class ViewHolder {
+    // Create new views (invoked by the layout manager)
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // create a new view
+        View rowView = LayoutInflater.from(parent.getContext())
+                .inflate(mResource, parent, false);
+        ViewHolder viewHolder = new ViewHolder(rowView);
+
+        return viewHolder;
+    }
+
+    // Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ViewHolder viewHolder = (ViewHolder)holder;
+        ListItem item = (ListItem)mObjects.get(position);
+        if (viewHolder.productNameView != null){
+            viewHolder.productNameView.setTag(item);
+            // Заполним текстовое поле
+            viewHolder.productNameView.setText(item.getName());
+        }
+        if (viewHolder.represent != null) {
+            viewHolder.represent.setTag(item);
+            viewHolder.represent.setTag(R.string.view_holder, viewHolder);
+        }
+        if (viewHolder.imgDelete != null) {
+            viewHolder.imgDelete.setTag(item);
+        }
+
+        Uri imageUri = item.getImageUri();
+        if (viewHolder.productImage != null) {
+            setProductImage(viewHolder.productImage, imageUri);
+        }
+
+        if (viewHolder.etCount != null){
+            viewHolder.etCount.setTag(item);
+            viewHolder.etCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
+        }
+        if (viewHolder.txtCount != null){
+            viewHolder.txtCount.setTag(item);
+            viewHolder.txtCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
+        }
+        if (viewHolder.imgDecrease != null) {
+            viewHolder.imgDecrease.setTag(R.id.item, item);
+            viewHolder.imgDecrease.setTag(R.id.etCount, viewHolder.etCount);
+        }
+        if (viewHolder.imgIncrease != null) {
+            viewHolder.imgIncrease.setTag(R.id.item, item);
+            viewHolder.imgIncrease.setTag(R.id.etCount, viewHolder.etCount);
+        }
+    }
+
+    // Return the size of your dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return mObjects.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         public TextView productNameView;
         public ImageButton imgDelete;
         public ImageView productImage;
         public RelativeLayout represent;
-
         public ImageButton imgDecrease;
         public ImageButton imgIncrease;
         public EditText etCount;
         public TextView txtCount;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            productNameView = (TextView) itemView.findViewById(R.id.txtName);
+            imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
+            productImage = (ImageView) itemView.findViewById(R.id.imgProduct);
+            represent = (RelativeLayout) itemView.findViewById(R.id.productRepresent);
+            etCount = (EditText) itemView.findViewById(R.id.etCount);
+            txtCount = (TextView) itemView.findViewById(R.id.txtCount);
+            imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease);
+            imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease);
+        }
+    }
+
+    public void remove(ListItem item) {
+        // Не используем mObjects.remove(item), т.к. необходимо получить индекс удаленного элемента
+        int i; boolean removed = false;
+        for (i = 0; i < mObjects.size(); i++){
+            if (mObjects.get(i).equals(item)) {
+                mObjects.remove(i);
+                removed = true;
+                break;
+            }
+        }
+        if (removed) {
+            notifyItemRemoved(i);
+            notifyItemRangeChanged(i, getItemCount());
+        }
+    }
+
+    public void add(ListItem item) {
+        mObjects.add(item);
+        notifyItemRangeInserted(mObjects.size() - 1, mObjects.size());
+    }
+
+    public ListItem getItem(int position) {
+        return (ListItem) mObjects.get(position);
     }
 
     public void updateItem(long id, String name, Uri imageUri) {
@@ -62,77 +155,7 @@ abstract public class ListAdapter extends ArrayAdapter{
         this.notifyDataSetChanged();
     }
 
-    /**
-     * Класс-структура для получения и передачи параметров (item, viewHolder, rowView)
-     */
-    class ViewInitializer {
-
-        public final ListItem item;
-        public final ViewHolder viewHolder;
-        public LinearLayout rowView;
-
-        /**
-         * Конструктор
-         * @param position позиция элемента в списке
-         * @param convertView View-контейнер
-         */
-        ViewInitializer(int position, View convertView){
-            item = (ListItem) getItem(position);
-            String name = item.getName();
-            Float count = item.getCount();
-
-            // Убедимся, что метод getView не вызывается лишнее количество раз
-            Log.d("GET_VIEW_CALLING", "Position " + position + ", convertView " + convertView);
-
-            rowView = (LinearLayout)convertView;
-            if (rowView == null){
-                rowView = new LinearLayout(getContext());
-                String inflater = Context.LAYOUT_INFLATER_SERVICE;
-                LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(inflater);
-                layoutInflater.inflate(mResource, rowView, true);
-                // configure view holder
-                viewHolder = new ViewHolder();
-                viewHolder.productNameView = (TextView) rowView.findViewById(R.id.txtName);
-                viewHolder.imgDelete = (ImageButton) rowView.findViewById(R.id.imgDelete);
-                viewHolder.productImage = (ImageView) rowView.findViewById(R.id.imgProduct);
-                viewHolder.represent = (RelativeLayout) rowView.findViewById(R.id.productRepresent);
-                viewHolder.etCount = (EditText) rowView.findViewById(R.id.etCount);
-                viewHolder.txtCount = (TextView) rowView.findViewById(R.id.txtCount);
-                rowView.setTag(viewHolder);
-            }
-            else{
-                viewHolder = (ViewHolder) rowView.getTag();
-            }
-
-            // Привяжем к View объект ListItem
-            if (viewHolder.productNameView != null){
-                viewHolder.productNameView.setTag(item);
-                // Заполним текстовое поле
-                viewHolder.productNameView.setText(name);
-            }
-            if (viewHolder.represent != null) {
-                viewHolder.represent.setTag(item);
-                viewHolder.represent.setTag(R.string.view_holder, viewHolder);
-            }
-            if (viewHolder.imgDelete != null) viewHolder.imgDelete.setTag(item);
-
-            Uri imageUri = item.getImageUri();
-            if (viewHolder.productImage != null) {
-                setProductImage(viewHolder.productImage, imageUri);
-            }
-
-            if (viewHolder.etCount != null){
-                viewHolder.etCount.setTag(item);
-                viewHolder.etCount.setText(String.format(Locale.ENGLISH, "%.1f", count));
-            }
-            if (viewHolder.txtCount != null){
-                viewHolder.txtCount.setTag(item);
-                viewHolder.txtCount.setText(String.format(Locale.ENGLISH, "%.1f", count));
-            }
-        }
-    }
-
-    private void setProductImage(ImageView imgProduct, Uri imageUri){
+    void setProductImage(ImageView imgProduct, Uri imageUri){
         if (imgProduct != null) {
             // Установим картинку
             Picasso.with(mParentActivity)

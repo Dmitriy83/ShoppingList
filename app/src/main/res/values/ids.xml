@@ -7,4 +7,5 @@
     <item name="txtCount" type="id" />
     <item name="itemId" type="id" />
     <item name="item" type="id" />
+    <item name="position" type="id" />
 </resources>

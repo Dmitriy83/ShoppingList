@@ -1,6 +1,5 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -9,6 +8,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.Product;
@@ -16,9 +17,9 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -38,9 +39,13 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
             fabAddProduct.setOnClickListener(onFabAddProductClick);
         }
 
-        // Получим ссылку на фрагемнт
-        FragmentManager fragmentManager = getFragmentManager();
-        ShoppingListFragment productsListFragment = (ShoppingListFragment)fragmentManager.findFragmentById(R.id.frgProductList);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         // Создаем массив для хранения списка товаров
         mProducts = new ArrayList<>();
@@ -49,7 +54,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         mProductsAdapter = new ListAdapterProductsList(this, R.layout.list_item_products_list, mProducts);
 
         // Привяжем адаптер к фрагменту
-        productsListFragment.setListAdapter(mProductsAdapter);
+        recyclerView.setAdapter(mProductsAdapter);
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
@@ -90,7 +95,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         }
 
         // Отсортируем список по алфавиту
-        mProductsAdapter.sort(new Comparator<Product>() {
+        Collections.sort(mProducts, new Comparator<Product>() {
             @Override
             public int compare(Product lhs, Product rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());

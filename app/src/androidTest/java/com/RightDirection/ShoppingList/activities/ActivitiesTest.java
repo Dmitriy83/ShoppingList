@@ -14,15 +14,21 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.helpers.ListAdapter;
 import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.views.ShoppingListFragment;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,7 +37,6 @@ import org.junit.Test;
 import java.util.Date;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -44,7 +49,11 @@ import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Checks.checkArgument;
+import static android.support.test.espresso.intent.Checks.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -53,6 +62,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.allOf;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class ActivitiesTest {
@@ -65,6 +75,28 @@ public class ActivitiesTest {
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
+
+    private static Matcher<View> isChildOfRecyclerViewItem(final Matcher<View> recyclerViewItem) {
+        checkNotNull(recyclerViewItem);
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is child of recycler view item: ");
+                recyclerViewItem.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent productRepresent = view.getParent();
+                if (((ViewGroup) productRepresent).getId() != R.id.productRepresent){
+                    // Еще не тот контейнер. Повторим получение родителя
+                    productRepresent = productRepresent.getParent();
+                }
+                View txtName = ((ViewGroup) productRepresent).findViewById(R.id.txtName);
+                return recyclerViewItem.matches(txtName);
+            }
+        };
+    }
 
     /**
      * Процедура необходима для поиска объектов класса ListItem в ListAdapter по имени
@@ -83,19 +115,51 @@ public class ActivitiesTest {
         };
     }
 
-    /**
-     * Процедура необходима для поиска объектов класса ListItem в ListAdapter по части имени
-     */
-    private static Matcher<Object> withItemValueContains(final String value) {
-        return new BoundedMatcher<Object, ListItem>(ListItem.class) {
+    private Matcher<View> recyclerViewItemWithText(final String itemText)
+    {
+        checkArgument(!TextUtils.isEmpty(itemText),"cannot be null");
+        return new TypeSafeMatcher<View>() {
             @Override
-            public void describeTo(Description description) {
-                description.appendText("contains value " + value);
+            protected boolean matchesSafely(View view) {
+                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
+                        withText(itemText)).matches(view);
             }
 
             @Override
-            public boolean matchesSafely(ListItem item) {
-                return item.getName().contains(String.valueOf(value));
+            public void describeTo(Description description) {
+                description.appendText("is descendant of a RecyclerView with text: " + itemText);
+            }
+        };
+    }
+
+    private Matcher<View> recyclerViewItemContainsText(final String subString)
+    {
+        checkArgument(!TextUtils.isEmpty(subString),"cannot be null");
+        return new TypeSafeMatcher<View>() {
+            @Override
+            protected boolean matchesSafely(View view) {
+                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
+                        containsText(subString)).matches(view);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("is descendant of a RecyclerView that contains text: " + subString);
+            }
+        };
+    }
+
+    private static Matcher<View> containsText(final String subString) {
+        checkArgument(!TextUtils.isEmpty(subString),"cannot be null");
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("contains text: " + subString);
+            }
+
+            @Override
+            public boolean matchesSafely(TextView textView) {
+                return textView.getText().toString().contains(String.valueOf(subString));
             }
         };
     }
@@ -135,13 +199,15 @@ public class ActivitiesTest {
         onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
         onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
         // Проверим, что элемент появился в списке
-        onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
+        //onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
+        //onView(withId(R.id.rvProducts)).check(matches(atPosition(0, hasDescendant(withText(textForTyping)))));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
 
         // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Готово"
         textForTyping = mNewProductNamePattern + "2";
         onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping), pressImeActionButton());
         // Проверим, что элемент добавился в списке
-        onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
 
         // "Глюк" Espresso - если не закрыть клавиатуру перед вызововм диалгового окна, то
         // Espresso в большинстве случаев не открывает клавиатуру при печати в текстовом поле
@@ -164,12 +230,14 @@ public class ActivitiesTest {
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
 
         // Проверим, что сохраненный список покупок отобразился в списке в MainActivity
-        onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
+        //onView(withId(R.id.rvShoppingLists)).check(matches(atPosition(2, hasDescendant(withText(mNewListName)))));
+        onView(recyclerViewItemWithText(mNewListName)).check(matches(isDisplayed()));
     }
 
     private void editNewShoppingList() {
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        //onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
         onView(withId(R.id.imgEdit)).perform(click());
@@ -182,7 +250,7 @@ public class ActivitiesTest {
         onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
         onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
         // Проверим, что элемент появился в списке
-        onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
 
         // Сохраняем список покупок
         onView(withId(R.id.action_save_list)).perform(click());
@@ -197,7 +265,7 @@ public class ActivitiesTest {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
         onView(withId(R.id.imgEdit)).perform(click());
@@ -206,47 +274,61 @@ public class ActivitiesTest {
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // На одном из элементов проверяем, что количество = 1
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        //onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        //        .check(matches(withText("1.0")));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("1.0")));
 
+
         // Нажимаем два раза на кнопку "Increase"
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+        //onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+        onView(allOf(withId(R.id.imgIncrease),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(click())
                 .perform(click());
 
         // Проверяем, что в текстовом поле отображается число 3
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("3.0")));
 
         // Нажимаем кнопку "Decrease"
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgDecrease))
+        onView(allOf(withId(R.id.imgDecrease),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(click());
 
         // Проверяем, что в текстовом поле отображается число 2
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("2.0")));
 
         // Вводим в текстовое поле количество 5
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(clearText())
                 .perform(typeText("5.0"));
 
         // Попытаемся ввести не число
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(typeText("Not number"))
         // Проверяем, что в окне снова отображается 5
                 .check(matches(withText("5.0")));
 
         // Выбираем другой элемент списка. С помощью кнопки добавим количество до 11
         for (int i=0; i<10; i++) {
-            onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.imgIncrease))
+            onView(allOf(withId(R.id.imgIncrease),
+                    isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
                     .perform(click());
         }
 
         // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("5.0")));
-        onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.etCount))
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
                 .check(matches(withText("11.0")));
 
         // Сохраняем список покупок
@@ -280,16 +362,20 @@ public class ActivitiesTest {
 
     private void testShoppingListInShopActivity_CountAppearing() {
         // Клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(click());
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
 
         // Проверяем, что открылась активность "В магазине"
         onView(withId(R.id.action_filter)).check(matches(isDisplayed()));
 
+
         // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+        onView(allOf(withId(R.id.txtCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("5.0")));
-        onData(withItemValue(mNewProductNamePattern + "2")).onChildView(withId(R.id.txtCount))
+        onView(allOf(withId(R.id.txtCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
                 .check(matches(withText("11.0")));
+
     }
 
     @Test
@@ -298,7 +384,7 @@ public class ActivitiesTest {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку переименования списка
         onView(withId(R.id.imgChangeListName)).perform(click());
@@ -310,7 +396,7 @@ public class ActivitiesTest {
         onView(withText(mActivity.getString(R.string.ok))).perform(click());
 
         // Проверяем, что в списке отображен переименованный элемент
-        onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewListName)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -332,17 +418,17 @@ public class ActivitiesTest {
         }
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
-        onData(withItemValue(mNewListName)).perform(click());
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
 
         // Пробуем вычеркнуть товары обычным нажатие. Проверяем, что окно "Победа!" не отобразилось
         for (int i = 1; i <= 3; i++){
-            onData(withItemValue(mNewProductNamePattern + i)).perform(click());
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(click());
         }
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(doesNotExist());
 
         // Вычеркиванием все товары
         for (int i = 1; i <= 3; i++){
-            onData(withItemValue(mNewProductNamePattern + i)).perform(swipeRight());
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(swipeRight());
         }
         // Проверяем, что появилось окно с надписью "Победа!"
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
@@ -361,11 +447,11 @@ public class ActivitiesTest {
         pressBack();
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
-        onData(withItemValue(mNewListName)).perform(click());
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
 
         // Вычеркиванием все товары
         for (int i = 1; i <= 3; i++){
-            onData(withItemValue(mNewProductNamePattern + i)).perform(click());
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(click());
         }
         // Проверяем, что появилось окно с надписью "Победа!"
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
@@ -392,7 +478,7 @@ public class ActivitiesTest {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку отправки списка по почте
         onView(withId(R.id.imgSendListByEmail)).perform(click());
@@ -415,7 +501,7 @@ public class ActivitiesTest {
         onView(withText(mActivity.getString(R.string.action_receive_shopping_list_by_email))).perform(click());
 
         // Проверим появление загруженного списка
-        onData(withItemValueContains(mActivity.getString(R.string.loaded))).check(matches(isDisplayed()));
+        onView(recyclerViewItemContainsText(mActivity.getString(R.string.loaded))).check(matches(isDisplayed()));
     }
 
     private void timeout(int duration) {
@@ -432,7 +518,7 @@ public class ActivitiesTest {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
         onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
@@ -440,10 +526,10 @@ public class ActivitiesTest {
         // Отклоняем удаление
         onView(withText(mActivity.getString(R.string.cancel))).perform(click());
         // Проверяем, что список покупок не исчез
-        onData(withItemValue(mNewListName)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewListName)).check(matches(isDisplayed()));
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
         onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
@@ -458,12 +544,11 @@ public class ActivitiesTest {
     }
 
     private void checkDataNotExistInList(String text) {
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment)mActivity.getFragmentManager()
-                .findFragmentById(R.id.frgShoppingLists);
-        assertNotNull(shoppingListFragment);
-        ListAdapter listAdapter = (ListAdapter) shoppingListFragment.getListAdapter();
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            ListItem listItem = (ListItem)listAdapter.getItem(i);
+        RecyclerView rv = (RecyclerView)mActivity.findViewById(R.id.rvShoppingLists);
+        assertNotNull(rv);
+        ListAdapter listAdapter = (ListAdapter) rv.getAdapter();
+        for (int i = 0; i < listAdapter.getItemCount(); i++) {
+            ListItem listItem = listAdapter.getItem(i);
             assertThat("Item is in the list", text, is(not(listItem.getName())));
         }
     }
@@ -495,7 +580,7 @@ public class ActivitiesTest {
         onView(withId(R.id.btnSaveProduct)).perform(click());
 
         // Проверяем, что новый продукт отобразился в списке
-        onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();
@@ -509,13 +594,14 @@ public class ActivitiesTest {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
-        onData(withItemValue(mNewListName)).perform(longClick());
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
         onView(withId(R.id.imgEdit)).perform(click());
 
         // Нажимаем два раза на кнопку "Increase"
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+        onView(allOf(withId(R.id.imgIncrease),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(click())
                 .perform(click());
 
@@ -523,7 +609,8 @@ public class ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
 
         // Проверяем, что в текстовом поле отображается число 3
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+        onView(allOf(withId(R.id.txtCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("3.0")));
 
         // Переключаемся на активность "Редактирование списка"
@@ -549,7 +636,8 @@ public class ActivitiesTest {
         onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping), pressImeActionButton());
 
         // Нажимаем два раза на кнопку "Increase"
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
+        onView(allOf(withId(R.id.imgIncrease),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .perform(click());
 
         // "Глюк" Espresso - если не закрыть клавиатуру перед вызововм диалгового окна, то
@@ -570,7 +658,8 @@ public class ActivitiesTest {
         onView(withText(mActivity.getString(R.string.ok))).perform(click());
 
         // Проверяем, что в активности "В магазине" в текстовом поле отображается число 2
-        onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.txtCount))
+        onView(allOf(withId(R.id.txtCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("2.0")));
 
         // Переключаемся на активность "Редактирование списка"
