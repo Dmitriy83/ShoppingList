@@ -73,7 +73,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         ViewHolder viewHolder = (ViewHolder)holder;
         if (viewHolder != null && viewHolder.represent != null) {
             viewHolder.represent.setOnTouchListener(onProductTouch);
-            //viewHolder.represent.setOnLongClickListener(onRepresentLongClick);
+            viewHolder.represent.setOnLongClickListener(onRepresentLongClick);
         }
 
         // Отрисуем выбор товара
