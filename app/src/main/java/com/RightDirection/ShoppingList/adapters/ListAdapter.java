@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.items.ListItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 abstract public class ListAdapter extends RecyclerView.Adapter{
 
-    private final int mResource;
+    protected final int mResource;
     final ListAdapter mListAdapter; // для доступа из обработичиков событий
     public ArrayList mObjects;
     Activity mParentActivity;

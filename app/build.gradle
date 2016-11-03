@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 24
     buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId 'com.RightDirection.ShoppingList'
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
 
@@ -32,14 +32,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.0.0'
+    androidTestCompile 'com.android.support:support-annotations:24.2.1'
 
     // required if you want to use Mockito for unit tests
     testCompile "org.mockito:mockito-core:2.0.91-beta"
@@ -55,7 +55,7 @@ dependencies {
 }
 
 configurations.all {
-    resolutionStrategy.force 'com.android.support:recyclerview-v7:25.0.0'
-    resolutionStrategy.force 'com.android.support:appcompat-v7:25.0.0'
-    resolutionStrategy.force 'com.android.support:design:25.0.0'
+    resolutionStrategy.force 'com.android.support:recyclerview-v7:24.2.1'
+    resolutionStrategy.force 'com.android.support:appcompat-v7:24.2.1'
+    resolutionStrategy.force 'com.android.support:design:24.2.1'
 }

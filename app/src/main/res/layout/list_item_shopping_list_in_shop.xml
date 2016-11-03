@@ -2,7 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/productRepresent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+
+    >
 
     <TextView
         android:id="@+id/txtName"
@@ -14,7 +17,8 @@
         android:layout_toStartOf="@+id/txtCount"
         android:layout_toLeftOf="@+id/txtCount"
         android:textColor="#F000"
-        android:textSize="@dimen/text_size_normal"/>
+        android:textSize="@dimen/text_size_normal"
+        />
 
     <TextView
         android:id="@+id/txtCount"

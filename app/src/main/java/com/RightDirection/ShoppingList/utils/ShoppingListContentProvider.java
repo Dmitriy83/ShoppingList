@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.utils;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -58,13 +58,15 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
     public static final String KEY_COUNT = "COUNT";
-    public static final String KEY_CATEGORY = "CATEGORY";
+    public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
+    public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
+    public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
     private static final String DATABASE_NAME = "shoppingListDatabase.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     @Override
     public boolean onCreate() {
@@ -145,6 +147,10 @@ public class ShoppingListContentProvider extends ContentProvider {
             case SHOPPING_LISTS_ALL_ROWS:
                 deleteSubRows(SHOPPING_LISTS_CONTENT_URI, KEY_SHOPPING_LIST_ID, selection, selectionArgs);
                 break;
+            case CATEGORIES_SINGLE_ROW:
+            case CATEGORIES_ALL_ROWS:
+                cleanRefsOnCategory(selection, selectionArgs);
+                break;
             default: break;
         }
 
@@ -156,6 +162,11 @@ public class ShoppingListContentProvider extends ContentProvider {
         if (context != null) context.getContentResolver().notifyChange(uri, null);
 
         return deleteCount;
+    }
+
+    private void cleanRefsOnCategory(String selection, String[] selectionArgs) {
+        // TODO: Доделать очистку ссылок на удаляемую категорию
+
     }
 
     /**
@@ -255,7 +266,14 @@ public class ShoppingListContentProvider extends ContentProvider {
         switch(uriMatcher.match(uri)){
             case PRODUCTS_SINGLE_ROW:
             case PRODUCTS_ALL_ROWS:
-                tableName = PRODUCTS_TABLE_NAME;
+                if (forQuery) {
+                    tableName = PRODUCTS_TABLE_NAME + " LEFT OUTER JOIN " + CATEGORIES_TABLE_NAME + " ON ("
+                            + PRODUCTS_TABLE_NAME + "." + KEY_CATEGORY_ID
+                            + " = " + CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID + ")";
+                }
+                else {
+                    tableName = PRODUCTS_TABLE_NAME;
+                }
                 break;
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LISTS_ALL_ROWS:
@@ -266,7 +284,10 @@ public class ShoppingListContentProvider extends ContentProvider {
                 if (forQuery) {
                     tableName = SHOPPING_LIST_CONTENT_TABLE_NAME + " LEFT OUTER JOIN " + PRODUCTS_TABLE_NAME + " ON ("
                             + SHOPPING_LIST_CONTENT_TABLE_NAME + "." + KEY_PRODUCT_ID
-                            + " = " + PRODUCTS_TABLE_NAME + "." + KEY_ID + ")";
+                            + " = " + PRODUCTS_TABLE_NAME + "." + KEY_ID + ")"
+                            + " LEFT OUTER JOIN " + CATEGORIES_TABLE_NAME + " ON ("
+                            + PRODUCTS_TABLE_NAME + "." + KEY_CATEGORY_ID
+                            + " = " + CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID + ")";
                 }
                 else {
                     tableName = SHOPPING_LIST_CONTENT_TABLE_NAME;
@@ -356,14 +377,15 @@ public class ShoppingListContentProvider extends ContentProvider {
 
             // Таблица "Категориии"
             String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
-                    + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_NAME + ");";
+                    + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_CATEGORY_NAME + ","
+                    + KEY_CATEGORY_ORDER + ");";
             db.execSQL(queryCreateCategoriesTable);
 
             // Таблица "Продукты"
             String queryCreateProductsTable = "CREATE TABLE " + PRODUCTS_TABLE_NAME
                     + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY + ");";
+                    + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY_ID + " INTEGER);";
             db.execSQL(queryCreateProductsTable);
 
             // Таблица "Списки покупок"
@@ -412,8 +434,18 @@ public class ShoppingListContentProvider extends ContentProvider {
 
                 // Добавим колонку в таблицу PRODUCTS
                 String queryAddColumn = "ALTER TABLE " + PRODUCTS_TABLE_NAME
-                        + " ADD COLUMN '" + KEY_CATEGORY + "' DEFAULT NULL;";
+                        + " ADD COLUMN '" + KEY_CATEGORY_ID + "' DEFAULT 0;";
                 db.execSQL(queryAddColumn);
+            }
+
+            if (newVersion == 8) {
+                // Пересоздадим таблицу "Категории"
+                db.execSQL("DROP TABLE IF EXISTS " + CATEGORIES_TABLE_NAME);
+                String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
+                        + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + KEY_CATEGORY_NAME + ","
+                        + KEY_CATEGORY_ORDER + ");";
+                db.execSQL(queryCreateCategoriesTable);
             }
         }
     }

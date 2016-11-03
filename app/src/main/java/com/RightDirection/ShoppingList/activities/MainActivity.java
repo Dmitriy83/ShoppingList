@@ -18,14 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.RightDirection.ShoppingList.EmailReceiver;
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.ShoppingList;
-import com.RightDirection.ShoppingList.WrongEmailProtocolException;
-import com.RightDirection.ShoppingList.helpers.ListAdapterMainActivity;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.helpers.Utils;
+import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.EmailReceiver;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
 
 import java.text.DateFormat;
 import java.util.ArrayList;

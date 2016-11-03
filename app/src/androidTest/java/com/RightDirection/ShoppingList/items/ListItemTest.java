@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList;
+package com.RightDirection.ShoppingList.items;
 
 import android.net.Uri;
 import android.os.Parcelable;

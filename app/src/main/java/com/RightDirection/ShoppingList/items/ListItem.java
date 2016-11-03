@@ -1,16 +1,19 @@
-package com.RightDirection.ShoppingList;
+package com.RightDirection.ShoppingList.items;
 
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ListItem implements Parcelable {
+import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
+import com.RightDirection.ShoppingList.interfaces.IGetType;
 
-    private long id;
-    private String name;
-    private boolean checked;
-    private Uri imageUri;
-    private float count;
+public class ListItem implements Parcelable, IGetType{
+
+    protected long id;
+    protected String name;
+    protected boolean checked;
+    protected Uri imageUri;
+    protected float count;
 
     public ListItem(long id, String name) {
         this.id = id;
@@ -120,5 +123,10 @@ public class ListItem implements Parcelable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public ITEM_TYPES getType() {
+        return null;
     }
 }

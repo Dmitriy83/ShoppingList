@@ -4,6 +4,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,16 +14,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListInShop;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
+import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
 public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<Product> mProducts;
+    private ArrayList mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;
     private long mListId;
     private String mListName;
@@ -113,14 +116,22 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+        int keyCategoryIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
+        int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
+        int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
 
         mProducts.clear();
         while (data.moveToNext()){
+            Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
+                    data.getInt(keyCategoryOrderIndex));
+
             Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
+                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex), category);
             mProducts.add(newProduct);
         }
 
+        mProducts = Utils.sortArrayListByCategories(mProducts);
+        mProducts = Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
     }
 
@@ -179,5 +190,27 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     private void setFilterItemUnselected(MenuItem menuItem){
         menuItem.setIcon(R.drawable.ic_filter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case Utils.NEED_TO_UPDATE:
+                if (resultCode == RESULT_OK) {
+                    // Получим значения из переданных параметров
+                    long id = data.getLongExtra(String.valueOf(R.string.item_id), 0);
+                    String name = data.getStringExtra(String.valueOf(R.string.name));
+                    Uri imageUri = data.getParcelableExtra(String.valueOf(R.string.item_image));
+                    Category category = data.getParcelableExtra(String.valueOf(R.string.category));
+                    // Обновим элемент списка (имя и картинку)
+                    mProductsAdapter.updateItem(id, name, imageUri, category);
+                    // Перестроим массив на случай, если изменилась категория
+                    mProducts = Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+                    mProducts = Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+                    mProductsAdapter.notifyDataSetChanged();
+                }
+        }
     }
 }

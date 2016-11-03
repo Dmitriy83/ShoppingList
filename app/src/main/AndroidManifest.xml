@@ -27,19 +27,25 @@
         <activity android:name=".activities.ProductsListActivity" />
         <activity android:name=".activities.CategoriesListActivity" />
         <activity
-            android:name=".activities.ItemActivity"
+            android:name=".activities.ProductActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity
+            android:name=".activities.CategoryActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity android:name=".activities.ShoppingListInShopActivity" />
         <activity android:name=".activities.SettingsActivity" />
 
         <provider
-            android:name=".helpers.ShoppingListContentProvider"
+            android:name=".utils.ShoppingListContentProvider"
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:exported="false"
             android:grantUriPermissions="true" />
 
         <activity android:name=".activities.HelpShoppingListInShopActivity"
-            android:theme="@style/AppThemeDialog">
+            android:theme="@style/AppThemeHelpDialog">
+        </activity>
+        <activity android:name=".activities.ChooseCategoryActivity"
+            android:theme="@style/AppThemeChooseCategoryDialog">
         </activity>
     </application>
 

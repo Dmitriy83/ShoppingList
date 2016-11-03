@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -16,10 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.ShoppingList;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
+import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 

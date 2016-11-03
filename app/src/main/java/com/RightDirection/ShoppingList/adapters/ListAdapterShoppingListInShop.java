@@ -1,21 +1,29 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.RightDirection.ShoppingList.ListItem;
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.ProductActivity;
+import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
+import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.items.ListItem;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -34,12 +42,39 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        ListItem item = (ListItem)mObjects.get(position);
+        return item.getType().getNumValue();
+    }
+
+    // Create new views (invoked by the layout manager)
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View rowView;
+        if (viewType == ITEM_TYPES.CATEGORY.getNumValue()) {
+            // Создаем элемент-заголовок
+            rowView = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.list_item_category_title, parent, false);
+        }else {
+            // Создаем обычный элемент списка
+            rowView = LayoutInflater.from(parent.getContext())
+                    .inflate(mResource, parent, false);
+        }
+
+        ViewHolder viewHolder = new ViewHolder(rowView);
+
+        return viewHolder;
+    }
+
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
 
         ViewHolder viewHolder = (ViewHolder)holder;
-        if (viewHolder != null && viewHolder.represent != null)
+        if (viewHolder != null && viewHolder.represent != null) {
             viewHolder.represent.setOnTouchListener(onProductTouch);
+            //viewHolder.represent.setOnLongClickListener(onRepresentLongClick);
+        }
 
         // Отрисуем выбор товара
         if (viewHolder != null && viewHolder.productNameView != null) {
@@ -96,7 +131,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 // Отфильтруем лист, если необходимо
                 if (mIsFiltered) hideMarked();
             }
-            return true;
+            return false;   // false означает, что другие обработчики события (например, onLongClick)
+                            // также следует использовать
         }
     };
 
@@ -124,8 +160,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     private boolean allProductsChecked() {
         boolean allProductsChecked = true;
-        for (Product item: (ArrayList<Product>)mObjects) {
-            if (!item.isChecked()){
+        for (ListItem item: (ArrayList<ListItem>)mObjects) {
+            if (item instanceof Product && !item.isChecked()){
                 allProductsChecked = false;
                 break;
             }
@@ -140,8 +176,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         vh.productNameView.setBackgroundColor(Color.LTGRAY);
 
         // Установим такой же цвет и для количества и для картинки
-        vh.txtCount.setBackgroundColor(Color.LTGRAY);
-        if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.LTGRAY);
+        if (vh.txtCount != null) { // не заголовок
+            vh.txtCount.setBackgroundColor(Color.LTGRAY);
+            if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.LTGRAY);
+        }
     }
 
     private void setViewUnchecked(ViewHolder vh){
@@ -151,8 +189,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         vh.productNameView.setBackgroundColor(Color.WHITE);
 
         // Установим такой же цвет и для количества и для картинки
-        vh.txtCount.setBackgroundColor(Color.WHITE);
-        if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.WHITE);
+        if (vh.txtCount != null) { // не заголовок
+            vh.txtCount.setBackgroundColor(Color.WHITE);
+            if (vh.productImage != null) vh.productImage.setBackgroundColor(Color.WHITE);
+        }
     }
 
     public boolean isFiltered(){
@@ -186,11 +226,27 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         mObjects.clear();
         mObjects.addAll(mOriginalValues);
 
-        // Удалим элементы из списка
-        for (int i = mObjects.size() - 1; i >= 0; i -= 1) {
-            Product item = (Product)mObjects.get(i);
-            if (item.isChecked()){
+        // Удалим "вычеркнутые" продукты и категории из списка
+        for (int i = mObjects.size() - 1; i >= 0; i--) {
+            ListItem item = (ListItem)mObjects.get(i);
+            if (item instanceof Product && item.isChecked()){
                 mObjects.remove(item);
+            }
+
+            // Удаляем категории с полностью вычеркнутыми товарами
+            if (item instanceof Category){
+                if (i + 1 <= mObjects.size() - 1) {
+                    // Если следующий за категорией элемент является категорией, значит все
+                    // продукты данной категории вычеркнуты и категорию следует удалить
+                    ListItem nextItem = (ListItem) mObjects.get(i + 1);
+                    if (nextItem instanceof Category){
+                        mObjects.remove(item);
+                    }
+                }else{
+                    // Категория является последним элементом в массиве. Значит все продукты
+                    // данной категории вычеркнуты, и категорию следует удалить
+                    mObjects.remove(item);
+                }
             }
         }
 
@@ -204,5 +260,36 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     public void setOriginalValues(ArrayList<Product> originalValues) {
         mOriginalValues = originalValues;
+    }
+
+    private final View.OnLongClickListener onRepresentLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            Product product = (Product) view.getTag();
+
+            // Откроем активность редактирования продукта
+            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_item), false);
+            intent.putExtra(String.valueOf(R.string.product), product);
+            intent.putExtra(String.valueOf(R.string.category), product.getCategory());
+            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+
+            return false;
+        }
+    };
+
+    public void updateItem(long id, String name, Uri imageUri, Category category) {
+        for (ListItem item: (ArrayList<ListItem>)mObjects) {
+            if (item.getId() == id){
+                item.setName(name);
+                item.setImageUri(imageUri);
+                if (item instanceof Product) {
+                    ((Product) item).setCategory(category);
+                }
+            }
+        }
+
+        // Оповестим об изменении данных
+        this.notifyDataSetChanged();
     }
 }

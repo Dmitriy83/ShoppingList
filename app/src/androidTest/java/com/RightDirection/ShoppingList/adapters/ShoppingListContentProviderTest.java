@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
+
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 
 public class ShoppingListContentProviderTest extends ProviderTestCase2{
 

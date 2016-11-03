@@ -3,7 +3,6 @@ package com.RightDirection.ShoppingList.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,39 +15,41 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
-public class ItemActivity extends AppCompatActivity{
+public class ProductActivity extends AppCompatActivity{
 
     private boolean mIsNewItem;
     private Product mProduct;
 
     private static final int PICK_IMAGE = 1;
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    private static final String KEY_PRODUCT = "PRODUCT";
-    private static final String KEY_IS_NEW_ITEM = "IS_NEW";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_editing);
+        setContentView(R.layout.activity_product_editing);
 
         if (savedInstanceState != null){
             // Восстановим объект из сохраненных значений
-            mProduct = savedInstanceState.getParcelable(KEY_PRODUCT);
-            mIsNewItem = savedInstanceState.getBoolean(KEY_IS_NEW_ITEM);
+            mIsNewItem = savedInstanceState.getBoolean(String.valueOf(R.string.is_new_item));
+            mProduct = savedInstanceState.getParcelable(String.valueOf(R.string.product));
+            Category category = savedInstanceState.getParcelable(String.valueOf(R.string.category));
+            mProduct.setCategory(category);
         }else{
             // Получим значения из переданных параметров
             Intent sourceIntent = getIntent();
             mIsNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
-            long id = sourceIntent.getLongExtra(String.valueOf(R.string.item_id), -1);
-            Uri imageUri = sourceIntent.getParcelableExtra(String.valueOf(R.string.item_image));
-            String name = sourceIntent.getStringExtra(String.valueOf(R.string.name));
-
-            mProduct = new Product(id, name, imageUri);
+            mProduct = sourceIntent.getParcelableExtra(String.valueOf(R.string.product));
+            Category category = sourceIntent.getParcelableExtra(String.valueOf(R.string.category));
+            if (category != null && category.getName() != null) mProduct.setCategory(category);
         }
+
+        if (mProduct == null) mProduct = new Product(-1, "");
 
         // Если это новый элемент, то сразу отобразим клавиатуру для ввода наименования
         if (mIsNewItem){
@@ -61,7 +62,19 @@ public class ItemActivity extends AppCompatActivity{
             etProductName.setText(mProduct.getName());
         }
 
-        // Добавим обработчики кликов по кнопкам
+        Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
+        if (btnChooseCategory != null) {
+            // Исключим вывод всего текста прописными (для Android старше 4)
+            btnChooseCategory.setTransformationMethod(null);
+
+            Category category = mProduct.getCategory();
+            if (category != null) btnChooseCategory.setText(mProduct.getCategory().getName()
+                    + getString(R.string.three_dots));
+
+            // Обработчик нажатия
+            btnChooseCategory.setOnClickListener(onBtnChooseCategoryClick);
+        }
+
         Button btnSaveProduct = (Button)findViewById(R.id.btnSaveProduct);
         if (btnSaveProduct != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
@@ -86,30 +99,40 @@ public class ItemActivity extends AppCompatActivity{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(KEY_PRODUCT, mProduct);
-        outState.putBoolean(KEY_IS_NEW_ITEM, mIsNewItem);
+        outState.putParcelable(String.valueOf(R.string.product), mProduct);
+        outState.putParcelable(String.valueOf(R.string.category), mProduct.getCategory());
+        outState.putBoolean(String.valueOf(R.string.is_new_item), mIsNewItem);
 
         super.onSaveInstanceState(outState);
     }
+
+    private final View.OnClickListener onBtnChooseCategoryClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getBaseContext(), ChooseCategoryActivity.class);
+            startActivityForResult(intent, Utils.GET_CATEGORY);
+        }
+    };
 
     private final View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             EditText etProductName = (EditText) findViewById(R.id.etProductName);
-            if (etProductName != null) {
-                mProduct.setName(etProductName.getText().toString());
+            if (etProductName != null) mProduct.setName(etProductName.getText().toString());
 
-                if (mIsNewItem) {
-                    mProduct.addToDB(getApplicationContext());
-                } else {
-                    mProduct.updateInDB(getApplicationContext());
-                }
-                Intent intent = new Intent();
-                intent.putExtra(String.valueOf(R.string.item_id), mProduct.getId());
-                intent.putExtra(String.valueOf(R.string.name), mProduct.getName());
-                intent.putExtra(String.valueOf(R.string.item_image), mProduct.getImageUri());
-                setResult(RESULT_OK, intent);
+            if (mIsNewItem) {
+                mProduct.addToDB(getApplicationContext());
+            } else {
+                mProduct.updateInDB(getApplicationContext());
             }
+
+            // Обновим наименование в активности редактирования списка товаров
+            Intent intent = new Intent();
+            intent.putExtra(String.valueOf(R.string.item_id), mProduct.getId());
+            intent.putExtra(String.valueOf(R.string.name), mProduct.getName());
+            intent.putExtra(String.valueOf(R.string.item_image), mProduct.getImageUri());
+            intent.putExtra(String.valueOf(R.string.category), mProduct.getCategory());
+            setResult(RESULT_OK, intent);
 
             finish();
         }
@@ -140,15 +163,26 @@ public class ItemActivity extends AppCompatActivity{
     };
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
         switch(requestCode) {
             case PICK_IMAGE:
-            if (resultCode == RESULT_OK) {
-                mProduct.setImageUri(imageReturnedIntent.getData());
-                askForPermissionAndSetProductImage();
-            }
+                if (resultCode == RESULT_OK) {
+                    mProduct.setImageUri(data.getData());
+                    askForPermissionAndSetProductImage();
+                }
+                break;
+            case Utils.GET_CATEGORY:
+                if (resultCode == RESULT_OK) {
+                    Category category = data.getParcelableExtra(getString(R.string.category));
+                    mProduct.setCategory(category);
+                    Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
+                    if (btnChooseCategory != null && category != null) {
+                        btnChooseCategory.setText(category.getName() + getString(R.string.three_dots));
+                    }
+                }
+                break;
         }
     }
 
@@ -180,7 +214,7 @@ public class ItemActivity extends AppCompatActivity{
 
     private void setProductImage(){
         ImageView imgProduct = (ImageView) findViewById(R.id.imgProduct);
-        if (imgProduct != null) {
+        if (imgProduct != null && mProduct != null) {
             // Установим картинку
             Picasso.with(this)
                     .load(mProduct.getImageUri())

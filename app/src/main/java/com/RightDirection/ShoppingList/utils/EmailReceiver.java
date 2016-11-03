@@ -1,6 +1,8 @@
-package com.RightDirection.ShoppingList;
+package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
+
+import com.RightDirection.ShoppingList.R;
 
 import java.io.File;
 import java.io.IOException;

@@ -12,11 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.helpers.ListAdapterProductsList;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.helpers.Utils;
+import com.RightDirection.ShoppingList.adapters.ListAdapterProductsList;
+import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
     private final View.OnClickListener onFabAddProductClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ItemActivity.class);
+            Intent intent = new Intent(view.getContext(), ProductActivity.class);
             startActivityForResult(intent, Utils.NEED_TO_UPDATE);
         }
     };
@@ -87,10 +88,17 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
+        int keyCategoryIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
+        int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
+        int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
 
         mProducts.clear();
         while (data.moveToNext()){
-            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
+            Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
+                    data.getInt(keyCategoryOrderIndex));
+
+            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+                    ShoppingListContentProvider.getImageUri(data), 0, category);
             mProducts.add(newProduct);
         }
 

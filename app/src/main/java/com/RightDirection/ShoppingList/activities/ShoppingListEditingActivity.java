@@ -17,13 +17,14 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.ShoppingList;
-import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.helpers.Utils;
+import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
+import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -193,12 +194,19 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+        int keyCategoryIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
+        int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
+        int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
 
         mShoppingListItems.clear();
         while (data.moveToNext()){
-            Product newListItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex));
-            mShoppingListItems.add(newListItem);
+            Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
+                    data.getInt(keyCategoryOrderIndex));
+
+            Product listItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex),
+                    category);
+            mShoppingListItems.add(listItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();

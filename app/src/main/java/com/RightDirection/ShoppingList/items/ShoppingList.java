@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList;
+package com.RightDirection.ShoppingList.items;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -8,8 +8,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 
 import java.util.ArrayList;
 

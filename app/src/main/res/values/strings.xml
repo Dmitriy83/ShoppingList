@@ -55,7 +55,7 @@
     <string name="email_login">Email login</string>
     <string name="pref_key_email_password">pref_key_email_password</string>
     <string name="email_password">Email password</string>
-    <string name="json_file_identifier">Shopping list</string>
+    <string name="json_file_identifier">Shopping</string>
     <string name="wrong_email_protocol_exception_message">Supports only IMAP protocol</string>
     <string name="not_assigned">Not assigned</string>
     <string name="password_mask">******</string>
@@ -78,4 +78,12 @@
     <string name="got_it">Got it</string>
     <string name="action_edit_categories_list">Categories</string>
     <string name="item_already_added">Item was added before</string>
+    <string name="category">Category</string>
+    <string name="new_category">New category</string>
+    <string name="category_title">Category</string>
+    <string name="choose_category">Choose category…</string>
+    <string name="product">product</string>
+    <string name="three_dots">…</string>
+    <string name="category_not_assigned">Category was not assigned</string>
+    <string name="order">Order</string>
 </resources>

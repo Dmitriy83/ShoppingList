@@ -1,15 +1,14 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.Product;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.ItemActivity;
+import com.RightDirection.ShoppingList.activities.ProductActivity;
+import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -45,17 +44,13 @@ public class ListAdapterProductsList extends ListAdapter {
     private final View.OnClickListener onProductRepresentClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Product item = (Product) view.getTag();
-
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mParentActivity);
-            boolean showImages = sharedPref.getBoolean(mParentActivity.getString(R.string.pref_key_show_images), true);
+            Product product = (Product) view.getTag();
 
             // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ItemActivity.class);
-            intent.putExtra(String.valueOf(R.string.name), item.getName());
-            intent.putExtra(String.valueOf(R.string.item_id), item.getId());
-            intent.putExtra(String.valueOf(R.string.item_image), item.getImageUri());
+            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
             intent.putExtra(String.valueOf(R.string.is_new_item), false);
+            intent.putExtra(String.valueOf(R.string.product), product);
+            intent.putExtra(String.valueOf(R.string.category), product.getCategory());
             mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
         }
     };

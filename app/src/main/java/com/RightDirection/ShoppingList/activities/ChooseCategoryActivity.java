@@ -1,19 +1,15 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.app.LoaderManager;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.adapters.ListAdapterCategoriesList;
+import com.RightDirection.ShoppingList.adapters.ListAdapterChooseCategory;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 
@@ -21,25 +17,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class CategoriesListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ChooseCategoryActivity extends AppCompatActivity
+        implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private ArrayList<Category> mCategories;
-    private ListAdapterCategoriesList mCategoriesAdapter;
+    private ListAdapterChooseCategory mCategoriesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categories_list);
-        setTitle(R.string.action_edit_categories_list);
 
-        // Добавим обработчики кликов по кнопкам
-        FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabAddCategory);
-        if (fabAddProduct != null) {
-            fabAddProduct.setOnClickListener(onFabAddCategoryClick);
-        }
+        setContentView(R.layout.activity_choose_category);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvCategories);
         if (recyclerView == null) return;
+
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
@@ -49,7 +41,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         mCategories = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        mCategoriesAdapter = new ListAdapterCategoriesList(this, R.layout.list_item_products_list, mCategories);
+        mCategoriesAdapter = new ListAdapterChooseCategory(this, mCategories);
 
         // Привяжем адаптер к фрагменту
         recyclerView.setAdapter(mCategoriesAdapter);
@@ -59,26 +51,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Необходимо перезапустить загрузчик, например, при смене ориентации экрана
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    private final View.OnClickListener onFabAddCategoryClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), CategoryActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_item), true);
-            intent.putExtra(String.valueOf(R.string.category), new Category(-1, "", 100));
-            startActivity(intent);
-        }
-    };
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this, ShoppingListContentProvider.CATEGORIES_CONTENT_URI,
                 null, null, null ,null);
     }
@@ -102,7 +75,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });
-        mCategoriesAdapter.notifyDataSetChanged();
+        mCategoriesAdapter.notifyItemRangeInserted(0, mCategories.size()-1);
     }
 
     @Override

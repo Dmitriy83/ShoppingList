@@ -21,10 +21,10 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.TextView;
 
-import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.helpers.ListAdapter;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.adapters.ListAdapter;
+import com.RightDirection.ShoppingList.items.ListItem;
+import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -583,6 +583,25 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+
+        // Проверим редактирование продукта из активности редактирования списка товаров
+        addNewShoppingList();
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+        onView(withId(R.id.imgEdit)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + "1")).perform(longClick());
+        textForTyping = mNewProductNamePattern + "testProducts";
+        onView(withId(R.id.etProductName)).perform(clearText());
+        onView(withId(R.id.etProductName)).perform(typeText(textForTyping));
+        onView(withId(R.id.btnSaveProduct)).perform(click());
+        // Проверяем, что вернулись к активности редактирования списка товаров
+        onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
+        //  Товар в списке изменил наименование:
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+
+        // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
     }

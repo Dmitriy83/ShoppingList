@@ -1,10 +1,13 @@
-package com.RightDirection.ShoppingList.helpers;
+package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.Category;
+import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.CategoryActivity;
+import com.RightDirection.ShoppingList.items.Category;
 
 import java.util.ArrayList;
 
@@ -42,9 +45,11 @@ public class ListAdapterCategoriesList extends ListAdapter {
         public void onClick(View view) {
             Category item = (Category) view.getTag();
 
-            // TODO: Переименование категории
-
-
+            // Откроем активность редактирования продукта
+            Intent intent = new Intent(mParentActivity.getBaseContext(), CategoryActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_item), false);
+            intent.putExtra(String.valueOf(R.string.category), item);
+            mParentActivity.startActivity(intent);
         }
     };
 }
