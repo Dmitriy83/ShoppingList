@@ -22,16 +22,14 @@ import java.util.Locale;
 
 abstract public class ListAdapter extends RecyclerView.Adapter{
 
-    protected final int mResource;
-    final ListAdapter mListAdapter; // для доступа из обработичиков событий
-    public ArrayList mObjects;
+    final int mResource;
+    ArrayList mObjects;
     Activity mParentActivity;
 
     ListAdapter(Context context, int resource, ArrayList objects) {
         super();
 
         mResource = resource;
-        mListAdapter = this;
         mObjects = objects;
         mParentActivity = (Activity)context;
     }
@@ -42,9 +40,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
         // create a new view
         View rowView = LayoutInflater.from(parent.getContext())
                 .inflate(mResource, parent, false);
-        ViewHolder viewHolder = new ViewHolder(rowView);
-
-        return viewHolder;
+        return new ViewHolder(rowView);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -95,16 +91,16 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView productNameView;
-        public ImageButton imgDelete;
-        public ImageView productImage;
-        public RelativeLayout represent;
-        public ImageButton imgDecrease;
-        public ImageButton imgIncrease;
-        public EditText etCount;
-        public TextView txtCount;
+        TextView productNameView;
+        ImageButton imgDelete;
+        ImageView productImage;
+        RelativeLayout represent;
+        ImageButton imgDecrease;
+        ImageButton imgIncrease;
+        EditText etCount;
+        TextView txtCount;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             productNameView = (TextView) itemView.findViewById(R.id.txtName);
@@ -118,7 +114,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
         }
     }
 
-    public void remove(ListItem item) {
+    void remove(ListItem item) {
         // Не используем mObjects.remove(item), т.к. необходимо получить индекс удаленного элемента
         int i; boolean removed = false;
         for (i = 0; i < mObjects.size(); i++){
@@ -155,7 +151,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
         this.notifyDataSetChanged();
     }
 
-    void setProductImage(ImageView imgProduct, Uri imageUri){
+    private void setProductImage(ImageView imgProduct, Uri imageUri){
         if (imgProduct != null) {
             // Установим картинку
             Picasso.with(mParentActivity)

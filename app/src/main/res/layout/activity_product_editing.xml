@@ -15,7 +15,7 @@
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/etProductName"
@@ -39,9 +39,11 @@
                 android:layout_below="@+id/imgProduct"
                 android:layout_marginEnd="2dp"
                 android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/txtCategoryTitle"
+                android:layout_toEndOf="@+id/txtCategoryTitle"
                 android:background="@drawable/button_shape"
                 android:hint="@string/choose_category"
                 android:textAlignment="center"
@@ -55,7 +57,8 @@
                 android:layout_alignBottom="@+id/btnChooseCategory"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:text="@string/category_title" />
+                android:text="@string/category_title"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/imgProduct"

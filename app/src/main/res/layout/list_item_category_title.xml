@@ -17,6 +17,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:backgroundTint="@color/border_color" />
+        android:background="@color/border_color"/>
 
 </RelativeLayout>

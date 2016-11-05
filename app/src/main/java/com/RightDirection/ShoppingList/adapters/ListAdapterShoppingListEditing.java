@@ -20,8 +20,8 @@ import java.util.TimerTask;
 
 public class ListAdapterShoppingListEditing extends ListAdapter {
 
-    Timer mTimer;
-    IncrementTimerTask mTimerTask;
+    private Timer mTimer;
+    private IncrementTimerTask mTimerTask;
 
     public ListAdapterShoppingListEditing(Context context, int resource, ArrayList<Product> objects) {
         super(context, resource, objects);
@@ -36,15 +36,12 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
             viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
         if (viewHolder.represent != null)
             viewHolder.represent.setOnLongClickListener(onProductRepresentLongClick);
-        if (viewHolder.imgDecrease != null) {
+        if (viewHolder.imgDecrease != null)
             viewHolder.imgDecrease.setOnTouchListener(onImgDecreaseTouch);
-        }
-        if (viewHolder.imgIncrease != null) {
+        if (viewHolder.imgIncrease != null)
             viewHolder.imgIncrease.setOnTouchListener(onImgIncreaseTouch);
-        }
-        if (viewHolder.etCount != null) {
+        if (viewHolder.etCount != null)
             viewHolder.etCount.setOnFocusChangeListener(onEtCountFocusChange);
-        }
     }
 
     private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
@@ -102,7 +99,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         }
     };
 
-    void onTouchEvent(View view, MotionEvent event, int increment){
+    private void onTouchEvent(View view, MotionEvent event, int increment){
         if (event.getAction() == MotionEvent.ACTION_DOWN){
             changeCount(view, increment);
             startTimer(view, increment, 1000, 100, false);
@@ -111,27 +108,27 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         }
     }
 
-    void startTimer(View view, int increment, int delay, int period, boolean accelerated){
+    private void startTimer(View view, int increment, int delay, int period, boolean accelerated){
         mTimer = new Timer();
         mTimerTask = new IncrementTimerTask(view, increment, accelerated);
         mTimer.schedule(mTimerTask, delay, period);
     }
 
-    void stopTimer(){
+    private void stopTimer(){
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
         }
     }
 
-    class IncrementTimerTask extends TimerTask {
+    private class IncrementTimerTask extends TimerTask {
         private static final long ACCELERATE_PERIOD = 5000;
         View mView;
         int mIncrement = 0;
         long mStartTime = 0;
         boolean mAccelerated;
 
-        public IncrementTimerTask(View view, int increment, boolean accelerated){
+        IncrementTimerTask(View view, int increment, boolean accelerated){
             mView = view;
             mIncrement = increment;
             mStartTime = System.currentTimeMillis();
@@ -158,7 +155,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         }
     }
 
-    public void changeCount(View view, int increment){
+    private void changeCount(View view, int increment){
         // Получим объект item по элементу View
         Product item = (Product) view.getTag(R.id.item);
 
