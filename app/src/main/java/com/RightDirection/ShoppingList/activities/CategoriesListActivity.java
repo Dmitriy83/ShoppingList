@@ -49,7 +49,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         mCategories = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        mCategoriesAdapter = new ListAdapterCategoriesList(this, R.layout.list_item_products_list, mCategories);
+        mCategoriesAdapter = new ListAdapterCategoriesList(this, R.layout.list_item_categories_list, mCategories);
 
         // Привяжем адаптер к фрагменту
         recyclerView.setAdapter(mCategoriesAdapter);
