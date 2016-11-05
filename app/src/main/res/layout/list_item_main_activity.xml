@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="fill_parent"
@@ -12,19 +12,13 @@
         android:scrollbars="vertical"
         android:fadingEdge="vertical"
         android:textColor="#F000"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:background="@drawable/item_selector"
         android:textSize="@dimen/text_size_normal"
         />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/border_color"
-        android:layout_below="@+id/txtName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"></LinearLayout>
+        android:background="@color/border_color"/>
 
-</RelativeLayout>
+</LinearLayout>

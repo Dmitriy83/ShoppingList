@@ -80,15 +80,6 @@
             android:contentDescription="@string/increase" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/rlCount"
-        android:background="@color/border_color"
-        android:orientation="vertical"></LinearLayout>
-
     <ImageButton
         android:id="@+id/imgDelete"
         android:layout_width="@dimen/normal_size"
@@ -98,5 +89,11 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rlCount"
+        android:background="@color/border_color"/>
 
 </RelativeLayout>

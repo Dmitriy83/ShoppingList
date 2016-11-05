@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/productRepresent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:background="?android:attr/selectableItemBackground">
 
         <ImageView
@@ -45,13 +43,9 @@
             android:contentDescription="@string/cross" />
     </RelativeLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/productRepresent"
-        android:background="@color/border_color"
-        android:orientation="vertical"></LinearLayout>
+        android:background="@color/border_color"/>
 
-</RelativeLayout>
+</LinearLayout>

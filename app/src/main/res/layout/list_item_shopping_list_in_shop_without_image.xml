@@ -26,13 +26,10 @@
         android:textColor="#F000"
         android:gravity="end" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/border_color"
         android:layout_below="@+id/txtName"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"></LinearLayout>
+        android:background="@color/border_color"/>
 
 </RelativeLayout>

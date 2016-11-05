@@ -27,16 +27,6 @@
             android:textSize="@dimen/text_size_normal"/>
     </RelativeLayout>
 
-    <ImageButton
-        android:layout_width="@dimen/normal_size"
-        android:layout_height="@dimen/normal_size"
-        android:id="@+id/imgDelete"
-        android:contentDescription="@string/cross"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/ic_delete" />
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,13 +70,20 @@
             android:background="@drawable/ic_add_circle" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ImageButton
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
+        android:id="@+id/imgDelete"
+        android:contentDescription="@string/cross"
+        android:background="@drawable/ic_delete"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/border_color"
         android:layout_below="@+id/rlCount"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"></LinearLayout>
+        android:background="@color/border_color"/>
 
 </RelativeLayout>

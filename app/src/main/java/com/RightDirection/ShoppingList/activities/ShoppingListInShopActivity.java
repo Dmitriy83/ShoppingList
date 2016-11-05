@@ -208,6 +208,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                     mProductsAdapter.updateItem(id, name, imageUri, category);
                     // Перестроим массив на случай, если изменилась категория
                     mProducts = Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+                    mProducts = Utils.sortArrayListByCategories(mProducts);
                     mProducts = Utils.addCategoriesInArrayListOfProducts(this, mProducts);
                     mProductsAdapter.notifyDataSetChanged();
                 }

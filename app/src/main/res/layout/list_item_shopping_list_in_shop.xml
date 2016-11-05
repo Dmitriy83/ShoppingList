@@ -35,13 +35,10 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/product_image" />
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/txtName"
-        android:background="@color/border_color"
-        android:orientation="vertical"></LinearLayout>
+        android:background="@color/border_color"/>
 
 </RelativeLayout>
