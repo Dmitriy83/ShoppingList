@@ -86,6 +86,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     }
 
     private float mInitXTouch = 0;
+    // Если произошло движение пальца, то обрабатывать долгое нажатие не нужно
+    private boolean mFingerMoved = false;
 
     private final View.OnTouchListener onProductTouch = new View.OnTouchListener() {
         @Override
@@ -124,9 +126,36 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
                 // Отфильтруем лист, если необходимо
                 if (mIsFiltered) hideMarked();
+
+                mFingerMoved = false;
+            }else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_MOVE){
+                float distance = event.getX() - mInitXTouch;
+                // Исключим мнезначительное "дергание" пальца
+                if (distance > 1 || distance < -1) mFingerMoved = true;
             }
+
             return false;   // false означает, что другие обработчики события (например, onLongClick)
             // также следует использовать
+        }
+    };
+
+    private final View.OnLongClickListener onRepresentLongClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            if (mFingerMoved){
+                return false;
+            }
+
+            Product product = (Product) view.getTag();
+
+            // Откроем активность редактирования продукта
+            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
+            intent.putExtra(String.valueOf(R.string.is_new_item), false);
+            intent.putExtra(String.valueOf(R.string.product), product);
+            intent.putExtra(String.valueOf(R.string.category), product.getCategory());
+            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+
+            return false;
         }
     };
 
@@ -247,22 +276,6 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     public void setOriginalValues(ArrayList<Product> originalValues) {
         mOriginalValues = originalValues;
     }
-
-    private final View.OnLongClickListener onRepresentLongClick = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-            Product product = (Product) view.getTag();
-
-            // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_item), false);
-            intent.putExtra(String.valueOf(R.string.product), product);
-            intent.putExtra(String.valueOf(R.string.category), product.getCategory());
-            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
-
-            return false;
-        }
-    };
 
     public void updateItem(long id, String name, Uri imageUri, Category category) {
         for (ListItem item : (ArrayList<ListItem>) mObjects) {
