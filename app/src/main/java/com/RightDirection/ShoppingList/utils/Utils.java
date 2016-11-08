@@ -87,7 +87,7 @@ public class Utils {
         return ret;
     }
 
-    public static ArrayList<Product> sortArrayListByCategories(ArrayList<Product> arrayList){
+    public static void sortArrayListByCategories(ArrayList<Product> arrayList){
         // Сначала отсортируем список
         Collections.sort(arrayList, new Comparator<Product>() {
             @Override
@@ -124,13 +124,11 @@ public class Utils {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });
-
-        return arrayList;
     }
 
-    public static ArrayList addCategoriesInArrayListOfProducts(Context context, ArrayList arrayList){
+    public static void addCategoriesInArrayListOfProducts(Context context, ArrayList arrayList){
         // Если элемент только один, то добавлять ничего не надо
-        if (arrayList.size() == 1) return arrayList;
+        if (arrayList.size() == 1) return;
 
         Product product, prevProduct;
         Category category, prevCategory;
@@ -151,17 +149,12 @@ public class Utils {
 
             if (i == 0) arrayList.add(0, category);
         }
-
-        return arrayList;
     }
 
-    public static ArrayList<Product> removeCategoriesFromArrayListOfProducts(ArrayList arrayList){
-        ArrayList newArray = new ArrayList<>(arrayList);
-        for (int i = newArray.size() - 1; i >= 0; i--) {
-            ListItem item = (ListItem)newArray.get(i);
-            if (item instanceof Category) newArray.remove(i);
-        }
-        return newArray;
-    }
+    public static void removeCategoriesFromArrayListOfProducts(ArrayList arrayList){
+        for (int i = arrayList.size() - 1; i >= 0; i--) {
+            ListItem item = (ListItem)arrayList.get(i);
+            if (item instanceof Category) arrayList.remove(i);
+        }    }
 
 }

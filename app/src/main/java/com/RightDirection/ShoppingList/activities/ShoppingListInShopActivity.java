@@ -131,8 +131,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mProducts.add(newProduct);
         }
 
-        mProducts = Utils.sortArrayListByCategories(mProducts);
-        mProducts = Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+        Utils.sortArrayListByCategories(mProducts);
+        Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
     }
 
@@ -183,7 +183,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else if (id == R.id.action_send_by_email) {
             // Создадим вспомагательный массив и удалим из него категории
-            ArrayList<Product> array = Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+            ArrayList array = new ArrayList<>(mProducts);
+            Utils.removeCategoriesFromArrayListOfProducts(array);
             ShoppingList shoppingList = new ShoppingList(mListId, mListName, array);
             shoppingList.sendByEmail(this);
         }
@@ -214,9 +215,9 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                     // Обновим элемент списка (имя и картинку)
                     mProductsAdapter.updateItem(id, name, imageUri, category);
                     // Перестроим массив на случай, если изменилась категория
-                    mProducts = Utils.removeCategoriesFromArrayListOfProducts(mProducts);
-                    mProducts = Utils.sortArrayListByCategories(mProducts);
-                    mProducts = Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+                    Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+                    Utils.sortArrayListByCategories(mProducts);
+                    Utils.addCategoriesInArrayListOfProducts(this, mProducts);
                     mProductsAdapter.notifyDataSetChanged();
                 }
         }

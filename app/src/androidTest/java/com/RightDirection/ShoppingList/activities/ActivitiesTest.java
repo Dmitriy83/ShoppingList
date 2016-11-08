@@ -175,7 +175,7 @@ public class ActivitiesTest {
         ContentResolver contentResolver = mActivity.getContentResolver();
 
         contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_NAME +  " = '" + mNewListName + "'", null);
+                ShoppingListContentProvider.KEY_NAME +  " LIKE '%" + mNewListName + "%'", null);
         contentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
                 ShoppingListContentProvider.KEY_NAME +  " LIKE '%" + mNewProductNamePattern + "%'", null);
     }
