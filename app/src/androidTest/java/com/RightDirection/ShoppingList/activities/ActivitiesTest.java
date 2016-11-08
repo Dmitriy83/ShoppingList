@@ -474,7 +474,7 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
-    public void testSendReceiveEmail() throws UiObjectNotFoundException {
+    public void testSendReceiveEmailFromMainActivity() throws UiObjectNotFoundException {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок

@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
         int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
 
+        // Получаем только имена и идентификаторы списков
         mShoppingLists.clear();
         while (data.moveToNext()){
             ShoppingList newShoppingList = new ShoppingList(data.getLong(keyIdIndex), data.getString(keyNameIndex));

@@ -2,18 +2,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ShoppingListEditingActivity">
+    <item android:title="@string/send_by_email"
+        android:orderInCategory="004"
+        android:id="@+id/action_send_by_email"
+        android:icon="@drawable/ic_send_by_email"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_save_list"
-        android:orderInCategory="003"
+        android:orderInCategory="002"
         android:icon="@drawable/ic_save"
         android:title="@string/action_save_list"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_remove_all_items"
-        android:orderInCategory="002"
+        android:orderInCategory="003"
         android:icon="@drawable/ic_remove_items"
         android:title="@string/action_remove_all_items"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_go_to_in_shop_activity"
         android:orderInCategory="001"

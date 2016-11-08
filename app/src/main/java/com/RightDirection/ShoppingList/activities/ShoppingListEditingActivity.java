@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
         InputNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<Product> mShoppingListItems;
+    private ArrayList<Product> mProducts;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private boolean mIsNewList;
     private long mListId;
@@ -60,10 +60,10 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         if (savedInstanceState == null) {
             // Создаем массив для хранения списка покупок
-            mShoppingListItems = new ArrayList<>();
+            mProducts = new ArrayList<>();
         }
         else {
-            mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
         }
 
         // Прочитаем настройки приложения
@@ -72,7 +72,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         int listItemLayout = R.layout.list_item_shopping_list_editing;
         if (!showImages) listItemLayout = R.layout.list_item_shopping_list_editing_without_image;
         // Создадим новый адаптер для работы со списком покупок
-        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mShoppingListItems);
+        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
@@ -94,7 +94,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         super.onSaveInstanceState(outState);
 
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String .valueOf(R.string.shopping_list_items), mShoppingListItems);
+        outState.putParcelableArrayList(String .valueOf(R.string.shopping_list_items), mProducts);
     }
 
     private void saveListAndFinish(){
@@ -114,7 +114,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
         else {
             // Обновим текущий список покупок
-            ShoppingList shoppingList = new ShoppingList(mListId, "", mShoppingListItems);
+            ShoppingList shoppingList = new ShoppingList(mListId, "", mProducts);
             shoppingList.updateInDB(getApplicationContext());
 
             if (mGoToInShop) {
@@ -132,15 +132,15 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     }
 
     private void removeAllItems(){
-        mShoppingListItems.clear();
+        mProducts.clear();
         mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void OnNewItemAdded(Product newItem) {
         // Если элемент уже присутствует в списке, то добавлять не нужно
-        if (!mShoppingListItems.contains(newItem)) {
-            mShoppingListItems.add(0, newItem);
+        if (!mProducts.contains(newItem)) {
+            mProducts.add(0, newItem);
             mShoppingListItemsAdapter.notifyDataSetChanged();
         }else{
             // Сообщим о том, что элемент уже есть в списке
@@ -158,7 +158,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             mShoppingListItemsAdapter.updateItem(id, name, null);
         }else {
             // Сохраним список продуктов в БД
-            ShoppingList shoppingList = new ShoppingList(-1, name, mShoppingListItems);
+            ShoppingList shoppingList = new ShoppingList(-1, name, mProducts);
             shoppingList.addToDB(getApplicationContext());
 
             if (mGoToInShop) {
@@ -198,7 +198,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
         int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
 
-        mShoppingListItems.clear();
+        mProducts.clear();
         while (data.moveToNext()){
             Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
                     data.getInt(keyCategoryOrderIndex));
@@ -206,7 +206,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             Product listItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
                     ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex),
                     category);
-            mShoppingListItems.add(listItem);
+            mProducts.add(listItem);
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
@@ -255,6 +255,12 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             // Cохраним список покупок и перейдем к активности "В магазине"
             mGoToInShop = true;
             saveListAndFinish();
+        }
+        else if (id == R.id.action_send_by_email) {
+            String name = mListName;
+            if (name == null) name = getString(R.string.no_name);
+            ShoppingList shoppingList = new ShoppingList(mListId, name, mProducts);
+            shoppingList.sendByEmail(this);
         }
 
         return super.onOptionsItemSelected(item);

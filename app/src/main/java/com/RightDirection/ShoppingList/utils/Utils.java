@@ -2,19 +2,12 @@ package com.RightDirection.ShoppingList.utils;
 
 //Класс с глобальными константами и методами
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.ListItem;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.items.ShoppingList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,12 +16,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,48 +36,6 @@ public class Utils {
     }
 
     private Utils() {}
-
-    public static void createShoppingListJSONFile(Context context, ShoppingList shoppingList, String fileName) throws JSONException {
-
-        ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + shoppingList.getId(), null ,null);
-
-        // Определим индексы колонок для считывания
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
-
-        // Читаем данные из базы и записываем в объект JSON
-        JSONArray listItemsArray = new JSONArray();
-        while (data.moveToNext()){
-            JSONObject listItem = new JSONObject();
-
-            listItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
-            listItem.put(ShoppingListContentProvider.KEY_NAME, data.getString(keyNameIndex));
-            listItem.put(ShoppingListContentProvider.KEY_COUNT, data.getString(keyCountIndex));
-
-            // Добавим объект JSON в массив
-            listItemsArray.put(listItem);
-        }
-
-        JSONObject shoppingListJSON = new JSONObject();
-        shoppingListJSON.put(ShoppingListContentProvider.KEY_PRODUCT_ID,    shoppingList.getId());
-        shoppingListJSON.put(ShoppingListContentProvider.KEY_NAME,          shoppingList.getName());
-        shoppingListJSON.put("items",   listItemsArray);
-
-        String jsonStr = shoppingListJSON.toString();
-        Log.i("CREATING_JSON", jsonStr);
-
-        data.close();
-
-        // Запишем текст в файл
-        try {
-            Utils.createCachedFile(context, fileName, jsonStr);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String getListNameFromJSON(String jsonStr) throws JSONException {
         JSONObject json = new JSONObject(jsonStr);
@@ -122,45 +69,7 @@ public class Utils {
         return result;
     }
 
-    public static void createCachedFile(Context context, String fileName, String content) throws IOException {
-
-        File cacheFile = new File(context.getCacheDir() + File.separator + fileName);
-        cacheFile.createNewFile();
-
-        FileOutputStream fos = new FileOutputStream(cacheFile);
-        OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF8");
-        PrintWriter pw = new PrintWriter(osw);
-
-        pw.println(content);
-
-        pw.flush();
-        pw.close();
-    }
-
-    public static Intent getSendEmailIntent(@Nullable String email, String subject, String body, String fileName) {
-
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-
-        //Explicitly only use Gmail to send
-        //emailIntent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-
-        emailIntent.setType("plain/text");
-
-        //Add the recipients
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { email });
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
-
-        //Add the attachment by specifying a reference to our custom ContentProvider
-        //and the specific file of interest
-        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
-
-        return emailIntent;
-    }
-
-    public static String convertStreamToString(InputStream is) throws Exception {
+    private static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line;
@@ -246,12 +155,13 @@ public class Utils {
         return arrayList;
     }
 
-    public static ArrayList removeCategoriesFromArrayListOfProducts(ArrayList arrayList){
-        for (int i = arrayList.size() - 1; i >= 0; i--) {
-            ListItem item = (ListItem)arrayList.get(i);
-            if (item instanceof Category) arrayList.remove(i);
+    public static ArrayList<Product> removeCategoriesFromArrayListOfProducts(ArrayList arrayList){
+        ArrayList newArray = new ArrayList<>(arrayList);
+        for (int i = newArray.size() - 1; i >= 0; i--) {
+            ListItem item = (ListItem)newArray.get(i);
+            if (item instanceof Category) newArray.remove(i);
         }
-        return arrayList;
+        return newArray;
     }
 
 }

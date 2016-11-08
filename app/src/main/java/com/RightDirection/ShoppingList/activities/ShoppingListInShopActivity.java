@@ -18,6 +18,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.items.ShoppingList;
 import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 
@@ -179,6 +180,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             }
             startActivity(intent);
             finish();
+        }
+        else if (id == R.id.action_send_by_email) {
+            // Создадим вспомагательный массив и удалим из него категории
+            ArrayList<Product> array = Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+            ShoppingList shoppingList = new ShoppingList(mListId, mListName, array);
+            shoppingList.sendByEmail(this);
         }
 
         return super.onOptionsItemSelected(item);

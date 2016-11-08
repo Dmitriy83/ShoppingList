@@ -20,7 +20,6 @@ import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.items.ShoppingList;
-import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -160,20 +159,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     return true;
 
                 case R.id.imgSendListByEmail:
-
-                    try{
-                        // Создадим JSON файл по списку покупок
-                        String fileName = mParentActivity.getString(R.string.json_file_identifier) + " '" + mSelectedItem.getName() + "'" + ".json";
-                        Utils.createShoppingListJSONFile(mParentActivity, mSelectedItem, fileName);
-
-                        mParentActivity.startActivity(Utils.getSendEmailIntent("d.zhiharev@mail.ru",
-                                mParentActivity.getString(R.string.json_file_identifier)
-                                        + " '" + mSelectedItem.getName() + "'", "", fileName));
-                    }
-                    catch(Exception e){
-                        System.out.println("Exception raises during sending mail. Discription: " + e);
-                    }
-
+                    mSelectedItem.sendByEmail(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 

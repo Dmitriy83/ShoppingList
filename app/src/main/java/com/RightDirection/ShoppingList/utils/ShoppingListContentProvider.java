@@ -87,6 +87,7 @@ public class ShoppingListContentProvider extends ContentProvider {
             case SHOPPING_LISTS_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.shoppinglists";
             case SHOPPING_LIST_CONTENT_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.shoppinglistcontent";
             case SHOPPING_LIST_CONTENT_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.shoppinglistcontent";
+            case FILES: return "vnd.android.file.dir/vnd.RightDirection.ShoppingList.files";
             case CATEGORIES_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.categories";
             case CATEGORIES_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.categories";
             default: throw new IllegalArgumentException("Неподдерживаемый URI:" + uri);
@@ -366,7 +367,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
         private static final String TAG = "ShoppingListSQLite";
 
-        public ShoppingListSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        ShoppingListSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
         }
 
