@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
-    ArrayList<Product> mProducts;
+    private ArrayList<Product> mProducts;
 
     public ShoppingList(long id, String name) {
         super(id, name);
@@ -182,18 +182,68 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     public void sendByEmail(Context context){
 
         try{
+            // Пока отключим возможность получения и загрузки писем с файлом json,
+            // т.к. настройка эл. почты слишком сложна для простого пользователя.
+            /*
             // Создадим JSON файл по списку покупок
             String fileName = context.getString(R.string.json_file_identifier) + " '" + getName()
                     + "'" + ".json";
             createShoppingListJSONFile(context, fileName);
+            */
+            String fileName = null;
 
             context.startActivity(getSendEmailIntent("d.zhiharev@mail.ru",
-                    context.getString(R.string.json_file_identifier) + " '"
-                            + getName() + "'", "", fileName));
+                    context.getString(R.string.json_file_identifier) + " '" + getName() + "'",
+                    convertShoppingListToString(context), fileName));
         }
         catch(Exception e){
             System.out.println("Exception raises during sending mail. Discription: " + e);
         }
+    }
+
+    private String convertShoppingListToString(Context context){
+        if (mProducts == null || mProducts.size() == 0) {
+            // Попробуем получить товары из БД. Такое возможно, когда вызов метода происходит
+            // основной активности (товары для списков в ней не загружаются)
+            getProductsFromDB(context);
+        }
+
+        String result = "";
+        String divider = context.getString(R.string.divider);
+        String productDivider = context.getString(R.string.product_divider);
+        boolean firstLine = true;
+        for (Product product: mProducts) {
+            if (!firstLine) result = result + "\n";
+            else firstLine = false;
+
+            result = result + product.getName() + divider + " " + String.valueOf(product.getCount())
+                    + productDivider;
+        }
+
+        return result;
+    }
+
+    private void getProductsFromDB(Context context) {
+        if (mProducts != null) mProducts.clear();
+        else mProducts = new ArrayList<>();
+
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
+                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
+
+        // Определим индексы колонок для считывания
+        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+
+        // Читаем данные из базы и записываем в объект JSON
+        while (data.moveToNext()){
+            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), null, data.getFloat(keyCountIndex));
+            mProducts.add(newProduct);
+        }
+
+        // Закроем курсор
+        data.close();
     }
 
     private void createShoppingListJSONFile(Context context, String fileName) throws JSONException {
@@ -209,9 +259,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
 
         JSONObject jsonList = new JSONObject();
-        jsonList.put(ShoppingListContentProvider.KEY_ID,    getId());
-        jsonList.put(ShoppingListContentProvider.KEY_NAME,          getName());
-        jsonList.put("items",   listItemsArray);
+        jsonList.put(ShoppingListContentProvider.KEY_ID,   getId());
+        jsonList.put(ShoppingListContentProvider.KEY_NAME, getName());
+        jsonList.put("items", listItemsArray);
 
         String jsonStr = jsonList.toString();
         Log.i("CREATING_JSON", jsonStr);
@@ -285,9 +335,11 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
 
-        //Add the attachment by specifying a reference to our custom ContentProvider
-        //and the specific file of interest
-        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
+        if (fileName != null) {
+            //Add the attachment by specifying a reference to our custom ContentProvider
+            //and the specific file of interest
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
+        }
 
         return emailIntent;
     }

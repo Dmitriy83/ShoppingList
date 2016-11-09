@@ -22,6 +22,9 @@
         android:defaultValue="true"
         />
 
+    <!--
+    Пока отключим возможность получения и загрузки писем с файлом json,
+    т.к. настройка эл. почты слишком сложна для простого пользователя.
     <PreferenceScreen
         android:key="email_settings"
         android:title="@string/email_settings_to_load_shopping_lists"
@@ -45,5 +48,6 @@
             android:title="@string/email_password"
             android:inputType="textPassword"/>
     </PreferenceScreen>
+    -->
 
 </PreferenceScreen>

@@ -26,7 +26,7 @@
     <string name="pref_title">Настройка</string>
     <string name="pref_cross_out_action">"Вычеркивать" товар</string>
     <string name="pref_cross_out_action_summary">Помечать товар в списке покупок вычеркиванием или простым нажатием</string>
-    <string name="send_by_email">Отправить по почте</string>
+    <string name="send_by_email">Отправить список покупок по e-mail…</string>
     <string name="action_remove_all_items">Очистить список</string>
     <string name="delete">Удалить</string>
     <string name="pref_show_images">Показывать рисунки</string>
@@ -48,7 +48,7 @@
     <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
     <string name="action_help">Справка</string>
     <string name="new_list">Новый список</string>
-    <string name="HelpInShop">Чтобы вычеркнуть товар проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
+    <string name="HelpInShop">Чтобы вычеркнуть товар, проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
     <string name="pref_key_show_help_screens">Показывать подсказки</string>
     <string name="got_it">Запомнил</string>
     <string name="action_edit_categories_list">Категории</string>

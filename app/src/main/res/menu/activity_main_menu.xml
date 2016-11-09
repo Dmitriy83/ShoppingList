@@ -12,11 +12,15 @@
         android:orderInCategory="100"
         android:title="@string/action_edit_products_list"
         app:showAsAction="never" />
+    <!--
+    Пока отключим возможность получения и загрузки писем с файлом json,
+    т.к. настройка эл. почты слишком сложна для простого пользователя.
     <item
         android:id="@+id/action_receive_shopping_list_by_email"
         android:orderInCategory="101"
         android:title="@string/action_receive_shopping_list_by_email"
         app:showAsAction="never" />
+        -->
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="102"

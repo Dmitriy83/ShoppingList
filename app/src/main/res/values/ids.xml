@@ -8,4 +8,5 @@
     <item name="itemId" type="id" />
     <item name="item" type="id" />
     <item name="position" type="id" />
+    <item name="action_receive_shopping_list_by_email" type="id" />
 </resources>

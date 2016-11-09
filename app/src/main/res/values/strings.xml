@@ -88,4 +88,6 @@
     <string name="order">Order</string>
     <string name="no_name">No name</string>
     <string name="product_is_exist">Product with the same name is already exist.</string>
+    <string name="divider">,</string>
+    <string name="product_divider">;</string>
 </resources>
