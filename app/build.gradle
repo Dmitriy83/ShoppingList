@@ -37,6 +37,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.3'
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

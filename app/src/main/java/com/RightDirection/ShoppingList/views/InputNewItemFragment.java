@@ -107,7 +107,6 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
         mCurrentItem = null;
     }
 
-
     private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -131,13 +130,17 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     private void createNewItem() {
         // Добавим новый товар в БД
         String newItemName = mTvNewItem.getText().toString();
-        Product newProduct = new Product(-1, newItemName, null); // id будет назначено при сохранении продукта в БД
-        newProduct.addToDB(getActivity());
+        if (!mAllProductsNames.contains(newItemName)) {
+            mCurrentItem = new Product(-1, newItemName, null); // id будет назначено при сохранении продукта в БД
+            mCurrentItem.addToDB(getActivity());
 
-        // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
-        mCurrentItem = newProduct;
-        addProductInArrays(mCurrentItem);
-        mAdapter.add(newItemName);
+            // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
+            addProductInArrays(mCurrentItem);
+            mAdapter.add(newItemName);
+        }else{
+            int indexFoundItem = mAllProductsNames.indexOf(newItemName);
+            mCurrentItem = mAllProducts.get(indexFoundItem);
+        }
     }
 
     @Override

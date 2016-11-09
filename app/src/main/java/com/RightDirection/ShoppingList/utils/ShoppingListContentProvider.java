@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
@@ -16,8 +15,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Locale;
 
 public class ShoppingListContentProvider extends ContentProvider {
 
@@ -61,7 +63,8 @@ public class ShoppingListContentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
     public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
-    private static final String DATABASE_NAME = "shoppingListDatabase.db";
+    private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
+    private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
@@ -70,8 +73,14 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        // Определим имя базы данных в зависимости от локализации (по умолчанию - Английская)
+        String dbName = DATABASE_NAME_ENG;
+        if (Locale.getDefault().getLanguage().equals(new Locale("ru").getLanguage())) {
+            dbName = DATABASE_NAME_RU;
+        }
+
         sqLiteOpenHelper = new ShoppingListSQLiteOpenHelper(getContext(),
-                DATABASE_NAME, null,
+                dbName, null,
                 DATABASE_VERSION);
         return true;
     }
@@ -363,7 +372,7 @@ public class ShoppingListContentProvider extends ContentProvider {
         }
     }
 
-    class ShoppingListSQLiteOpenHelper extends SQLiteOpenHelper {
+    class ShoppingListSQLiteOpenHelper extends SQLiteAssetHelper {
 
         private static final String TAG = "ShoppingListSQLite";
 
@@ -371,37 +380,41 @@ public class ShoppingListContentProvider extends ContentProvider {
             super(context, name, factory, version);
         }
 
+        /**
+         * Использовалась с SQLiteOpenHelper. В SQLiteAssetHelper создание БД происходит
+         * при первом чтении, если БД отсутствует
+        /
         // Вызывается, когда на диске нет базы данных, чтобы вспомогательный класс создал новую
-        @Override
+        //@Override
         public void onCreate(SQLiteDatabase db) {
             // Создадим таблицы, если они не были созданы ранее
-
             // Таблица "Категориии"
             String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
-                    + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_CATEGORY_NAME + ","
-                    + KEY_CATEGORY_ORDER + ");";
+            + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_CATEGORY_NAME + ","
+            + KEY_CATEGORY_ORDER + ");";
             db.execSQL(queryCreateCategoriesTable);
 
             // Таблица "Продукты"
             String queryCreateProductsTable = "CREATE TABLE " + PRODUCTS_TABLE_NAME
-                    + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY_ID + " INTEGER);";
+            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY_ID + " INTEGER);";
             db.execSQL(queryCreateProductsTable);
 
             // Таблица "Списки покупок"
             String queryCreateShoppingListsTable = "CREATE TABLE " + SHOPPING_LISTS_TABLE_NAME
-                    + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_NAME + ");";
+            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_NAME + ");";
             db.execSQL(queryCreateShoppingListsTable);
 
             // Таблица "Состав списка покупок"
             String queryCreateShoppingListContentTable = "CREATE TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
-                    + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER, "
-                    + KEY_COUNT + " REAL);";
+            + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER, "
+            + KEY_COUNT + " REAL);";
             db.execSQL(queryCreateShoppingListContentTable);
         }
+        */
 
         // Вызывается при несовпадении версий базы данных, т.е. когда база данных, хранящаяся на диске,
         // должна быть обновлена до текущей версии.

@@ -59,4 +59,5 @@
     <string name="category_not_assigned">Категория не назначена</string>
     <string name="order">Порядок</string>
     <string name="no_name">Без имени</string>
+    <string name="product_is_exist">Элемент с таким именем уже существует.</string>
 </resources>

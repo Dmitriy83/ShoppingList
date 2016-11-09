@@ -183,7 +183,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else if (id == R.id.action_send_by_email) {
             // Создадим вспомагательный массив и удалим из него категории
-            ArrayList array = new ArrayList<>(mProducts);
+            ArrayList array;
+            // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
+            if (mProductsAdapter.getOriginalValues() == null) {
+                array = new ArrayList<>(mProducts);
+            }else{
+                array = new ArrayList<>(mProductsAdapter.getOriginalValues());
+            }
             Utils.removeCategoriesFromArrayListOfProducts(array);
             ShoppingList shoppingList = new ShoppingList(mListId, mListName, array);
             shoppingList.sendByEmail(this);

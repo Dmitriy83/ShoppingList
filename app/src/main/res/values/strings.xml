@@ -87,4 +87,5 @@
     <string name="category_not_assigned">Category was not assigned</string>
     <string name="order">Order</string>
     <string name="no_name">No name</string>
+    <string name="product_is_exist">Product with the same name is already exist.</string>
 </resources>

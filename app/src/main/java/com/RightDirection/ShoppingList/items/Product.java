@@ -4,9 +4,12 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
+import android.widget.Toast;
 
+import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
@@ -52,6 +55,23 @@ public class Product extends ListItem implements IDataBaseOperations {
     @Override
     public void addToDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
+
+        // Если товар с данным именем уже есть в БД, то создавать новый не нужно.
+        // Необходимо присвоить id найденного элемента текущему.
+        Cursor data = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null,
+                ShoppingListContentProvider.KEY_NAME + " = '" + getName() + "'", null, null);
+        if (data != null){
+            if (data.moveToNext()) {
+                int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
+                setId(data.getLong(keyIdIndex));
+                Toast.makeText(context, context.getString(R.string.product_is_exist),
+                        Toast.LENGTH_SHORT).show();
+                data.close();
+                return;
+            }
+            data.close();
+        }
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(ShoppingListContentProvider.KEY_NAME, getName());
         if (category != null)
