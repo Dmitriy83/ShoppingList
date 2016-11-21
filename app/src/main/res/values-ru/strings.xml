@@ -26,7 +26,7 @@
     <string name="pref_title">Настройка</string>
     <string name="pref_cross_out_action">"Вычеркивать" товар</string>
     <string name="pref_cross_out_action_summary">Помечать товар в списке покупок вычеркиванием или простым нажатием</string>
-    <string name="send_by_email">Отправить список покупок по e-mail…</string>
+    <string name="send_by_email">Отправить</string>
     <string name="action_remove_all_items">Очистить список</string>
     <string name="delete">Удалить</string>
     <string name="pref_show_images">Показывать рисунки</string>
@@ -60,4 +60,6 @@
     <string name="order">Порядок</string>
     <string name="no_name">Без имени</string>
     <string name="product_is_exist">Элемент с таким именем уже существует.</string>
+    <string name="load">Загрузить</string>
+    <string name="text_for_loading">Введите или вставьте текст в следующем формате:\nМолоко, 2; Хлеб, 1; Вино, 3</string>
 </resources>

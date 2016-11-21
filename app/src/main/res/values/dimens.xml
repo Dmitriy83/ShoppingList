@@ -8,6 +8,7 @@
     <dimen name="normal_size">40dp</dimen>
     <dimen name="large_size">60dp</dimen>
     <dimen name="text_size_normal">16sp</dimen>
+    <dimen name="category_text_size">13sp</dimen>
     <dimen name="medium_size">50dp</dimen>
-    <dimen name="category_title_height">30dp</dimen>
+    <dimen name="category_title_height">20dp</dimen>
 </resources>

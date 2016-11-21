@@ -46,7 +46,11 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Получим значения из переданных параметров родительской активности
         Intent sourceIntent = getIntent();
         mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
-        mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), 0);
+        mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), -1);
+        if (mIsNewList){
+            // Попробуем получить продукты (если активность открылась из активности загрузки списка товаров)
+            mProducts = sourceIntent.getParcelableArrayListExtra(String.valueOf(R.string.shopping_list_items));
+        }
 
         // Установим заголовок активности
         if (mIsNewList){
@@ -58,13 +62,10 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             }
         }
 
-        if (savedInstanceState == null) {
-            // Создаем массив для хранения списка покупок
-            mProducts = new ArrayList<>();
-        }
-        else {
+        if (savedInstanceState != null)
             mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
-        }
+
+        if (mProducts == null) mProducts = new ArrayList<>();
 
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -261,6 +262,12 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             if (name == null) name = getString(R.string.no_name);
             ShoppingList shoppingList = new ShoppingList(mListId, name, mProducts);
             shoppingList.sendByEmail(this);
+        }
+        else if (id == R.id.action_load_list) {
+            Intent intentLoad = new Intent(this, LoadShoppingListActivity.class);
+            intentLoad.putExtra(String.valueOf(R.string.shopping_list), new ShoppingList(mListId, mListName));
+            startActivity(intentLoad);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

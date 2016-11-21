@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.items;
 
 import android.net.Uri;
 import android.os.Parcelable;
+import android.support.test.filters.SmallTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SmallTest
 public class ListItemTest {
 
     private ListItem listItem;

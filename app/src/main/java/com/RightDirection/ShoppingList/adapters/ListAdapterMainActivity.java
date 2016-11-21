@@ -17,6 +17,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
+import com.RightDirection.ShoppingList.activities.LoadShoppingListActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.items.ShoppingList;
@@ -103,7 +104,7 @@ public class ListAdapterMainActivity extends ListAdapter {
             if (mSelectedItem == null) { return false; }
 
             switch (item.getItemId()) {
-                case R.id.imgDelete:
+                case R.id.action_delete_shopping_list:
 
                     // Выведем вопрос об удалении списка покупок
                     AlertDialog alertDialog = new AlertDialog.Builder(
@@ -134,7 +135,7 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     return true;
 
-                case R.id.imgEdit:
+                case R.id.action_edit_shopping_list:
 
                     Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
                     intent.putExtra(String.valueOf(R.string.is_new_list), false);
@@ -145,7 +146,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 
-                case R.id.imgChangeListName:
+                case R.id.action_change_list_name:
 
                     // Откроем окно для ввода нового наименования списка/
                     // Сохранение будет производиться в методе onDialogPositiveClick
@@ -158,8 +159,15 @@ public class ListAdapterMainActivity extends ListAdapter {
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 
-                case R.id.imgSendListByEmail:
+                case R.id.action_send_by_email:
                     mSelectedItem.sendByEmail(mParentActivity);
+                    mode.finish(); // Action picked, so close the CAB
+                    return true;
+
+                case R.id.action_load_list:
+                    Intent intentLoad = new Intent(mParentActivity, LoadShoppingListActivity.class);
+                    intentLoad.putExtra(String.valueOf(R.string.shopping_list), mSelectedItem);
+                    mParentActivity.startActivity(intentLoad);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 

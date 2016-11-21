@@ -9,4 +9,5 @@
     <color name="action_mode_background_color">#acd630</color>
     <color name="popup_menu_background_color">#ffffff</color>
     <color name="border_color">#eae7e7</color>
+    <color name="category_text_color">#8f8282</color>
 </resources>

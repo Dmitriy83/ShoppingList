@@ -42,7 +42,7 @@
     <string name="delete">Remove</string>
     <string name="pref_key_show_images">Show images</string>
     <string name="pref_show_images">Show images</string>
-    <string name="send_email">Send shopping list by email…</string>
+    <string name="send_email">Send</string>
     <string name="receive_by_email">Receive shopping list by email…</string>
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
@@ -90,4 +90,7 @@
     <string name="product_is_exist">Product with the same name is already exist.</string>
     <string name="divider">,</string>
     <string name="product_divider">;</string>
+    <string name="load">Load</string>
+    <string name="text_for_loading">Type or paste text in this format:\nMilk, 2;  Bread, 1; Wine, 3</string>
+    <string name="shopping_list">ShoppingList</string>
 </resources>

@@ -104,7 +104,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
             super(itemView);
 
             productNameView = (TextView) itemView.findViewById(R.id.txtName);
-            imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
+            imgDelete = (ImageButton) itemView.findViewById(R.id.action_delete_shopping_list);
             productImage = (ImageView) itemView.findViewById(R.id.imgProduct);
             represent = (RelativeLayout) itemView.findViewById(R.id.productRepresent);
             etCount = (EditText) itemView.findViewById(R.id.etCount);

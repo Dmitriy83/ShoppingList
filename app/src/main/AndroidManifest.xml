@@ -47,6 +47,9 @@
         <activity android:name=".activities.ChooseCategoryActivity"
             android:theme="@style/AppThemeChooseCategoryDialog">
         </activity>
+        <activity android:name=".activities.LoadShoppingListActivity"
+            android:theme="@style/AppThemeHelpDialog">
+        </activity>
     </application>
 
 </manifest>

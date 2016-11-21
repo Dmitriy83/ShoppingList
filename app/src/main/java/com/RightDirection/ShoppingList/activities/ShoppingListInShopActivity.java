@@ -194,6 +194,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             ShoppingList shoppingList = new ShoppingList(mListId, mListName, array);
             shoppingList.sendByEmail(this);
         }
+        else if (id == R.id.action_load_list) {
+            Intent intentLoad = new Intent(this, LoadShoppingListActivity.class);
+            intentLoad.putExtra(String.valueOf(R.string.shopping_list), new ShoppingList(mListId, mListName));
+            startActivity(intentLoad);
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ShoppingListInShopActivity">
 
+    <item android:id="@+id/action_load_list"
+        android:icon="@drawable/ic_load"
+        android:title="@string/load"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="005" />
     <item android:title="@string/send_by_email"
         android:orderInCategory="004"
         android:id="@+id/action_send_by_email"

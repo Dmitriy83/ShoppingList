@@ -31,6 +31,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -75,6 +76,22 @@ public class ActivitiesTest {
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
             MainActivity.class);
+
+    @Before
+    public void setUp() throws Exception {
+        mActivity = mActivityRule.getActivity();
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        ContentResolver contentResolver = mActivity.getContentResolver();
+
+        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                ShoppingListContentProvider.KEY_NAME +  " LIKE '%Test%'", null);
+        contentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
+                ShoppingListContentProvider.KEY_NAME +  " LIKE '%test%'", null);
+    }
 
     private static Matcher<View> isChildOfRecyclerViewItem(final Matcher<View> recyclerViewItem) {
         checkNotNull(recyclerViewItem);
@@ -164,22 +181,6 @@ public class ActivitiesTest {
         };
     }
 
-    @Before
-    public void setUp() throws Exception {
-        mActivity = mActivityRule.getActivity();
-        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ContentResolver contentResolver = mActivity.getContentResolver();
-
-        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_NAME +  " LIKE '%" + mNewListName + "%'", null);
-        contentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_NAME +  " LIKE '%" + mNewProductNamePattern + "%'", null);
-    }
-
     @Test
     @MediumTest
     public void testAddAndEditNewShoppingList(){
@@ -240,7 +241,7 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
-        onView(withId(R.id.imgEdit)).perform(click());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
 
         // Проверяем, что открылась активность редактирования списка покупок
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
@@ -268,7 +269,7 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
-        onView(withId(R.id.imgEdit)).perform(click());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
 
         // Проверяем, что открылась активность редактирования списка покупок
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
@@ -387,7 +388,7 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку переименования списка
-        onView(withId(R.id.imgChangeListName)).perform(click());
+        onView(withId(R.id.action_change_list_name)).perform(click());
 
         // Вводим новое имя списка покупок
         mNewListName += "Changed";
@@ -473,6 +474,7 @@ public class ActivitiesTest {
     }
 
     @Test
+    @Ignore
     @MediumTest
     public void testSendReceiveEmailFromMainActivity() throws UiObjectNotFoundException {
         addNewShoppingList();
@@ -481,7 +483,7 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку отправки списка по почте
-        onView(withId(R.id.imgSendListByEmail)).perform(click());
+        onView(withId(R.id.action_send_by_email)).perform(click());
 
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
         UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
@@ -520,7 +522,7 @@ public class ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
-        onView(withId(R.id.imgDelete)).perform(click());
+        onView(withId(R.id.action_delete_shopping_list)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
         onView(withText(mActivity.getString(R.string.delete_shopping_list_question))).check(matches(isDisplayed()));
         // Отклоняем удаление
@@ -531,7 +533,7 @@ public class ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
-        onView(withId(R.id.imgDelete)).perform(click());
+        onView(withId(R.id.action_delete_shopping_list)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
         onView(withText(mActivity.getString(R.string.delete_shopping_list_question))).check(matches(isDisplayed()));
         // Подтверждаем удаление
@@ -589,7 +591,7 @@ public class ActivitiesTest {
         // Проверим редактирование продукта из активности редактирования списка товаров
         addNewShoppingList();
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
-        onView(withId(R.id.imgEdit)).perform(click());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
         onView(recyclerViewItemWithText(mNewProductNamePattern + "1")).perform(longClick());
         textForTyping = mNewProductNamePattern + "testProducts";
         onView(withId(R.id.etProductName)).perform(clearText());
@@ -616,7 +618,7 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку редактирования списка
-        onView(withId(R.id.imgEdit)).perform(click());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
 
         // Нажимаем два раза на кнопку "Increase"
         onView(allOf(withId(R.id.imgIncrease),
@@ -686,5 +688,162 @@ public class ActivitiesTest {
 
         // Проверяем, что открылась активность редактирования списка покупок
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @MediumTest
+    public void mainActivity_SendEmail() throws UiObjectNotFoundException{
+        addNewShoppingList();
+
+        // Длинный клик на новом списке покупок
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+
+        // В меню действий нажимаем кнопку отправки списка по почте
+        onView(withId(R.id.action_send_by_email)).perform(click());
+
+        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
+        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
+        assertTrue(emailSubject.exists());
+        // Проверяем, что в теле письма правильно представлен список
+        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;"));
+        assertTrue(emailBody.exists());
+        //UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+        //btnSend.click();
+        mDevice.pressBack();
+        mDevice.pressBack();
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_SendEmail() throws UiObjectNotFoundException{
+        addNewShoppingList();
+
+        // Переходим в активность "В магазине"
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+
+        // Нажимаем кнопку отправки списка покупок по почте
+        onView(withId(R.id.action_send_by_email)).perform(click());
+
+        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
+        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
+        assertTrue(emailSubject.exists());
+        // Проверяем, что в теле письма правильно представлен список
+        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "1, 1.0;" + "\n" + mNewProductNamePattern + "2, 1.0;"));
+        assertTrue(emailBody.exists());
+        mDevice.pressBack();
+        mDevice.pressBack();
+    }
+
+    @Test
+    @MediumTest
+    public void shoppingListEditingActivity_SendEmail() throws UiObjectNotFoundException{
+        addNewShoppingList();
+
+        // Переходим в активность "Редактирование списка"
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Нажимаем кнопку отправки списка покупок по почте
+        onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
+
+        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
+        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
+        assertTrue(emailSubject.exists());
+        // Проверяем, что в теле письма правильно представлен список
+        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;"));
+        assertTrue(emailBody.exists());
+        mDevice.pressBack();
+        mDevice.pressBack();
+    }
+
+    @Test
+    @MediumTest
+    public void mainActivity_LoadShoppingList(){
+        addNewShoppingList();
+
+        // Длинный клик на новом списке покупок
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+
+        // В меню действий нажимаем кнопку отправки списка по почте
+        onView(withId(R.id.action_load_list)).perform(click());
+
+        // Открылась форма загрузки
+        loadAndCheckList();
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_LoadShoppingList(){
+        addNewShoppingList();
+
+        // Клик на новом списке покупок
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // В меню нажимаем кнопку отправки списка по почте
+        onView(withText(R.string.load)).perform(click());
+
+        // Открылась форма загрузки
+        loadAndCheckList();
+    }
+
+    @Test
+    @MediumTest
+    public void shoppingListEditingActivity_LoadShoppingList(){
+        addNewShoppingList();
+
+        // Клик на новом списке покупок
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // В меню нажимаем кнопку отправки списка по почте
+        onView(withText(R.string.load)).perform(click());
+
+        // Открылась форма загрузки
+        loadAndCheckList();
+    }
+
+    private void loadAndCheckList(){
+        // В текстовое поле вставляем текст для загрузки
+        onView(withId(R.id.etTextForLoading)).perform(typeText("test1, 5; test2, 3; test3; test4; test5 555, 2.3"));
+
+        // Нажимаем кнопку загрузить
+        onView(withId(R.id.btnLoad)).perform(click());
+
+        // Скроем клавиатуру
+        onView(withId(R.id.newItemFragment)).perform(closeSoftKeyboard());
+
+        // Проверим загружены ли элементы
+        onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText("test1"))))
+                .check(matches(withText("5.0")));
+        onView(recyclerViewItemWithText("test2")).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText("test2"))))
+                .check(matches(withText("3.0")));
+        onView(recyclerViewItemWithText("test3")).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText("test3"))))
+                .check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test4")).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText("test4"))))
+                .check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test5 555")).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText("test5 555"))))
+                .check(matches(withText("2.3")));
+
+        onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());
+        onView(recyclerViewItemWithText("testNewProduct2")).check(doesNotExist());
     }
 }

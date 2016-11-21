@@ -44,7 +44,21 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         super(in);
     }
 
-    public void addProduct(Product product){
+    public static final Creator<ShoppingList> CREATOR = new Creator<ShoppingList>() {
+        @Override
+        public ShoppingList createFromParcel(Parcel in) {
+            return new ShoppingList(in);
+        }
+
+        @Override
+        public ShoppingList[] newArray(int size) {
+            return new ShoppingList[size];
+        }
+    };
+
+    private void addProduct(Product product){
+        if (mProducts == null) mProducts = new ArrayList<>();
+
         mProducts.add(product);
     }
 
@@ -69,6 +83,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         setId(ContentUris.parseId(insertedId));
 
         contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
+
+        if (mProducts == null) return;
 
         // Запишем составлящие списка покупок в базу данных
         for (Product item : mProducts) {
@@ -97,6 +113,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
 
+        if (mProducts == null) return;
+
         // Запишем составлящие списка покупок в базу данных
         for (ListItem item: mProducts) {
             contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, getId());
@@ -116,6 +134,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     }
 
     public void addNotExistingProductsToDB(Context context) {
+        if (mProducts == null || mProducts.size() == 0) return;
+
         // Создадим строку условия
         String where = getWhereConditionForName();
 
@@ -141,9 +161,13 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
             }
         }
+
+        setProductsIdFromDB(context);
     }
 
-    public void setProductsIdFromDB(Context context) {
+    private void setProductsIdFromDB(Context context) {
+        if (mProducts == null || mProducts.size() == 0) return;
+
         // Создадим строку условия
         String where = getWhereConditionForName();
         // Произведем выборку из базы данных существующих продуктов
@@ -167,6 +191,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     }
 
     private String getWhereConditionForName() {
+        if (mProducts == null) return "";
+
         String where = null;
         if (mProducts.size() > 0) {
             where = ShoppingListContentProvider.KEY_NAME + " IN (";
@@ -192,7 +218,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             */
             String fileName = null;
 
-            context.startActivity(getSendEmailIntent("d.zhiharev@mail.ru",
+            context.startActivity(getSendEmailIntent("",
                     context.getString(R.string.json_file_identifier) + " '" + getName() + "'",
                     convertShoppingListToString(context), fileName));
         }
@@ -206,6 +232,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             // Попробуем получить товары из БД. Такое возможно, когда вызов метода происходит
             // основной активности (товары для списков в ней не загружаются)
             getProductsFromDB(context);
+            if (mProducts == null || mProducts.size() == 0) return "";
         }
 
         String result = "";
@@ -357,5 +384,47 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         pw.flush();
         pw.close();
+    }
+
+    public void loadProductsFromString(Context context, String stringOfProducts) {
+        String divider = context.getString(R.string.divider);
+        String productDivider = context.getString(R.string.product_divider);
+
+        // Преобразуем строку в массив подстрок - продуктов по разделителю productDivider
+        String[] array = stringOfProducts.split(productDivider);
+        for (String strProduct : array) {
+            // Уберем пробелы и знаки переноса в начале и в конце строки
+            strProduct = strProduct.trim();
+            // Пустую строку пропускаем
+            if (strProduct.isEmpty()) continue;
+
+            // Преобразуем строку-продукт в массив подстрок по разделителю divider
+            String[] productArray = strProduct.split(divider);
+
+            // Первым элементом в массиве productArray всегда будет Name
+            String name = productArray[0].trim();
+
+            // Если имя не заполнено, то продукт пропускаем
+            if (name.isEmpty()) continue;
+
+            float count = 1;
+            // Если элементов в массиве больше 2 или равно 1,
+            // значит количество введено некорректно и приравнивается 1.
+            if (productArray.length == 2){
+                // Попытаемся преобразовать строку в float
+                try {
+                    count = Float.parseFloat(productArray[1]);
+                }catch (Exception e){
+                    Log.i("LOAD_PRODUCT", e.getMessage().toString());
+                }
+            }
+
+            // Если количество отрицательное, приравниваем его значению по умолчанию
+            if (count < 0) count = 1;
+
+            // Создаем объект и добавляем в массив продуктов списка
+            Product product = new Product(-1, name, null, count);
+            addProduct(product);
+        }
     }
 }

@@ -226,10 +226,6 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                     // Синхронизацияя должна производиться по полю Name
                     newShoppingList.addNotExistingProductsToDB(getApplicationContext());
 
-                    // Установим для элементов списка правильные идентификаторы из базы данных
-                    // (поиск по реквизиту Name)
-                    newShoppingList.setProductsIdFromDB(getApplicationContext());
-
                     // Сохраним новый лист покупок в базе данных
                     newShoppingList.addToDB(getApplicationContext());
                     loadedShoppingLists.add(newShoppingList);

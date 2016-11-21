@@ -3,25 +3,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-    <item android:id="@+id/imgSendListByEmail"
+    <item android:id="@+id/action_send_by_email"
         android:icon="@drawable/ic_send_by_email"
         android:title="@string/send_by_email"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
-    <item android:id="@+id/imgChangeListName"
-        android:icon="@drawable/ic_rename"
-        android:title="@string/change_list_name"
+    <item android:id="@+id/action_load_list"
+        android:icon="@drawable/ic_load"
+        android:title="@string/load"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
-    <item android:id="@+id/imgEdit"
+    <item android:id="@+id/action_edit_shopping_list"
         android:icon="@drawable/ic_edit"
         android:title="@string/edit"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
-    <item android:id="@+id/imgDelete"
+    <item android:id="@+id/action_delete_shopping_list"
         android:icon="@drawable/ic_remove_list"
         android:title="@string/delete"
         android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+    <item android:id="@+id/action_change_list_name"
+        android:icon="@drawable/ic_rename"
+        android:title="@string/change_list_name"
+        android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
 
 </menu>
