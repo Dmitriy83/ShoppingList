@@ -39,7 +39,7 @@ public class Utils {
 
     public static String getListNameFromJSON(String jsonStr) throws JSONException {
         JSONObject json = new JSONObject(jsonStr);
-        return json.getString(ShoppingListContentProvider.KEY_NAME);
+        return json.getString(contentProvider.KEY_NAME);
     }
 
     public static ArrayList<Product> getProductsFromJSON(String jsonStr) throws JSONException {
@@ -50,12 +50,12 @@ public class Utils {
         for (int i = 0; i < jArray.length(); i++) {
             JSONObject jItem = jArray.getJSONObject(i);
 
-            long itemId = jItem.getLong(ShoppingListContentProvider.KEY_PRODUCT_ID);
-            String itemName = jItem.getString(ShoppingListContentProvider.KEY_NAME);
+            long itemId = jItem.getLong(contentProvider.KEY_PRODUCT_ID);
+            String itemName = jItem.getString(contentProvider.KEY_NAME);
 
             float count = 1;
             try {
-                String itemCount = jItem.getString(ShoppingListContentProvider.KEY_COUNT);
+                String itemCount = jItem.getString(contentProvider.KEY_COUNT);
                 if (!itemCount.isEmpty()) {
                     count = Float.parseFloat(itemCount);
                 }

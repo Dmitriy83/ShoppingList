@@ -1,6 +1,5 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,7 +12,6 @@ import com.RightDirection.ShoppingList.items.Category;
 
 public class CategoryActivity extends AppCompatActivity{
 
-    private boolean mIsNewCategory;
     private Category mCategory;
 
     @Override
@@ -23,17 +21,19 @@ public class CategoryActivity extends AppCompatActivity{
 
         if (savedInstanceState != null){
             // Восстановим объект из сохраненных значений
-            mIsNewCategory = savedInstanceState.getBoolean(String.valueOf(R.string.is_new_item), false);
             mCategory = savedInstanceState.getParcelable(String.valueOf(R.string.category));
         }else{
             // Получим значения из переданных параметров
-            Intent sourceIntent = getIntent();
-            mIsNewCategory = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
-            mCategory = sourceIntent.getParcelableExtra(String.valueOf(R.string.category));
+            mCategory = getIntent().getParcelableExtra(String.valueOf(R.string.category));
+        }
+
+        if (mCategory == null) {
+            mCategory = new Category(-1, "", 100);
+            mCategory.isNew = true;
         }
 
         // Если это новый элемент, то сразу отобразим клавиатуру для ввода наименования
-        if (mIsNewCategory){
+        if (mCategory.isNew){
             getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
@@ -53,7 +53,7 @@ public class CategoryActivity extends AppCompatActivity{
         }
 
         // Установим заголовок формы
-        if (mIsNewCategory){
+        if (mCategory.isNew){
             setTitle(getString(R.string.new_category));
         }
         else{
@@ -64,8 +64,6 @@ public class CategoryActivity extends AppCompatActivity{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(String.valueOf(R.string.category), mCategory);
-        outState.putBoolean(String.valueOf(R.string.is_new_item), mIsNewCategory);
-
         super.onSaveInstanceState(outState);
     }
 
@@ -78,7 +76,7 @@ public class CategoryActivity extends AppCompatActivity{
                 mCategory.setName(etCategoryName.getText().toString());
                 mCategory.setOrder(Integer.parseInt(etCategoryOrder.getText().toString()));
 
-                if (mIsNewCategory) {
+                if (mCategory.isNew) {
                     mCategory.addToDB(getApplicationContext());
                 } else {
                     mCategory.updateInDB(getApplicationContext());

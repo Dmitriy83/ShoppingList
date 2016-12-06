@@ -21,13 +21,13 @@
     <string name="item_id">itemId</string>
     <string name="is_new_list">isNewList</string>
     <string name="list_item">list_item</string>
-    <string name="shopping_list_items">shopping_list_items</string>
+    <string name="products">shopping_list_items</string>
     <string name="in_shop_ending_work_message">Done</string>
     <string name="in_developing">In developing…</string>
-    <string name="change_list_name">Change shopping list name</string>
+    <string name="change_list_name">Rename</string>
     <string name="hide_marked">Hide marked</string>
     <string name="show_marked">Show marked</string>
-    <string name="shopping_list_items_original_values">shopping_list_items_original_values</string>
+    <string name="products_original_values">shopping_list_items_original_values</string>
     <string name="is_filtered">is_filtered</string>
     <string name="all_products">all_products</string>
     <string name="all_products_names">all_products_names</string>
@@ -93,4 +93,5 @@
     <string name="load">Load</string>
     <string name="text_for_loading">Type or paste text in this format:\nMilk, 2;  Bread, 1; Wine, 3</string>
     <string name="shopping_list">ShoppingList</string>
+    <string name="menu_button_identifier">More options</string>
 </resources>

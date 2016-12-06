@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.items;
 
+import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
 import android.test.mock.MockContext;
 
@@ -26,6 +27,7 @@ public class ShoppingListTest {
         mActivity = mActivityRule.getActivity();    }
 
     @Test
+    @SmallTest
     public void loadProductsFromString() throws Exception {
         // Тесты должны включать следующие проверки после загрузки:
         // 1) Проверка количества созданных продуктов;

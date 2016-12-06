@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterChooseCategory;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,19 +52,15 @@ public class ChooseCategoryActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, ShoppingListContentProvider.CATEGORIES_CONTENT_URI,
+        return new CursorLoader(this, contentProvider.CATEGORIES_CONTENT_URI,
                 null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
-        int keyOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
-
         mCategories.clear();
         while (data.moveToNext()){
-            Category newCategory = new Category(data.getLong(keyIdIndex), data.getString(keyNameIndex), data.getInt(keyOrderIndex));
+            Category newCategory = new Category(data);
             mCategories.add(newCategory);
         }
 

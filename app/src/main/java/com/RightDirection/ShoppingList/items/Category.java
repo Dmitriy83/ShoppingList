@@ -4,12 +4,13 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 public class Category extends ListItem implements IDataBaseOperations {
 
@@ -18,6 +19,12 @@ public class Category extends ListItem implements IDataBaseOperations {
     public Category(long id, String name, int order) {
         super(id, name);
         this.order = order;
+    }
+
+    public Category(Cursor data){
+        super(data.getLong(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ID)),
+                data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_NAME)));
+        this.order = data.getInt(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ORDER));
     }
 
     protected Category(Parcel in) {
@@ -39,11 +46,7 @@ public class Category extends ListItem implements IDataBaseOperations {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(name);
-        dest.writeByte((byte) (checked ? 1 : 0));
-        dest.writeParcelable(imageUri, flags);
-        dest.writeFloat(count);
+        super.writeToParcel(dest, flags);
         dest.writeInt(order);
     }
 
@@ -51,36 +54,36 @@ public class Category extends ListItem implements IDataBaseOperations {
     public void addToDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ShoppingListContentProvider.KEY_CATEGORY_NAME, getName());
-        contentValues.put(ShoppingListContentProvider.KEY_CATEGORY_ORDER, getOrder());
-        Uri insertedId = contentResolver.insert(ShoppingListContentProvider.CATEGORIES_CONTENT_URI, contentValues);
+        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
+        contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
+        Uri insertedId = contentResolver.insert(contentProvider.CATEGORIES_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
     }
 
     @Override
     public void removeFromDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
-        contentResolver.delete(ShoppingListContentProvider.CATEGORIES_CONTENT_URI,
-                ShoppingListContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentResolver.delete(contentProvider.CATEGORIES_CONTENT_URI,
+                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     @Override
     public void updateInDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ShoppingListContentProvider.KEY_CATEGORY_NAME, getName());
-        contentValues.put(ShoppingListContentProvider.KEY_CATEGORY_ORDER, getOrder());
-        contentResolver.update(ShoppingListContentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                ShoppingListContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
+        contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
+        contentResolver.update(contentProvider.CATEGORIES_CONTENT_URI, contentValues,
+                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     @Override
     public void renameInDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ShoppingListContentProvider.KEY_CATEGORY_NAME, getName());
-        contentResolver.update(ShoppingListContentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                ShoppingListContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
+        contentResolver.update(contentProvider.CATEGORIES_CONTENT_URI, contentValues,
+                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     public int getOrder() {

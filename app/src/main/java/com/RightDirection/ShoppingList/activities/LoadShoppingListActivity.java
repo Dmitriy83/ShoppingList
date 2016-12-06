@@ -36,20 +36,16 @@ public class LoadShoppingListActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             EditText etText = (EditText)findViewById(R.id.etTextForLoading);
-            if (etText == null) finish();
-
-            boolean isNewList = (mShoppingList.getId() == -1);
+            if (etText == null || etText.getText() == null) finish();
 
             mShoppingList.loadProductsFromString(mContext, etText.getText().toString());
             mShoppingList.addNotExistingProductsToDB(mContext);
-            if (!isNewList) mShoppingList.updateInDB(mContext);
+            if (!mShoppingList.isNew) mShoppingList.updateInDB(mContext);
 
             // Откроем активность редактирования списка покупок
             Intent intent = new Intent(mContext, ShoppingListEditingActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_list), isNewList);
-            intent.putExtra(String.valueOf(R.string.list_id), mShoppingList.getId());
-            intent.putExtra(String.valueOf(R.string.list_name), mShoppingList.getName());
-            if (isNewList) intent.putExtra(String.valueOf(R.string.shopping_list_items), mShoppingList.getProducts());
+            intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
+            if (mShoppingList.isNew) intent.putExtra(String.valueOf(R.string.products), mShoppingList.getProducts());
             mContext.startActivity(intent);
 
             finish();

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +40,11 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         mProducts = products;
     }
 
+    public ShoppingList(Cursor data){
+        super(data.getLong(data.getColumnIndexOrThrow(contentProvider.KEY_ID)),
+                data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_NAME)));
+    }
+
     protected ShoppingList(Parcel in) {
         super(in);
     }
@@ -55,6 +60,11 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             return new ShoppingList[size];
         }
     };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
 
     private void addProduct(Product product){
         if (mProducts == null) mProducts = new ArrayList<>();
@@ -78,8 +88,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Заполним значения для сохранения в базе данных
         // и запишем новый список покупок в таблицу SHOPPING_LISTS
-        contentValues.put(ShoppingListContentProvider.KEY_NAME, getName());
-        Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
+        contentValues.put(contentProvider.KEY_NAME, getName());
+        Uri insertedId = contentResolver.insert(contentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
 
         contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
@@ -88,10 +98,10 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Запишем составлящие списка покупок в базу данных
         for (Product item : mProducts) {
-            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, getId());
-            contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-            contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
-            contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
+            contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
+            contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
+            contentValues.put(contentProvider.KEY_COUNT, item.getCount());
+            contentResolver.insert(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
     }
 
@@ -99,8 +109,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     public void removeFromDB(Context context) {
         // Удалим запись из БД по id
         ContentResolver contentResolver = context.getContentResolver();
-        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_ID + "=" + getId(), null);
+        contentResolver.delete(contentProvider.SHOPPING_LISTS_CONTENT_URI,
+                contentProvider.KEY_ID + "=" + getId(), null);
     }
 
     @Override
@@ -110,17 +120,17 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         ContentValues contentValues = new ContentValues();
 
         // Сначала удалим все записи редактируемого списка покупок из БД
-        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
+        contentResolver.delete(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
 
         if (mProducts == null) return;
 
         // Запишем составлящие списка покупок в базу данных
         for (ListItem item: mProducts) {
-            contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, getId());
-            contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-            contentValues.put(ShoppingListContentProvider.KEY_COUNT, item.getCount());
-            contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
+            contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
+            contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
+            contentValues.put(contentProvider.KEY_COUNT, item.getCount());
+            contentResolver.insert(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
     }
 
@@ -128,9 +138,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     public void renameInDB(Context context){
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
-        values.put(ShoppingListContentProvider.KEY_NAME, getName());
-        contentResolver.update(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                values, ShoppingListContentProvider.KEY_ID +  " = " + getId(), null);
+        values.put(contentProvider.KEY_NAME, getName());
+        contentResolver.update(contentProvider.SHOPPING_LISTS_CONTENT_URI,
+                values, contentProvider.KEY_ID +  " = " + getId(), null);
     }
 
     public void addNotExistingProductsToDB(Context context) {
@@ -141,12 +151,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null,
+        Cursor data = contentResolver.query(contentProvider.PRODUCTS_CONTENT_URI, null,
                 where, null, null);
 
         // Создадим массив с найденными именами продуктов
         ArrayList<String> foundProducts = new ArrayList<>();
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         while (data.moveToNext()){
             foundProducts.add(data.getString(keyNameIndex));
         }
@@ -157,8 +167,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         for (int i = 0; i < mProducts.size(); i++) {
             String name = mProducts.get(i).getName();
             if (!foundProducts.contains(name)){
-                contentValues.put(ShoppingListContentProvider.KEY_NAME, name);
-                contentResolver.insert(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, contentValues);
+                contentValues.put(contentProvider.KEY_NAME, name);
+                contentResolver.insert(contentProvider.PRODUCTS_CONTENT_URI, contentValues);
             }
         }
 
@@ -172,13 +182,13 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         String where = getWhereConditionForName();
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.PRODUCTS_CONTENT_URI, null,
+        Cursor data = contentResolver.query(contentProvider.PRODUCTS_CONTENT_URI, null,
                 where, null, null);
 
         // Создадим массив с найденными именами продуктов
         HashMap<String, Long> map = new HashMap<>(data.getCount());
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         while (data.moveToNext()){
             map.put(data.getString(keyNameIndex), data.getLong(keyIdIndex));
         }
@@ -195,7 +205,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         String where = null;
         if (mProducts.size() > 0) {
-            where = ShoppingListContentProvider.KEY_NAME + " IN (";
+            where = contentProvider.KEY_NAME + " IN (";
             where += "'" + mProducts.get(0).getName() + "'";
             for (int i = 1; i < mProducts.size(); i++) {
                 where += ",'" + mProducts.get(i).getName() + "'";
@@ -255,13 +265,13 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         else mProducts = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
+        Cursor data = contentResolver.query(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
+                contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
 
         // Определим индексы колонок для считывания
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+        int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
 
         // Читаем данные из базы и записываем в объект JSON
         while (data.moveToNext()){
@@ -286,8 +296,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
 
         JSONObject jsonList = new JSONObject();
-        jsonList.put(ShoppingListContentProvider.KEY_ID,   getId());
-        jsonList.put(ShoppingListContentProvider.KEY_NAME, getName());
+        jsonList.put(contentProvider.KEY_ID,   getId());
+        jsonList.put(contentProvider.KEY_NAME, getName());
         jsonList.put("items", listItemsArray);
 
         String jsonStr = jsonList.toString();
@@ -306,9 +316,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         for (Product product: mProducts) {
             JSONObject jsonItem = new JSONObject();
-            jsonItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID,  product.getId());
-            jsonItem.put(ShoppingListContentProvider.KEY_NAME,        product.getName());
-            jsonItem.put(ShoppingListContentProvider.KEY_COUNT,       product.getCount());
+            jsonItem.put(contentProvider.KEY_PRODUCT_ID,  product.getId());
+            jsonItem.put(contentProvider.KEY_NAME,        product.getName());
+            jsonItem.put(contentProvider.KEY_COUNT,       product.getCount());
 
             // Добавим объект JSON в массив
             array.put(jsonItem);
@@ -320,21 +330,21 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         JSONArray array = new JSONArray();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
+        Cursor data = contentResolver.query(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
+                contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
 
         // Определим индексы колонок для считывания
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
+        int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
+        int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
+        int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
 
         // Читаем данные из базы и записываем в объект JSON
         while (data.moveToNext()){
             JSONObject jsonItem = new JSONObject();
 
-            jsonItem.put(ShoppingListContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
-            jsonItem.put(ShoppingListContentProvider.KEY_NAME, data.getString(keyNameIndex));
-            jsonItem.put(ShoppingListContentProvider.KEY_COUNT, data.getString(keyCountIndex));
+            jsonItem.put(contentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
+            jsonItem.put(contentProvider.KEY_NAME, data.getString(keyNameIndex));
+            jsonItem.put(contentProvider.KEY_COUNT, data.getString(keyCountIndex));
 
             // Добавим объект JSON в массив
             array.put(jsonItem);

@@ -7,7 +7,9 @@ import android.database.Cursor;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.filters.LargeTest;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.uiautomator.UiDevice;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapter;
 import com.RightDirection.ShoppingList.items.ListItem;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -38,6 +40,7 @@ import org.junit.Test;
 import java.util.Date;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -53,6 +56,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Checks.checkArgument;
 import static android.support.test.espresso.intent.Checks.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -70,6 +74,7 @@ public class ActivitiesTest {
 
     private static String mNewListName = "newTestShoppingList";
     private final static String mNewProductNamePattern = "testNewProduct";
+    private final static String mNewCategoryNamePattern = "testNewCategory";
     private static UiDevice mDevice = null;
     private static MainActivity mActivity = null;
 
@@ -81,16 +86,35 @@ public class ActivitiesTest {
     public void setUp() throws Exception {
         mActivity = mActivityRule.getActivity();
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
+        // Сначала выключим появление подсказок
+        switchOffHelpActivities();
     }
 
     @After
     public void tearDown() throws Exception {
         ContentResolver contentResolver = mActivity.getContentResolver();
 
-        contentResolver.delete(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_NAME +  " LIKE '%Test%'", null);
-        contentResolver.delete(ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
-                ShoppingListContentProvider.KEY_NAME +  " LIKE '%test%'", null);
+        contentResolver.delete(contentProvider.SHOPPING_LISTS_CONTENT_URI,
+                contentProvider.KEY_NAME +  " LIKE '%Test%'", null);
+        contentResolver.delete(contentProvider.PRODUCTS_CONTENT_URI,
+                contentProvider.KEY_NAME +  " LIKE '%test%'", null);
+        contentResolver.delete(contentProvider.CATEGORIES_CONTENT_URI,
+                contentProvider.KEY_CATEGORY_NAME +  " LIKE '%test%'", null);
+    }
+
+    private void switchOffHelpActivities(){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean showHelpScreens = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_show_help_screens), true);
+        if (showHelpScreens) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_key_show_help_screens))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
     }
 
     private static Matcher<View> isChildOfRecyclerViewItem(final Matcher<View> recyclerViewItem) {
@@ -340,14 +364,14 @@ public class ActivitiesTest {
 
         // Проверяем, что в таблице содержимого списка покупок для редактированных элементов проставлено корректное количество
         ContentResolver contentResolver = mActivity.getContentResolver();
-        Cursor cursor = contentResolver.query(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, ShoppingListContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
-                + ShoppingListContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
+        Cursor cursor = contentResolver.query(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, contentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
+                + contentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
                 null, null);
         assertNotNull(cursor);
         assertTrue(cursor.getCount() == 2);
-        int keyCountIndex = cursor.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
-        int keyNameIndex = cursor.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
+        int keyCountIndex = cursor.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
+        int keyNameIndex = cursor.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         while (cursor.moveToNext()) {
             if (cursor.getString(keyNameIndex).equals(mNewProductNamePattern + "1")) {
                 assertEquals("5", cursor.getString(keyCountIndex));
@@ -381,14 +405,17 @@ public class ActivitiesTest {
 
     @Test
     @MediumTest
-    public void testRenameShoppingList() {
+    public void testRenameShoppingList() throws UiObjectNotFoundException {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
-        // В меню действий нажимаем кнопку переименования списка
-        onView(withId(R.id.action_change_list_name)).perform(click());
+        //openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        // Espresso вызывает ошибку при открытии меню, т.к. находит 2 меню: ActionMode и ActionBar
+        UiObject btnMenu = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.menu_button_identifier)));
+        btnMenu.click();
+        onView(withText(mActivity.getString(R.string.change_list_name))).perform(click());
 
         // Вводим новое имя списка покупок
         mNewListName += "Changed";
@@ -522,7 +549,7 @@ public class ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
-        onView(withId(R.id.action_delete_shopping_list)).perform(click());
+        onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
         onView(withText(mActivity.getString(R.string.delete_shopping_list_question))).check(matches(isDisplayed()));
         // Отклоняем удаление
@@ -533,7 +560,7 @@ public class ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         // В меню действий нажимаем кнопку удаления списка
-        onView(withId(R.id.action_delete_shopping_list)).perform(click());
+        onView(withId(R.id.imgDelete)).perform(click());
         // Проверяем, что открылось окно с вопросом об удалении списка
         onView(withText(mActivity.getString(R.string.delete_shopping_list_question))).check(matches(isDisplayed()));
         // Подтверждаем удаление
@@ -561,9 +588,7 @@ public class ActivitiesTest {
         openSettings();
     }
 
-    @Test
-    @MediumTest
-    public void testProducts() {
+    private void addNewProduct(String name){
         // Нажимаем кнопку вызова подменю
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
@@ -577,12 +602,27 @@ public class ActivitiesTest {
         onView(withId(R.id.fabProductListAddProduct)).perform(click());
 
         // Вводим название нового продукта и нажимаем кнопку сохранения
-        String textForTyping = mNewProductNamePattern + "testProducts";
-        onView(withId(R.id.etProductName)).perform(typeText(textForTyping));
+        onView(withId(R.id.etProductName)).perform(typeText(name));
         onView(withId(R.id.btnSaveProduct)).perform(click());
+    }
+
+    @Test
+    @LargeTest
+    public void testProducts() {
+        String textForTyping = mNewProductNamePattern;
+        addNewProduct(textForTyping);
 
         // Проверяем, что новый продукт отобразился в списке
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(textForTyping))));
         onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+
+        // Проверим удаление продукта из списка продуктов
+        onView(allOf(withId(R.id.imgDelete),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                .perform(click());
+        // Товар более не должен отображаться в списке
+        onView(recyclerViewItemWithText(textForTyping)).check(doesNotExist());
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();
@@ -601,6 +641,49 @@ public class ActivitiesTest {
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
         //  Товар в списке изменил наименование:
         onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+
+        // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+
+        // Протестируем выбор категорий
+        addNewCategory();
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+        // Нажимаем кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        // Выбираем "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
+        // Проверяем, что открылась активность "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).check(matches(isDisplayed()));
+        // Нажимаем кнопку добавления нового продукта
+        onView(withId(R.id.fabProductListAddProduct)).perform(click());
+        textForTyping = mNewProductNamePattern + "testProducts2";
+        onView(withId(R.id.etProductName)).perform(typeText(textForTyping));
+        // Скроем клавиатуру
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        // Проверяем, что в поле Категория написано выражение по умолчанию
+        onView(withId(R.id.btnChooseCategory))
+                .check(matches(withText("")));
+        onView(withId(R.id.btnChooseCategory)).perform(click());
+        // Выбираем созданную категорию
+        onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
+        onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
+        // Проверяем, что категория отобразилась в активности
+        onView(withId(R.id.btnChooseCategory)).check(matches(withText(mNewCategoryNamePattern
+                + mActivity.getString(R.string.three_dots))));
+        onView(withId(R.id.btnSaveProduct)).perform(click());
+        // Проверяем, что новый продукт отобразился в списке
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(textForTyping))));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        // Еще раз зайдем в продукт и убедимся, что категория сохранилась
+        onView(recyclerViewItemWithText(textForTyping)).perform(click());
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        onView(withId(R.id.btnChooseCategory)).check(matches(withText(mNewCategoryNamePattern
+                + mActivity.getString(R.string.three_dots))));
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();
@@ -722,7 +805,8 @@ public class ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
 
         // Нажимаем кнопку отправки списка покупок по почте
-        onView(withId(R.id.action_send_by_email)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getTargetContext());
+        onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
 
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
         UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
@@ -845,5 +929,56 @@ public class ActivitiesTest {
 
         onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());
         onView(recyclerViewItemWithText("testNewProduct2")).check(doesNotExist());
+    }
+
+    @Test
+    @MediumTest
+    public void testCategories(){
+        addNewCategory();
+
+        // Проверим редактирование категории
+        onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
+        String textForTyping = mNewProductNamePattern + "Edited";
+        onView(withId(R.id.etCategoryName)).perform(clearText());
+        onView(withId(R.id.etCategoryName)).perform(typeText(textForTyping));
+        onView(withId(R.id.btnSave)).perform(click());
+        // Проверяем, что отредактированный продукт отобразился в списке
+        onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(textForTyping))));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+
+        // Проверим удаление категории из списка
+        onView(allOf(withId(R.id.imgDelete),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                .perform(click());
+        // Товар более не должен отображаться в списке
+        onView(recyclerViewItemWithText(textForTyping)).check(doesNotExist());
+
+        // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
+
+    private void addNewCategory(){
+        // Нажимаем кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Выбираем "Категории"
+        onView(withText(mActivity.getString(R.string.action_edit_categories_list))).perform(click());
+
+        // Проверяем, что открылась активность "Категории"
+        onView(withText(mActivity.getString(R.string.action_edit_categories_list))).check(matches(isDisplayed()));
+
+        // Нажимаем кнопку добавления новой категории
+        onView(withId(R.id.fabAddCategory)).perform(click());
+
+        // Вводим название нового продукта и нажимаем кнопку сохранения
+        onView(withId(R.id.etCategoryName)).perform(typeText(mNewCategoryNamePattern));
+        onView(withId(R.id.btnSave)).perform(click());
+
+        // Проверяем, что новый продукт отобразился в списке
+        onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
+        onView(recyclerViewItemWithText(mNewCategoryNamePattern)).check(matches(isDisplayed()));
     }
 }

@@ -18,7 +18,7 @@
         android:title="@string/edit"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
-    <item android:id="@+id/action_delete_shopping_list"
+    <item android:id="@+id/imgDelete"
         android:icon="@drawable/ic_remove_list"
         android:title="@string/delete"
         android:showAsAction="always"

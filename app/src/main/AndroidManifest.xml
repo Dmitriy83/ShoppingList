@@ -36,7 +36,7 @@
         <activity android:name=".activities.SettingsActivity" />
 
         <provider
-            android:name=".utils.ShoppingListContentProvider"
+            android:name=".utils.contentProvider"
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:exported="false"
             android:grantUriPermissions="true" />

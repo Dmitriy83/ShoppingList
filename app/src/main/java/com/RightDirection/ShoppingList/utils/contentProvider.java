@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Locale;
 
-public class ShoppingListContentProvider extends ContentProvider {
+public class contentProvider extends ContentProvider {
 
     private ShoppingListSQLiteOpenHelper sqLiteOpenHelper;
 
@@ -329,7 +329,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     @Nullable
     public static Uri getImageUri(@NonNull Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PICTURE);
+        int keyPictureIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PICTURE);
 
         String strImageUri = data.getString(keyPictureIndex);
 

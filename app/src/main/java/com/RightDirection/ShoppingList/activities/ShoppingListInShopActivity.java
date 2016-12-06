@@ -19,8 +19,8 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 
@@ -28,8 +28,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     private ArrayList mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;
-    private long mListId;
-    private String mListName;
+    private ShoppingList mShoppingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +42,13 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
         // Получим значения из переданных параметров родительской активности
-        Intent sourceIntent = getIntent();
-        mListId = sourceIntent.getLongExtra(String.valueOf(R.string.list_id), -1);
+        mShoppingList = getIntent().getParcelableExtra(String.valueOf(R.string.shopping_list));
+
+        // На всякий случай
+        if (mShoppingList == null) mShoppingList = new ShoppingList(-1, "");
 
         // Установим заголовок активности
-        mListName = sourceIntent.getStringExtra(String.valueOf(R.string.list_name));
-        if (mListName != null) {
-            setTitle(mListName);
-        }
+        setTitle(mShoppingList.getName());
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
@@ -64,7 +62,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mProducts = new ArrayList<>();
         }
         else{
-            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products));
         }
 
         // Прочитаем настройки приложения
@@ -84,23 +82,21 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else{
             mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
-            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values));
+            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products_original_values));
             mProductsAdapter.setOriginalValues(originalValues);
         }
 
         // Откроем подсказку, если необходимо
         boolean showHelp = sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
-        if (showHelp){
-            Intent intent = new Intent(this, HelpShoppingListInShopActivity.class);
-            startActivity(intent);
-        }
+        if (showHelp)
+            startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mProducts);
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items_original_values), mProductsAdapter.getOriginalValues());
+        outState.putParcelableArrayList(String.valueOf(R.string.products), mProducts);
+        outState.putParcelableArrayList(String.valueOf(R.string.products_original_values), mProductsAdapter.getOriginalValues());
         outState.putBoolean(String.valueOf(R.string.is_filtered), mProductsAdapter.isFiltered());
 
         super.onSaveInstanceState(outState);
@@ -108,27 +104,15 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null ,null);
+        return new CursorLoader(this, contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, contentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_COUNT);
-        int keyCategoryIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
-        int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
-        int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
-
         mProducts.clear();
         while (data.moveToNext()){
-            Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
-                    data.getInt(keyCategoryOrderIndex));
-
-            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    ShoppingListContentProvider.getImageUri(data), data.getFloat(keyCountIndex), category);
-            mProducts.add(newProduct);
+            mProducts.add(new Product(data, new Category(data)));
         }
 
         Utils.sortArrayListByCategories(mProducts);
@@ -173,11 +157,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else if (id == R.id.action_edit_shopping_list) {
             Intent intent = new Intent(this, ShoppingListEditingActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_list), false);
-            intent.putExtra(String.valueOf(R.string.list_id), mListId);
-            if (mListName != null){
-                intent.putExtra(String.valueOf(R.string.list_name), mListName);
-            }
+            intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
             startActivity(intent);
             finish();
         }
@@ -191,12 +171,12 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                 array = new ArrayList<>(mProductsAdapter.getOriginalValues());
             }
             Utils.removeCategoriesFromArrayListOfProducts(array);
-            ShoppingList shoppingList = new ShoppingList(mListId, mListName, array);
-            shoppingList.sendByEmail(this);
+            mShoppingList.setProducts(array);
+            mShoppingList.sendByEmail(this);
         }
         else if (id == R.id.action_load_list) {
             Intent intentLoad = new Intent(this, LoadShoppingListActivity.class);
-            intentLoad.putExtra(String.valueOf(R.string.shopping_list), new ShoppingList(mListId, mListName));
+            intentLoad.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
             startActivity(intentLoad);
             finish();
         }
@@ -226,6 +206,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                     Category category = data.getParcelableExtra(String.valueOf(R.string.category));
                     // Обновим элемент списка (имя и картинку)
                     mProductsAdapter.updateItem(id, name, imageUri, category);
+
                     // Перестроим массив на случай, если изменилась категория
                     Utils.removeCategoriesFromArrayListOfProducts(mProducts);
                     Utils.sortArrayListByCategories(mProducts);

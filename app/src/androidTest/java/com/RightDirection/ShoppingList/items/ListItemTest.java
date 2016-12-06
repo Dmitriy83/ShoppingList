@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@SmallTest
 public class ListItemTest {
 
     private ListItem listItem;
@@ -22,28 +21,33 @@ public class ListItemTest {
     }
 
     @Test
+    @SmallTest
     public void testGetId() throws Exception {
         assertEquals(999999, listItem.getId());
     }
 
     @Test
+    @SmallTest
     public void testGetName() throws Exception {
         assertEquals("testName", listItem.getName());
     }
 
     @Test
+    @SmallTest
     public void testSetName() throws Exception {
         listItem.setName("testNameChanged");
         assertEquals("testNameChanged", listItem.getName());
     }
 
     @Test
+    @SmallTest
     public void testSetImageUri() throws Exception {
         listItem.setImageUri(Uri.parse("testStringUriChanged"));
         assertEquals(Uri.parse("testStringUriChanged"), listItem.getImageUri());
     }
 
     @Test
+    @SmallTest
     public void testSetChecked() throws Exception {
         assertFalse(listItem.isChecked());
         listItem.setChecked();
@@ -51,27 +55,32 @@ public class ListItemTest {
     }
 
     @Test
+    @SmallTest
     public void testSetUnchecked() throws Exception {
         listItem.setUnchecked();
         assertFalse(listItem.isChecked());
     }
 
     @Test
+    @SmallTest
     public void testIsChecked() throws Exception {
         assertFalse(listItem.isChecked());
     }
 
     @Test
+    @SmallTest
     public void testGetImageUri() throws Exception {
         assertEquals(Uri.parse("testStringUri"), listItem.getImageUri());
     }
 
     @Test
+    @SmallTest
     public void testDescribeContents() throws Exception {
         assertEquals(0, listItem.describeContents());
     }
 
     @Test
+    @SmallTest
     public void testWriteToParcel() throws Exception {
         Parcelable listItemParcelable = listItem;
         ListItem listItemConverted = (ListItem)listItemParcelable;
@@ -79,6 +88,7 @@ public class ListItemTest {
     }
 
     @Test
+    @SmallTest
     public void testSetGetCount() throws Exception {
         assertEquals(1, listItem.getCount(), 0);
         listItem.setCount(7);

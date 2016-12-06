@@ -48,9 +48,7 @@ public class ListAdapterProductsList extends ListAdapter {
 
             // Откроем активность редактирования продукта
             Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_item), false);
             intent.putExtra(String.valueOf(R.string.product), product);
-            intent.putExtra(String.valueOf(R.string.category), product.getCategory());
             mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
         }
     };

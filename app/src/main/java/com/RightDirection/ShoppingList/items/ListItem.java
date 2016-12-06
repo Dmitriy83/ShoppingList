@@ -11,9 +11,10 @@ public class ListItem implements Parcelable, IGetType{
 
     protected long id;
     protected String name;
-    protected boolean checked;
-    protected Uri imageUri;
-    protected float count;
+    private boolean checked;
+    private Uri imageUri;
+    float count;
+    public boolean isNew = false;
 
     public ListItem(long id, String name) {
         this.id = id;
@@ -42,6 +43,7 @@ public class ListItem implements Parcelable, IGetType{
         checked = in.readByte() != 0;
         imageUri = in.readParcelable(Uri.class.getClassLoader());
         count = in.readFloat();
+        isNew = in.readByte() != 0;
     }
 
     public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
@@ -100,6 +102,7 @@ public class ListItem implements Parcelable, IGetType{
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeParcelable(imageUri, flags);
         dest.writeFloat(count);
+        dest.writeByte((byte) (isNew ? 1 : 0));
     }
 
     public void setCount(float count) {

@@ -23,7 +23,6 @@ import com.squareup.picasso.Picasso;
 
 public class ProductActivity extends AppCompatActivity{
 
-    private boolean mIsNewItem;
     private Product mProduct;
 
     private static final int PICK_IMAGE = 1;
@@ -36,23 +35,19 @@ public class ProductActivity extends AppCompatActivity{
 
         if (savedInstanceState != null){
             // Восстановим объект из сохраненных значений
-            mIsNewItem = savedInstanceState.getBoolean(String.valueOf(R.string.is_new_item));
             mProduct = savedInstanceState.getParcelable(String.valueOf(R.string.product));
-            Category category = savedInstanceState.getParcelable(String.valueOf(R.string.category));
-            mProduct.setCategory(category);
         }else{
             // Получим значения из переданных параметров
-            Intent sourceIntent = getIntent();
-            mIsNewItem = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_item), true);
-            mProduct = sourceIntent.getParcelableExtra(String.valueOf(R.string.product));
-            Category category = sourceIntent.getParcelableExtra(String.valueOf(R.string.category));
-            if (category != null && category.getName() != null) mProduct.setCategory(category);
+            mProduct = getIntent().getParcelableExtra(String.valueOf(R.string.product));
         }
 
-        if (mProduct == null) mProduct = new Product(-1, "");
+        if (mProduct == null) {
+            mProduct = new Product(-1, "");
+            mProduct.isNew = true;
+        }
 
         // Если это новый элемент, то сразу отобразим клавиатуру для ввода наименования
-        if (mIsNewItem){
+        if (mProduct.isNew){
             getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
@@ -68,8 +63,8 @@ public class ProductActivity extends AppCompatActivity{
             btnChooseCategory.setTransformationMethod(null);
 
             Category category = mProduct.getCategory();
-            if (category != null) btnChooseCategory.setText(mProduct.getCategory().getName()
-                    + getString(R.string.three_dots));
+            if (category != null && category.getName() != null)
+                btnChooseCategory.setText(category.getName() + getString(R.string.three_dots));
 
             // Обработчик нажатия
             btnChooseCategory.setOnClickListener(onBtnChooseCategoryClick);
@@ -87,7 +82,7 @@ public class ProductActivity extends AppCompatActivity{
         }
 
         // Установим заголовок формы
-        if (mIsNewItem){
+        if (mProduct.isNew){
             setTitle(getString(R.string.new_product));
         }
         else{
@@ -100,9 +95,6 @@ public class ProductActivity extends AppCompatActivity{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(String.valueOf(R.string.product), mProduct);
-        outState.putParcelable(String.valueOf(R.string.category), mProduct.getCategory());
-        outState.putBoolean(String.valueOf(R.string.is_new_item), mIsNewItem);
-
         super.onSaveInstanceState(outState);
     }
 
@@ -120,7 +112,7 @@ public class ProductActivity extends AppCompatActivity{
             EditText etProductName = (EditText) findViewById(R.id.etProductName);
             if (etProductName != null) mProduct.setName(etProductName.getText().toString());
 
-            if (mIsNewItem) {
+            if (mProduct.isNew) {
                 mProduct.addToDB(getApplicationContext());
             } else {
                 mProduct.updateInDB(getApplicationContext());
@@ -178,7 +170,7 @@ public class ProductActivity extends AppCompatActivity{
                     Category category = data.getParcelableExtra(getString(R.string.category));
                     mProduct.setCategory(category);
                     Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
-                    if (btnChooseCategory != null && category != null) {
+                    if (btnChooseCategory != null && category != null && category.getName() != null) {
                         btnChooseCategory.setText(category.getName() + getString(R.string.three_dots));
                     }
                 }

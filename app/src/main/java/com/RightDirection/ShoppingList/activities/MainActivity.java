@@ -23,9 +23,9 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -147,26 +147,22 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_list), true);
             startActivity(intent);
         }
     };
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-       return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI,
+       return new CursorLoader(this, contentProvider.SHOPPING_LISTS_CONTENT_URI,
                 null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
-
         // Получаем только имена и идентификаторы списков
         mShoppingLists.clear();
         while (data.moveToNext()){
-            ShoppingList newShoppingList = new ShoppingList(data.getLong(keyIdIndex), data.getString(keyNameIndex));
+            ShoppingList newShoppingList = new ShoppingList(data);
             mShoppingLists.add(newShoppingList);
         }
 

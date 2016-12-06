@@ -50,10 +50,8 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView = view;
             mSelectedView.setSelected(true);
 
-            ShoppingList item = (ShoppingList) view.getTag();
             Intent intent = new Intent(mParentActivity, ShoppingListInShopActivity.class);
-            intent.putExtra(String.valueOf(R.string.list_id), item.getId());
-            intent.putExtra(String.valueOf(R.string.list_name), item.getName());
+            intent.putExtra(String.valueOf(R.string.shopping_list), (ShoppingList) view.getTag());
             ActivityCompat.startActivity(mParentActivity, intent, null);
         }
     };
@@ -104,7 +102,7 @@ public class ListAdapterMainActivity extends ListAdapter {
             if (mSelectedItem == null) { return false; }
 
             switch (item.getItemId()) {
-                case R.id.action_delete_shopping_list:
+                case R.id.imgDelete:
 
                     // Выведем вопрос об удалении списка покупок
                     AlertDialog alertDialog = new AlertDialog.Builder(
@@ -138,9 +136,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                 case R.id.action_edit_shopping_list:
 
                     Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
-                    intent.putExtra(String.valueOf(R.string.is_new_list), false);
-                    intent.putExtra(String.valueOf(R.string.list_id), mSelectedItem.getId());
-                    intent.putExtra(String.valueOf(R.string.list_name), mSelectedItem.getName());
+                    intent.putExtra(String.valueOf(R.string.shopping_list), mSelectedItem);
                     mParentActivity.startActivity(intent);
 
                     mode.finish(); // Action picked, so close the CAB

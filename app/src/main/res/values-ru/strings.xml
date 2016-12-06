@@ -19,7 +19,7 @@
     <string name="delete_shopping_list_question">Удалить список?</string>
     <string name="in_shop_ending_work_message">Пора домой</string>
     <string name="in_developing">В разработке…</string>
-    <string name="change_list_name">Редактировать наименование</string>
+    <string name="change_list_name">Переименовать</string>
     <string name="hide_marked">Скрыть выделенные</string>
     <string name="show_marked">Показать выделенные</string>
     <string name="product_image">product_image</string>
@@ -62,4 +62,5 @@
     <string name="product_is_exist">Элемент с таким именем уже существует.</string>
     <string name="load">Загрузить</string>
     <string name="text_for_loading">Введите или вставьте текст в следующем формате:\nМолоко, 2; Хлеб, 1; Вино, 3</string>
+    <string name="menu_button_identifier">Ещё</string>
 </resources>

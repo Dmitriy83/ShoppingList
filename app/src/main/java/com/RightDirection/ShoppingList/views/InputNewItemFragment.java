@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 
@@ -177,19 +177,17 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
+        return new CursorLoader(getActivity(), contentProvider.PRODUCTS_CONTENT_URI,
                 null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
-
         mAllProducts.clear();
         while (data.moveToNext()){
-            Product newListItem = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
-            addProductInArrays(newListItem);
+            Product product = new Product(data, null);
+            product.setCount(1); // Установим количество по умолчанию
+            addProductInArrays(product);
         }
     }
 

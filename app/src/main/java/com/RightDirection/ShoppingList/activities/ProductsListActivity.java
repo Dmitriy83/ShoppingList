@@ -16,8 +16,8 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,26 +80,15 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, ShoppingListContentProvider.PRODUCTS_CONTENT_URI,
+        return new CursorLoader(this, contentProvider.PRODUCTS_CONTENT_URI,
                 null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_ID);
-        int keyCategoryIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
-        int keyCategoryNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
-        int keyCategoryOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
-
         mProducts.clear();
         while (data.moveToNext()){
-            Category category = new Category(data.getLong(keyCategoryIndex), data.getString(keyCategoryNameIndex),
-                    data.getInt(keyCategoryOrderIndex));
-
-            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    ShoppingListContentProvider.getImageUri(data), 0, category);
-            mProducts.add(newProduct);
+            mProducts.add(new Product(data, new Category(data)));
         }
 
         // Отсортируем список по алфавиту

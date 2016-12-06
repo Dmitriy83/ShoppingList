@@ -15,7 +15,7 @@ import android.view.View;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterCategoriesList;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.utils.ShoppingListContentProvider;
+import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,8 +70,6 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(view.getContext(), CategoryActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_item), true);
-            intent.putExtra(String.valueOf(R.string.category), new Category(-1, "", 100));
             startActivity(intent);
         }
     };
@@ -79,19 +77,15 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, ShoppingListContentProvider.CATEGORIES_CONTENT_URI,
+        return new CursorLoader(this, contentProvider.CATEGORIES_CONTENT_URI,
                 null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_NAME);
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ID);
-        int keyOrderIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_CATEGORY_ORDER);
-
         mCategories.clear();
         while (data.moveToNext()){
-            Category newCategory = new Category(data.getLong(keyIdIndex), data.getString(keyNameIndex), data.getInt(keyOrderIndex));
+            Category newCategory = new Category(data);
             mCategories.add(newCategory);
         }
 
