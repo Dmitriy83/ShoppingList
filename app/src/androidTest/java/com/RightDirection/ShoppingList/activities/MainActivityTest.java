@@ -6,11 +6,13 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.clearText;
@@ -162,5 +164,21 @@ public class MainActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
+    }
+
+    @Test
+    @MediumTest
+    public void feedback(){
+        openActionBarOverflowOrOptionsMenu(getTargetContext());
+        onView(withText(mActivity.getString(R.string.feedback))).perform(click());
+        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
+        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.feedback_email)));
+        assertTrue(emailSubject.exists());
+        // Проверяем, что в теле письма правильно представлен список
+        UiObject emailBody = mDevice.findObject(new UiSelector().text("\n" + "\n" + "\n" + "\n"
+                + mActivity.getString(R.string.email_body_divider) + "\n" + Utils.getDeviceName()));
+        assertTrue(emailBody.exists());
+        mDevice.pressBack();
+        mDevice.pressBack();
     }
 }

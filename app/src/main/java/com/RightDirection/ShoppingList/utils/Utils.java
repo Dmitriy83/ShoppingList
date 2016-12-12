@@ -3,6 +3,10 @@ package com.RightDirection.ShoppingList.utils;
 //Класс с глобальными константами и методами
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.Nullable;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.items.Category;
@@ -157,6 +161,52 @@ public class Utils {
         for (int i = arrayList.size() - 1; i >= 0; i--) {
             ListItem item = (ListItem)arrayList.get(i);
             if (item instanceof Category) arrayList.remove(i);
-        }    }
+        }
+    }
 
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
+    public static Intent getSendEmailIntent(@Nullable String email, String subject, String body, String fileName) {
+
+        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+        //Explicitly only use Gmail to send
+        //emailIntent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
+
+        emailIntent.setType("plain/text");
+
+        //Add the recipients
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { email });
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+
+        if (fileName != null) {
+            //Add the attachment by specifying a reference to our custom ContentProvider
+            //and the specific file of interest
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
+        }
+
+        return emailIntent;
+    }
 }

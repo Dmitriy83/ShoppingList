@@ -4,15 +4,14 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.json.JSONArray;
@@ -231,7 +230,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             */
             String fileName = null;
 
-            context.startActivity(getSendEmailIntent("",
+            context.startActivity(Utils.getSendEmailIntent("",
                     context.getString(R.string.json_file_identifier) + " '" + getName() + "'",
                     convertShoppingListToString(context), fileName));
         }
@@ -357,31 +356,6 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         data.close();
 
         return array;
-    }
-
-    private Intent getSendEmailIntent(@Nullable String email, String subject, String body, String fileName) {
-
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-
-        //Explicitly only use Gmail to send
-        //emailIntent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
-
-        emailIntent.setType("plain/text");
-
-        //Add the recipients
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { email });
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
-
-        if (fileName != null) {
-            //Add the attachment by specifying a reference to our custom ContentProvider
-            //and the specific file of interest
-            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
-        }
-
-        return emailIntent;
     }
 
     private void createCachedFile(Context context, String fileName, String content) throws IOException {

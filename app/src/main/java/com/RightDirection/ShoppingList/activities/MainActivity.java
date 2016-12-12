@@ -139,6 +139,18 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_feedback) {
+            try{
+                startActivity(Utils.getSendEmailIntent(getString(R.string.feedback_email),
+                        getString(R.string.feedback),
+                        "\n" + "\n" + "\n" + "\n" + getString(R.string.email_body_divider)
+                                + "\n" + Utils.getDeviceName(),
+                        null));
+            }
+            catch(Exception e){
+                System.out.println("Exception raises during sending mail. Discription: " + e);
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }

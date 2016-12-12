@@ -100,4 +100,7 @@
     <string name="pref_show_categories">Show categories</string>
     <string name="default_order">100</string>
     <string name="enter_order">Enter order</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_email">d.zhiharev83@gmail.com</string>
+    <string name="email_body_divider">--------------------------------------------------</string>
 </resources>
