@@ -143,7 +143,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
 
     public void updateItem(ListItem listItem) {
         for (ListItem item : (ArrayList<ListItem>) mObjects)
-            if (item.getId() == listItem.getId()) {
+            if (item.getId() == listItem.getId() && item.getClass() == listItem.getClass()) {
                 item.setName(listItem.getName());
                 item.setImageUri(listItem.getImageUri());
                 if (listItem instanceof Product) {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 startActivity(Utils.getSendEmailIntent(getString(R.string.feedback_email),
                         getString(R.string.feedback),
                         "\n" + "\n" + "\n" + "\n" + getString(R.string.email_body_divider)
-                                + "\n" + Utils.getDeviceName(),
+                                + "\n" + Utils.getDeviceName() + "\nAndroid " + Build.VERSION.RELEASE,
                         null));
             }
             catch(Exception e){

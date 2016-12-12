@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
@@ -273,20 +272,5 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     public void setOriginalValues(ArrayList<Product> originalValues) {
         mOriginalValues = originalValues;
-    }
-
-    public void updateItem(long id, String name, Uri imageUri, Category category) {
-        for (ListItem item : (ArrayList<ListItem>) mObjects) {
-            if (item.getId() == id) {
-                item.setName(name);
-                item.setImageUri(imageUri);
-                if (item instanceof Product) {
-                    ((Product) item).setCategory(category);
-                }
-            }
-        }
-
-        // Оповестим об изменении данных
-        this.notifyDataSetChanged();
     }
 }

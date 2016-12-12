@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.os.Build;
 import android.support.test.filters.MediumTest;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -176,7 +177,8 @@ public class MainActivityTest extends ActivitiesTest {
         assertTrue(emailSubject.exists());
         // Проверяем, что в теле письма правильно представлен список
         UiObject emailBody = mDevice.findObject(new UiSelector().text("\n" + "\n" + "\n" + "\n"
-                + mActivity.getString(R.string.email_body_divider) + "\n" + Utils.getDeviceName()));
+                + mActivity.getString(R.string.email_body_divider) + "\n" + Utils.getDeviceName()
+                + "\nAndroid " + Build.VERSION.RELEASE));
         assertTrue(emailBody.exists());
         mDevice.pressBack();
         mDevice.pressBack();

@@ -4,7 +4,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -195,12 +194,9 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    long id = data.getLongExtra(String.valueOf(R.string.item_id), 0);
-                    String name = data.getStringExtra(String.valueOf(R.string.name));
-                    Uri imageUri = data.getParcelableExtra(String.valueOf(R.string.item_image));
-                    Category category = data.getParcelableExtra(String.valueOf(R.string.category));
+                    Product product = data.getParcelableExtra(String.valueOf(R.string.product));
                     // Обновим элемент списка (имя и картинку)
-                    mProductsAdapter.updateItem(id, name, imageUri, category);
+                    mProductsAdapter.updateItem(product);
 
                     // Перестроим массив на случай, если изменилась категория
                     Utils.removeCategoriesFromArrayListOfProducts(mProducts);

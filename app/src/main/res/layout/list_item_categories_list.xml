@@ -27,10 +27,10 @@
             android:layout_toLeftOf="@+id/imgDelete"
             android:layout_toStartOf="@+id/imgDelete"
             android:padding="10dp"
-            android:textColor="#F000"
-            android:textSize="@dimen/text_size_normal"
             android:layout_toRightOf="@+id/imgItemImage"
-            android:layout_toEndOf="@+id/imgItemImage"/>
+            android:layout_toEndOf="@+id/imgItemImage"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="normal|bold" />
 
         <ImageButton
             android:id="@+id/imgDelete"
