@@ -8,9 +8,9 @@
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/normal_size"
-        android:layout_toEndOf="@+id/imgProduct"
+        android:layout_toEndOf="@+id/imgItemImage"
         android:layout_toLeftOf="@+id/txtCount"
-        android:layout_toRightOf="@+id/imgProduct"
+        android:layout_toRightOf="@+id/imgItemImage"
         android:layout_toStartOf="@+id/txtCount"
         android:padding="10dp"
         android:textColor="#F000"
@@ -27,7 +27,7 @@
         android:textColor="#F000" />
 
     <ImageView
-        android:id="@+id/imgProduct"
+        android:id="@+id/imgItemImage"
         android:layout_width="@dimen/normal_size"
         android:layout_height="@dimen/normal_size"
         android:layout_alignParentLeft="true"

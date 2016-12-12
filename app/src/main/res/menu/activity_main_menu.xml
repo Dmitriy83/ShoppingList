@@ -4,7 +4,7 @@
     tools:context=".activities.MainActivity">
     <item
         android:id="@+id/action_edit_categories_list"
-        android:orderInCategory="99"
+        android:orderInCategory="101"
         android:title="@string/action_edit_categories_list"
         app:showAsAction="never" />
     <item

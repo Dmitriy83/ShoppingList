@@ -103,6 +103,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             contentValues.put(contentProvider.KEY_COUNT, item.getCount());
             contentResolver.insert(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
+
+        // Список покупок более не новый
+        isNew = false;
     }
 
     @Override

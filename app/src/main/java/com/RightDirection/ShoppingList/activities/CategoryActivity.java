@@ -1,14 +1,18 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.utils.Utils;
+import com.squareup.picasso.Picasso;
 
 public class CategoryActivity extends AppCompatActivity{
 
@@ -28,7 +32,7 @@ public class CategoryActivity extends AppCompatActivity{
         }
 
         if (mCategory == null) {
-            mCategory = new Category(-1, "", 100);
+            mCategory = new Category(-1, "", 100, 0);
             mCategory.isNew = true;
         }
 
@@ -52,6 +56,11 @@ public class CategoryActivity extends AppCompatActivity{
             btnSave.setOnClickListener(onBtnSaveClick);
         }
 
+        ImageView imgCategory = (ImageView)findViewById(R.id.imgItemImage);
+        if (imgCategory != null){
+            imgCategory.setOnClickListener(onImgItemClick);
+        }
+
         // Установим заголовок формы
         if (mCategory.isNew){
             setTitle(getString(R.string.new_category));
@@ -59,6 +68,8 @@ public class CategoryActivity extends AppCompatActivity{
         else{
             setTitle(getString(R.string.category_title));
         }
+
+        setCategoryImage();
     }
 
     @Override
@@ -86,5 +97,54 @@ public class CategoryActivity extends AppCompatActivity{
             finish();
         }
     };
+
+    private final View.OnClickListener onImgItemClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getBaseContext(), ChooseCategoryImageActivity.class);
+            startActivityForResult(intent, Utils.GET_CATEGORY_IMAGE);
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case Utils.GET_CATEGORY_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    mCategory.setImageId(data.getIntExtra(getString(R.string.category_image_id), 0));
+                    setCategoryImage();
+                }
+                break;
+        }
+    }
+
+    private void setCategoryImage() {
+        final ImageView imgCategory = (ImageView) findViewById(R.id.imgItemImage);
+        if (imgCategory != null && mCategory != null) {
+            int imageId = R.drawable.ic_default_product_image;
+            if (mCategory.getCategoryImageId() != 0) imageId = mCategory.getCategoryImageId();
+            // Установим картинку
+            final int finalImageId = imageId; // Для использования в Callback
+            Picasso.with(this)
+                    .load(imageId)
+                    .placeholder(R.drawable.ic_default_product_image)
+                    .fit()
+                    .into(imgCategory, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            // Для поиска элемента при тестировании запишем imageId в contentDescription
+                            imgCategory.setContentDescription(String.valueOf(finalImageId));
+                        }
+
+                        @Override
+                        public void onError() {
+                            // Для поиска элемента при тестировании запишем imageId в contentDescription
+                            imgCategory.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
+                        }
+                    });
+        }
+    }
 }
 

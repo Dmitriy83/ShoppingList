@@ -14,13 +14,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.ListItem;
+import com.RightDirection.ShoppingList.items.Product;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-abstract public class ListAdapter extends RecyclerView.Adapter{
+abstract public class ListAdapter extends RecyclerView.Adapter {
 
     final int mResource;
     ArrayList mObjects;
@@ -31,7 +33,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
 
         mResource = resource;
         mObjects = objects;
-        mParentActivity = (Activity)context;
+        mParentActivity = (Activity) context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -46,9 +48,9 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolder viewHolder = (ViewHolder)holder;
-        ListItem item = (ListItem)mObjects.get(position);
-        if (viewHolder.productNameView != null){
+        ViewHolder viewHolder = (ViewHolder) holder;
+        ListItem item = (ListItem) mObjects.get(position);
+        if (viewHolder.productNameView != null) {
             viewHolder.productNameView.setTag(item);
             // Заполним текстовое поле
             viewHolder.productNameView.setText(item.getName());
@@ -61,16 +63,15 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
             viewHolder.imgDelete.setTag(item);
         }
 
-        Uri imageUri = item.getImageUri();
-        if (viewHolder.productImage != null) {
-            setProductImage(viewHolder.productImage, imageUri);
+        if (viewHolder.itemImage != null) {
+            setProductImage(viewHolder.itemImage, item);
         }
 
-        if (viewHolder.etCount != null){
+        if (viewHolder.etCount != null) {
             viewHolder.etCount.setTag(item);
             viewHolder.etCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
         }
-        if (viewHolder.txtCount != null){
+        if (viewHolder.txtCount != null) {
             viewHolder.txtCount.setTag(item);
             viewHolder.txtCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
         }
@@ -93,7 +94,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView productNameView;
         ImageButton imgDelete;
-        ImageView productImage;
+        ImageView itemImage;
         RelativeLayout represent;
         ImageButton imgDecrease;
         ImageButton imgIncrease;
@@ -105,7 +106,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
 
             productNameView = (TextView) itemView.findViewById(R.id.txtName);
             imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
-            productImage = (ImageView) itemView.findViewById(R.id.imgProduct);
+            itemImage = (ImageView) itemView.findViewById(R.id.imgItemImage);
             represent = (RelativeLayout) itemView.findViewById(R.id.productRepresent);
             etCount = (EditText) itemView.findViewById(R.id.etCount);
             txtCount = (TextView) itemView.findViewById(R.id.txtCount);
@@ -116,8 +117,9 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
 
     void remove(ListItem item) {
         // Не используем mObjects.remove(item), т.к. необходимо получить индекс удаленного элемента
-        int i; boolean removed = false;
-        for (i = 0; i < mObjects.size(); i++){
+        int i;
+        boolean removed = false;
+        for (i = 0; i < mObjects.size(); i++) {
             if (mObjects.get(i).equals(item)) {
                 mObjects.remove(i);
                 removed = true;
@@ -139,26 +141,57 @@ abstract public class ListAdapter extends RecyclerView.Adapter{
         return (ListItem) mObjects.get(position);
     }
 
-    public void updateItem(long id, String name, Uri imageUri) {
-        for (ListItem item: (ArrayList<ListItem>)mObjects) {
-            if (item.getId() == id){
-                item.setName(name);
-                item.setImageUri(imageUri);
+    public void updateItem(ListItem listItem) {
+        for (ListItem item : (ArrayList<ListItem>) mObjects)
+            if (item.getId() == listItem.getId()) {
+                item.setName(listItem.getName());
+                item.setImageUri(listItem.getImageUri());
+                if (listItem instanceof Product) {
+                    Product product = (Product) item;
+                    product.setCategory(((Product) listItem).getCategory());
+                }
             }
-        }
 
         // Оповестим об изменении данных
         this.notifyDataSetChanged();
     }
 
-    private void setProductImage(ImageView imgProduct, Uri imageUri){
-        if (imgProduct != null) {
-            // Установим картинку
-            Picasso.with(mParentActivity)
-                    .load(imageUri)
-                    .placeholder(R.drawable.ic_default_product_image)
-                    .fit()
-                    .into(imgProduct);
+    private void setProductImage(final ImageView imgItemImage, ListItem item) {
+        if (imgItemImage == null) return;
+
+        final Uri imageUri = item.getImageUri();
+        int placeholder = R.drawable.ic_default_product_image;
+        if (item instanceof Product) {
+            Product product = (Product) item;
+            Category category = product.getCategory();
+            if (category != null && category.getCategoryImageId() != 0)
+                placeholder = category.getCategoryImageId();
+        } else if (item instanceof Category) {
+            Category category = (Category) item;
+            if (category.getCategoryImageId() != 0)
+                placeholder = category.getCategoryImageId();
         }
+
+        // Установим картинку
+        final int finalPlaceholder = placeholder; // для использования в Callback
+        Picasso.with(mParentActivity)
+                .load(imageUri)
+                .placeholder(placeholder)
+                .fit()
+                .into(imgItemImage, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        // Для поиска элемента при тестировании запишем imageId в contentDescription
+                        imgItemImage.setContentDescription(String.valueOf(imageUri));
+                    }
+
+                    @Override
+                    public void onError() {
+                        // Для поиска элемента при тестировании запишем imageId в contentDescription
+                        imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
+                    }
+                });
+        // Если imageUri == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
+        if (imageUri == null) imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
     }
 }

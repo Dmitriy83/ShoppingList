@@ -36,11 +36,11 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="AppThemeHelpDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="AppThemeDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeChooseCategoryDialog" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
+    <style name="AppThemeDialogFixedSize" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
         <item name="windowNoTitle">true</item>
     </style>
 

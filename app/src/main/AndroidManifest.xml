@@ -42,13 +42,16 @@
             android:grantUriPermissions="true" />
 
         <activity android:name=".activities.HelpShoppingListInShopActivity"
-            android:theme="@style/AppThemeHelpDialog">
+            android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.ChooseCategoryActivity"
-            android:theme="@style/AppThemeChooseCategoryDialog">
+            android:theme="@style/AppThemeDialogFixedSize">
+        </activity>
+        <activity android:name=".activities.ChooseCategoryImageActivity"
+            android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.LoadShoppingListActivity"
-            android:theme="@style/AppThemeHelpDialog">
+            android:theme="@style/AppThemeDialog">
         </activity>
     </application>
 

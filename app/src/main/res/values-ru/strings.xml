@@ -63,4 +63,7 @@
     <string name="load">Загрузить</string>
     <string name="text_for_loading">Введите или вставьте текст в следующем формате:\nМолоко, 2; Хлеб, 1; Вино, 3</string>
     <string name="menu_button_identifier">Ещё</string>
+    <string name="without_category">Без категории</string>
+    <string name="pref_show_categories">Показывать категории</string>
+    <string name="enter_order">Укажите порядок</string>
 </resources>

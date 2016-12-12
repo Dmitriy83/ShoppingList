@@ -17,6 +17,11 @@
         android:defaultValue="true"/>
 
     <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_categories"
+        android:title="@string/pref_show_categories"
+        android:defaultValue="false"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
         android:key="@string/pref_key_show_help_screens"
         android:title="@string/pref_key_show_help_screens"
         android:defaultValue="true"

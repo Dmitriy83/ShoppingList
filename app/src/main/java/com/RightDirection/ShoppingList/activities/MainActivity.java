@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Создадим вспомогательный объект ShoppingList и вызовем команду переименования
         ShoppingList renamedSL = new ShoppingList(listID, listName);
         renamedSL.renameInDB(getApplicationContext());
-        mShoppingListsAdapter.updateItem(listID, listName, null);
+        mShoppingListsAdapter.updateItem(renamedSL);
     }
 
     @Override

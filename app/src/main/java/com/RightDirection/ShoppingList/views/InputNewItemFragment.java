@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
+import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
@@ -185,8 +186,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAllProducts.clear();
         while (data.moveToNext()){
-            Product product = new Product(data, null);
-            product.setCount(1); // Установим количество по умолчанию
+            Product product = new Product(data, new Category(data));
             addProductInArrays(product);
         }
     }

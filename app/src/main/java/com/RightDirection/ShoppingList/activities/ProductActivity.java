@@ -21,7 +21,7 @@ import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
-public class ProductActivity extends AppCompatActivity{
+public class ProductActivity extends AppCompatActivity {
 
     private Product mProduct;
 
@@ -33,10 +33,10 @@ public class ProductActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_editing);
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             // Восстановим объект из сохраненных значений
             mProduct = savedInstanceState.getParcelable(String.valueOf(R.string.product));
-        }else{
+        } else {
             // Получим значения из переданных параметров
             mProduct = getIntent().getParcelableExtra(String.valueOf(R.string.product));
         }
@@ -47,7 +47,7 @@ public class ProductActivity extends AppCompatActivity{
         }
 
         // Если это новый элемент, то сразу отобразим клавиатуру для ввода наименования
-        if (mProduct.isNew){
+        if (mProduct.isNew) {
             getWindow().setSoftInputMode(getWindow().getAttributes().softInputMode
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
@@ -70,22 +70,21 @@ public class ProductActivity extends AppCompatActivity{
             btnChooseCategory.setOnClickListener(onBtnChooseCategoryClick);
         }
 
-        Button btnSaveProduct = (Button)findViewById(R.id.btnSaveProduct);
+        Button btnSaveProduct = (Button) findViewById(R.id.btnSave);
         if (btnSaveProduct != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnSaveProduct.setTransformationMethod(null);
-            btnSaveProduct.setOnClickListener(onBtnSaveProductClick);
+            btnSaveProduct.setOnClickListener(onBtnSaveClick);
         }
-        ImageView imgProduct = (ImageView)findViewById(R.id.imgProduct);
-        if (imgProduct != null){
+        ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
+        if (imgProduct != null) {
             imgProduct.setOnClickListener(onImgProductClick);
         }
 
         // Установим заголовок формы
-        if (mProduct.isNew){
+        if (mProduct.isNew) {
             setTitle(getString(R.string.new_product));
-        }
-        else{
+        } else {
             setTitle(getString(R.string.product_title));
         }
 
@@ -106,7 +105,7 @@ public class ProductActivity extends AppCompatActivity{
         }
     };
 
-    private final View.OnClickListener onBtnSaveProductClick = new View.OnClickListener() {
+    private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             EditText etProductName = (EditText) findViewById(R.id.etProductName);
@@ -120,10 +119,7 @@ public class ProductActivity extends AppCompatActivity{
 
             // Обновим наименование в активности редактирования списка товаров
             Intent intent = new Intent();
-            intent.putExtra(String.valueOf(R.string.item_id), mProduct.getId());
-            intent.putExtra(String.valueOf(R.string.name), mProduct.getName());
-            intent.putExtra(String.valueOf(R.string.item_image), mProduct.getImageUri());
-            intent.putExtra(String.valueOf(R.string.category), mProduct.getCategory());
+            intent.putExtra(String.valueOf(R.string.product), mProduct);
             setResult(RESULT_OK, intent);
 
             finish();
@@ -148,7 +144,7 @@ public class ProductActivity extends AppCompatActivity{
             pickIntent.setType("image/*");
 
             Intent chooserIntent = Intent.createChooser(intent, "Select Image");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
             startActivityForResult(chooserIntent, PICK_IMAGE);
         }
@@ -158,7 +154,7 @@ public class ProductActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case PICK_IMAGE:
                 if (resultCode == RESULT_OK) {
                     mProduct.setImageUri(data.getData());
@@ -178,7 +174,7 @@ public class ProductActivity extends AppCompatActivity{
         }
     }
 
-    private void askForPermissionAndSetProductImage(){
+    private void askForPermissionAndSetProductImage() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -198,21 +194,35 @@ public class ProductActivity extends AppCompatActivity{
             } else {
                 setProductImage();
             }
-        }
-        else{
+        } else {
             setProductImage();
         }
     }
 
-    private void setProductImage(){
-        ImageView imgProduct = (ImageView) findViewById(R.id.imgProduct);
+    private void setProductImage() {
+        final ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
         if (imgProduct != null && mProduct != null) {
             // Установим картинку
             Picasso.with(this)
                     .load(mProduct.getImageUri())
                     .placeholder(android.R.drawable.ic_menu_crop)
                     .fit()
-                    .into(imgProduct);
+                    .into(imgProduct, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            // Для поиска элемента при тестировании запишем imageId в contentDescription
+                            imgProduct.setContentDescription(String.valueOf(mProduct.getImageUri()));
+                        }
+
+                        @Override
+                        public void onError() {
+                            // Для поиска элемента при тестировании запишем imageId в contentDescription
+                            imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
+                        }
+                    });
+            // Если mProduct.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
+            if (mProduct.getImageUri() == null) imgProduct.setContentDescription(
+                    String.valueOf(android.R.drawable.ic_menu_crop));
         }
     }
 

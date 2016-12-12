@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:layout_above="@+id/btnSaveProduct">
+        android:layout_above="@+id/btnSave">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/imgProduct"
+                android:layout_below="@+id/imgItemImage"
                 android:layout_marginEnd="2dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -61,7 +61,7 @@
                 android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/imgProduct"
+                android:id="@+id/imgItemImage"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_alignParentLeft="true"
@@ -83,7 +83,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btnSaveProduct"
+        android:id="@+id/btnSave"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

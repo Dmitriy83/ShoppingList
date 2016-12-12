@@ -65,11 +65,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products));
         }
 
-        // Прочитаем настройки приложения
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean showImages = sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_images), true);
         int listItemLayout = R.layout.list_item_shopping_list_in_shop;
-        if (!showImages) listItemLayout = R.layout.list_item_shopping_list_in_shop_without_image;
+        if (!showImages()) listItemLayout = R.layout.list_item_shopping_list_in_shop_without_image;
         // Создадим новый адаптер для работы со списком покупок
         mProductsAdapter = new ListAdapterShoppingListInShop(this, listItemLayout, mProducts);
 
@@ -87,9 +84,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
 
         // Откроем подсказку, если необходимо
-        boolean showHelp = sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
-        if (showHelp)
-            startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
+        if (showHelp()) startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
     }
 
     @Override
@@ -116,7 +111,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
 
         Utils.sortArrayListByCategories(mProducts);
-        Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+        if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
     }
 
@@ -209,10 +204,28 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
                     // Перестроим массив на случай, если изменилась категория
                     Utils.removeCategoriesFromArrayListOfProducts(mProducts);
-                    Utils.sortArrayListByCategories(mProducts);
+                    if (showCategories()) Utils.sortArrayListByCategories(mProducts);
                     Utils.addCategoriesInArrayListOfProducts(this, mProducts);
                     mProductsAdapter.notifyDataSetChanged();
                 }
         }
+    }
+
+    private boolean showCategories(){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPref.getBoolean(getString(R.string.pref_key_show_categories), false);
+    }
+
+    private boolean showImages() {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_images), true);
+    }
+
+    private boolean showHelp() {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
     }
 }

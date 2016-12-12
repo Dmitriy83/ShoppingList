@@ -93,6 +93,9 @@ public class Product extends ListItem implements IDataBaseOperations {
                 return;
             }
             data.close();
+
+            // Продукт более не новый
+            isNew = false;
         }
 
         ContentValues contentValues = new ContentValues();

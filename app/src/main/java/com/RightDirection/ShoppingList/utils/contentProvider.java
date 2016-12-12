@@ -63,13 +63,14 @@ public class contentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
     public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
+    public static final String KEY_CATEGORY_PICTURE_ID = "CATEGORY_PICTURE_ID";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
 
     @Override
     public boolean onCreate() {
@@ -460,6 +461,13 @@ public class contentProvider extends ContentProvider {
                         + KEY_CATEGORY_NAME + ","
                         + KEY_CATEGORY_ORDER + ");";
                 db.execSQL(queryCreateCategoriesTable);
+            }
+
+            if (newVersion == 10) {
+                // Добавим колонку в таблицу "Категории"
+                String queryAddColumn = "ALTER TABLE " + CATEGORIES_TABLE_NAME
+                        + " ADD COLUMN '" + KEY_CATEGORY_PICTURE_ID + "' INTEGER DEFAULT 0;";
+                db.execSQL(queryAddColumn);
             }
         }
     }

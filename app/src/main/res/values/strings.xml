@@ -94,4 +94,10 @@
     <string name="text_for_loading">Type or paste text in this format:\nMilk, 2;  Bread, 1; Wine, 3</string>
     <string name="shopping_list">ShoppingList</string>
     <string name="menu_button_identifier">More options</string>
+    <string name="category_image_id">category_image_id</string>
+    <string name="without_category">Without category</string>
+    <string name="pref_key_show_categories">pref_key_show_categories</string>
+    <string name="pref_show_categories">Show categories</string>
+    <string name="default_order">100</string>
+    <string name="enter_order">Enter order</string>
 </resources>

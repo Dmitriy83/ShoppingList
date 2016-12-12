@@ -5,7 +5,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -151,7 +150,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             // Создадим вспомогательный объект Product и вызовем команду переименования
             Product renamedProduct = new Product(productId, name, null);
             renamedProduct.renameInDB(getApplicationContext());
-            mShoppingListItemsAdapter.updateItem(productId, name, null);
+            mShoppingListItemsAdapter.updateItem(renamedProduct);
         }else {
             // Сохраним список продуктов в БД
             mShoppingList.setName(name);
@@ -204,10 +203,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    long id = data.getLongExtra(String.valueOf(R.string.item_id), 0);
-                    String name = data.getStringExtra(String.valueOf(R.string.name));
-                    Uri imageUri = data.getParcelableExtra(String.valueOf(R.string.item_image));
-                    mShoppingListItemsAdapter.updateItem(id, name, imageUri);
+                    Product product = data.getParcelableExtra(String.valueOf(R.string.product));
+                    mShoppingListItemsAdapter.updateItem(product);
                 }
         }
     }
