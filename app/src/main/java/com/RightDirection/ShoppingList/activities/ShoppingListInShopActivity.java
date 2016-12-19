@@ -200,8 +200,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
                     // Перестроим массив на случай, если изменилась категория
                     Utils.removeCategoriesFromArrayListOfProducts(mProducts);
-                    if (showCategories()) Utils.sortArrayListByCategories(mProducts);
-                    Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+                    Utils.sortArrayListByCategories(mProducts);
+                    if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
                     mProductsAdapter.notifyDataSetChanged();
                 }
         }

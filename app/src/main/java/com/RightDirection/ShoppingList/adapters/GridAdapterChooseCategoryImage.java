@@ -60,7 +60,7 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
     }
 
     private int[] getImageIds() {
-        int[] array = new int[10];
+        int[] array = new int[15];
 
         array[0] = R.drawable.category_alcohol;
         array[1] = R.drawable.category_bread;
@@ -72,6 +72,11 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
         array[7] = R.drawable.category_milk;
         array[8] = R.drawable.category_noodles;
         array[9] = R.drawable.category_vegetables;
+        array[10] = R.drawable.category_add1;
+        array[11] = R.drawable.category_add2;
+        array[12] = R.drawable.category_add3;
+        array[13] = R.drawable.category_add4;
+        array[14] = R.drawable.category_add5;
 
         return array;
     }
@@ -108,7 +113,7 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 ChooseCategoryImageActivity activity = (ChooseCategoryImageActivity) mContext;
-                activity.sendImageIdAndFinish(mImageIds[viewHolder.getAdapterPosition()]);
+                activity.sendImageUriAndFinish(mContext.getResources().getResourceName(mImageIds[viewHolder.getAdapterPosition()]));
             }
         });
     }

@@ -137,8 +137,7 @@ public class Utils {
 
         Product product, prevProduct;
         Category category, prevCategory;
-        Category emptyCategory = new Category(-1, context.getString(R.string.category_not_assigned),
-                0, 0);
+        Category emptyCategory = new Category(-1, context.getString(R.string.category_not_assigned), 0);
         for (int i = arrayList.size() - 2; i >= 0; i--) {
             product = (Product)arrayList.get(i);
             category = product.getCategory();

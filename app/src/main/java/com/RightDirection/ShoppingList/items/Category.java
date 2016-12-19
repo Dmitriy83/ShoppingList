@@ -15,25 +15,22 @@ import com.RightDirection.ShoppingList.utils.contentProvider;
 public class Category extends ListItem implements IDataBaseOperations {
 
     private int order;
-    private int image_id;
 
-    public Category(long id, String name, int order, int image_id) {
+    public Category(long id, String name, int order) {
         super(id, name);
         this.order = order;
-        this.image_id = image_id;
     }
 
     public Category(Cursor data){
         super(data.getLong(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ID)),
-                data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_NAME)));
+                data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_NAME)),
+                contentProvider.getCategoryImageUri(data));
         this.order = data.getInt(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ORDER));
-        this.image_id = data.getInt(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_PICTURE_ID));
     }
 
     protected Category(Parcel in) {
         super(in);
         order = in.readInt();
-        image_id = in.readInt();
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -52,7 +49,6 @@ public class Category extends ListItem implements IDataBaseOperations {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(order);
-        dest.writeInt(image_id);
     }
 
     @Override
@@ -61,7 +57,11 @@ public class Category extends ListItem implements IDataBaseOperations {
         ContentValues contentValues = new ContentValues();
         contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
         contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
-        contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_ID, getCategoryImageId());
+        if (getImageUri() != null) {
+            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
+        }else{
+            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
+        }
         Uri insertedId = contentResolver.insert(contentProvider.CATEGORIES_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
 
@@ -82,7 +82,11 @@ public class Category extends ListItem implements IDataBaseOperations {
         ContentValues contentValues = new ContentValues();
         contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
         contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
-        contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_ID, getCategoryImageId());
+        if (getImageUri() != null) {
+            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
+        }else{
+            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
+        }
         contentResolver.update(contentProvider.CATEGORIES_CONTENT_URI, contentValues,
                 contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
@@ -107,13 +111,5 @@ public class Category extends ListItem implements IDataBaseOperations {
     @Override
     public ITEM_TYPES getType() {
         return ITEM_TYPES.CATEGORY;
-    }
-
-    public int getCategoryImageId() {
-        return image_id;
-    }
-
-    public void setImageId(int image_id) {
-        this.image_id = image_id;
     }
 }

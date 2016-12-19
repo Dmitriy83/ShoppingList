@@ -47,7 +47,6 @@ public class ListAdapterCategoriesList extends ListAdapter {
 
             // Откроем активность редактирования продукта
             Intent intent = new Intent(mParentActivity.getBaseContext(), CategoryActivity.class);
-            intent.putExtra(String.valueOf(R.string.is_new_item), false);
             intent.putExtra(String.valueOf(R.string.category), item);
             mParentActivity.startActivity(intent);
         }

@@ -45,13 +45,13 @@ public class ChooseCategoryImageActivity extends AppCompatActivity{
     private final View.OnClickListener onBtnCategoryEmptyClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            sendImageIdAndFinish(0);
+            sendImageUriAndFinish(null);
         }
     };
 
-    public void sendImageIdAndFinish(int id){
+    public void sendImageUriAndFinish(String strImageUri){
         Intent intent = new Intent();
-        intent.putExtra(getString(R.string.category_image_id), id);
+        intent.putExtra(getString(R.string.item_image), strImageUri);
         setResult(RESULT_OK, intent);
 
         finish();

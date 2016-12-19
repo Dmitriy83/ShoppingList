@@ -164,12 +164,14 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
         if (item instanceof Product) {
             Product product = (Product) item;
             Category category = product.getCategory();
-            if (category != null && category.getCategoryImageId() != 0)
-                placeholder = category.getCategoryImageId();
+            if (category != null && category.getImageUri() != null && category.getImageUri() != Uri.EMPTY)
+                placeholder = mParentActivity.getResources().getIdentifier(
+                        category.getImageUri().toString(), null, mParentActivity.getPackageName());
         } else if (item instanceof Category) {
             Category category = (Category) item;
-            if (category.getCategoryImageId() != 0)
-                placeholder = category.getCategoryImageId();
+            if (category.getImageUri() != null && category.getImageUri() != Uri.EMPTY)
+                placeholder = mParentActivity.getResources().getIdentifier(
+                        imageUri.toString(), null, mParentActivity.getPackageName());
         }
 
         // Установим картинку
@@ -192,6 +194,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
                     }
                 });
         // Если imageUri == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
-        if (imageUri == null) imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
+        if (imageUri == null || item instanceof Category)
+            imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
     }
 }

@@ -1,6 +1,7 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,7 +33,7 @@ public class CategoryActivity extends AppCompatActivity{
         }
 
         if (mCategory == null) {
-            mCategory = new Category(-1, "", 100, 0);
+            mCategory = new Category(-1, "", 100);
             mCategory.isNew = true;
         }
 
@@ -113,7 +114,13 @@ public class CategoryActivity extends AppCompatActivity{
         switch(requestCode) {
             case Utils.GET_CATEGORY_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    mCategory.setImageId(data.getIntExtra(getString(R.string.category_image_id), 0));
+                    String strImageUri = data.getStringExtra(getString(R.string.item_image));
+                    if (strImageUri != null) {
+                        mCategory.setImageUri(Uri.parse(strImageUri));
+                    }
+                    else{
+                        mCategory.setImageUri(null);
+                    }
                     setCategoryImage();
                 }
                 break;
@@ -123,19 +130,20 @@ public class CategoryActivity extends AppCompatActivity{
     private void setCategoryImage() {
         final ImageView imgCategory = (ImageView) findViewById(R.id.imgItemImage);
         if (imgCategory != null && mCategory != null) {
-            int imageId = R.drawable.ic_default_product_image;
-            if (mCategory.getCategoryImageId() != 0) imageId = mCategory.getCategoryImageId();
-            // Установим картинку
-            final int finalImageId = imageId; // Для использования в Callback
+            int imageResource = R.drawable.ic_default_product_image;
+            if (mCategory.getImageUri() != null)
+                imageResource = getResources().getIdentifier(
+                    mCategory.getImageUri().toString(), null, getPackageName());
+            final int finalImageResource = imageResource;
             Picasso.with(this)
-                    .load(imageId)
+                    .load(imageResource)
                     .placeholder(R.drawable.ic_default_product_image)
                     .fit()
                     .into(imgCategory, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
                             // Для поиска элемента при тестировании запишем imageId в contentDescription
-                            imgCategory.setContentDescription(String.valueOf(finalImageId));
+                            imgCategory.setContentDescription(String.valueOf(finalImageResource));
                         }
 
                         @Override
@@ -144,6 +152,9 @@ public class CategoryActivity extends AppCompatActivity{
                             imgCategory.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
                         }
                     });
+            // Если mCategory.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
+            if (mCategory.getImageUri() == null) imgCategory.setContentDescription(
+                    String.valueOf(R.drawable.ic_default_product_image));
         }
     }
 }

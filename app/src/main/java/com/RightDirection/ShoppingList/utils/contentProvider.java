@@ -63,7 +63,7 @@ public class contentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
     public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
-    public static final String KEY_CATEGORY_PICTURE_ID = "CATEGORY_PICTURE_ID";
+    public static final String KEY_CATEGORY_PICTURE_URI = "CATEGORY_PICTURE_URI";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
@@ -341,6 +341,19 @@ public class contentProvider extends ContentProvider {
         return imageUri;
     }
 
+    @Nullable
+    public static Uri getCategoryImageUri(@NonNull Cursor data) {
+        int keyPictureIndex = data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_PICTURE_URI);
+
+        String strImageUri = data.getString(keyPictureIndex);
+
+        Uri imageUri = null;
+        if (strImageUri != null){
+            imageUri = Uri.parse(strImageUri);
+        }
+        return imageUri;
+    }
+
     @Override
     public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode) throws FileNotFoundException {
 
@@ -461,13 +474,6 @@ public class contentProvider extends ContentProvider {
                         + KEY_CATEGORY_NAME + ","
                         + KEY_CATEGORY_ORDER + ");";
                 db.execSQL(queryCreateCategoriesTable);
-            }
-
-            if (newVersion == 10) {
-                // Добавим колонку в таблицу "Категории"
-                String queryAddColumn = "ALTER TABLE " + CATEGORIES_TABLE_NAME
-                        + " ADD COLUMN '" + KEY_CATEGORY_PICTURE_ID + "' INTEGER DEFAULT 0;";
-                db.execSQL(queryAddColumn);
             }
         }
     }
