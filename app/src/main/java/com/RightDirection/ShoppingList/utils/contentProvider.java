@@ -64,6 +64,7 @@ public class contentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
     public static final String KEY_CATEGORY_PICTURE_URI = "CATEGORY_PICTURE_URI";
+    public static final String KEY_IS_CHECKED = "IS_CHECKED";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";

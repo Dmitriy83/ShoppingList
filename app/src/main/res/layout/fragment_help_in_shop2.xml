@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/fragmentInShopHelp2"
+    android:layout_height="@dimen/help_screen_height">
+
+    <TextView
+        android:text="@string/HelpInShop2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtHelp"
+        android:textSize="@dimen/help_text_size" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifHelpImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/help_edit_button"
+        android:paddingTop="10dp" />
+
+</LinearLayout>

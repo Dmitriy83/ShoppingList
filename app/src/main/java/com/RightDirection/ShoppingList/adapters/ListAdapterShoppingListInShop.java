@@ -104,7 +104,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 }
 
                 // Отфильтруем лист, если необходимо
-                if (mIsFiltered) hideMarked();
+                if (mIsFiltered) hideChecked();
             } else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN) {
                 mInitXTouch = event.getX();
             } else if (mCrossOutProduct && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)) {
@@ -124,7 +124,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 }
 
                 // Отфильтруем лист, если необходимо
-                if (mIsFiltered) hideMarked();
+                if (mIsFiltered) hideChecked();
 
                 mFingerMoved = false;
             }else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_MOVE){
@@ -215,7 +215,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         mIsFiltered = value;
     }
 
-    public void showMarked() {
+    public void showChecked() {
         mIsFiltered = false;
 
         // Восстановим первоначальный список
@@ -226,7 +226,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         this.notifyDataSetChanged();
     }
 
-    public void hideMarked() {
+    public void hideChecked() {
         mIsFiltered = true;
 
         // При первом обращении сохраним первоначальный список

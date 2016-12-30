@@ -4,28 +4,26 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.views.FragmentInShopHelp1;
-import com.RightDirection.ShoppingList.views.FragmentInShopHelp2;
+import com.RightDirection.ShoppingList.views.FragmentMainHelp1;
 
-public class HelpShoppingListInShopActivity extends AppCompatActivity {
+public class HelpMainActivity extends AppCompatActivity {
 
     private Fragment fragment1;
-    private Fragment fragment2;
+    //private Fragment fragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_help_shopping_list_in_shop);
+        setContentView(R.layout.activity_help_main);
 
-        fragment1 = new FragmentInShopHelp1();
-        fragment2 = new FragmentInShopHelp2();
+        fragment1 = new FragmentMainHelp1();
+        //fragment2 = new FragmentInShopHelp2();
 
         FrameLayout fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {
@@ -43,13 +41,14 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
                     .addToBackStack(null)
                     .commit();
 
-            fragmentContainer.setOnClickListener(onFragmentContainerClick);
+            //fragmentContainer.setOnClickListener(onFragmentContainerClick);
         }
 
         Button btnGotIt = (Button) findViewById(R.id.btnGotIt);
         if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnGotItClick);
     }
 
+    /*
     private final View.OnClickListener onFragmentContainerClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -63,10 +62,19 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
             ft.addToBackStack(null).commit();
         }
     };
+    */
 
     private final View.OnClickListener onBtnGotItClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_in_main_activity), false);
+            editor.apply();
+
+            finish();
+
+            /*
             if (fragment2.isVisible()){
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -81,6 +89,7 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment2, null)
                     .commit();
+                    */
         }
     };
 }

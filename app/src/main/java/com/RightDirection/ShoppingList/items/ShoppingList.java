@@ -100,6 +100,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(contentProvider.KEY_COUNT, item.getCount());
+            contentValues.put(contentProvider.KEY_IS_CHECKED, item.isChecked());
             contentResolver.insert(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
         }
 
@@ -117,6 +118,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     @Override
     public void updateInDB(Context context) {
+        if (mProducts == null) return;
+
         // Обновим текущий список покупок
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
@@ -125,14 +128,47 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         contentResolver.delete(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
 
-        if (mProducts == null) return;
-
         // Запишем составлящие списка покупок в базу данных
         for (ListItem item: mProducts) {
             contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(contentProvider.KEY_COUNT, item.getCount());
+            contentValues.put(contentProvider.KEY_IS_CHECKED, item.isChecked());
             contentResolver.insert(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
+        }
+    }
+
+    public void updateCheckedInDB(Context context) {
+        if (mProducts == null) return;
+
+        // Обновим текущий список покупок
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        for (ListItem item: mProducts) {
+            contentValues.put(contentProvider.KEY_IS_CHECKED, item.isChecked());
+            contentResolver.update(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
+                    contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
+                            + contentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
+                            + contentProvider.KEY_COUNT + "=" + item.getCount(), null);
+        }
+    }
+
+    public void removeCheckedFromDB(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        for (ListItem item: mProducts) {
+            if (item.isChecked()) {
+                contentResolver.delete(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                        contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
+                                + contentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
+                                + contentProvider.KEY_COUNT + "=" + item.getCount(), null);
+            }
+        }
+
+        // Удалим продукты из массива
+        for (int i = mProducts.size()-1; i >= 0; i--) {
+            Product product = mProducts.get(i);
+            if (product.isChecked) mProducts.remove(i);
         }
     }
 
@@ -274,10 +310,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
+        int keyIsCheckedIndex = data.getColumnIndexOrThrow(contentProvider.KEY_IS_CHECKED);
 
-        // Читаем данные из базы и записываем в объект JSON
+        // Читаем данные из базы
         while (data.moveToNext()){
-            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex), null, data.getFloat(keyCountIndex));
+            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+                    null, data.getFloat(keyCountIndex), data.getInt(keyIsCheckedIndex) != 0);
             mProducts.add(newProduct);
         }
 
@@ -321,6 +359,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             jsonItem.put(contentProvider.KEY_PRODUCT_ID,  product.getId());
             jsonItem.put(contentProvider.KEY_NAME,        product.getName());
             jsonItem.put(contentProvider.KEY_COUNT,       product.getCount());
+            jsonItem.put(contentProvider.KEY_IS_CHECKED,  product.isChecked());
 
             // Добавим объект JSON в массив
             array.put(jsonItem);
@@ -339,6 +378,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
+        int keyIsCheckedIndex = data.getColumnIndexOrThrow(contentProvider.KEY_IS_CHECKED);
 
         // Читаем данные из базы и записываем в объект JSON
         while (data.moveToNext()){
@@ -347,6 +387,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             jsonItem.put(contentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
             jsonItem.put(contentProvider.KEY_NAME, data.getString(keyNameIndex));
             jsonItem.put(contentProvider.KEY_COUNT, data.getString(keyCountIndex));
+            jsonItem.put(contentProvider.KEY_IS_CHECKED,  data.getInt(keyIsCheckedIndex) != 0);
 
             // Добавим объект JSON в массив
             array.put(jsonItem);

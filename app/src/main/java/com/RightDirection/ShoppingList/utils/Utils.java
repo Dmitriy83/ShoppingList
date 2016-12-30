@@ -4,8 +4,10 @@ package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.RightDirection.ShoppingList.R;
@@ -207,5 +209,18 @@ public class Utils {
         }
 
         return emailIntent;
+    }
+
+
+    public static boolean showHelpInShop(Context context) {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
+    }
+
+    public static boolean showHelpMainActivity(Context context) {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getString(R.string.pref_key_show_help_in_main_activity), true);
     }
 }

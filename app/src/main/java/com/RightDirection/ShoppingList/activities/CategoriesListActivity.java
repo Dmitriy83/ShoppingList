@@ -16,6 +16,8 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterCategoriesList;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +27,8 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
 
     private ArrayList<Category> mCategories;
     private ListAdapterCategoriesList mCategoriesAdapter;
+
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,10 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class ListItem implements Parcelable, IGetType{
 
     protected long id;
     protected String name;
-    private boolean checked;
+    boolean isChecked;
     private Uri imageUri;
     float count;
     public boolean isNew = false;
@@ -40,7 +40,7 @@ public class ListItem implements Parcelable, IGetType{
     protected ListItem(Parcel in) {
         id = in.readLong();
         name = in.readString();
-        checked = in.readByte() != 0;
+        isChecked = in.readByte() != 0;
         imageUri = in.readParcelable(Uri.class.getClassLoader());
         count = in.readFloat();
         isNew = in.readByte() != 0;
@@ -75,15 +75,15 @@ public class ListItem implements Parcelable, IGetType{
     }
 
     public void setChecked(){
-        checked = true;
+        isChecked = true;
     }
 
     public void setUnchecked(){
-        checked = false;
+        isChecked = false;
     }
 
     public boolean isChecked(){
-        return checked;
+        return isChecked;
     }
 
     public Uri getImageUri() {
@@ -99,7 +99,7 @@ public class ListItem implements Parcelable, IGetType{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(name);
-        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeByte((byte) (isChecked ? 1 : 0));
         dest.writeParcelable(imageUri, flags);
         dest.writeFloat(count);
         dest.writeByte((byte) (isNew ? 1 : 0));

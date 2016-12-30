@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Список покупок</string>
+    <string name="app_name">Простые покупки</string>
     <string name="action_edit_products_list">Продукты</string>
     <string name="action_settings">Настройки</string>
     <string name="addItemHint">Введите название продукта</string>
@@ -48,7 +48,7 @@
     <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
     <string name="action_help">Справка</string>
     <string name="new_list">Новый список</string>
-    <string name="HelpInShop">Чтобы вычеркнуть товар, проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
+    <string name="HelpInShop1">Чтобы вычеркнуть товар, проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
     <string name="pref_key_show_help_screens">Показывать подсказки</string>
     <string name="got_it">Запомнил</string>
     <string name="action_edit_categories_list">Категории</string>
@@ -67,4 +67,10 @@
     <string name="pref_show_categories">Показывать категории</string>
     <string name="enter_order">Укажите порядок</string>
     <string name="feedback">Обратная связь</string>
+    <string name="HelpInShop2">Для редактирования списка покупок нажмите кнопку</string>
+    <string name="HelpMain1">Добро пожаловать!\n\nЭто окно содержит все Ваши списки покупок.\nДобавляйте новые, отправляйте по почте, загружайте полученные списки.</string>
+    <string name="pref_show_images_summary">Показывать товары и категории товаров с картинками</string>
+    <string name="pref_show_categories_summary">Разбивать товары на категории в окне \"В магазине\"</string>
+    <string name="main_activity_title">Все списки покупок</string>
+    <string name="action_remove_checked">Удалить купленные</string>
 </resources>

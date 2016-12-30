@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Установим заголовок активности
+        setTitle(getString(R.string.main_activity_title));
+
         // Подключим меню
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Необходимо перезапустить загрузчик, например, при смене ориентации экрана
         getLoaderManager().restartLoader(0, null, this);
+
+        // Откроем подсказку, если необходимо
+        if (Utils.showHelpMainActivity(getApplicationContext()))
+            startActivity(new Intent(this, HelpMainActivity.class));
     }
 
     @Override

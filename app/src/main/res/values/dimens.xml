@@ -12,4 +12,6 @@
     <dimen name="category_text_size">13sp</dimen>
     <dimen name="medium_size">50dp</dimen>
     <dimen name="category_title_height">20dp</dimen>
+    <dimen name="help_screen_height">210dp</dimen>
+    <dimen name="help_text_size">16sp</dimen>
 </resources>

@@ -17,21 +17,18 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertTrue;
 
 public class InShopActivityTest extends ActivitiesTest {
 
-    @Test
-    @MediumTest
-    public void testActivityInShop() {
-        addNewShoppingList();
-        editNewShoppingList();
-
+    private void setSettingCrossOutProduct(){
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
         boolean crossOutProduct = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_cross_out_action), true);
@@ -43,6 +40,16 @@ public class InShopActivityTest extends ActivitiesTest {
             // Возвращаемся к основной активности
             pressBack();
         }
+    }
+
+    @Test
+    @MediumTest
+    public void testActivityInShop() {
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
+        addNewShoppingList();
+        editNewShoppingList();
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
@@ -76,7 +83,11 @@ public class InShopActivityTest extends ActivitiesTest {
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
 
-        // Вычеркиванием все товары
+        // Снимаем выеделение со всех товаров
+        for (int i = 1; i <= 3; i++){
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(click());
+        }
+        // Снова выделяем
         for (int i = 1; i <= 3; i++){
             onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(click());
         }
@@ -126,5 +137,132 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_SavingCheckedItems(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
+        addNewShoppingList();
+        editNewShoppingList();
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        // Выделяем два элемента из трех
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        // Нажимаем кнопку назад
+        pressBack();
+        // Снова открываем список покупок и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        // Нажимаем кнопку назад
+        pressBack();
+        pressBack();
+        // Снова открываем список покупок и снимаем выделение с одного из элементов списка.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeLeft());
+        // Опять выделяем. Проверяем появление надписи.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        pressBack();
+        // Снимаем выделение с одного из элементво и переходим к активности Редактирования списка
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeLeft());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        // Возвращаемся к активности В магазине и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
+        onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
+        addNewShoppingList();
+        editNewShoppingList();
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        // Выделяем два элемента из трех
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        // Нажимаем кнопку Удалить вычеркнутые продукты
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_remove_checked))).perform(click());
+        // Проверяем, что вычеркнутые продукты более не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // Переходим в активность Редактирование списка
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        // Проверяем, что вычеркнутые продукты не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // Нажимаем кнопку назад
+        pressBack();
+        pressBack();
+        // Снова открываем список.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        // Проверяем, что вычеркнутые продукты не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_RemoveFilteredCheckedItemsFromListInDB(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
+        addNewShoppingList();
+        editNewShoppingList();
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        // Выделяем два элемента из трех
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+
+        // Нажимаем кнопку фильтрации списка
+        onView(withId(R.id.action_filter)).perform(click());
+
+        // Нажимаем кнопку Удалить вычеркнутые продукты
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_remove_checked))).perform(click());
+        // Проверяем, что вычеркнутые продукты более не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+
+        // Нажимаем кнопку фильтрации списка
+        onView(withId(R.id.action_filter)).perform(click());
+        // Проверяем, что вычеркнутые продукты более не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // Но отображается не вычеркнутый
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+
+        // Еще раз нажмем кнопку фильтрации списка
+        onView(withId(R.id.action_filter)).perform(click());
+        // Проверяем, что вычеркнутые продукты более не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // Но отображается не вычеркнутый
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+
+        // Переходим в активность Редактирование списка
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        // Проверяем, что вычеркнутые продукты не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // Нажимаем кнопку назад
+        pressBack();
+        pressBack();
+        // Снова открываем список.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        // Проверяем, что вычеркнутые продукты не отображаются в списке.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
     }
 }

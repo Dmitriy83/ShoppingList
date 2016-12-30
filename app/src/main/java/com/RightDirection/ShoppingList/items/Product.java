@@ -36,6 +36,12 @@ public class Product extends ListItem implements IDataBaseOperations {
         this.category = category;
     }
 
+    public Product(long id, String name, Uri imageUri, float count, boolean isChecked) {
+        super(id, name, imageUri, count);
+
+        this.isChecked = isChecked;
+    }
+
     public Product(Cursor data, Category category){
         super(data.getLong(data.getColumnIndexOrThrow(contentProvider.KEY_ID)),
                 data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_NAME)),
@@ -43,10 +49,13 @@ public class Product extends ListItem implements IDataBaseOperations {
 
         try {
             int countColumnIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
+            int countIsCheckedIndex = data.getColumnIndexOrThrow(contentProvider.KEY_IS_CHECKED);
             this.count = data.getFloat(countColumnIndex);
+            this.isChecked = data.getInt(countIsCheckedIndex) != 0;
         } catch (Exception e){
             // Столбец не найден
             this.count = 1;
+            this.isChecked = false;
         }
 
         this.category = category;

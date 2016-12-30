@@ -28,6 +28,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     private ArrayList mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;
     private ShoppingList mShoppingList;
+    private Menu mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
 
         // Откроем подсказку, если необходимо
-        if (showHelp()) startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
+        if (Utils.showHelpInShop(getApplicationContext()))
+            startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
     }
 
     @Override
@@ -121,12 +123,14 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_shopping_list_in_shop_menu, menu);
 
+        mMenu = menu;
+
         // Установим иконку Фильтра в нужное значение при открытии
         if (mProductsAdapter.isFiltered()) {
-            setFilterItemSelected(menu.getItem(1));
+            setFilterItemSelected();
         }
         else{
-            setFilterItemUnselected(menu.getItem(1));
+            setFilterItemUnselected();
         }
 
         return true;
@@ -141,15 +145,16 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
         if (id == R.id.action_filter) {
             if (mProductsAdapter.isFiltered()) {
-                setFilterItemUnselected(item);
-                mProductsAdapter.showMarked();
+                setFilterItemUnselected();
+                mProductsAdapter.showChecked();
             }
             else{
-                setFilterItemSelected(item);
-                mProductsAdapter.hideMarked();
+                setFilterItemSelected();
+                mProductsAdapter.hideChecked();
             }
         }
         else if (id == R.id.action_edit_shopping_list) {
+            saveCheckedInDB();
             Intent intent = new Intent(this, ShoppingListEditingActivity.class);
             intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
             startActivity(intent);
@@ -174,15 +179,32 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             startActivity(intentLoad);
             finish();
         }
+        else if (id == R.id.action_remove_checked) {
+            // Сначала необходимо снять фильтр
+            if (mProductsAdapter.isFiltered()) {
+                setFilterItemUnselected();
+                mProductsAdapter.showChecked();
+            }
+            // сначала заполним объект списком для изменения
+            mShoppingList.setProducts(mProducts);
+            // удалим вычеркнутые элементы из БД
+            mShoppingList.removeCheckedFromDB(this);
+            // заменим массив для фильтрации
+            ArrayList<Product> originalValues = (ArrayList<Product>) mProducts.clone();
+            mProductsAdapter.setOriginalValues(originalValues);
+            mProductsAdapter.notifyDataSetChanged();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void setFilterItemSelected(MenuItem menuItem){
+    private void setFilterItemSelected(){
+        MenuItem menuItem = mMenu.findItem(R.id.action_filter);
         menuItem.setIcon(R.drawable.ic_clear_filter);
     }
 
-    private void setFilterItemUnselected(MenuItem menuItem){
+    private void setFilterItemUnselected(){
+        MenuItem menuItem = mMenu.findItem(R.id.action_filter);
         menuItem.setIcon(R.drawable.ic_filter);
     }
 
@@ -219,9 +241,15 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         return sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_images), true);
     }
 
-    private boolean showHelp() {
-        // Прочитаем настройки приложения
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), true);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveCheckedInDB();
+    }
+
+    private void saveCheckedInDB(){
+        // Сохраним "вычеркивания" в БД
+        mShoppingList.setProducts(mProducts);
+        mShoppingList.updateCheckedInDB(this);
     }
 }

@@ -25,4 +25,9 @@
         android:icon="@drawable/ic_filter"
         android:title="@string/action_filter"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_remove_checked"
+        android:orderInCategory="010"
+        android:title="@string/action_remove_checked"
+        app:showAsAction="never" />
 </menu>

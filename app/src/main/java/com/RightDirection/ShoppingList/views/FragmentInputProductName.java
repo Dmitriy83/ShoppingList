@@ -27,7 +27,7 @@ import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 
-public class InputNewItemFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class FragmentInputProductName extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private IOnNewItemAddedListener onNewItemAddedListener;
 
@@ -44,7 +44,7 @@ public class InputNewItemFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.new_item_edit_text_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_input_product_name, container, false);
 
         if (savedInstanceState == null) {
             mAllProducts = new ArrayList<>();

@@ -172,6 +172,8 @@ public class MainActivityTest extends ActivitiesTest {
     public void feedback(){
         openActionBarOverflowOrOptionsMenu(getTargetContext());
         onView(withText(mActivity.getString(R.string.feedback))).perform(click());
+        // Скроем клавиатуру
+        mDevice.pressBack();
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
         UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.feedback_email)));
         assertTrue(emailSubject.exists());

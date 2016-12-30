@@ -41,6 +41,9 @@
             android:exported="false"
             android:grantUriPermissions="true" />
 
+        <activity android:name=".activities.HelpMainActivity"
+            android:theme="@style/AppThemeDialog">
+        </activity>
         <activity android:name=".activities.HelpShoppingListInShopActivity"
             android:theme="@style/AppThemeDialog">
         </activity>
