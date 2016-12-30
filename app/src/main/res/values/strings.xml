@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Just buying</string>
     <string name="action_settings">Settings</string>
-    <string name="action_edit_products_list">Edit products list</string>
+    <string name="action_edit_products_list">Products</string>
     <string name="addItemHint">Enter product name</string>
     <string name="cross">Cross</string>
     <string name="name">Name</string>
