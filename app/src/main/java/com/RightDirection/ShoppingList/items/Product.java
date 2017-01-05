@@ -1,17 +1,22 @@
 package com.RightDirection.ShoppingList.items;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.ProductActivity;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
 public class Product extends ListItem implements IDataBaseOperations {
@@ -158,5 +163,11 @@ public class Product extends ListItem implements IDataBaseOperations {
     @Override
     public ITEM_TYPES getType(){
         return ITEM_TYPES.PRODUCT;
+    }
+
+    public void startProductActivity(Activity activity){
+        Intent intent = new Intent(activity, ProductActivity.class);
+        intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), this);
+        activity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
     }
 }

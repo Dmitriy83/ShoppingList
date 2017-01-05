@@ -3,9 +3,7 @@ package com.RightDirection.ShoppingList.activities;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.support.test.filters.MediumTest;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.utils.contentProvider;
@@ -30,6 +28,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.lessThan;
 
 public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
@@ -137,6 +136,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
     private void testShoppingListInShopActivity_CountAppearing() {
         // Клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
 
         // Проверяем, что открылась активность "В магазине"
         onView(withId(R.id.action_filter)).check(matches(isDisplayed()));
@@ -248,14 +248,9 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         // Нажимаем кнопку отправки списка покупок по почте
         onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
 
-        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
-        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
-        assertTrue(emailSubject.exists());
-        // Проверяем, что в теле письма правильно представлен список
-        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;"));
-        assertTrue(emailBody.exists());
-        mDevice.pressBack();
-        mDevice.pressBack();
+        checkEmailAppearing(
+                mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
+                "" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;");
     }
 
     @Test
@@ -275,5 +270,21 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
+    }
+
+    @Test
+    @MediumTest
+    public void shoppingListEditingActivity_AddEmptyItem(){
+        addNewShoppingList();
+
+        // Открываем для редактирования
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
+        onView(withId(R.id.rvProducts)).check(new RecyclerViewItemCountAssertion(lessThan(3)));
+
+        pressImeActionButton();
+        onView(withId(R.id.rvProducts)).check(new RecyclerViewItemCountAssertion(lessThan(3)));
     }
 }

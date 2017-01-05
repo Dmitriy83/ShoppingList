@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
@@ -42,7 +43,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
 
         // Получим значения из переданных параметров родительской активности
-        mShoppingList = getIntent().getParcelableExtra(String.valueOf(R.string.shopping_list));
+        mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() );
 
         // На всякий случай
         if (mShoppingList == null) mShoppingList = new ShoppingList(-1, "");
@@ -62,7 +63,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mProducts = new ArrayList<>();
         }
         else{
-            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products));
+            mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
         }
 
         int listItemLayout = R.layout.list_item_shopping_list_in_shop;
@@ -78,8 +79,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             getLoaderManager().initLoader(0, null, this);
         }
         else{
-            mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(String.valueOf(R.string.is_filtered)));
-            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products_original_values));
+            mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue()));
+            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
             mProductsAdapter.setOriginalValues(originalValues);
         }
 
@@ -91,9 +92,9 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String.valueOf(R.string.products), mProducts);
-        outState.putParcelableArrayList(String.valueOf(R.string.products_original_values), mProductsAdapter.getOriginalValues());
-        outState.putBoolean(String.valueOf(R.string.is_filtered), mProductsAdapter.isFiltered());
+        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
+        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue(), mProductsAdapter.getOriginalValues());
+        outState.putBoolean(EXTRAS_KEYS.IS_FILTERED.getValue(), mProductsAdapter.isFiltered());
 
         super.onSaveInstanceState(outState);
     }
@@ -155,9 +156,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else if (id == R.id.action_edit_shopping_list) {
             saveCheckedInDB();
-            Intent intent = new Intent(this, ShoppingListEditingActivity.class);
-            intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-            startActivity(intent);
+            mShoppingList.startEditingActivity(this);
             finish();
         }
         else if (id == R.id.action_send_by_email) {
@@ -174,9 +173,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mShoppingList.sendByEmail(this);
         }
         else if (id == R.id.action_load_list) {
-            Intent intentLoad = new Intent(this, LoadShoppingListActivity.class);
-            intentLoad.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-            startActivity(intentLoad);
+            mShoppingList.startLoadShoppingListActivity(this);
             finish();
         }
         else if (id == R.id.action_remove_checked) {
@@ -216,7 +213,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    Product product = data.getParcelableExtra(String.valueOf(R.string.product));
+                    Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
                     // Обновим элемент списка (имя и картинку)
                     mProductsAdapter.updateItem(product);
 

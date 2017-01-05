@@ -1,16 +1,19 @@
 package com.RightDirection.ShoppingList.enums;
 
-public enum ITEM_TYPES {
+import com.RightDirection.ShoppingList.interfaces.IGetValue;
+
+public enum ITEM_TYPES implements IGetValue {
     PRODUCT (0),
     CATEGORY (1);
 
-    private int numValue;
+    private Integer numValue;
 
     ITEM_TYPES(int numValue) {
         this.numValue = numValue;
     }
 
-    public int getNumValue() {
+    @Override
+    public Integer getValue() {
         return numValue;
     }
 }

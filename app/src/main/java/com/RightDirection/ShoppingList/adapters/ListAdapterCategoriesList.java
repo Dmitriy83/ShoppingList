@@ -1,12 +1,9 @@
 package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.CategoryActivity;
 import com.RightDirection.ShoppingList.items.Category;
 
 import java.util.ArrayList;
@@ -43,12 +40,8 @@ public class ListAdapterCategoriesList extends ListAdapter {
     private final View.OnClickListener onRepresentClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Category item = (Category) view.getTag();
-
-            // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), CategoryActivity.class);
-            intent.putExtra(String.valueOf(R.string.category), item);
-            mParentActivity.startActivity(intent);
+            Category category = (Category) view.getTag();
+            category.startCategoryActivity(mParentActivity);
         }
     };
 }

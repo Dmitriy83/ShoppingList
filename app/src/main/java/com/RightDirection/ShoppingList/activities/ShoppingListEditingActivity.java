@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
@@ -41,7 +42,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         setContentView(R.layout.activity_shopping_list_editing);
 
         // Получим значения из переданных параметров родительской активности
-        mShoppingList = getIntent().getParcelableExtra(String.valueOf(R.string.shopping_list));
+        mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
         if (mShoppingList == null){
             mShoppingList = new ShoppingList(-1, "");
@@ -50,7 +51,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         if (mShoppingList.isNew){
             // Попробуем получить продукты (если активность открылась из активности загрузки списка товаров)
-            mProducts = getIntent().getParcelableArrayListExtra(String.valueOf(R.string.products));
+            mProducts = getIntent().getParcelableArrayListExtra(EXTRAS_KEYS.PRODUCTS.getValue());
         }
 
         // Установим заголовок активности
@@ -61,7 +62,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
 
         if (savedInstanceState != null)
-            mProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.products));
+            mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
 
         if (mProducts == null) mProducts = new ArrayList<>();
 
@@ -92,7 +93,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String .valueOf(R.string.products), mProducts);
+        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
     }
 
     private void saveListAndFinish(){
@@ -117,9 +118,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
             if (mGoToInShop) {
                 // Перейдем к активности "В магазине"
-                Intent intent = new Intent(this, ShoppingListInShopActivity.class);
-                intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-                startActivity(intent);
+                mShoppingList.startInShopActivity(this);
             }
 
             finish();
@@ -133,6 +132,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
     @Override
     public void OnNewItemAdded(Product newItem) {
+        if (newItem == null) return;
+
         // Если элемент уже присутствует в списке, то добавлять не нужно
         if (!mProducts.contains(newItem)) {
             mProducts.add(0, newItem);
@@ -159,9 +160,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
             if (mGoToInShop) {
                 // Перейдем к активности "В магазине"
-                Intent intent = new Intent(this, ShoppingListInShopActivity.class);
-                intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-                startActivity(intent);
+                mShoppingList.startInShopActivity(this);
             }
 
             finish();
@@ -203,7 +202,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    Product product = data.getParcelableExtra(String.valueOf(R.string.product));
+                    Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
                     mShoppingListItemsAdapter.updateItem(product);
                 }
         }
@@ -240,9 +239,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             mShoppingList.sendByEmail(this);
         }
         else if (id == R.id.action_load_list) {
-            Intent intentLoad = new Intent(this, LoadShoppingListActivity.class);
-            intentLoad.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-            startActivity(intentLoad);
+            mShoppingList.startLoadShoppingListActivity(this);
             finish();
         }
 

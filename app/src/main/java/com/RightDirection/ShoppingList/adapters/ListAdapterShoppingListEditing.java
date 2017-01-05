@@ -1,16 +1,13 @@
 package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.ProductActivity;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -177,12 +174,8 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
         @Override
         public boolean onLongClick(View view) {
             Product product = (Product) view.getTag();
-
             // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
-            intent.putExtra(String.valueOf(R.string.product), product);
-            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
-
+            product.startProductActivity(mParentActivity);
             return false;
         }
     };

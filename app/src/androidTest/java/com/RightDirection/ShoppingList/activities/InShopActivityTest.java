@@ -3,9 +3,7 @@ package com.RightDirection.ShoppingList.activities;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.filters.MediumTest;
-import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
 
 import com.RightDirection.ShoppingList.R;
 
@@ -24,7 +22,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static junit.framework.Assert.assertTrue;
 
 public class InShopActivityTest extends ActivitiesTest {
 
@@ -53,6 +50,7 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
 
         // Пробуем вычеркнуть товары обычным нажатие. Проверяем, что окно "Победа!" не отобразилось
         for (int i = 1; i <= 3; i++){
@@ -82,6 +80,7 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
 
         // Снимаем выеделение со всех товаров
         for (int i = 1; i <= 3; i++){
@@ -106,19 +105,15 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Переходим в активность "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
 
         // Нажимаем кнопку отправки списка покупок по почте
         openActionBarOverflowOrOptionsMenu(getTargetContext());
         onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
 
-        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
-        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
-        assertTrue(emailSubject.exists());
-        // Проверяем, что в теле письма правильно представлен список
-        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "1, 1.0;" + "\n" + mNewProductNamePattern + "2, 1.0;"));
-        assertTrue(emailBody.exists());
-        mDevice.pressBack();
-        mDevice.pressBack();
+        checkEmailAppearing(
+                mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
+                "" + mNewProductNamePattern + "1, 1.0;" + "\n" + mNewProductNamePattern + "2, 1.0;");
     }
 
     @Test
@@ -128,6 +123,7 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
 
         // Нажимаем на кнопку вызова подменю
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
@@ -149,6 +145,7 @@ public class InShopActivityTest extends ActivitiesTest {
         editNewShoppingList();
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         // Выделяем два элемента из трех
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
@@ -156,6 +153,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         // Снова открываем список покупок и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
         // Нажимаем кнопку назад
@@ -163,6 +161,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         // Снова открываем список покупок и снимаем выделение с одного из элементов списка.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeLeft());
         // Опять выделяем. Проверяем появление надписи.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
@@ -187,6 +186,7 @@ public class InShopActivityTest extends ActivitiesTest {
         editNewShoppingList();
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         // Выделяем два элемента из трех
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
@@ -206,6 +206,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         // Снова открываем список.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
@@ -221,6 +222,7 @@ public class InShopActivityTest extends ActivitiesTest {
         editNewShoppingList();
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         // Выделяем два элемента из трех
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
@@ -261,6 +263,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         // Снова открываем список.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());

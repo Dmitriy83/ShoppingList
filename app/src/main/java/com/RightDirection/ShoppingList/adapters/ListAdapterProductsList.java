@@ -1,14 +1,10 @@
 package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.ProductActivity;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -45,11 +41,8 @@ public class ListAdapterProductsList extends ListAdapter {
         @Override
         public void onClick(View view) {
             Product product = (Product) view.getTag();
-
             // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
-            intent.putExtra(String.valueOf(R.string.product), product);
-            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+            product.startProductActivity(mParentActivity);
         }
     };
 }

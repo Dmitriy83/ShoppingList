@@ -8,9 +8,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/imgDelete"
         android:layout_toStartOf="@+id/imgDelete"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/productRepresentWithoutCount">
 
@@ -20,9 +18,7 @@
             android:id="@+id/txtName"
             android:padding="10dp"
             android:textColor="#F000"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:textSize="@dimen/text_size_normal"/>
     </RelativeLayout>
@@ -31,9 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/productRepresentWithoutCount"
-        android:layout_toLeftOf="@+id/imgDelete"
         android:layout_toStartOf="@+id/imgDelete"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/rlCount"
         android:gravity="center">
@@ -43,14 +37,12 @@
             android:layout_height="@dimen/normal_size"
             android:id="@+id/imgDecrease"
             android:contentDescription="@string/decrease"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:background="@drawable/ic_remove_circle" />
 
         <EditText
             android:layout_width="@dimen/large_size"
             android:layout_height="@dimen/normal_size"
-            android:layout_toRightOf="@+id/imgDecrease"
             android:layout_toEndOf="@+id/imgDecrease"
             android:id="@+id/etCount"
             android:hint=""
@@ -58,14 +50,13 @@
             android:digits="0123456789."
             android:textSize="@dimen/text_size_normal"
             android:inputType="numberDecimal"
-            />
+            android:textColor="@color/category_text_color" />
 
         <ImageButton
             android:layout_width="@dimen/normal_size"
             android:layout_height="@dimen/normal_size"
             android:id="@+id/imgIncrease"
             android:contentDescription="@string/increase"
-            android:layout_toRightOf="@+id/etCount"
             android:layout_toEndOf="@+id/etCount"
             android:background="@drawable/ic_add_circle" />
     </RelativeLayout>
@@ -77,7 +68,6 @@
         android:contentDescription="@string/cross"
         android:background="@drawable/ic_delete"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <View

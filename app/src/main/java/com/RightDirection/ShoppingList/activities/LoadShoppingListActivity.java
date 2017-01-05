@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 
 public class LoadShoppingListActivity extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class LoadShoppingListActivity extends AppCompatActivity {
         mContext = this;
 
         Intent sourceIntent = getIntent();
-        mShoppingList = sourceIntent.getParcelableExtra(String.valueOf(R.string.shopping_list));
+        mShoppingList = sourceIntent.getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
         Button btnGotIt = (Button) findViewById(R.id.btnLoad);
         if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnLoadClick);
@@ -43,9 +44,10 @@ public class LoadShoppingListActivity extends AppCompatActivity {
             if (!mShoppingList.isNew) mShoppingList.updateInDB(mContext);
 
             // Откроем активность редактирования списка покупок
+            mShoppingList.startEditingActivity(mContext);
             Intent intent = new Intent(mContext, ShoppingListEditingActivity.class);
-            intent.putExtra(String.valueOf(R.string.shopping_list), mShoppingList);
-            if (mShoppingList.isNew) intent.putExtra(String.valueOf(R.string.products), mShoppingList.getProducts());
+            intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() , mShoppingList);
+            if (mShoppingList.isNew) intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), mShoppingList.getProducts());
             mContext.startActivity(intent);
 
             finish();

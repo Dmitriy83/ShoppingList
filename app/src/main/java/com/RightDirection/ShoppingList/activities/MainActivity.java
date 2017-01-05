@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -154,6 +155,11 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                         "\n" + "\n" + "\n" + "\n" + getString(R.string.email_body_divider)
                                 + "\n" + Utils.getDeviceName() + "\nAndroid " + Build.VERSION.RELEASE,
                         null));
+            }
+            catch(ActivityNotFoundException e){
+                System.out.println("Exception raises during sending mail. Discription: " + e);
+                Toast.makeText(this, R.string.email_activity_not_found_exception_text,
+                        Toast.LENGTH_SHORT).show();
             }
             catch(Exception e){
                 System.out.println("Exception raises during sending mail. Discription: " + e);

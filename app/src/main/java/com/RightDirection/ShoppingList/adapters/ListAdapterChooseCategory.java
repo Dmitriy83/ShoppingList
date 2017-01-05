@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.items.Category;
 
 import java.util.ArrayList;
@@ -33,14 +34,14 @@ public class ListAdapterChooseCategory extends RecyclerView.Adapter{
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private static class ViewHolder extends RecyclerView.ViewHolder {
         // Our holder should contain a member variable
         // for any view that will be set as we render a row
         public TextView txtName;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View rowView) {
+        ViewHolder(View rowView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(rowView);
@@ -75,9 +76,9 @@ public class ListAdapterChooseCategory extends RecyclerView.Adapter{
             public void onClick(View view) {
                 Activity activity = (Activity)mContext;
                 Intent intent = new Intent();
-                intent.putExtra(activity.getString(R.string.category),
+                intent.putExtra(EXTRAS_KEYS.CATEGORY.getValue(),
                         mCategories.get(viewHolder.getAdapterPosition()));
-                activity.setResult(activity.RESULT_OK, intent);
+                activity.setResult(Activity.RESULT_OK, intent);
                 activity.finish();
             }
         });

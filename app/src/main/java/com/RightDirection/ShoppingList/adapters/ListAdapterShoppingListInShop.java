@@ -2,7 +2,6 @@ package com.RightDirection.ShoppingList.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,12 +16,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.ProductActivity;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.ListItem;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -43,14 +40,14 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     @Override
     public int getItemViewType(int position) {
         ListItem item = (ListItem) mObjects.get(position);
-        return item.getType().getNumValue();
+        return item.getType().getValue();
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rowView;
-        if (viewType == ITEM_TYPES.CATEGORY.getNumValue()) {
+        if (viewType == ITEM_TYPES.CATEGORY.getValue()) {
             // Создаем элемент-заголовок
             rowView = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.list_item_category_title, parent, false);
@@ -141,17 +138,10 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     private final View.OnLongClickListener onRepresentLongClick = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View view) {
-            if (mFingerMoved){
-                return false;
-            }
-
+            if (mFingerMoved) return false;
             Product product = (Product) view.getTag();
-
             // Откроем активность редактирования продукта
-            Intent intent = new Intent(mParentActivity.getBaseContext(), ProductActivity.class);
-            intent.putExtra(String.valueOf(R.string.product), product);
-            mParentActivity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
-
+            product.startProductActivity(mParentActivity);
             return false;
         }
     };

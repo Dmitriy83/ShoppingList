@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.RightDirection.ShoppingList">
 
+    <!-- Эти разрешения были нужны для создания и отправки файла JSON
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    -->
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -42,18 +44,26 @@
             android:grantUriPermissions="true" />
 
         <activity android:name=".activities.HelpMainActivity"
+            android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.HelpShoppingListInShopActivity"
+            android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.ChooseCategoryActivity"
             android:theme="@style/AppThemeDialogFixedSize">
         </activity>
         <activity android:name=".activities.ChooseCategoryImageActivity"
+            android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.LoadShoppingListActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog">
+        </activity>
+        <activity android:name=".activities.OpeningOptionChoiceActivity"
+            android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
     </application>

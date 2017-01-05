@@ -11,10 +11,10 @@
         android:padding="10dp"
         android:scrollbars="vertical"
         android:fadingEdge="vertical"
-        android:textColor="#F000"
+        android:textColor="@color/ohra"
         android:background="@drawable/item_selector"
-        android:textSize="@dimen/text_size_normal"
-        />
+        android:textSize="@dimen/text_size_large"
+        android:textStyle="normal|bold" />
 
     <View
         android:layout_width="match_parent"

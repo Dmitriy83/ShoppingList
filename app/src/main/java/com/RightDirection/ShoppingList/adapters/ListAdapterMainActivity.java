@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,9 +15,6 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
-import com.RightDirection.ShoppingList.activities.LoadShoppingListActivity;
-import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
-import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 
 import java.util.ArrayList;
@@ -50,9 +45,8 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView = view;
             mSelectedView.setSelected(true);
 
-            Intent intent = new Intent(mParentActivity, ShoppingListInShopActivity.class);
-            intent.putExtra(String.valueOf(R.string.shopping_list), (ShoppingList) view.getTag());
-            ActivityCompat.startActivity(mParentActivity, intent, null);
+            ShoppingList shoppingList = (ShoppingList) view.getTag();
+            shoppingList.startOpeningOptionChoiceActivity(mParentActivity);
         }
     };
 
@@ -135,10 +129,7 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                 case R.id.action_edit_shopping_list:
 
-                    Intent intent = new Intent(mParentActivity.getBaseContext(), ShoppingListEditingActivity.class);
-                    intent.putExtra(String.valueOf(R.string.shopping_list), mSelectedItem);
-                    mParentActivity.startActivity(intent);
-
+                    mSelectedItem.startEditingActivity(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 
@@ -161,9 +152,7 @@ public class ListAdapterMainActivity extends ListAdapter {
                     return true;
 
                 case R.id.action_load_list:
-                    Intent intentLoad = new Intent(mParentActivity, LoadShoppingListActivity.class);
-                    intentLoad.putExtra(String.valueOf(R.string.shopping_list), mSelectedItem);
-                    mParentActivity.startActivity(intentLoad);
+                    mSelectedItem.startLoadShoppingListActivity(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
 

@@ -35,6 +35,8 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         addNewCategory();
 
         // Проверим редактирование категории
+        onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
         onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
         String textForTyping = mNewProductNamePattern + "Edited";
         onView(withId(R.id.etCategoryName)).perform(clearText());
@@ -113,6 +115,8 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         // Присваиваем товару созданную в тесте категорию (картинку для товара не назначаем)
         onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
         onView(withId(R.id.btnChooseCategory)).perform(click());
+        onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
         onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
         // Сохраняем товар
         onView(withId(R.id.btnSave)).perform(click());

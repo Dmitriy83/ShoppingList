@@ -6,10 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiSelector;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,7 +28,9 @@ import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,6 +50,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Checks.checkArgument;
 import static android.support.test.espresso.intent.Checks.checkNotNull;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -53,6 +60,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
@@ -276,7 +284,7 @@ abstract class ActivitiesTest {
         };
     }
 
-    static Matcher<View> containsText(final String subString) {
+    private static Matcher<View> containsText(final String subString) {
         checkArgument(!TextUtils.isEmpty(subString),"cannot be null");
         return new BoundedMatcher<View, TextView>(TextView.class) {
             @Override
@@ -433,6 +441,8 @@ abstract class ActivitiesTest {
 
         onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());
         onView(recyclerViewItemWithText("testNewProduct2")).check(doesNotExist());
+
+        pressBack();
     }
 
     void addNewCategory(){
@@ -456,5 +466,51 @@ abstract class ActivitiesTest {
         onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
         onView(recyclerViewItemWithText(mNewCategoryNamePattern)).check(matches(isDisplayed()));
+    }
+
+    class RecyclerViewItemCountAssertion implements ViewAssertion {
+
+        private final Matcher<Integer> matcher;
+
+        public RecyclerViewItemCountAssertion(int expectedCount) {
+            this.matcher = is(expectedCount);
+        }
+
+        RecyclerViewItemCountAssertion(Matcher<Integer> matcher) {
+            this.matcher = matcher;
+        }
+
+        @Override
+        public void check(View view, NoMatchingViewException noViewFoundException) {
+            if (noViewFoundException != null) {
+                throw noViewFoundException;
+            }
+
+            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView.Adapter adapter = recyclerView.getAdapter();
+            assertThat(adapter.getItemCount(), matcher);
+        }
+
+    }
+
+    void checkEmailAppearing(String subject, String emailBodyText) {
+        UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+        if (btnSend.exists()) {
+            // Скроем клавиатуру
+            mDevice.pressBack();
+            UiObject emailSubject = mDevice.findObject(new UiSelector().text(subject));
+            assertTrue(emailSubject.exists());
+            // Проверяем, что в теле письма правильно представлен список
+            UiObject emailBody = mDevice.findObject(new UiSelector().text(emailBodyText));
+            assertTrue(emailBody.exists());
+            //UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+            //btnSend.click();
+            mDevice.pressBack();
+            mDevice.pressBack();
+        }else{
+            onView(withText(R.string.email_activity_not_found_exception_text)).
+                    inRoot(withDecorView(IsNot.not(Matchers.is(mActivity.getWindow().getDecorView())))).
+                    check(matches(isDisplayed()));
+        }
     }
 }

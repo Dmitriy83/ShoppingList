@@ -1,15 +1,23 @@
 package com.RightDirection.ShoppingList.items;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.LoadShoppingListActivity;
+import com.RightDirection.ShoppingList.activities.OpeningOptionChoiceActivity;
+import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
+import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
@@ -270,6 +278,11 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                     context.getString(R.string.json_file_identifier) + " '" + getName() + "'",
                     convertShoppingListToString(context), fileName));
         }
+        catch(ActivityNotFoundException e){
+            System.out.println("Exception raises during sending mail. Discription: " + e);
+            Toast.makeText(context, R.string.email_activity_not_found_exception_text,
+                    Toast.LENGTH_SHORT).show();
+        }
         catch(Exception e){
             System.out.println("Exception raises during sending mail. Discription: " + e);
         }
@@ -443,7 +456,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 try {
                     count = Float.parseFloat(productArray[1]);
                 }catch (Exception e){
-                    Log.i("LOAD_PRODUCT", e.getMessage().toString());
+                    Log.i("LOAD_PRODUCT", e.getMessage());
                 }
             }
 
@@ -454,5 +467,30 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             Product product = new Product(-1, name, null, count);
             addProduct(product);
         }
+    }
+
+    public void startInShopActivity(Context context){
+        Intent intent = new Intent(context, ShoppingListInShopActivity.class);
+        intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), this);
+        context.startActivity(intent);
+    }
+
+    public void startEditingActivity(Context context){
+        Intent intent = new Intent(context, ShoppingListEditingActivity.class);
+        intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), this);
+        if (isNew) intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), getProducts());
+        context.startActivity(intent);
+    }
+
+    public void startLoadShoppingListActivity(Context context){
+        Intent intent = new Intent(context, LoadShoppingListActivity.class);
+        intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() , this);
+        context.startActivity(intent);
+    }
+
+    public void startOpeningOptionChoiceActivity(Context context){
+        Intent intent = new Intent(context, OpeningOptionChoiceActivity.class);
+        intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() , this);
+        context.startActivity(intent);
     }
 }

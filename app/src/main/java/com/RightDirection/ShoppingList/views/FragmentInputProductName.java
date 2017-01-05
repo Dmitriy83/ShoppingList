@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
@@ -51,11 +52,11 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
             mAllProductsNames = new ArrayList<>();
         }
         else{
-            mAllProducts = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.all_products));
-            mAllProductsNames = savedInstanceState.getStringArrayList(String.valueOf(R.string.all_products_names));
+            mAllProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
+            mAllProductsNames = savedInstanceState.getStringArrayList(EXTRAS_KEYS.PRODUCTS_NAMES.getValue());
         }
 
-        mAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.select_dialog_item, mAllProductsNames);
+        mAdapter = new ArrayAdapter<>(getActivity(), R.layout.dropdown_item, mAllProductsNames);
 
         mTvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
         if (mTvNewItem != null) {
@@ -86,8 +87,8 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
         super.onSaveInstanceState(outState);
 
         // Сохраним список продуктов для подбора
-        outState.putParcelableArrayList(String.valueOf(R.string.all_products), mAllProducts);
-        outState.putStringArrayList(String.valueOf(R.string.all_products_names), mAllProductsNames);
+        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mAllProducts);
+        outState.putStringArrayList(EXTRAS_KEYS.PRODUCTS_NAMES.getValue(), mAllProductsNames);
     }
 
     private final AutoCompleteTextView.OnEditorActionListener newItemEditTextOnEditorActionListener = new AutoCompleteTextView.OnEditorActionListener() {
@@ -131,6 +132,10 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     private void createNewItem() {
         // Добавим новый товар в БД
         String newItemName = mTvNewItem.getText().toString();
+        if (newItemName.isEmpty()){
+            return;
+        }
+
         if (!mAllProductsNames.contains(newItemName)) {
             mCurrentItem = new Product(-1, newItemName, null); // id будет назначено при сохранении продукта в БД
             mCurrentItem.addToDB(getActivity());

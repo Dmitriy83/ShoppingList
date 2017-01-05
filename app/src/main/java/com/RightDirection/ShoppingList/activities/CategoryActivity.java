@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
@@ -26,10 +27,10 @@ public class CategoryActivity extends AppCompatActivity{
 
         if (savedInstanceState != null){
             // Восстановим объект из сохраненных значений
-            mCategory = savedInstanceState.getParcelable(String.valueOf(R.string.category));
+            mCategory = savedInstanceState.getParcelable(EXTRAS_KEYS.CATEGORY.getValue());
         }else{
             // Получим значения из переданных параметров
-            mCategory = getIntent().getParcelableExtra(String.valueOf(R.string.category));
+            mCategory = getIntent().getParcelableExtra(EXTRAS_KEYS.CATEGORY.getValue());
         }
 
         if (mCategory == null) {
@@ -75,7 +76,7 @@ public class CategoryActivity extends AppCompatActivity{
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(String.valueOf(R.string.category), mCategory);
+        outState.putParcelable(EXTRAS_KEYS.CATEGORY.getValue(), mCategory);
         super.onSaveInstanceState(outState);
     }
 
@@ -114,7 +115,7 @@ public class CategoryActivity extends AppCompatActivity{
         switch(requestCode) {
             case Utils.GET_CATEGORY_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    String strImageUri = data.getStringExtra(getString(R.string.item_image));
+                    String strImageUri = data.getStringExtra(EXTRAS_KEYS.ITEM_IMAGE.getValue());
                     if (strImageUri != null) {
                         mCategory.setImageUri(Uri.parse(strImageUri));
                     }

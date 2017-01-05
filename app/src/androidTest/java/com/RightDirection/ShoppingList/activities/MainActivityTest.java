@@ -141,15 +141,9 @@ public class MainActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_send_by_email)).perform(click());
 
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
-        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
-        assertTrue(emailSubject.exists());
-        // Проверяем, что в теле письма правильно представлен список
-        UiObject emailBody = mDevice.findObject(new UiSelector().text("" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;"));
-        assertTrue(emailBody.exists());
-        //UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
-        //btnSend.click();
-        mDevice.pressBack();
-        mDevice.pressBack();
+        checkEmailAppearing(
+                mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
+                "" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;");
     }
 
     @Test
@@ -172,17 +166,9 @@ public class MainActivityTest extends ActivitiesTest {
     public void feedback(){
         openActionBarOverflowOrOptionsMenu(getTargetContext());
         onView(withText(mActivity.getString(R.string.feedback))).perform(click());
-        // Скроем клавиатуру
-        mDevice.pressBack();
-        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
-        UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.feedback_email)));
-        assertTrue(emailSubject.exists());
-        // Проверяем, что в теле письма правильно представлен список
-        UiObject emailBody = mDevice.findObject(new UiSelector().text("\n" + "\n" + "\n" + "\n"
+        checkEmailAppearing(mActivity.getString(R.string.feedback),
+                "\n" + "\n" + "\n" + "\n"
                 + mActivity.getString(R.string.email_body_divider) + "\n" + Utils.getDeviceName()
-                + "\nAndroid " + Build.VERSION.RELEASE));
-        assertTrue(emailBody.exists());
-        mDevice.pressBack();
-        mDevice.pressBack();
+                + "\nAndroid " + Build.VERSION.RELEASE);
     }
 }

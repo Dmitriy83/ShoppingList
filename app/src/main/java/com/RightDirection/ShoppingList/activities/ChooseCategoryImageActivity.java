@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.GridAdapterChooseCategoryImage;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 
 public class ChooseCategoryImageActivity extends AppCompatActivity{
 
@@ -51,7 +52,7 @@ public class ChooseCategoryImageActivity extends AppCompatActivity{
 
     public void sendImageUriAndFinish(String strImageUri){
         Intent intent = new Intent();
-        intent.putExtra(getString(R.string.item_image), strImageUri);
+        intent.putExtra(EXTRAS_KEYS.ITEM_IMAGE.getValue(), strImageUri);
         setResult(RESULT_OK, intent);
 
         finish();

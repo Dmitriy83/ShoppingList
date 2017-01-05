@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -35,10 +36,10 @@ public class ProductActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             // Восстановим объект из сохраненных значений
-            mProduct = savedInstanceState.getParcelable(String.valueOf(R.string.product));
+            mProduct = savedInstanceState.getParcelable(EXTRAS_KEYS.PRODUCT.getValue());
         } else {
             // Получим значения из переданных параметров
-            mProduct = getIntent().getParcelableExtra(String.valueOf(R.string.product));
+            mProduct = getIntent().getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
         }
 
         if (mProduct == null) {
@@ -93,7 +94,7 @@ public class ProductActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(String.valueOf(R.string.product), mProduct);
+        outState.putParcelable(EXTRAS_KEYS.PRODUCT.getValue(), mProduct);
         super.onSaveInstanceState(outState);
     }
 
@@ -119,7 +120,7 @@ public class ProductActivity extends AppCompatActivity {
 
             // Обновим наименование в активности редактирования списка товаров
             Intent intent = new Intent();
-            intent.putExtra(String.valueOf(R.string.product), mProduct);
+            intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct);
             setResult(RESULT_OK, intent);
 
             finish();

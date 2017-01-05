@@ -73,4 +73,5 @@
     <string name="pref_show_categories_summary">Разбивать товары на категории в окне \"В магазине\"</string>
     <string name="main_activity_title">Все списки покупок</string>
     <string name="action_remove_checked">Удалить купленные</string>
+    <string name="email_activity_not_found_exception_text">Не установлена почтовая программа</string>
 </resources>
