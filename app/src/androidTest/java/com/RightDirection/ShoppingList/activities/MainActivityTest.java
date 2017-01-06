@@ -166,9 +166,33 @@ public class MainActivityTest extends ActivitiesTest {
     public void feedback(){
         openActionBarOverflowOrOptionsMenu(getTargetContext());
         onView(withText(mActivity.getString(R.string.feedback))).perform(click());
-        checkEmailAppearing(mActivity.getString(R.string.feedback),
+        feedbackCheckEmailAppearing(mActivity.getString(R.string.feedback),
                 "\n" + "\n" + "\n" + "\n"
                 + mActivity.getString(R.string.email_body_divider) + "\n" + Utils.getDeviceName()
                 + "\nAndroid " + Build.VERSION.RELEASE);
+    }
+
+    private void feedbackCheckEmailAppearing(String subject, String emailBodyText) {
+        UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+        if (btnSend.exists()) {
+            // Скроем клавиатуру
+            mDevice.pressBack();
+            UiObject emailSubject = mDevice.findObject(new UiSelector().text(subject));
+            assertTrue(emailSubject.exists());
+            // Проверяем, что в теле письма правильно представлен список
+            UiObject emailBody = mDevice.findObject(new UiSelector().text(emailBodyText));
+            assertTrue(emailBody.exists());
+            //UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
+            //btnSend.click();
+            mDevice.pressBack();
+            mDevice.pressBack();
+        }else{
+            /*
+            onView(withText(R.string.email_activity_not_found_exception_text)).
+                    inRoot(withDecorView(IsNot.not(Matchers.is(mActivity.getWindow().getDecorView())))).
+                    check(matches(isDisplayed()));
+                    */
+            mDevice.pressBack();
+        }
     }
 }

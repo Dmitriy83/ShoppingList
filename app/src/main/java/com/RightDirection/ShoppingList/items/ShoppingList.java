@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.items;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
+import android.support.v4.app.ShareCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,7 +21,6 @@ import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
-import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.json.JSONArray;
@@ -274,9 +275,22 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             */
             String fileName = null;
 
+            String subject  = context.getString(R.string.json_file_identifier)
+                    + " '" + getName() + "'";
+            String body     = convertShoppingListToString(context);
+
+            /*
             context.startActivity(Utils.getSendEmailIntent("",
                     context.getString(R.string.json_file_identifier) + " '" + getName() + "'",
-                    convertShoppingListToString(context), fileName));
+                    convertShoppingListToString(context), fileName, context));
+                    */
+
+            ShareCompat.IntentBuilder
+                    .from((Activity)context) // getActivity() or activity field if within Fragment
+                    .setText(body)
+                    .setSubject(subject)
+                    .setType("text/plain") // most general text sharing MIME type
+                    .startChooser();
         }
         catch(ActivityNotFoundException e){
             System.out.println("Exception raises during sending mail. Discription: " + e);

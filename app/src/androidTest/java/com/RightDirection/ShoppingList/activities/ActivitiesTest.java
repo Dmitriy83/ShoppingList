@@ -13,6 +13,7 @@ import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -28,9 +29,7 @@ import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsNot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -50,7 +49,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.doesNotExis
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Checks.checkArgument;
 import static android.support.test.espresso.intent.Checks.checkNotNull;
-import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -493,9 +491,10 @@ abstract class ActivitiesTest {
 
     }
 
-    void checkEmailAppearing(String subject, String emailBodyText) {
-        UiObject btnSend = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.send)));
-        if (btnSend.exists()) {
+    void checkEmailAppearing(String subject, String emailBodyText) throws UiObjectNotFoundException {
+        UiObject btnEmail = mDevice.findObject(new UiSelector().text("Email"));
+        if (btnEmail.exists()) {
+            btnEmail.click();
             // Скроем клавиатуру
             mDevice.pressBack();
             UiObject emailSubject = mDevice.findObject(new UiSelector().text(subject));
@@ -508,9 +507,16 @@ abstract class ActivitiesTest {
             mDevice.pressBack();
             mDevice.pressBack();
         }else{
+            /*
             onView(withText(R.string.email_activity_not_found_exception_text)).
                     inRoot(withDecorView(IsNot.not(Matchers.is(mActivity.getWindow().getDecorView())))).
                     check(matches(isDisplayed()));
+                    */
+            // Открылась смс
+            mDevice.pressBack();
+            mDevice.pressBack();
+            UiObject btnOk = mDevice.findObject(new UiSelector().text("OK"));
+            btnOk.click();
         }
     }
 }

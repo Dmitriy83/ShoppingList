@@ -16,100 +16,101 @@
     <string name="edit">Edit</string>
     <string name="in_shop">" "In shop</string>
     <string name="delete_shopping_list_question">Delete shopping list?</string>
-    <string name="list_id">listId</string>
-    <string name="is_new_item">isNewItem</string>
-    <string name="item_id">itemId</string>
-    <string name="is_new_list">isNewList</string>
-    <string name="list_item">list_item</string>
-    <string name="products">shopping_list_items</string>
+    <string name="list_id" translatable="false">listId</string>
+    <string name="is_new_item" translatable="false">isNewItem</string>
+    <string name="item_id" translatable="false">itemId</string>
+    <string name="is_new_list" translatable="false">isNewList</string>
+    <string name="list_item" translatable="false">list_item</string>
+    <string name="products" translatable="false">shopping_list_items</string>
     <string name="in_shop_ending_work_message">Done</string>
     <string name="in_developing">In developing…</string>
     <string name="change_list_name">Rename</string>
     <string name="hide_marked">Hide marked</string>
     <string name="show_marked">Show marked</string>
-    <string name="products_original_values">shopping_list_items_original_values</string>
-    <string name="is_filtered">is_filtered</string>
-    <string name="all_products">all_products</string>
-    <string name="all_products_names">all_products_names</string>
+    <string name="products_original_values" translatable="false">shopping_list_items_original_values</string>
+    <string name="is_filtered" translatable="false">is_filtered</string>
+    <string name="all_products" translatable="false">all_products</string>
+    <string name="all_products_names" translatable="false">all_products_names</string>
     <string name="product_image">product_image</string>
-    <string name="view_holder">view_holder</string>
+    <string name="view_holder" translatable="false">view_holder</string>
     <string name="pref_title">Settings</string>
     <string name="pref_cross_out_action">Cross out product</string>
-    <string name="pref_key_cross_out_action">pref_key_cross_out_action</string>
+    <string name="pref_key_cross_out_action" translatable="false">pref_key_cross_out_action</string>
     <string name="pref_cross_out_action_summary">Check a product by crossing out or just clicking</string>
-    <string name="item_image">item_image</string>
+    <string name="item_image" translatable="false">item_image</string>
     <string name="send_by_email">Send by e-mail</string>
     <string name="delete">Remove</string>
-    <string name="pref_key_show_images">Show images</string>
+    <string name="pref_key_show_images" translatable="false">Show images</string>
     <string name="pref_show_images">Show images</string>
     <string name="send_email">Send</string>
     <string name="receive_by_email">Receive shopping list by email…</string>
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
     <string name="email_settings_to_load_shopping_lists">Email setting to load shopping lists</string>
-    <string name="pref_key_email_host">pref_key_email_host</string>
+    <string name="pref_key_email_host" translatable="false">pref_key_email_host</string>
     <string name="email_host">Email host</string>
-    <string name="pref_key_email_port">pref_key_email_port</string>
+    <string name="pref_key_email_port" translatable="false">pref_key_email_port</string>
     <string name="email_port">Email port</string>
-    <string name="pref_key_email_login">pref_key_email_login</string>
+    <string name="pref_key_email_login" translatable="false">pref_key_email_login</string>
     <string name="email_login">Email login</string>
-    <string name="pref_key_email_password">pref_key_email_password</string>
+    <string name="pref_key_email_password" translatable="false">pref_key_email_password</string>
     <string name="email_password">Email password</string>
-    <string name="json_file_identifier">ShoppingList</string>
+    <string name="json_file_identifier" translatable="false">ShoppingList</string>
     <string name="wrong_email_protocol_exception_message">Supports only IMAP protocol</string>
     <string name="not_assigned">Not assigned</string>
-    <string name="password_mask">******</string>
+    <string name="password_mask" translatable="false">******</string>
     <string name="action_receive_shopping_list_by_email">Receive shopping list by email</string>
     <string name="send">Send</string>
     <string name="loaded">loaded</string>
-    <string name="action_save_list">Save list</string>
+    <string name="action_save_list" translatable="false">Save list</string>
     <string name="action_remove_all_items">Remove all items</string>
-    <string name="action_go_to_in_shop_activity">Go to in shop activity</string>
-    <string name="action_filter">filter</string>
-    <string name="action_edit_shopping_list">Edit shopping list</string>
+    <string name="action_go_to_in_shop_activity" translatable="false">Go to in shop activity</string>
+    <string name="action_filter" translatable="false">filter</string>
+    <string name="action_edit_shopping_list" translatable="false">Edit shopping list</string>
     <string name="loading">Loading…</string>
     <string name="no_emails_for_loading">There are not any emails for loading</string>
     <string name="action_help">Help</string>
-    <string name="list_name">list_name</string>
+    <string name="list_name" translatable="false">list_name</string>
     <string name="new_list">New list</string>
-    <string name="help_string">Help</string>
+    <string name="help_string" translatable="false">Help</string>
     <string name="HelpInShop1">To cross out items, swipe from left to right. To undo crossing out, swipe back.\n\nYou can change the way of crossing out in the settings.\n</string>
     <string name="pref_key_show_help_screens">Show help</string>
     <string name="got_it">Got it</string>
     <string name="action_edit_categories_list">Categories</string>
     <string name="item_already_added">Item was added before</string>
-    <string name="category">Category</string>
+    <string name="category" translatable="false">Category</string>
     <string name="new_category">New category</string>
     <string name="category_title">Category</string>
     <string name="choose_category">Choose category…</string>
-    <string name="product">product</string>
-    <string name="three_dots">…</string>
+    <string name="product" translatable="false">product</string>
+    <string name="three_dots" translatable="false">…</string>
     <string name="category_not_assigned">Category was not assigned</string>
     <string name="order">Order</string>
     <string name="no_name">No name</string>
     <string name="product_is_exist">Product with the same name is already exist.</string>
-    <string name="divider">,</string>
-    <string name="product_divider">;</string>
+    <string name="divider" translatable="false">,</string>
+    <string name="product_divider" translatable="false">;</string>
     <string name="load">Load</string>
     <string name="text_for_loading">Type or paste text in this format:\nMilk, 2;  Bread, 1; Wine, 3</string>
-    <string name="shopping_list">ShoppingList</string>
+    <string name="shopping_list" translatable="false">ShoppingList</string>
     <string name="menu_button_identifier">More options</string>
-    <string name="category_image_id">category_image_id</string>
+    <string name="category_image_id" translatable="false">category_image_id</string>
     <string name="without_category">Without category</string>
-    <string name="pref_key_show_categories">pref_key_show_categories</string>
+    <string name="pref_key_show_categories" translatable="false">pref_key_show_categories</string>
     <string name="pref_show_categories">Show categories</string>
-    <string name="default_order">100</string>
+    <string name="default_order" translatable="false">100</string>
     <string name="enter_order">Enter order</string>
     <string name="feedback">Feedback</string>
-    <string name="feedback_email">d.zhiharev83@gmail.com</string>
-    <string name="email_body_divider">--------------------------------------------------</string>
+    <string name="feedback_email" translatable="false">d.zhiharev83@gmail.com</string>
+    <string name="email_body_divider" translatable="false">--------------------------------------------------</string>
     <string name="HelpInShop2">To edit shopping list press button</string>
     <string name="HelpMain1">Welcome!\n\nThere are all yours shopping lists.\nAdd new lists, send by the e-mail and load them.</string>
     <string name="pref_show_images_summary">Show products and categories with images</string>
     <string name="pref_show_categories_summary">Separate products in window \"In shop\"</string>
     <string name="main_activity_title">All shopping lists</string>
-    <string name="pref_key_show_help_in_main_activity">pref_key_show_help_in_main_screen</string>
+    <string name="pref_key_show_help_in_main_activity" translatable="false">pref_key_show_help_in_main_screen</string>
     <string name="action_remove_checked">Remove checked products</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="email_activity_not_found_exception_text">Not found email client application</string>
+    <string name="choose_email_client">Choose email client</string>
 </resources>

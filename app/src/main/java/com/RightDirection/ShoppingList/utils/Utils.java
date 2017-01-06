@@ -186,17 +186,18 @@ public class Utils {
         }
     }
 
-    public static Intent getSendEmailIntent(@Nullable String email, String subject, String body, String fileName) {
+    public static Intent getSendEmailIntent(@Nullable String recipientEmail, String subject, String body, String fileName) {
 
-        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+        final Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
-        //Explicitly only use Gmail to send
-        //emailIntent.setClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
+        //Explicitly  use Gmail to send
+        //emailIntent.seonlytClassName("com.google.android.gm","com.google.android.gm.ComposeActivityGmail");
 
         emailIntent.setType("plain/text");
 
         //Add the recipients
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { email });
+        emailIntent.setData(Uri.parse("mailto:" + recipientEmail));
+        //emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { recipientEmail });
 
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
 
@@ -208,6 +209,7 @@ public class Utils {
             emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/files/" + fileName));
         }
 
+        //return Intent.createChooser(emailIntent, context.getString(R.string.choose_email_client));
         return emailIntent;
     }
 
