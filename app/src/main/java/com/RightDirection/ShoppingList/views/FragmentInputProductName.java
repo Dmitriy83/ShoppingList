@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -113,8 +114,11 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String name = mAdapter.getItem(position);
-            mCurrentItem = mAllProducts.get(mAllProductsNames.indexOf(name));
-            addItem();
+            int index = mAllProductsNames.indexOf(name);
+            if (index >= 0) {
+                mCurrentItem = mAllProducts.get(index);
+                addItem();
+            }
         }
     };
 
@@ -202,6 +206,41 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     private void addProductInArrays(Product newListItem){
         mAllProducts.add(newListItem);
         mAllProductsNames.add(newListItem.getName());
+    }
+
+    public void updateProductName(Product product){
+        AsyncTaskUpdateProductName asyncTaskUpdateProductName = new AsyncTaskUpdateProductName();
+        asyncTaskUpdateProductName.execute(product);
+    }
+
+    private class AsyncTaskUpdateProductName extends AsyncTask<Product, Integer, Boolean> {
+        @Override
+        protected Boolean doInBackground(Product... params) {
+            Boolean success = false;
+            Product product = params[0];
+
+            for (int i = 0; i < mAllProducts.size(); i++) {
+                Product currentProduct = mAllProducts.get(i);
+                if (currentProduct.getId() == product.getId()){
+                    currentProduct.setName(product.getName());
+                    // Изменим элемент и в связанном массиве
+                    mAllProductsNames.set(i, product.getName());
+
+                    success = true;
+                }
+            }
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+
+            // Обновим адаптер
+            mAdapter = new ArrayAdapter<>(getActivity(), R.layout.dropdown_item, mAllProductsNames);
+            mTvNewItem.setAdapter(mAdapter);
+        }
     }
 }
 

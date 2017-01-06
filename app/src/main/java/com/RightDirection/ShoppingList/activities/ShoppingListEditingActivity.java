@@ -25,6 +25,7 @@ import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.views.FragmentInputProductName;
 
 import java.util.ArrayList;
 
@@ -204,6 +205,11 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                     // Получим значения из переданных параметров
                     Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
                     mShoppingListItemsAdapter.updateItem(product);
+
+                    // Обновим элемент выпадающего списка
+                    FragmentInputProductName fragment = (FragmentInputProductName)getFragmentManager()
+                            .findFragmentById(R.id.newItemFragment);
+                    fragment.updateProductName(product);
                 }
         }
     }

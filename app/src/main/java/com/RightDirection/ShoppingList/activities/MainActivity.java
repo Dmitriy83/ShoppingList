@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 String password = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_password), "");
 
                 // В отдельном потоке скачем и обработаем электронные письма
-                asyncTaskDownloadEmail asyncTaskDownloadEmail = new asyncTaskDownloadEmail();
+                AsyncTaskDownloadEmail asyncTaskDownloadEmail = new AsyncTaskDownloadEmail();
                 EmailReceiver receiver = new EmailReceiver(this);
                 receiver.setServerProperties(host, port);
                 receiver.setLogin(userName);
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class asyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{
+    private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{
         @Override
         protected ArrayList<ShoppingList> doInBackground(EmailReceiver... params) {
 
