@@ -6,11 +6,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".activities.CategoriesListActivity"
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.CategoriesListActivity"
         android:layout_above="@+id/adView">
 
         <android.support.v7.widget.RecyclerView
@@ -30,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             app:fabSize="normal"
-            app:backgroundTint="@android:color/holo_orange_dark"
+            app:backgroundTint="@android:color/holo_orange_light"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginStart="@dimen/fab_margin"

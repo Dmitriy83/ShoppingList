@@ -111,13 +111,11 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 float mEndXTouch = event.getX();
                 float distance = mEndXTouch - mInitXTouch;
                 ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
-                if (distance > 50) {
-                    setViewAndItemChecked(item, viewHolder);
-                } else if (distance < -50) {
-                    if (viewHolder != null) {
-                        setViewUnchecked(viewHolder);
-                        item.setUnchecked();
-                    }
+                if (distance > 50 || distance < -50) {
+                    if (item.isChecked())
+                        setViewAndItemUnchecked(item, viewHolder);
+                    else
+                        setViewAndItemChecked(item, viewHolder);
                 }
 
                 // Отфильтруем лист, если необходимо
@@ -154,6 +152,13 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         // Если "вычеркнуты" все товары, выведем сообщение пользователю
         if (allProductsChecked()) {
             showVictoryDialog();
+        }
+    }
+
+    private void setViewAndItemUnchecked(Product item, ViewHolder viewHolder) {
+        if (viewHolder != null) {
+            setViewUnchecked(viewHolder);
+            item.setUnchecked();
         }
     }
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4e64d0</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#cfff40</color>
+    <color name="colorPrimaryDark">#558b2f</color>
     <color name="red">#FF0000</color>
     <color name="white">#ffffff</color>
     <color name="gray">#d1cbcb</color>
-    <color name="action_mode_background_color">#acd630</color>
+    <color name="action_mode_background_color">#83af00</color>
     <color name="popup_menu_background_color">#ffffff</color>
     <color name="border_color">#d7d5d5</color>
     <color name="category_text_color">#8f8282</color>
-    <color name="ohra">#c75001</color>
+    <color name="ocher">#c75001</color>
+    <color name="test1">#256040</color>
+    <color name="test2">#1c4830</color>
 </resources>

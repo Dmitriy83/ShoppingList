@@ -6,6 +6,8 @@
     <dimen name="fab_margin_right">20dp</dimen>
     <dimen name="save_button_margin">90px</dimen>
     <dimen name="victory_text_size">10sp</dimen>
+    <dimen name="small_size">30dp</dimen>
+    <dimen name="count_text_field_size">35dp</dimen>
     <dimen name="normal_size">40dp</dimen>
     <dimen name="large_size">60dp</dimen>
     <dimen name="text_size_normal">16sp</dimen>
@@ -15,4 +17,5 @@
     <dimen name="help_screen_height">210dp</dimen>
     <dimen name="help_text_size">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
 </resources>

@@ -73,7 +73,7 @@
     <string name="list_name" translatable="false">list_name</string>
     <string name="new_list">New list</string>
     <string name="help_string" translatable="false">Help</string>
-    <string name="HelpInShop1">To cross out items, swipe from left to right. To undo crossing out, swipe back.\n\nYou can change the way of crossing out in the settings.\n</string>
+    <string name="HelpInShop1">Swipe to cross out items. To undo crossing out, swipe again.\n\nYou can change the way of crossing out (by click) in the settings.\n</string>
     <string name="pref_key_show_help_screens">Show help</string>
     <string name="got_it">Got it</string>
     <string name="action_edit_categories_list">Categories</string>

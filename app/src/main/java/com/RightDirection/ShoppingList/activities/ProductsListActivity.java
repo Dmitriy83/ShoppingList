@@ -18,6 +18,8 @@ import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +29,8 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
     private ArrayList<Product> mProducts;
     private ListAdapterProductsList mProductsAdapter;
+
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,10 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
+
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     @Override
