@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
@@ -43,6 +44,8 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     private ArrayAdapter<String> mAdapter;
 
     private AutoCompleteTextView mTvNewItem;
+
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,6 +140,7 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
         // Добавим новый товар в БД
         String newItemName = mTvNewItem.getText().toString();
         if (newItemName.isEmpty()){
+            Toast.makeText(mContext, mContext.getString(R.string.addItemHint), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -158,6 +162,8 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
 
         super.onAttach(context);
 
+        mContext = context;
+
         Activity activity = null;
         if (context instanceof Activity){
             activity = (Activity) context;
@@ -177,6 +183,8 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     public void onAttach(Activity activity) {
 
         super.onAttach(activity);
+
+        mContext = activity;
 
         try {
             onNewItemAddedListener = (IOnNewItemAddedListener) activity;

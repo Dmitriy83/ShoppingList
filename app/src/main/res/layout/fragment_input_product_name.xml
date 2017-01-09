@@ -27,7 +27,6 @@
         android:background="@drawable/ic_add_product"
         android:layout_alignBaseline="@+id/newItemEditText"
         android:layout_alignBottom="@+id/newItemEditText"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

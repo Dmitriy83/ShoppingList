@@ -8,7 +8,7 @@
     <color name="popup_menu_background_color">#ffffff</color>
     <color name="border_color">#d7d5d5</color>
     <color name="category_text_color">#8f8282</color>
-    <color name="ocher">#c75001</color>
+    <color name="orange">#ef6c00</color>
     <color name="test1">#256040</color>
     <color name="test2">#1c4830</color>
 </resources>

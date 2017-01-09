@@ -113,4 +113,5 @@
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="email_activity_not_found_exception_text">Not found email client application</string>
     <string name="choose_email_client">Choose email client</string>
+    <string name="category_name_hint">Enter category name</string>
 </resources>

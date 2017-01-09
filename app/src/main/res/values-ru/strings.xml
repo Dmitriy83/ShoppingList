@@ -75,4 +75,5 @@
     <string name="action_remove_checked">Удалить купленные</string>
     <string name="email_activity_not_found_exception_text">Не установлена почтовая программа</string>
     <string name="choose_email_client">Выберите почтовую программу</string>
+    <string name="category_name_hint">Введите наименование категории</string>
 </resources>

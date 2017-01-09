@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="@string/product_name_hint"
+        android:hint="@string/category_name_hint"
         android:inputType="textCapSentences"
         android:imeOptions="flagNoExtractUi"
         android:textColor="@android:color/black" />

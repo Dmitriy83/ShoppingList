@@ -17,8 +17,14 @@
     <style name="AppThemeNoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="actionModeStyle">@style/Widget.ActionMode</item>
+        <!-- For Lollipop -->
         <item name="android:actionModeBackground">@color/action_mode_background_color</item>
         <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="Widget.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">@color/action_mode_background_color</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme" parent="ThemeOverlay.AppCompat.Light">

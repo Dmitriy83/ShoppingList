@@ -11,7 +11,7 @@
         android:padding="10dp"
         android:scrollbars="vertical"
         android:fadingEdge="vertical"
-        android:textColor="@color/ocher"
+        android:textColor="@color/orange"
         android:background="@drawable/item_selector"
         android:textSize="@dimen/text_size_large"
         android:textStyle="normal|bold" />
