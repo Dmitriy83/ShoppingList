@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/etCategoryName"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:hint="@string/category_name_hint"
         android:inputType="textCapSentences"
@@ -27,9 +25,7 @@
         android:id="@+id/btnSave"
         android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <EditText
@@ -41,7 +37,6 @@
         android:id="@+id/etOrder"
         android:inputType="number"
         android:hint="@string/enter_order"
-        android:layout_toRightOf="@+id/tvOrder"
         android:layout_toEndOf="@+id/tvOrder"
         android:gravity="end|center_vertical" />
 
@@ -53,7 +48,6 @@
         android:text="@string/order"
         android:layout_alignBaseline="@+id/etOrder"
         android:layout_alignBottom="@+id/etOrder"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
     <ImageView

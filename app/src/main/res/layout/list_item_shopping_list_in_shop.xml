@@ -9,8 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/normal_size"
         android:layout_toEndOf="@+id/imgItemImage"
-        android:layout_toLeftOf="@+id/txtCount"
-        android:layout_toRightOf="@+id/imgItemImage"
         android:layout_toStartOf="@+id/txtCount"
         android:padding="10dp"
         android:textColor="#F000"
@@ -21,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/normal_size"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:gravity="end"
         android:padding="10dp"
         android:textColor="#F000" />
@@ -30,7 +27,6 @@
         android:id="@+id/imgItemImage"
         android:layout_width="@dimen/normal_size"
         android:layout_height="@dimen/normal_size"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/product_image" />

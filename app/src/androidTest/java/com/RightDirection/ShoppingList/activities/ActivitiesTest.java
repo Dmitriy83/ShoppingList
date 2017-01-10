@@ -305,19 +305,10 @@ abstract class ActivitiesTest {
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Плюс"
-        String textForTyping = mNewProductNamePattern + "1";
-        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
-        onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
-        // Проверим, что элемент появился в списке
-        //onData(withItemValue(textForTyping)).check(matches(isDisplayed()));
-        //onView(withId(R.id.rvProducts)).check(matches(atPosition(0, hasDescendant(withText(textForTyping)))));
-        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        addProductInList(mNewProductNamePattern + "1", false);
 
         // Добавим новый элемент в список товаров и базу данных нажатием на кнопку "Готово"
-        textForTyping = mNewProductNamePattern + "2";
-        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping), pressImeActionButton());
-        // Проверим, что элемент добавился в списке
-        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        addProductInList(mNewProductNamePattern + "2", true);
 
         // "Глюк" Espresso - если не закрыть клавиатуру перед вызововм диалгового окна, то
         // Espresso в большинстве случаев не открывает клавиатуру при печати в текстовом поле
@@ -356,17 +347,24 @@ abstract class ActivitiesTest {
         onView(withId(R.id.action_save_list)).check(matches(isDisplayed()));
 
         // Добавляем третий элемент в список покупок (нажатием на кнопку "Плюс")
-        String textForTyping = mNewProductNamePattern + "3";
-        onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
-        onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
-        // Проверим, что элемент появился в списке
-        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        addProductInList(mNewProductNamePattern + "3", false);
 
         // Сохраняем список покупок
         onView(withId(R.id.action_save_list)).perform(click());
 
         // Проверяем, что снова открылась активность MainActivity
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
+
+    void addProductInList(String textForTyping, boolean pressImeActionButton){
+        if (pressImeActionButton){
+            onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping), pressImeActionButton());
+        }else{
+            onView(withId(R.id.newItemEditText)).perform(typeText(textForTyping));
+            onView(withId(R.id.btnAddProductToShoppingList)).perform(click());
+        }
+        // Проверим, что элемент появился в списке
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
     }
 
     void timeout(int duration) {

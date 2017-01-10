@@ -2,7 +2,7 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.test.filters.MediumTest;
+import android.support.test.filters.LargeTest;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import com.RightDirection.ShoppingList.R;
@@ -39,14 +39,85 @@ public class InShopActivityTest extends ActivitiesTest {
         }
     }
 
+    private void setSettingNotCrossOutProduct(){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean crossOutProduct = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_cross_out_action), true);
+        if (crossOutProduct) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_cross_out_action))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+    }
+
+    private void setSettingsShowCategories(){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean showCategories = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_show_categories), true);
+        if (!showCategories) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_show_categories))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+    }
+
+    private void setSettingsNotShowCategories(){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean showCategories = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_show_categories), true);
+        if (showCategories) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_show_categories))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+    }
+
+    @LargeTest
     @Test
-    @MediumTest
-    public void testActivityInShop() {
-        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
-        setSettingCrossOutProduct();
+    public void testActivityInShop_CategoriesShowing() throws UiObjectNotFoundException {
+        setSettingsShowCategories();
         // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
         addNewShoppingList();
         editNewShoppingList();
+
+        testActivityInShop();
+        inShopActivity_SavingCheckedItems();
+        inShopActivity_Filtered_SavingCheckedItems();
+        inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB();
+        inShopActivity_RemoveFilteredCheckedItemsFromListInDB();
+        inShopActivity_SendEmail();
+        inShopActivity_LoadShoppingList();
+    }
+
+    @LargeTest
+    @Test
+    public void testActivityInShop_CategoriesNotShowing() throws UiObjectNotFoundException {
+        setSettingsNotShowCategories();
+        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
+        addNewShoppingList();
+        editNewShoppingList();
+
+        testActivityInShop();
+        inShopActivity_SavingCheckedItems();
+        inShopActivity_Filtered_SavingCheckedItems();
+        inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB();
+        inShopActivity_RemoveFilteredCheckedItemsFromListInDB();
+        inShopActivity_SendEmail();
+        inShopActivity_LoadShoppingList();
+    }
+
+    private void testActivityInShop() {
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
@@ -69,14 +140,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         pressBack();
 
-        // Заходим в Настройки
-        openSettings();
-
-        // Меняем настроку "вычеркивания"
-        onView(withText(mActivity.getString(R.string.pref_cross_out_action))).perform(click());
-
-        // Возвращаемся к основной активности
-        pressBack();
+        setSettingNotCrossOutProduct();
 
         // Клик на новом списке покупок -> Переход к активности "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
@@ -93,16 +157,17 @@ public class InShopActivityTest extends ActivitiesTest {
         // Проверяем, что появилось окно с надписью "Победа!"
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
 
-        // Возвращаемся к основной активности
         pressBack();
+        // Снимаем выеделение со всех товаров (для следующего теста)
+        for (int i = 1; i <= 3; i++){
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(click());
+        }
+
+        // Возвращаемся к основной активности
         pressBack();
     }
 
-    @Test
-    @MediumTest
-    public void inShopActivity_SendEmail() throws UiObjectNotFoundException {
-        addNewShoppingList();
-
+    private void inShopActivity_SendEmail() throws UiObjectNotFoundException {
         // Переходим в активность "В магазине"
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
@@ -113,14 +178,12 @@ public class InShopActivityTest extends ActivitiesTest {
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
-                "" + mNewProductNamePattern + "1, 1.0;" + "\n" + mNewProductNamePattern + "2, 1.0;");
+                "" + mNewProductNamePattern + "1, 1.0;"
+                        + "\n" + mNewProductNamePattern + "2, 1.0;"
+                        + "\n" + mNewProductNamePattern + "3, 1.0;");
     }
 
-    @Test
-    @MediumTest
-    public void inShopActivity_LoadShoppingList(){
-        addNewShoppingList();
-
+    private void inShopActivity_LoadShoppingList(){
         // Клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
@@ -133,16 +196,14 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
+
+        pressBack();
     }
 
-    @Test
-    @MediumTest
-    public void inShopActivity_SavingCheckedItems(){
+    private void inShopActivity_SavingCheckedItems(){
         // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
         setSettingCrossOutProduct();
-        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
-        addNewShoppingList();
-        editNewShoppingList();
+
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
@@ -174,16 +235,72 @@ public class InShopActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        pressBack();
+
+        // Снимаем выеделение со всех товаров (для следующего теста)
+        for (int i = 1; i <= 3; i++){
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(swipeLeft());
+        }
+        pressBack();
     }
 
-    @Test
-    @MediumTest
-    public void inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB(){
+    private void inShopActivity_Filtered_SavingCheckedItems(){
         // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
         setSettingCrossOutProduct();
-        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
-        addNewShoppingList();
-        editNewShoppingList();
+
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        // Устанавливаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        // Выделяем два элемента из трех
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        // Нажимаем кнопку назад
+        pressBack();
+        // Снова открываем список покупок и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        onView(withId(R.id.action_filter)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        // Нажимаем кнопку назад
+        pressBack();
+        pressBack();
+        // Снова открываем список покупок и снимаем выделение с одного из элементов списка.
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeLeft());
+        // Устанавливаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        // Опять выделяем. Проверяем появление надписи.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        pressBack();
+        // Снимаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        // Снимаем выделение с одного из элементво и переходим к активности Редактирования списка
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeLeft());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        // Возвращаемся к активности В магазине и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
+        onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
+        // Устанавливаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        pressBack();
+
+        // Снимаем выеделение со всех товаров (для следующего теста)
+        onView(withId(R.id.action_filter)).perform(click());
+        for (int i = 1; i <= 3; i++){
+            onView(recyclerViewItemWithText(mNewProductNamePattern + i)).perform(swipeLeft());
+        }
+        pressBack();
+    }
+
+    private void inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
@@ -210,16 +327,17 @@ public class InShopActivityTest extends ActivitiesTest {
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+
+        // Для следующего теста добавим удаленные товары в список
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        addProductInList(mNewProductNamePattern + 1, false);
+        addProductInList(mNewProductNamePattern + 3, false);
+        onView(withId(R.id.action_save_list)).perform(click());
     }
 
-    @Test
-    @MediumTest
-    public void inShopActivity_RemoveFilteredCheckedItemsFromListInDB(){
+    private void inShopActivity_RemoveFilteredCheckedItemsFromListInDB(){
         // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
         setSettingCrossOutProduct();
-        // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
-        addNewShoppingList();
-        editNewShoppingList();
         // Переходим в активность В магазине
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
@@ -267,5 +385,11 @@ public class InShopActivityTest extends ActivitiesTest {
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+
+        // Для следующего теста добавим удаленные товары в список
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+        addProductInList(mNewProductNamePattern + 1, false);
+        addProductInList(mNewProductNamePattern + 3, false);
+        onView(withId(R.id.action_save_list)).perform(click());
     }
 }

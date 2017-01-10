@@ -18,9 +18,7 @@
         android:id="@+id/etTextForLoading"
         android:layout_height="200dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:hint="@string/text_for_loading"
         android:textAlignment="viewStart"
@@ -32,9 +30,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnLoad"
         android:layout_below="@+id/etTextForLoading"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

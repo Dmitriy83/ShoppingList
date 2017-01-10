@@ -29,7 +29,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     private boolean mIsFiltered;
     private boolean mCrossOutProduct;
 
-    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<Product> objects) {
+    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList objects) {
         super(context, resource, objects);
 
         // Прочитаем настройки приложения
@@ -262,7 +262,8 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
     }
 
     public ArrayList<Product> getOriginalValues() {
-        return mOriginalValues;
+        if (mOriginalValues == null) return mObjects;
+        else return mOriginalValues;
     }
 
     public void setOriginalValues(ArrayList<Product> originalValues) {

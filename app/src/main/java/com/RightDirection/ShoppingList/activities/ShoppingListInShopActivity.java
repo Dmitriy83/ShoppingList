@@ -183,9 +183,11 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                 mProductsAdapter.showChecked();
             }
             // сначала заполним объект списком для изменения
+            Utils.removeCategoriesFromArrayListOfProducts(mProducts);
             mShoppingList.setProducts(mProducts);
             // удалим вычеркнутые элементы из БД
             mShoppingList.removeCheckedFromDB(this);
+            if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
             // заменим массив для фильтрации
             ArrayList<Product> originalValues = (ArrayList<Product>) mProducts.clone();
             mProductsAdapter.setOriginalValues(originalValues);
@@ -246,7 +248,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     private void saveCheckedInDB(){
         // Сохраним "вычеркивания" в БД
-        mShoppingList.setProducts(mProducts);
+        mShoppingList.setProducts(mProductsAdapter.getOriginalValues());
         mShoppingList.updateCheckedInDB(this);
     }
 }

@@ -15,7 +15,6 @@
         android:layout_height="@dimen/category_title_height"
         android:gravity="center"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="@color/border_color"/>
 
