@@ -2,7 +2,6 @@ package com.RightDirection.ShoppingList.items;
 
 import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
-import android.test.mock.MockContext;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.MainActivity;
@@ -33,7 +32,6 @@ public class ShoppingListTest {
         // 1) Проверка количества созданных продуктов;
         // 2) Проверка созданных продуктов по имени и количеству.
 
-        MockContext mockContext = new MockContext();
         String divider = mActivity.getString(R.string.divider);
         String productDivider = mActivity.getString(R.string.product_divider);
         Product product;
@@ -49,19 +47,19 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(4, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
         // Есть продукт test4 с количеством 1
-        product = testSL.getProducts().get(3);
+        product = (Product) testSL.getProducts().get(3);
         assertEquals("test4", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -76,19 +74,19 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(4, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
         // Есть продукт test4 с количеством 1
-        product = testSL.getProducts().get(3);
+        product = (Product) testSL.getProducts().get(3);
         assertEquals("test4", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -103,19 +101,19 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(4, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2.5
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2.5, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(7, product.getCount(), 0);
         // Есть продукт test3 с количеством 1
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test4 с количеством 1
-        product = testSL.getProducts().get(3);
+        product = (Product) testSL.getProducts().get(3);
         assertEquals("test4", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -129,11 +127,11 @@ public class ShoppingListTest {
         // Должно быть загружено 2 продукта
         assertEquals(2, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
         // Есть продукт t с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("t", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -147,11 +145,11 @@ public class ShoppingListTest {
         // Должно быть загружено 2 продукта
         assertEquals(2, testSL.getProducts().size());
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
 
@@ -165,11 +163,11 @@ public class ShoppingListTest {
         // Должно быть загружено 2 продукта
         assertEquals(2, testSL.getProducts().size());
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
 
@@ -205,7 +203,7 @@ public class ShoppingListTest {
         // Должен быть загружен 1 продукт
         assertEquals(1, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
 
@@ -216,7 +214,7 @@ public class ShoppingListTest {
         // Должен быть загружен 1 продукт
         assertEquals(1, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
 
@@ -227,7 +225,7 @@ public class ShoppingListTest {
         // Должен быть загружен 1 продукт
         assertEquals(1, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -239,15 +237,15 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(3, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
 
@@ -259,15 +257,15 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(3, testSL.getProducts().size());
         // Есть продукт test1 с количеством 1
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 1
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(1, product.getCount(), 0);
 
@@ -278,7 +276,7 @@ public class ShoppingListTest {
         // Должен быть загружен 1 продукт
         assertEquals(1, testSL.getProducts().size());
         // Есть продукт test1 с количеством 0
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(0, product.getCount(), 0);
 
@@ -291,19 +289,19 @@ public class ShoppingListTest {
         // Должно быть загружено 4 продукта
         assertEquals(4, testSL.getProducts().size());
         // Есть продукт test1 с количеством 2
-        product = testSL.getProducts().get(0);
+        product = (Product) testSL.getProducts().get(0);
         assertEquals("test1", product.getName());
         assertEquals(2, product.getCount(), 0);
         // Есть продукт test2 с количеством 1
-        product = testSL.getProducts().get(1);
+        product = (Product) testSL.getProducts().get(1);
         assertEquals("test2", product.getName());
         assertEquals(1, product.getCount(), 0);
         // Есть продукт test3 с количеством 5
-        product = testSL.getProducts().get(2);
+        product = (Product) testSL.getProducts().get(2);
         assertEquals("test3", product.getName());
         assertEquals(5, product.getCount(), 0);
         // Есть продукт test4 с количеством 1
-        product = testSL.getProducts().get(3);
+        product = (Product) testSL.getProducts().get(3);
         assertEquals("test4", product.getName());
         assertEquals(1, product.getCount(), 0);
     }

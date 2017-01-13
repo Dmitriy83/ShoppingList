@@ -12,8 +12,8 @@ import com.RightDirection.ShoppingList.items.ShoppingList;
 
 public class OpeningOptionChoiceActivity extends AppCompatActivity {
 
-    ShoppingList mShoppingList;
-    Context mContext;
+    private ShoppingList mShoppingList;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

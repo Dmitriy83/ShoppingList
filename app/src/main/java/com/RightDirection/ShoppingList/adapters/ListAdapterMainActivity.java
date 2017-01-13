@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ public class ListAdapterMainActivity extends ListAdapter {
     private ShoppingList mSelectedItem = null;
     private View mSelectedView;
 
-    public ListAdapterMainActivity(Context context, int resource, ArrayList<ShoppingList> objects) {
-        super(context, resource, objects);
+    public ListAdapterMainActivity(Context context, ArrayList<IListItem> objects) {
+        super(context, R.layout.list_item_main_activity, objects);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ListAdapterMainActivity extends ListAdapter {
         }
     };
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
         @Override

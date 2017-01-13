@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
         InputNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<Product> mProducts;
+    private ArrayList<IListItem> mProducts;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
     private ShoppingList mShoppingList;
     private boolean mGoToInShop = false;
@@ -150,7 +151,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
 
         if (isProduct) {
             // Создадим вспомогательный объект Product и вызовем команду переименования
-            Product renamedProduct = new Product(productId, name, null);
+            Product renamedProduct = new Product(productId, name);
             renamedProduct.renameInDB(getApplicationContext());
             mShoppingListItemsAdapter.updateItem(renamedProduct);
         }else {

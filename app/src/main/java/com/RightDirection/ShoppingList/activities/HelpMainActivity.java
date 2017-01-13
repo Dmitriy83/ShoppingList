@@ -14,7 +14,6 @@ import com.RightDirection.ShoppingList.views.FragmentMainHelp1;
 
 public class HelpMainActivity extends AppCompatActivity {
 
-    private Fragment fragment1;
     //private Fragment fragment2;
 
     @Override
@@ -22,7 +21,7 @@ public class HelpMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_main);
 
-        fragment1 = new FragmentMainHelp1();
+        Fragment fragment1 = new FragmentMainHelp1();
         //fragment2 = new FragmentInShopHelp2();
 
         FrameLayout fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);

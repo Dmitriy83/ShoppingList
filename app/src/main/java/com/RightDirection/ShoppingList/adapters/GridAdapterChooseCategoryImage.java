@@ -13,10 +13,10 @@ import com.squareup.picasso.Picasso;
 
 public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
 
-    private int[] mImageIds;
+    private final int[] mImageIds;
 
     // Store the context for easy access
-    private Context mContext;
+    private final Context mContext;
 
     // Pass in the contact array into the constructor
     public GridAdapterChooseCategoryImage(Context context) {
@@ -24,17 +24,12 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
         mImageIds = getImageIds();
     }
 
-    // Easy access to the context object in the recyclerview
-    private Context getContext() {
-        return mContext;
-    }
-
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
     private static class ViewHolder extends RecyclerView.ViewHolder {
         // Our holder should contain a member variable
         // for any view that will be set as we render a row
-        ImageView imageView;
+        final ImageView imageView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview

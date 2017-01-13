@@ -28,5 +28,4 @@
         android:title="@string/change_list_name"
         android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
-
 </menu>

@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterCategoriesList;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 import com.google.android.gms.ads.AdRequest;
@@ -25,10 +26,8 @@ import java.util.Comparator;
 
 public class CategoriesListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private ArrayList<Category> mCategories;
+    private ArrayList<IListItem> mCategories;
     private ListAdapterCategoriesList mCategoriesAdapter;
-
-    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         mCategories = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        mCategoriesAdapter = new ListAdapterCategoriesList(this, R.layout.list_item_categories_list, mCategories);
+        mCategoriesAdapter = new ListAdapterCategoriesList(this, mCategories);
 
         // Привяжем адаптер к фрагменту
         recyclerView.setAdapter(mCategoriesAdapter);
@@ -61,7 +60,7 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
 
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
@@ -98,9 +97,9 @@ public class CategoriesListActivity extends AppCompatActivity implements LoaderM
         }
 
         // Отсортируем список по алфавиту
-        Collections.sort(mCategories, new Comparator<Category>() {
+        Collections.sort(mCategories, new Comparator<IListItem>() {
             @Override
-            public int compare(Category lhs, Category rhs) {
+            public int compare(IListItem lhs, IListItem rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });

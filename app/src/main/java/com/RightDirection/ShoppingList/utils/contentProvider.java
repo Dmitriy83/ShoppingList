@@ -82,8 +82,7 @@ public class contentProvider extends ContentProvider {
         }
 
         sqLiteOpenHelper = new ShoppingListSQLiteOpenHelper(getContext(),
-                dbName, null,
-                DATABASE_VERSION);
+                dbName);
         return true;
     }
 
@@ -391,8 +390,8 @@ public class contentProvider extends ContentProvider {
 
         private static final String TAG = "ShoppingListSQLite";
 
-        ShoppingListSQLiteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-            super(context, name, factory, version);
+        ShoppingListSQLiteOpenHelper(Context context, String name) {
+            super(context, name, null, DATABASE_VERSION);
         }
 
         /**

@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterProductsList;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -27,10 +28,8 @@ import java.util.Comparator;
 
 public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private ArrayList<Product> mProducts;
+    private ArrayList<IListItem> mProducts;
     private ListAdapterProductsList mProductsAdapter;
-
-    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         mProducts = new ArrayList<>();
 
         // Создадим новый адаптер для работы со списком товаров
-        mProductsAdapter = new ListAdapterProductsList(this, R.layout.list_item_products_list, mProducts);
+        mProductsAdapter = new ListAdapterProductsList(this, mProducts);
 
         // Привяжем адаптер к фрагменту
         recyclerView.setAdapter(mProductsAdapter);
@@ -64,7 +63,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
 
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
@@ -100,9 +99,9 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         }
 
         // Отсортируем список по алфавиту
-        Collections.sort(mProducts, new Comparator<Product>() {
+        Collections.sort(mProducts, new Comparator<IListItem>() {
             @Override
-            public int compare(Product lhs, Product rhs) {
+            public int compare(IListItem lhs, IListItem rhs) {
                 return String.CASE_INSENSITIVE_ORDER.compare(lhs.getName(), rhs.getName());
             }
         });

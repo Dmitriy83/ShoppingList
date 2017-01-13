@@ -43,7 +43,7 @@ public class ProductActivity extends AppCompatActivity {
         }
 
         if (mProduct == null) {
-            mProduct = new Product(-1, "");
+            mProduct = new Product(-1);
             mProduct.isNew = true;
         }
 
@@ -65,7 +65,7 @@ public class ProductActivity extends AppCompatActivity {
 
             Category category = mProduct.getCategory();
             if (category != null && category.getName() != null)
-                btnChooseCategory.setText(category.getName() + getString(R.string.three_dots));
+                btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
 
             // Обработчик нажатия
             btnChooseCategory.setOnClickListener(onBtnChooseCategoryClick);
@@ -168,7 +168,7 @@ public class ProductActivity extends AppCompatActivity {
                     mProduct.setCategory(category);
                     Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
                     if (btnChooseCategory != null && category != null && category.getName() != null) {
-                        btnChooseCategory.setText(category.getName() + getString(R.string.three_dots));
+                        btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
                     }
                 }
                 break;
@@ -181,6 +181,7 @@ public class ProductActivity extends AppCompatActivity {
                     != PackageManager.PERMISSION_GRANTED) {
 
                 // Should we show an explanation?
+                //noinspection StatementWithEmptyBody
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     // Show an explanation to the user *asynchronously* -- don't block
@@ -232,6 +233,7 @@ public class ProductActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
+                //noinspection StatementWithEmptyBody
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted

@@ -21,6 +21,7 @@ import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.json.JSONArray;
@@ -37,13 +38,13 @@ import java.util.HashMap;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
-    private ArrayList<Product> mProducts;
+    private ArrayList<IListItem> mProducts;
 
     public ShoppingList(long id, String name) {
         super(id, name);
     }
 
-    public ShoppingList(long id, String name, ArrayList<Product> products) {
+    public ShoppingList(long id, String name, ArrayList<IListItem> products) {
         super(id, name);
         mProducts = products;
     }
@@ -53,7 +54,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_NAME)));
     }
 
-    protected ShoppingList(Parcel in) {
+    private ShoppingList(Parcel in) {
         super(in);
     }
 
@@ -69,23 +70,24 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
     };
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-    }
-
     private void addProduct(Product product){
         if (mProducts == null) mProducts = new ArrayList<>();
 
         mProducts.add(product);
     }
 
-    public ArrayList<Product> getProducts(){
+    public ArrayList<IListItem> getProducts(){
         return mProducts;
     }
 
-    public void setProducts(ArrayList<Product> products){
+    public void setProducts(ArrayList<IListItem> products){
         mProducts = products;
+        /*
+        mProducts = new ArrayList<>();
+        for (IListItem item: products) {
+            if (item instanceof Product) mProducts.add((Product)item);
+        }
+        */
     }
 
     @Override
@@ -105,7 +107,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         if (mProducts == null) return;
 
         // Запишем составлящие списка покупок в базу данных
-        for (Product item : mProducts) {
+        for (IListItem item : mProducts) {
             contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(contentProvider.KEY_COUNT, item.getCount());
@@ -138,7 +140,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
 
         // Запишем составлящие списка покупок в базу данных
-        for (ListItem item: mProducts) {
+        for (IListItem item: mProducts) {
             contentValues.put(contentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(contentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(contentProvider.KEY_COUNT, item.getCount());
@@ -153,7 +155,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         // Обновим текущий список покупок
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        for (ListItem item: mProducts) {
+        for (IListItem item: mProducts) {
             contentValues.put(contentProvider.KEY_IS_CHECKED, item.isChecked());
             contentResolver.update(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
                     contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
@@ -164,8 +166,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     public void removeCheckedFromDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
-        ContentValues contentValues = new ContentValues();
-        for (ListItem item: mProducts) {
+        for (IListItem item: mProducts) {
             if (item.isChecked()) {
                 contentResolver.delete(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                         contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
@@ -176,7 +177,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Удалим продукты из массива
         for (int i = mProducts.size()-1; i >= 0; i--) {
-            Product product = mProducts.get(i);
+            Product product = (Product) mProducts.get(i);
             if (product.isChecked) mProducts.remove(i);
         }
     }
@@ -203,6 +204,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Создадим массив с найденными именами продуктов
         ArrayList<String> foundProducts = new ArrayList<>();
+        assert data != null;
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         while (data.moveToNext()){
             foundProducts.add(data.getString(keyNameIndex));
@@ -233,6 +235,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 where, null, null);
 
         // Создадим массив с найденными именами продуктов
+        assert data != null;
         HashMap<String, Long> map = new HashMap<>(data.getCount());
         int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
@@ -241,7 +244,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
         data.close();
 
-        for (Product product: mProducts) {
+        for (IListItem product: mProducts) {
             long id = map.get(product.getName());
             product.setId(id);
         }
@@ -272,8 +275,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             String fileName = context.getString(R.string.json_file_identifier) + " '" + getName()
                     + "'" + ".json";
             createShoppingListJSONFile(context, fileName);
-            */
+
             String fileName = null;
+            */
 
             String subject  = context.getString(R.string.json_file_identifier)
                     + " '" + getName() + "'";
@@ -314,7 +318,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         String divider = context.getString(R.string.divider);
         String productDivider = context.getString(R.string.product_divider);
         boolean firstLine = true;
-        for (Product product: mProducts) {
+        for (IListItem product: mProducts) {
             if (!firstLine) result = result + "\n";
             else firstLine = false;
 
@@ -334,6 +338,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
 
         // Определим индексы колонок для считывания
+        assert data != null;
         int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
@@ -342,7 +347,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         // Читаем данные из базы
         while (data.moveToNext()){
             Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    null, data.getFloat(keyCountIndex), data.getInt(keyIsCheckedIndex) != 0);
+                    data.getFloat(keyCountIndex), data.getInt(keyIsCheckedIndex) != 0);
             mProducts.add(newProduct);
         }
 
@@ -350,6 +355,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         data.close();
     }
 
+    @SuppressWarnings("unused")
     private void createShoppingListJSONFile(Context context, String fileName) throws JSONException {
 
         JSONArray listItemsArray;
@@ -381,7 +387,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     private JSONArray getJSONArrayFromField() throws JSONException{
         JSONArray array = new JSONArray();
 
-        for (Product product: mProducts) {
+        for (IListItem product: mProducts) {
             JSONObject jsonItem = new JSONObject();
             jsonItem.put(contentProvider.KEY_PRODUCT_ID,  product.getId());
             jsonItem.put(contentProvider.KEY_NAME,        product.getName());
@@ -402,6 +408,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 contentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
 
         // Определим индексы колонок для считывания
+        assert data != null;
         int keyIdIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PRODUCT_ID);
         int keyNameIndex = data.getColumnIndexOrThrow(contentProvider.KEY_NAME);
         int keyCountIndex = data.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
@@ -429,7 +436,6 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     private void createCachedFile(Context context, String fileName, String content) throws IOException {
 
         File cacheFile = new File(context.getCacheDir() + File.separator + fileName);
-        cacheFile.createNewFile();
 
         FileOutputStream fos = new FileOutputStream(cacheFile);
         OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF8");
@@ -478,7 +484,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             if (count < 0) count = 1;
 
             // Создаем объект и добавляем в массив продуктов списка
-            Product product = new Product(-1, name, null, count);
+            Product product = new Product(-1, name, count);
             addProduct(product);
         }
     }

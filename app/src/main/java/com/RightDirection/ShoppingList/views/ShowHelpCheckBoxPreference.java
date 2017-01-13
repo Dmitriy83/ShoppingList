@@ -2,6 +2,8 @@ package com.RightDirection.ShoppingList.views;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 import com.RightDirection.ShoppingList.R;
@@ -21,6 +23,7 @@ public class ShowHelpCheckBoxPreference extends CustomCheckBoxPreference {
         super(context, attrs, defStyleAttr);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public ShowHelpCheckBoxPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

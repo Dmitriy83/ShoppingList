@@ -40,7 +40,7 @@ public class EmailReceiver{
     private String mLogin;
     private String mPassword;
     private String mProtocol;
-    private Context mContext;
+    private final Context mContext;
     private Store mStore = null;
     private Folder mFolderInbox = null;
 
@@ -66,8 +66,8 @@ public class EmailReceiver{
     /**
      * Возрващает объект Properties для POP3/IMAP почтового сервера.
      *
-     * @param host
-     * @param port
+     * @param host email server host
+     * @param port email server port
      */
     public void setServerProperties(String host, String port) throws WrongEmailProtocolException {
         // Пока поддерживается только протокол imap. Pop3 требует хранения id всех писем на
@@ -109,8 +109,7 @@ public class EmailReceiver{
         */
         FlagTerm term = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
         Message[] messages = downloadMessages(term);
-        for (int i = 0; i < messages.length; i++) {
-            Message msg = messages[i];
+        for (Message msg : messages) {
             try {
 
                 String contentType = getEmailContentType(msg);
@@ -124,7 +123,7 @@ public class EmailReceiver{
                             String attachmentFileName = part.getFileName();
                             // Сначала проверим, стоит ли обрабатывать файл вложения
                             if (!(attachmentFileName.contains(mContext.getString(R.string.json_file_identifier))
-                                    && attachmentFileName.contains("json"))){
+                                    && attachmentFileName.contains("json"))) {
                                 continue;
                             }
                             String fileName = mContext.getCacheDir() + File.separator + attachmentFileName;
@@ -171,6 +170,7 @@ public class EmailReceiver{
         return new Message[]{};
     }
 
+    @SuppressWarnings("unused")
     private Message[] downloadMessages(SearchTerm searchTerm){
         Session session = Session.getDefaultInstance(mProperties);
 
@@ -197,8 +197,9 @@ public class EmailReceiver{
         return new Message[]{};
     }
 
+    @SuppressWarnings("unused")
     public class ShoppingListsSearchTerm extends SearchTerm {
-        private Date afterDate;
+        private final Date afterDate;
 
         public ShoppingListsSearchTerm(Date afterDate) {
             this.afterDate = afterDate;
@@ -234,6 +235,7 @@ public class EmailReceiver{
     /**
      * Скачивание новых сообщений и получение деталей для каждого из них.
      */
+    @SuppressWarnings("unused")
     public void downloadUnreadEmailsAndPrintDetails() throws IOException {
 
         Message[] messages = downloadMessages(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
@@ -307,7 +309,7 @@ public class EmailReceiver{
     /** Для обхода бага с ошибкой javax.mail.MessagingException: Unable to load BODYSTRUCTURE
      * при использовании протокола IMAP
      */
-    private String getEmailContentType(Message email) throws IOException, MessagingException {
+    private String getEmailContentType(Message email) throws MessagingException {
         String content;
         try {
             content = email.getContentType();
@@ -334,8 +336,8 @@ public class EmailReceiver{
         String listAddress = "";
 
         if (address != null) {
-            for (int i = 0; i < address.length; i++) {
-                listAddress += address[i].toString() + ", ";
+            for (Address a : address) {
+                listAddress += a.toString() + ", ";
             }
         }
         if (listAddress.length() > 1) {

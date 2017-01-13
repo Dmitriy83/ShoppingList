@@ -4,14 +4,15 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 
 import java.util.ArrayList;
 
 public class ListAdapterCategoriesList extends ListAdapter {
 
-    public ListAdapterCategoriesList(Context context, int resource, ArrayList<Category> objects) {
-        super(context, resource, objects);
+    public ListAdapterCategoriesList(Context context, ArrayList<IListItem> objects) {
+        super(context, com.RightDirection.ShoppingList.R.layout.list_item_categories_list, objects);
     }
 
     @Override

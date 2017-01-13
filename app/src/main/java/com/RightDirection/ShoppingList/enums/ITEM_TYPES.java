@@ -6,7 +6,7 @@ public enum ITEM_TYPES implements IGetValue {
     PRODUCT (0),
     CATEGORY (1);
 
-    private Integer numValue;
+    private final Integer numValue;
 
     ITEM_TYPES(int numValue) {
         this.numValue = numValue;

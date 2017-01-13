@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <entry_points version="2.0" />
+    <entry_points version="2.0">
+      <entry_point TYPE="method" FQNAME="com.RightDirection.ShoppingList.interfaces.IGetValue E getValue()" />
+      <entry_point TYPE="method" FQNAME="com.RightDirection.ShoppingList.interfaces.IDataBaseOperations void addToDB(android.content.Context context)" />
+    </entry_points>
   </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />

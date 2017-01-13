@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.support.test.filters.SmallTest;
 
+import com.RightDirection.ShoppingList.interfaces.IListItem;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -83,7 +85,7 @@ public class ListItemTest {
     @SmallTest
     public void testWriteToParcel() throws Exception {
         Parcelable listItemParcelable = listItem;
-        ListItem listItemConverted = (ListItem)listItemParcelable;
+        IListItem listItemConverted = (IListItem)listItemParcelable;
         assertEquals(listItem, listItemConverted);
     }
 

@@ -23,26 +23,20 @@ public class Product extends ListItem implements IDataBaseOperations {
 
     private Category category;
 
+    public Product(long id) {
+        super(id, "");
+    }
+
     public Product(long id, String name) {
-        super(id, name);
+        super(id, name, null);
     }
 
-    public Product(long id, String name, Uri imageUri) {
-        super(id, name, imageUri);
+    public Product(long id, String name, float count) {
+        super(id, name, count);
     }
 
-    public Product(long id, String name, Uri imageUri, float count) {
-        super(id, name, imageUri, count);
-    }
-
-    public Product(long id, String name, Uri imageUri, float count, Category category) {
-        super(id, name, imageUri, count);
-
-        this.category = category;
-    }
-
-    public Product(long id, String name, Uri imageUri, float count, boolean isChecked) {
-        super(id, name, imageUri, count);
+    public Product(long id, String name, float count, boolean isChecked) {
+        super(id, name, count);
 
         this.isChecked = isChecked;
     }
@@ -66,7 +60,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         this.category = category;
     }
 
-    protected Product(Parcel in) {
+    private Product(Parcel in) {
         super(in);
         category = in.readParcelable(Category.class.getClassLoader());
     }

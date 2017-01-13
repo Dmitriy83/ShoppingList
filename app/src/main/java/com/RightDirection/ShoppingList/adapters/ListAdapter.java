@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.ListItem;
 import com.RightDirection.ShoppingList.items.Product;
 import com.squareup.picasso.Picasso;
 
@@ -25,10 +25,10 @@ import java.util.Locale;
 abstract public class ListAdapter extends RecyclerView.Adapter {
 
     final int mResource;
-    ArrayList mObjects;
-    Activity mParentActivity;
+    final ArrayList<IListItem> mObjects;
+    final Activity mParentActivity;
 
-    ListAdapter(Context context, int resource, ArrayList objects) {
+    ListAdapter(Context context, int resource, ArrayList<IListItem> objects) {
         super();
 
         mResource = resource;
@@ -49,7 +49,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        ListItem item = (ListItem) mObjects.get(position);
+        IListItem item = mObjects.get(position);
         if (viewHolder.productNameView != null) {
             viewHolder.productNameView.setTag(item);
             // Заполним текстовое поле
@@ -92,14 +92,14 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView productNameView;
-        ImageButton imgDelete;
-        ImageView itemImage;
-        RelativeLayout represent;
-        ImageButton imgDecrease;
-        ImageButton imgIncrease;
-        EditText etCount;
-        TextView txtCount;
+        final TextView productNameView;
+        final ImageButton imgDelete;
+        final ImageView itemImage;
+        final RelativeLayout represent;
+        final ImageButton imgDecrease;
+        final ImageButton imgIncrease;
+        final EditText etCount;
+        final TextView txtCount;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -115,7 +115,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    void remove(ListItem item) {
+    void remove(IListItem item) {
         // Не используем mObjects.remove(item), т.к. необходимо получить индекс удаленного элемента
         int i;
         boolean removed = false;
@@ -132,17 +132,17 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void add(ListItem item) {
+    public void add(IListItem item) {
         mObjects.add(item);
         notifyItemRangeInserted(mObjects.size() - 1, mObjects.size());
     }
 
-    public ListItem getItem(int position) {
-        return (ListItem) mObjects.get(position);
+    public IListItem getItem(int position) {
+        return mObjects.get(position);
     }
 
-    public void updateItem(ListItem listItem) {
-        for (ListItem item : (ArrayList<ListItem>) mObjects)
+    public void updateItem(IListItem listItem) {
+        for (IListItem item : mObjects)
             if (item.getId() == listItem.getId() && item.getClass() == listItem.getClass()) {
                 item.setName(listItem.getName());
                 item.setImageUri(listItem.getImageUri());
@@ -156,7 +156,7 @@ abstract public class ListAdapter extends RecyclerView.Adapter {
         this.notifyDataSetChanged();
     }
 
-    private void setProductImage(final ImageView imgItemImage, ListItem item) {
+    private void setProductImage(final ImageView imgItemImage, IListItem item) {
         if (imgItemImage == null) return;
 
         final Uri imageUri = item.getImageUri();

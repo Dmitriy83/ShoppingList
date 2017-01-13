@@ -131,6 +131,8 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         cursor.close();
 
         testShoppingListInShopActivity_CountAppearing();
+
+        pressBack();
     }
 
     private void testShoppingListInShopActivity_CountAppearing() {

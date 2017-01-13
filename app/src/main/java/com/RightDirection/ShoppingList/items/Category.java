@@ -33,7 +33,7 @@ public class Category extends ListItem implements IDataBaseOperations {
         this.order = data.getInt(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ORDER));
     }
 
-    protected Category(Parcel in) {
+    private Category(Parcel in) {
         super(in);
         order = in.readInt();
     }

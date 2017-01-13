@@ -11,8 +11,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.ListItem;
 import com.RightDirection.ShoppingList.items.Product;
 
 import org.json.JSONArray;
@@ -36,21 +36,13 @@ public class Utils {
     public static final int GET_CATEGORY = 2;
     public static final int GET_CATEGORY_IMAGE = 3;
 
-    private static Utils ourInstance = new Utils();
-
-    public static Utils getInstance() {
-        return ourInstance;
-    }
-
-    private Utils() {}
-
     public static String getListNameFromJSON(String jsonStr) throws JSONException {
         JSONObject json = new JSONObject(jsonStr);
         return json.getString(contentProvider.KEY_NAME);
     }
 
-    public static ArrayList<Product> getProductsFromJSON(String jsonStr) throws JSONException {
-        ArrayList<Product> result = new ArrayList<>();
+    public static ArrayList<IListItem> getProductsFromJSON(String jsonStr) throws JSONException {
+        ArrayList<IListItem> result = new ArrayList<>();
 
         JSONObject jObject = new JSONObject(jsonStr);
         JSONArray jArray = jObject.getJSONArray("items");
@@ -70,7 +62,7 @@ public class Utils {
                 e.printStackTrace();
             }
 
-            result.add(new Product(itemId, itemName, null, count));
+            result.add(new Product(itemId, itemName, count));
         }
 
         return result;
@@ -94,13 +86,18 @@ public class Utils {
         return ret;
     }
 
-    public static void sortArrayListByCategories(ArrayList<Product> arrayList){
+    public static void sortArrayListByCategories(ArrayList<IListItem> arrayList){
         // Сначала отсортируем список
-        Collections.sort(arrayList, new Comparator<Product>() {
+        Collections.sort(arrayList, new Comparator<IListItem>() {
             @Override
-            public int compare(Product lhs, Product rhs) {
-                Category lCategory = lhs.getCategory();
-                Category rCategory = rhs.getCategory();
+            public int compare(IListItem lhs, IListItem rhs) {
+                if (!(lhs instanceof Product && rhs instanceof Product)) return 0;
+
+                Product lProduct = (Product) lhs;
+                Product rProduct = (Product) rhs;
+
+                Category lCategory = lProduct.getCategory();
+                Category rCategory = rProduct.getCategory();
 
                 // Элементы с категорией равной Null должны быть вверху списка
                 if (lCategory == null && rCategory != null) {
@@ -109,7 +106,7 @@ public class Utils {
                     return 1;
                 }
 
-                if (lCategory != null && rCategory != null && !lCategory.equals(rCategory)) {
+                if (lCategory != null && !lCategory.equals(rCategory)) {
                     if (lCategory.getOrder() != rCategory.getOrder()) {
                         Integer lOrder = lCategory.getOrder();
                         return lOrder.compareTo(rCategory.getOrder());
@@ -133,7 +130,7 @@ public class Utils {
         });
     }
 
-    public static void addCategoriesInArrayListOfProducts(Context context, ArrayList arrayList){
+    public static void addCategoriesInArrayListOfProducts(Context context, ArrayList<IListItem> arrayList){
         // Если элемент только один, то добавлять ничего не надо
         if (arrayList.size() == 1) return;
 
@@ -158,9 +155,9 @@ public class Utils {
         }
     }
 
-    public static void removeCategoriesFromArrayListOfProducts(ArrayList arrayList){
+    public static void removeCategoriesFromArrayListOfProducts(ArrayList<IListItem> arrayList){
         for (int i = arrayList.size() - 1; i >= 0; i--) {
-            ListItem item = (ListItem)arrayList.get(i);
+            IListItem item = arrayList.get(i);
             if (item instanceof Category) arrayList.remove(i);
         }
     }
@@ -186,7 +183,7 @@ public class Utils {
         }
     }
 
-    public static Intent getSendEmailIntent(@Nullable String recipientEmail, String subject, String body, String fileName) {
+    public static Intent getSendEmailIntent(@Nullable String recipientEmail, String subject, String body, @SuppressWarnings("SameParameterValue") String fileName) {
 
         final Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 

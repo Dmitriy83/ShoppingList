@@ -6,38 +6,39 @@ import android.os.Parcelable;
 
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IGetType;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 
-public class ListItem implements Parcelable, IGetType{
+public class ListItem implements Parcelable, IGetType, IListItem {
 
-    protected long id;
-    protected String name;
+    private long id;
+    private String name;
     boolean isChecked;
     private Uri imageUri;
     float count;
     public boolean isNew = false;
 
-    public ListItem(long id, String name) {
+    ListItem(long id, String name) {
         this.id = id;
         this.name = name;
         this.imageUri = null;
         this.count = 1;
     }
 
-    public ListItem(long id, String name, Uri imageUri) {
+    ListItem(long id, String name, Uri imageUri) {
         this.id = id;
         this.name = name;
         this.imageUri = imageUri;
         this.count = 1;
     }
 
-    public ListItem(long id, String name, Uri imageUri, float count) {
+    ListItem(long id, String name, float count) {
         this.id = id;
         this.name = name;
-        this.imageUri = imageUri;
+        this.imageUri = null;
         this.count = count;
     }
 
-    protected ListItem(Parcel in) {
+    ListItem(Parcel in) {
         id = in.readLong();
         name = in.readString();
         isChecked = in.readByte() != 0;

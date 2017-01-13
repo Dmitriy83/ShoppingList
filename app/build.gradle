@@ -64,20 +64,9 @@ dependencies {
         exclude module: 'design'
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
-        /*
-        exclude module: 'support-v4'
-        */
     }
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
-
-/*
-configurations.all {
-    resolutionStrategy.force 'com.android.support:recyclerview-v7:25.1.0'
-    resolutionStrategy.force 'com.android.support:appcompat-v7:25.1.0'
-    resolutionStrategy.force 'com.android.support:design:25.1.0'
-}
-*/
 
 apply plugin: 'com.google.gms.google-services'
 

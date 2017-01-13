@@ -92,8 +92,8 @@ public class ProductActivitiesTest extends ActivitiesTest {
                 .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
         onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
         // Проверяем, что категория отобразилась в активности
-        onView(withId(R.id.btnChooseCategory)).check(matches(withText(mNewCategoryNamePattern
-                + mActivity.getString(R.string.three_dots))));
+        onView(withId(R.id.btnChooseCategory)).check(matches(withText(
+                mActivity.getString(R.string.three_dots, mNewCategoryNamePattern))));
         onView(withId(R.id.btnSave)).perform(click());
         // Проверяем, что новый продукт отобразился в списке
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
@@ -102,8 +102,8 @@ public class ProductActivitiesTest extends ActivitiesTest {
         // Еще раз зайдем в продукт и убедимся, что категория сохранилась
         onView(recyclerViewItemWithText(textForTyping)).perform(click());
         onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
-        onView(withId(R.id.btnChooseCategory)).check(matches(withText(mNewCategoryNamePattern
-                + mActivity.getString(R.string.three_dots))));
+        onView(withId(R.id.btnChooseCategory)).check(matches(withText(
+                mActivity.getString(R.string.three_dots, mNewCategoryNamePattern))));
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();

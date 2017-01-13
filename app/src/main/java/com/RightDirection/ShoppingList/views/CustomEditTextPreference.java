@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.preference.EditTextPreference;
-import android.text.InputType;
 import android.util.AttributeSet;
 
 import com.RightDirection.ShoppingList.R;

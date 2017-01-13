@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
-import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.ShoppingList;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -36,7 +36,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputNameDialog.IInputListNameDialogListener{
 
-    private ArrayList<ShoppingList> mShoppingLists;
+    private ArrayList<IListItem> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
 
     @Override
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Создаем массив для хранения списков покупок
         mShoppingLists = new ArrayList<>();
         // Создадим новый адаптер для работы со списками покупок
-        mShoppingListsAdapter = new ListAdapterMainActivity(this, R.layout.list_item_main_activity,
+        mShoppingListsAdapter = new ListAdapterMainActivity(this,
                 mShoppingLists);
 
         // Привяжем адаптер к элементу управления
@@ -211,11 +211,6 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     public void onDialogNegativeClick() {}
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{
         @Override
         protected ArrayList<ShoppingList> doInBackground(EmailReceiver... params) {
@@ -232,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 for (String fileName: fileNames) {
                     String jsonStr = Utils.getStringFromFile(fileName);
 
-                    ArrayList<Product> products = Utils.getProductsFromJSON(jsonStr);
+                    ArrayList<IListItem> products = Utils.getProductsFromJSON(jsonStr);
 
                     // Сформируем имя нового списка покупок
                     Calendar calendar = Calendar.getInstance();

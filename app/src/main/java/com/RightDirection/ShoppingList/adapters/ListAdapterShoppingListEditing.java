@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Product;
 
 import java.math.BigDecimal;
@@ -18,10 +19,9 @@ import java.util.TimerTask;
 public class ListAdapterShoppingListEditing extends ListAdapter {
 
     private Timer mTimer;
-    private IncrementTimerTask mTimerTask;
 
-    public ListAdapterShoppingListEditing(Context context, int resource, ArrayList<Product> objects) {
-        super(context, resource, objects);
+    public ListAdapterShoppingListEditing(Context context, int resource, ArrayList<IListItem> products) {
+        super(context, resource, products);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
 
     private void startTimer(View view, int increment, int delay, int period, boolean accelerated){
         mTimer = new Timer();
-        mTimerTask = new IncrementTimerTask(view, increment, accelerated);
+        IncrementTimerTask mTimerTask = new IncrementTimerTask(view, increment, accelerated);
         mTimer.schedule(mTimerTask, delay, period);
     }
 
@@ -120,10 +120,10 @@ public class ListAdapterShoppingListEditing extends ListAdapter {
 
     private class IncrementTimerTask extends TimerTask {
         private static final long ACCELERATE_PERIOD = 5000;
-        View mView;
+        final View mView;
         int mIncrement = 0;
         long mStartTime = 0;
-        boolean mAccelerated;
+        final boolean mAccelerated;
 
         IncrementTimerTask(View view, int increment, boolean accelerated){
             mView = view;

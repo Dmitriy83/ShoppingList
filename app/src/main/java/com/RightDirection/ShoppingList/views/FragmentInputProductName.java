@@ -145,7 +145,7 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
         }
 
         if (!mAllProductsNames.contains(newItemName)) {
-            mCurrentItem = new Product(-1, newItemName, null); // id будет назначено при сохранении продукта в БД
+            mCurrentItem = new Product(-1, newItemName); // id будет назначено при сохранении продукта в БД
             mCurrentItem.addToDB(getActivity());
 
             // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
@@ -179,6 +179,7 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     }
 
     // При отладке на телефоне в метод с переменной Context программа не входит.
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
 

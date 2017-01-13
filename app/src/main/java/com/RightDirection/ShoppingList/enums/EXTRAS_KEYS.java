@@ -12,7 +12,7 @@ public enum EXTRAS_KEYS implements IGetValue {
     IS_FILTERED("Is filtered"),
     CATEGORY ("Category");
 
-    private String numValue;
+    private final String numValue;
 
     EXTRAS_KEYS(String numValue) {
         this.numValue = numValue;

@@ -21,6 +21,7 @@ public class contentProviderTest extends ProviderTestCase2{
     private long mProductId1 = 0;
 
     public contentProviderTest() {
+        //noinspection unchecked
         super(contentProvider.class, contentProvider.AUTHORITY);
     }
 
@@ -32,7 +33,7 @@ public class contentProviderTest extends ProviderTestCase2{
         delete(mockContentResolver);
     }
 
-    private void insertAndQuery(MockContentResolver mockContentResolver) throws Exception {
+    private void insertAndQuery(MockContentResolver mockContentResolver) {
         // Добавим новый список покупок
         ContentValues contentValues = new ContentValues();
         contentValues.put(contentProvider.KEY_NAME, mListName);
@@ -101,7 +102,7 @@ public class contentProviderTest extends ProviderTestCase2{
         cursor.close();
     }
 
-    private void update(MockContentResolver mockContentResolver) throws Exception {
+    private void update(MockContentResolver mockContentResolver) {
 
         // Изменяем имя списка покупок (добавляем суффикс Changed)
         ContentValues contentValues = new ContentValues();
@@ -129,7 +130,7 @@ public class contentProviderTest extends ProviderTestCase2{
         assertTrue(cursor.getCount() == 1);
     }
 
-    private void delete(MockContentResolver mockContentResolver) throws Exception {
+    private void delete(MockContentResolver mockContentResolver) {
         // Удаляем один из тестовых продуктов
         mockContentResolver.delete(contentProvider.PRODUCTS_CONTENT_URI,
                 contentProvider.KEY_NAME + " = '" + mProductName1 + "'", null);

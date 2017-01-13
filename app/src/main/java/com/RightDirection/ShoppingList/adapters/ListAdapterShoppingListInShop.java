@@ -17,19 +17,19 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.ListItem;
 import com.RightDirection.ShoppingList.items.Product;
 
 import java.util.ArrayList;
 
 public class ListAdapterShoppingListInShop extends ListAdapter {
 
-    private ArrayList<Product> mOriginalValues;
+    private ArrayList<IListItem> mOriginalValues;
     private boolean mIsFiltered;
-    private boolean mCrossOutProduct;
+    private final boolean mCrossOutProduct;
 
-    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList objects) {
+    public ListAdapterShoppingListInShop(Context context, int resource, ArrayList<IListItem> objects) {
         super(context, resource, objects);
 
         // Прочитаем настройки приложения
@@ -39,7 +39,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        ListItem item = (ListItem) mObjects.get(position);
+        IListItem item = mObjects.get(position);
         return item.getType().getValue();
     }
 
@@ -71,7 +71,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
 
         // Отрисуем выбор товара
-        ListItem item = (ListItem) mObjects.get(position);
+        IListItem item = mObjects.get(position);
         if (item instanceof Product) {
             if (item.isChecked()) {
                 setViewChecked(viewHolder);
@@ -175,7 +175,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
     private boolean allProductsChecked() {
         boolean allProductsChecked = true;
-        for (ListItem item : (ArrayList<ListItem>) mObjects) {
+        for (IListItem item : mObjects) {
             if (item instanceof Product && !item.isChecked()) {
                 allProductsChecked = false;
                 break;
@@ -235,7 +235,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
 
         // Удалим "вычеркнутые" продукты и категории из списка
         for (int i = mObjects.size() - 1; i >= 0; i--) {
-            ListItem item = (ListItem) mObjects.get(i);
+            IListItem item = mObjects.get(i);
             if (item instanceof Product && item.isChecked()) {
                 mObjects.remove(item);
             }
@@ -245,7 +245,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
                 if (i + 1 <= mObjects.size() - 1) {
                     // Если следующий за категорией элемент является категорией, значит все
                     // продукты данной категории вычеркнуты и категорию следует удалить
-                    ListItem nextItem = (ListItem) mObjects.get(i + 1);
+                    IListItem nextItem = mObjects.get(i + 1);
                     if (nextItem instanceof Category) {
                         mObjects.remove(item);
                     }
@@ -261,12 +261,12 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         this.notifyDataSetChanged();
     }
 
-    public ArrayList<Product> getOriginalValues() {
+    public ArrayList<IListItem> getOriginalValues() {
         if (mOriginalValues == null) return mObjects;
         else return mOriginalValues;
     }
 
-    public void setOriginalValues(ArrayList<Product> originalValues) {
+    public void setOriginalValues(ArrayList<IListItem> originalValues) {
         mOriginalValues = originalValues;
     }
 }

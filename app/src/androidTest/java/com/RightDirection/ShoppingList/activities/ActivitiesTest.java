@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapter;
-import com.RightDirection.ShoppingList.items.ListItem;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import org.hamcrest.Description;
@@ -163,15 +163,16 @@ abstract class ActivitiesTest {
     /**
      * Процедура необходима для поиска объектов класса ListItem в ListAdapter по имени
      */
+    @SuppressWarnings("unused")
     static Matcher<Object> withItemValue(final String value) {
-        return new BoundedMatcher<Object, ListItem>(ListItem.class) {
+        return new BoundedMatcher<Object, IListItem>(IListItem.class) {
             @Override
             public void describeTo(Description description) {
                 description.appendText("has value " + value);
             }
 
             @Override
-            public boolean matchesSafely(ListItem item) {
+            public boolean matchesSafely(IListItem item) {
                 return item.getName().equals(String.valueOf(value));
             }
         };
@@ -380,7 +381,7 @@ abstract class ActivitiesTest {
         assertNotNull(rv);
         ListAdapter listAdapter = (ListAdapter) rv.getAdapter();
         for (int i = 0; i < listAdapter.getItemCount(); i++) {
-            ListItem listItem = listAdapter.getItem(i);
+            IListItem listItem = listAdapter.getItem(i);
             assertThat("Item is in the list", text, is(not(listItem.getName())));
         }
     }
@@ -468,6 +469,7 @@ abstract class ActivitiesTest {
 
         private final Matcher<Integer> matcher;
 
+        @SuppressWarnings("unused")
         public RecyclerViewItemCountAssertion(int expectedCount) {
             this.matcher = is(expectedCount);
         }

@@ -5,7 +5,6 @@
     <string name="action_settings">Настройки</string>
     <string name="addItemHint">Введите название продукта</string>
     <string name="cross">Крест</string>
-    <string name="name">Наименование</string>
     <string name="product_name_hint">Введите название продукта</string>
     <string name="product_picture">Изображение продукта</string>
     <string name="save">Сохранить</string>
@@ -18,10 +17,7 @@
     <string name="in_shop">" "В магазине</string>
     <string name="delete_shopping_list_question">Удалить список?</string>
     <string name="in_shop_ending_work_message">Пора домой</string>
-    <string name="in_developing">В разработке…</string>
     <string name="change_list_name">Переименовать</string>
-    <string name="hide_marked">Скрыть выделенные</string>
-    <string name="show_marked">Показать выделенные</string>
     <string name="product_image">product_image</string>
     <string name="pref_title">Настройка</string>
     <string name="pref_cross_out_action">"Вычеркивать" товар</string>
@@ -30,15 +26,8 @@
     <string name="action_remove_all_items">Очистить список</string>
     <string name="delete">Удалить</string>
     <string name="pref_show_images">Показывать рисунки</string>
-    <string name="send_email">Отправить список покупок по e-mail…</string>
-    <string name="receive_by_email">Получить список покупок по e-mail…</string>
     <string name="decrease">Уменьшить</string>
     <string name="increase">Увеличить</string>
-    <string name="email_settings_to_load_shopping_lists">Настройки эл. почты для загрузки списков покупок</string>
-    <string name="email_host">Сервер эл. почты</string>
-    <string name="email_port">Порт</string>
-    <string name="email_login">Пользователь</string>
-    <string name="email_password">Пароль</string>
     <string name="wrong_email_protocol_exception_message">Поддерживается только протокол IMAP</string>
     <string name="not_assigned">Не назначен</string>
     <string name="action_receive_shopping_list_by_email">Получить лист покупок по эл. почте</string>
@@ -46,7 +35,6 @@
     <string name="loaded">загружен</string>
     <string name="loading">Загрузка…</string>
     <string name="no_emails_for_loading">Отсутствуют письма для загрузки</string>
-    <string name="action_help">Справка</string>
     <string name="new_list">Новый список</string>
     <string name="HelpInShop1">Чтобы вычеркнуть товар, проведите пальцем слева направо. Чтобы отменить вычеркивание, проведите пальцем обратно.\n\nВ настройках можно изменить способ вычеркивания.\n</string>
     <string name="pref_key_show_help_screens">Показывать подсказки</string>
@@ -74,6 +62,5 @@
     <string name="main_activity_title">Все списки покупок</string>
     <string name="action_remove_checked">Удалить купленные</string>
     <string name="email_activity_not_found_exception_text">Не установлена почтовая программа</string>
-    <string name="choose_email_client">Выберите почтовую программу</string>
     <string name="category_name_hint">Введите наименование категории</string>
 </resources>

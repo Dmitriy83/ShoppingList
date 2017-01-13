@@ -16,6 +16,7 @@ import android.view.View;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 
 public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList mProducts;
+    private ArrayList<IListItem> mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;
     private ShoppingList mShoppingList;
     private Menu mMenu;
@@ -80,7 +81,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else{
             mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue()));
-            ArrayList<Product> originalValues = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
+            ArrayList<IListItem> originalValues = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
             mProductsAdapter.setOriginalValues(originalValues);
         }
 
@@ -161,7 +162,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         }
         else if (id == R.id.action_send_by_email) {
             // Создадим вспомагательный массив и удалим из него категории
-            ArrayList array;
+            ArrayList<IListItem> array;
             // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
             if (mProductsAdapter.getOriginalValues() == null) {
                 array = new ArrayList<>(mProducts);
@@ -189,7 +190,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             mShoppingList.removeCheckedFromDB(this);
             if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
             // заменим массив для фильтрации
-            ArrayList<Product> originalValues = (ArrayList<Product>) mProducts.clone();
+            ArrayList<IListItem> originalValues = new ArrayList<>(mProducts);
             mProductsAdapter.setOriginalValues(originalValues);
             mProductsAdapter.notifyDataSetChanged();
         }

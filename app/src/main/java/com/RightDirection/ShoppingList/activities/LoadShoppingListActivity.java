@@ -39,6 +39,7 @@ public class LoadShoppingListActivity extends AppCompatActivity {
             EditText etText = (EditText)findViewById(R.id.etTextForLoading);
             if (etText == null || etText.getText() == null) finish();
 
+            assert etText != null;
             mShoppingList.loadProductsFromString(mContext, etText.getText().toString());
             mShoppingList.addNotExistingProductsToDB(mContext);
             if (!mShoppingList.isNew) mShoppingList.updateInDB(mContext);
