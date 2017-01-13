@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
         android:id="@+id/appBar"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_alignParentRight="false">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,7 +29,8 @@
         android:id="@+id/rvShoppingLists"
         android:layout_below="@+id/appBar"
         android:layout_alignParentStart="true"
-        android:choiceMode="singleChoice"/>
+        android:choiceMode="singleChoice"
+        android:layout_alignParentLeft="true" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddNewShoppingList"
@@ -39,6 +41,7 @@
         android:src="@drawable/ic_add_white"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

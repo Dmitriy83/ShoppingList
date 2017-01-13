@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rvCategories"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabAddCategory"
@@ -32,7 +33,10 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginStart="@dimen/fab_margin"
             android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin_right" />
+            android:layout_marginEnd="@dimen/fab_margin_right"
+            android:layout_marginRight="@dimen/fab_margin_right"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <com.google.android.gms.ads.AdView
@@ -43,6 +47,8 @@
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true">
     </com.google.android.gms.ads.AdView>
 </RelativeLayout>

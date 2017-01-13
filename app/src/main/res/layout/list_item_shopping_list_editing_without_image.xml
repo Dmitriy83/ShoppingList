@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@+id/imgDelete"
         android:layout_alignParentStart="true"
-        android:id="@+id/productRepresentWithoutCount">
+        android:id="@+id/productRepresentWithoutCount"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/imgDelete">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,7 +24,9 @@
             android:textColor="#F000"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
-            android:textSize="@dimen/text_size_normal"/>
+            android:textSize="@dimen/text_size_normal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -32,7 +36,9 @@
         android:layout_toStartOf="@+id/imgDelete"
         android:layout_alignParentStart="true"
         android:id="@+id/rlCount"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/imgDelete">
 
         <ImageButton
             android:layout_width="60dp"
@@ -42,7 +48,8 @@
             android:layout_alignParentStart="true"
             android:background="@null"
             android:src="@drawable/ic_remove_circle"
-            android:scaleType="fitEnd" />
+            android:scaleType="fitEnd"
+            android:layout_alignParentLeft="true" />
 
         <EditText
             android:layout_width="@dimen/large_size"
@@ -54,7 +61,8 @@
             android:digits="0123456789."
             android:textSize="@dimen/text_size_small"
             android:inputType="numberDecimal"
-            android:textColor="@color/category_text_color" />
+            android:textColor="@color/category_text_color"
+            android:layout_toRightOf="@+id/imgDecrease" />
 
         <ImageButton
             android:layout_width="60dp"
@@ -64,7 +72,8 @@
             android:layout_toEndOf="@+id/etCount"
             android:background="@null"
             android:src="@drawable/ic_add_circle"
-            android:scaleType="fitStart"/>
+            android:scaleType="fitStart"
+            android:layout_toRightOf="@+id/etCount" />
     </RelativeLayout>
 
     <ImageButton
@@ -74,7 +83,8 @@
         android:contentDescription="@string/cross"
         android:background="@drawable/ic_delete"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
     <View
         android:layout_width="match_parent"

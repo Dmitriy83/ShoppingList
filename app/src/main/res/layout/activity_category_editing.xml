@@ -15,7 +15,9 @@
         android:hint="@string/category_name_hint"
         android:inputType="textCapSentences"
         android:imeOptions="flagNoExtractUi"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -26,7 +28,9 @@
         android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -38,7 +42,8 @@
         android:inputType="number"
         android:hint="@string/enter_order"
         android:layout_toEndOf="@+id/tvOrder"
-        android:gravity="end|center_vertical" />
+        android:gravity="end|center_vertical"
+        android:layout_toRightOf="@+id/tvOrder" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -48,7 +53,8 @@
         android:text="@string/order"
         android:layout_alignBaseline="@+id/etOrder"
         android:layout_alignBottom="@+id/etOrder"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true" />
 
     <ImageView
         android:layout_width="150dp"

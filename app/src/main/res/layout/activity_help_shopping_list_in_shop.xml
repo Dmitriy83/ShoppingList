@@ -22,6 +22,8 @@
         android:id="@+id/btnGotIt"
         android:layout_below="@+id/fragment_container"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

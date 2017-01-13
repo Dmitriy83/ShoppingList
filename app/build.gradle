@@ -5,10 +5,10 @@ android {
     buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId 'com.RightDirection.ShoppingList'
-        minSdkVersion 18
+        minSdkVersion 16
         targetSdkVersion 25
-        versionCode 7
-        versionName "1.6"
+        versionCode 8
+        versionName "1.7"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //testInstrumentationRunnerArgument "size", "medium"
@@ -19,16 +19,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    /*
+
     productFlavors {
         production {
-            minSdkVersion 15
+            minSdkVersion 16
+
+            // `return void` removes the lint error: `Not all execution paths return a value`.
+            return void
         }
         uiTest {
             minSdkVersion 18
+
+            // `return void` removes the lint error: `Not all execution paths return a value`.
+            return void
         }
     }
-    */
+
 
     // `return void` removes the lint error: `Not all execution paths return a value`.
     return void
