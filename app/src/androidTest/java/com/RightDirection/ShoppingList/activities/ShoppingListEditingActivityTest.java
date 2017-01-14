@@ -6,7 +6,7 @@ import android.support.test.filters.MediumTest;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 
@@ -112,14 +112,14 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Проверяем, что в таблице содержимого списка покупок для редактированных элементов проставлено корректное количество
         ContentResolver contentResolver = mActivity.getContentResolver();
-        Cursor cursor = contentResolver.query(contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, contentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
-                        + contentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
+        Cursor cursor = contentResolver.query(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
+                        + SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
                 null, null);
         assertNotNull(cursor);
         assertTrue(cursor.getCount() == 2);
-        int keyCountIndex = cursor.getColumnIndexOrThrow(contentProvider.KEY_COUNT);
-        int keyNameIndex = cursor.getColumnIndexOrThrow(contentProvider.KEY_NAME);
+        int keyCountIndex = cursor.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
+        int keyNameIndex = cursor.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
         while (cursor.moveToNext()) {
             if (cursor.getString(keyNameIndex).equals(mNewProductNamePattern + "1")) {
                 assertEquals("5", cursor.getString(keyCountIndex));

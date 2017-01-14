@@ -2,13 +2,11 @@ package com.RightDirection.ShoppingList.items;
 
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
-import com.RightDirection.ShoppingList.interfaces.IGetType;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 
-public class ListItem implements Parcelable, IGetType, IListItem {
+public class ListItem implements IListItem {
 
     private long id;
     private String name;

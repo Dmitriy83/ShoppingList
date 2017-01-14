@@ -14,8 +14,8 @@ import com.RightDirection.ShoppingList.activities.CategoryActivity;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.RightDirection.ShoppingList.utils.contentProvider;
 
 public class Category extends ListItem implements IDataBaseOperations {
 
@@ -27,10 +27,10 @@ public class Category extends ListItem implements IDataBaseOperations {
     }
 
     public Category(Cursor data){
-        super(data.getLong(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ID)),
-                data.getString(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_NAME)),
-                contentProvider.getCategoryImageUri(data));
-        this.order = data.getInt(data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_ORDER));
+        super(data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_CATEGORY_ID)),
+                data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_CATEGORY_NAME)),
+                SL_ContentProvider.getCategoryImageUri(data));
+        this.order = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_CATEGORY_ORDER));
     }
 
     private Category(Parcel in) {
@@ -60,14 +60,14 @@ public class Category extends ListItem implements IDataBaseOperations {
     public void addToDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
-        contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_NAME, getName());
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_ORDER, getOrder());
         if (getImageUri() != null) {
-            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
+            contentValues.put(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
         }else{
-            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
+            contentValues.put(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
         }
-        Uri insertedId = contentResolver.insert(contentProvider.CATEGORIES_CONTENT_URI, contentValues);
+        Uri insertedId = contentResolver.insert(SL_ContentProvider.CATEGORIES_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
 
         // Категория более не новая
@@ -77,32 +77,32 @@ public class Category extends ListItem implements IDataBaseOperations {
     @Override
     public void removeFromDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
-        contentResolver.delete(contentProvider.CATEGORIES_CONTENT_URI,
-                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentResolver.delete(SL_ContentProvider.CATEGORIES_CONTENT_URI,
+                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     @Override
     public void updateInDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
-        contentValues.put(contentProvider.KEY_CATEGORY_ORDER, getOrder());
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_NAME, getName());
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_ORDER, getOrder());
         if (getImageUri() != null) {
-            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
+            contentValues.put(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI, getImageUri().toString());
         }else{
-            contentValues.put(contentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
+            contentValues.put(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
         }
-        contentResolver.update(contentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentResolver.update(SL_ContentProvider.CATEGORIES_CONTENT_URI, contentValues,
+                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     @Override
     public void renameInDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(contentProvider.KEY_CATEGORY_NAME, getName());
-        contentResolver.update(contentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                contentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_NAME, getName());
+        contentResolver.update(SL_ContentProvider.CATEGORIES_CONTENT_URI, contentValues,
+                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
     }
 
     public int getOrder() {

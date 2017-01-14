@@ -13,11 +13,11 @@
     <string name="new_product">New product</string>
     <string name="product_title">Product</string>
     <string name="edit">Edit</string>
-    <string name="in_shop">" "In shop</string>
+    <string name="in_shop">In shop</string>
     <string name="delete_shopping_list_question">Delete shopping list?</string>
     <string name="in_shop_ending_work_message">Done</string>
     <string name="change_list_name">Rename</string>
-    <string name="product_image">product_image</string>
+    <string name="product_image">Product image</string>
     <string name="view_holder" translatable="false">view_holder</string>
     <string name="pref_title">Settings</string>
     <string name="pref_cross_out_action">Cross out product</string>
@@ -86,4 +86,10 @@
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="email_activity_not_found_exception_text">Not found email client application</string>
     <string name="category_name_hint">Enter category name</string>
+    <string name="main_activity_no_data_text">Add the first shopping list</string>
+    <string name="categories_list_activity_no_data_text">Add new categories</string>
+    <string name="choose_category_activity_no_data_text">Categories list is empty</string>
+    <string name="in_shop_activity_no_data_text">Shopping list is empty</string>
+    <string name="editing_activity_no_data_text">Shopping list is empty. Add products.</string>
+    <string name="products_list_activity_no_data_text">Add new products.</string>
 </resources>

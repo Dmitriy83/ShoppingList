@@ -7,18 +7,21 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.RightDirection.ShoppingList.utils.contentProvider;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -43,7 +46,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
             fabAddProduct.setOnClickListener(onFabAddProductClick);
         }
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -66,6 +69,17 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        // Подключим меню
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Добавим кнопку Up на toolbar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
@@ -87,7 +101,7 @@ public class ProductsListActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, contentProvider.PRODUCTS_CONTENT_URI,
+        return new CursorLoader(this, SL_ContentProvider.PRODUCTS_CONTENT_URI,
                 null, null, null ,null);
     }
 

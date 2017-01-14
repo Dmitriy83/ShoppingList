@@ -6,7 +6,7 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 
@@ -141,10 +141,10 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         ContentResolver contentResolver = mActivity.getContentResolver();
         ContentValues contentValues = new ContentValues();
         String imagePath = "file:///android_asset/test_image.jpg";
-        contentValues.put(contentProvider.KEY_PICTURE,
+        contentValues.put(SL_ContentProvider.KEY_PICTURE,
                 imagePath);
-        contentResolver.update(contentProvider.PRODUCTS_CONTENT_URI,
-                contentValues, contentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1'", null);
+        contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
+                contentValues, SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1'", null);
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());

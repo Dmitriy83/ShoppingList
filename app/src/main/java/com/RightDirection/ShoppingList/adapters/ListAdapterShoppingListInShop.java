@@ -1,21 +1,19 @@
 package com.RightDirection.ShoppingList.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.DoneActivity;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
@@ -151,7 +149,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
         // Если "вычеркнуты" все товары, выведем сообщение пользователю
         if (allProductsChecked()) {
-            showVictoryDialog();
+            showDoneMessage();
         }
     }
 
@@ -162,15 +160,9 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
     }
 
-    private void showVictoryDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(
-                new ContextThemeWrapper(mParentActivity, mParentActivity.getApplicationInfo().theme)).create();
-        alertDialog.setMessage(mParentActivity.getString(R.string.in_shop_ending_work_message));
-        alertDialog.show();
-        // Установим выравнивание текста по середине
-        TextView messageText = (TextView) alertDialog.findViewById(android.R.id.message);
-        messageText.setGravity(Gravity.CENTER);
-        messageText.setTextSize(mParentActivity.getResources().getDimensionPixelSize(R.dimen.victory_text_size));
+    private void showDoneMessage() {
+        Intent intent = new Intent(mParentActivity, DoneActivity.class);
+        mParentActivity.startActivity(intent);
     }
 
     private boolean allProductsChecked() {

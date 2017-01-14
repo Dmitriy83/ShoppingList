@@ -25,7 +25,7 @@ import android.widget.TextView;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapter;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -91,12 +91,12 @@ abstract class ActivitiesTest {
     public void tearDown() throws Exception {
         ContentResolver contentResolver = mActivity.getContentResolver();
 
-        contentResolver.delete(contentProvider.SHOPPING_LISTS_CONTENT_URI,
-                contentProvider.KEY_NAME +  " LIKE '%Test%'", null);
-        contentResolver.delete(contentProvider.PRODUCTS_CONTENT_URI,
-                contentProvider.KEY_NAME +  " LIKE '%test%'", null);
-        contentResolver.delete(contentProvider.CATEGORIES_CONTENT_URI,
-                contentProvider.KEY_CATEGORY_NAME +  " LIKE '%test%'", null);
+        contentResolver.delete(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                SL_ContentProvider.KEY_NAME +  " LIKE '%Test%'", null);
+        contentResolver.delete(SL_ContentProvider.PRODUCTS_CONTENT_URI,
+                SL_ContentProvider.KEY_NAME +  " LIKE '%test%'", null);
+        contentResolver.delete(SL_ContentProvider.CATEGORIES_CONTENT_URI,
+                SL_ContentProvider.KEY_CATEGORY_NAME +  " LIKE '%test%'", null);
     }
 
     private void switchOffHelpActivities(){
@@ -517,6 +517,7 @@ abstract class ActivitiesTest {
             mDevice.pressBack();
             UiObject btnOk = mDevice.findObject(new UiSelector().text("OK"));
             btnOk.click();
+            mDevice.pressBack();
         }
     }
 }

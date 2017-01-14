@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Простые покупки</string>
-    <string name="action_edit_products_list">Продукты</string>
+    <string name="action_edit_products_list">Товары</string>
     <string name="action_settings">Настройки</string>
-    <string name="addItemHint">Введите название продукта</string>
+    <string name="addItemHint">Введите название товара</string>
     <string name="cross">Крест</string>
-    <string name="product_name_hint">Введите название продукта</string>
-    <string name="product_picture">Изображение продукта</string>
+    <string name="product_name_hint">Введите название товара</string>
+    <string name="product_picture">Изображение товара</string>
     <string name="save">Сохранить</string>
     <string name="input_shopping_list_name">Введите имя списка</string>
     <string name="ok">Подтвердить</string>
     <string name="cancel">Отмена</string>
-    <string name="new_product">Новый продукт</string>
-    <string name="product_title">Продукт</string>
+    <string name="new_product">Новый товар</string>
+    <string name="product_title">Товар</string>
     <string name="edit">Редактировать</string>
-    <string name="in_shop">" "В магазине</string>
+    <string name="in_shop">В магазине</string>
     <string name="delete_shopping_list_question">Удалить список?</string>
     <string name="in_shop_ending_work_message">Пора домой</string>
     <string name="change_list_name">Переименовать</string>
-    <string name="product_image">product_image</string>
     <string name="pref_title">Настройка</string>
     <string name="pref_cross_out_action">"Вычеркивать" товар</string>
     <string name="pref_cross_out_action_summary">Помечать товар в списке покупок вычеркиванием или простым нажатием</string>
@@ -63,4 +62,11 @@
     <string name="action_remove_checked">Удалить купленные</string>
     <string name="email_activity_not_found_exception_text">Не установлена почтовая программа</string>
     <string name="category_name_hint">Введите наименование категории</string>
+    <string name="main_activity_no_data_text">Добавьте Ваш первый список покупок</string>
+    <string name="categories_list_activity_no_data_text">Добавьте новую категорию</string>
+    <string name="choose_category_activity_no_data_text">Список категорий не заполнен</string>
+    <string name="in_shop_activity_no_data_text">Пустой список покупок</string>
+    <string name="editing_activity_no_data_text">Список покупок пуст. Добавьте товары.</string>
+    <string name="product_image">Изображение товара</string>
+    <string name="products_list_activity_no_data_text">Добавьте новый товар.</string>
 </resources>

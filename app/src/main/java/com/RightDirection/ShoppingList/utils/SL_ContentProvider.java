@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Locale;
 
-public class contentProvider extends ContentProvider {
+public class SL_ContentProvider extends ContentProvider {
 
     private ShoppingListSQLiteOpenHelper sqLiteOpenHelper;
 
@@ -152,11 +152,11 @@ public class contentProvider extends ContentProvider {
         switch(uriMatcher.match(uri)){
             case PRODUCTS_SINGLE_ROW:
             case PRODUCTS_ALL_ROWS:
-                deleteSubRows(PRODUCTS_CONTENT_URI, KEY_PRODUCT_ID, selection, selectionArgs);
+                deleteShoppingListRowsByProductId(selection);
                 break;
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LISTS_ALL_ROWS:
-                deleteSubRows(SHOPPING_LISTS_CONTENT_URI, KEY_SHOPPING_LIST_ID, selection, selectionArgs);
+                deleteShoppingListRowsByShoppingListId(selection);
                 break;
             case CATEGORIES_SINGLE_ROW:
             case CATEGORIES_ALL_ROWS:
@@ -176,33 +176,30 @@ public class contentProvider extends ContentProvider {
     }
 
     private void cleanRefsOnCategory(String selection, String[] selectionArgs) {
-        // TODO: Доделать очистку ссылок на удаляемую категорию
-
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_CATEGORY_ID, 0);
+        String newSelection = SL_ContentProvider.KEY_CATEGORY_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_CATEGORY_ID
+                + " FROM " + CATEGORIES_TABLE_NAME + " WHERE " + selection + ")";
+        update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues, newSelection, selectionArgs);
     }
 
-    /**
-    Удаление подчиненных строк из таблицы SHOPPING_LIST_CONTENT
-     */
-    private void deleteSubRows(Uri mainTableUri, String key, String selection, String[] selectionArgs) {
-        // Определим id списка (или списков, если удаление проивзодится, например, по имени) для удаления
-        Cursor cursor = query(mainTableUri, new String[]{KEY_ID}, selection, selectionArgs, null);
-        if (cursor != null && cursor.getCount() > 0) {
-            String subSelection = "";
-            boolean firstRaw = true;
-            while (cursor.moveToNext()) {
-                String listId = cursor.getString(cursor.getColumnIndex(KEY_ID));
-                if (firstRaw){
-                    firstRaw = false;
-                }
-                else{
-                    subSelection += " OR ";
-                }
-                subSelection += key + " = " + listId;
-            }
-            cursor.close();
+    private void deleteShoppingListRowsByProductId(String selection) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, 0);
+        String newSelection = SL_ContentProvider.KEY_PRODUCT_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_ID
+                + " FROM " + PRODUCTS_TABLE_NAME + " WHERE " + selection + ")";
+        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, null);
+    }
 
-            delete(SHOPPING_LIST_CONTENT_CONTENT_URI, subSelection, null);
-        }
+    private void deleteShoppingListRowsByShoppingListId(String selection) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_SHOPPING_LIST_ID, 0);
+        String newSelection = SL_ContentProvider.KEY_SHOPPING_LIST_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_ID
+                + " FROM " + SHOPPING_LISTS_TABLE_NAME + " WHERE " + selection + ")";
+        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, null);
     }
 
     @Override
@@ -330,7 +327,7 @@ public class contentProvider extends ContentProvider {
 
     @Nullable
     public static Uri getImageUri(@NonNull Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(contentProvider.KEY_PICTURE);
+        int keyPictureIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PICTURE);
 
         String strImageUri = data.getString(keyPictureIndex);
 
@@ -343,7 +340,7 @@ public class contentProvider extends ContentProvider {
 
     @Nullable
     public static Uri getCategoryImageUri(@NonNull Cursor data) {
-        int keyPictureIndex = data.getColumnIndexOrThrow(contentProvider.KEY_CATEGORY_PICTURE_URI);
+        int keyPictureIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI);
 
         String strImageUri = data.getString(keyPictureIndex);
 

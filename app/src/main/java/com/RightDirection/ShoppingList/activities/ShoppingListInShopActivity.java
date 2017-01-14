@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
@@ -20,8 +22,9 @@ import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.util.ArrayList;
 
@@ -52,7 +55,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         // Установим заголовок активности
         setTitle(mShoppingList.getName());
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -88,6 +91,17 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         // Откроем подсказку, если необходимо
         if (Utils.showHelpInShop(getApplicationContext()))
             startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
+
+        // Подключим меню
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Добавим кнопку Up на toolbar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
@@ -102,8 +116,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, contentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
+        return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
     }
 
     @Override

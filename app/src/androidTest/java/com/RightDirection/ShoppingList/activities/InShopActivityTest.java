@@ -318,6 +318,9 @@ public class InShopActivityTest extends ActivitiesTest {
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // На всякий случай нажмем на текстовое поле, т.к. в разных версиях
+        // андроид клавиатура может то показываться, то нет
+        onView(withId(R.id.newItemFragment)).perform(click());
         // Нажимаем кнопку назад
         pressBack();
         pressBack();
@@ -376,6 +379,9 @@ public class InShopActivityTest extends ActivitiesTest {
         // Проверяем, что вычеркнутые продукты не отображаются в списке.
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+        // На всякий случай нажмем на текстовое поле, т.к. в разных версиях
+        // андроид клавиатура может то показываться, то нет
+        onView(withId(R.id.newItemFragment)).perform(click());
         // Нажимаем кнопку назад
         pressBack();
         pressBack();

@@ -13,21 +13,22 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
-import com.RightDirection.ShoppingList.utils.contentProvider;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     protected void onCreate(Bundle savedInstanceState) {
         // Запустим главную активность
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         // Установим заголовок активности
@@ -58,8 +60,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
             fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
         }
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvShoppingLists);
-        if (recyclerView == null) return;
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvShoppingLists);
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
@@ -76,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         // Заполним списки покупок из базы данных
         getLoaderManager().initLoader(0, null, this);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
@@ -179,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-       return new CursorLoader(this, contentProvider.SHOPPING_LISTS_CONTENT_URI,
+       return new CursorLoader(this, SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 null, null, null ,null);
     }
 

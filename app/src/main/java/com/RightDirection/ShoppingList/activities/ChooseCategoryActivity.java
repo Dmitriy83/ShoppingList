@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterChooseCategory;
 import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class ChooseCategoryActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_choose_category);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvCategories);
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvCategories);
         if (recyclerView == null) return;
 
         // Используем этот метод для увеличения производительности,
@@ -48,11 +49,15 @@ public class ChooseCategoryActivity extends AppCompatActivity
 
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, contentProvider.CATEGORIES_CONTENT_URI,
+        return new CursorLoader(this, SL_ContentProvider.CATEGORIES_CONTENT_URI,
                 null, null, null ,null);
     }
 

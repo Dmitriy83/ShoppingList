@@ -7,13 +7,15 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
@@ -24,8 +26,9 @@ import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
 import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.RightDirection.ShoppingList.utils.contentProvider;
 import com.RightDirection.ShoppingList.views.FragmentInputProductName;
 
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -89,6 +92,17 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             // Заполним список покупок из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
+
+        // Подключим меню
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Добавим кнопку Up на toolbar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
@@ -179,8 +193,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             return null;
         }
 
-        return new CursorLoader(this, contentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, contentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
+        return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                null, SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
     }
 
     @Override
@@ -236,7 +250,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             removeAllItems();
         }
         else if (id == R.id.action_go_to_in_shop_activity) {
-            // Cохраним список покупок и перейдем к активности "В магазине"
+            // Сохраним список покупок и перейдем к активности "В магазине"
             mGoToInShop = true;
             saveListAndFinish();
         }

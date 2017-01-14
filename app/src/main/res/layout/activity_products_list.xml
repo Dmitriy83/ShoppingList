@@ -9,12 +9,28 @@
     tools:context=".activities.ProductsListActivity"
     >
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/common_toolbar"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/products_list_activity_no_data_text"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_large" />
+
+    <include
+        android:id="@+id/common_toolbar"
+        layout="@layout/common_toolbar" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/common_toolbar"
         android:layout_above="@+id/adView">
 
-        <android.support.v7.widget.RecyclerView
+        <com.RightDirection.ShoppingList.utils.CustomRecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rvProducts"

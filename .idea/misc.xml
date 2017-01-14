@@ -4,6 +4,7 @@
     <entry_points version="2.0">
       <entry_point TYPE="method" FQNAME="com.RightDirection.ShoppingList.interfaces.IGetValue E getValue()" />
       <entry_point TYPE="method" FQNAME="com.RightDirection.ShoppingList.interfaces.IDataBaseOperations void addToDB(android.content.Context context)" />
+      <entry_point TYPE="method" FQNAME="com.RightDirection.ShoppingList.interfaces.IListItem void setCount(float count)" />
     </entry_points>
   </component>
   <component name="NullableNotNullManager">

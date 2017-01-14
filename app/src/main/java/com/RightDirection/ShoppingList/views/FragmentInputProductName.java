@@ -26,7 +26,7 @@ import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.items.Category;
 import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.utils.contentProvider;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import java.util.ArrayList;
 
@@ -196,7 +196,7 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), contentProvider.PRODUCTS_CONTENT_URI,
+        return new CursorLoader(getActivity(), SL_ContentProvider.PRODUCTS_CONTENT_URI,
                 null, null, null ,null);
     }
 

@@ -37,20 +37,50 @@
                     android:host="just_buying" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ShoppingListEditingActivity" />
-        <activity android:name=".activities.ProductsListActivity" />
-        <activity android:name=".activities.CategoriesListActivity" />
+        <activity android:name=".activities.ShoppingListEditingActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
+        <activity android:name=".activities.ProductsListActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
+        <activity android:name=".activities.CategoriesListActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
         <activity
             android:name=".activities.ProductActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
+
         <activity
             android:name=".activities.CategoryActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
-        <activity android:name=".activities.ShoppingListInShopActivity" />
+
+        <activity android:name=".activities.ShoppingListInShopActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
         <activity android:name=".activities.SettingsActivity" />
 
         <provider
-            android:name=".utils.contentProvider"
+            android:name=".utils.SL_ContentProvider"
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
             android:exported="false"
             android:grantUriPermissions="true" />
@@ -76,6 +106,9 @@
         </activity>
         <activity android:name=".activities.OpeningOptionChoiceActivity"
             android:noHistory="true"
+            android:theme="@style/AppThemeDialog">
+        </activity>
+        <activity android:name=".activities.DoneActivity"
             android:theme="@style/AppThemeDialog">
         </activity>
     </application>
