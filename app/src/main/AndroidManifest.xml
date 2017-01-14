@@ -109,6 +109,7 @@
             android:theme="@style/AppThemeDialog">
         </activity>
         <activity android:name=".activities.DoneActivity"
+            android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
     </application>
