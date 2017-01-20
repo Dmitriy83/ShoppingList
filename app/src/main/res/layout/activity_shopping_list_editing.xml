@@ -30,7 +30,8 @@
         tools:layout="@layout/fragment_input_product_name"
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/common_toolbar"/>
+        android:layout_below="@+id/common_toolbar"
+        />
 
     <com.RightDirection.ShoppingList.utils.CustomRecyclerView
         android:layout_width="match_parent"

@@ -69,4 +69,11 @@
     <string name="editing_activity_no_data_text">Список покупок пуст. Добавьте товары.</string>
     <string name="product_image">Изображение товара</string>
     <string name="products_list_activity_no_data_text">Добавьте новый товар.</string>
+    <string name="mode">Выберите режим</string>
+    <string name="action_filter">Фильтр</string>
+    <string name="action_edit_shopping_list">Редактировать</string>
+    <string name="action_go_to_in_shop_activity">Переход в режим \"В магазине\"</string>
+    <string name="action_save_list">Сохранить список</string>
+    <string name="item_image">Изображение товара</string>
+    <string name="estimate">Оценить приложение</string>
 </resources>

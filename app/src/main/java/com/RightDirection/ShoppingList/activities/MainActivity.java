@@ -6,6 +6,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -169,6 +170,12 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
             catch(Exception e){
                 System.out.println("Exception raises during sending mail. Discription: " + e);
             }
+        }
+        else if (id == R.id.action_estimate) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("market://details?id=com.RightDirection.ShoppingList"));
+            startActivity(intent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

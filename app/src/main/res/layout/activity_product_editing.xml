@@ -34,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@+id/imgItemImage"
                 android:layout_marginEnd="2dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
@@ -46,7 +45,8 @@
                 android:layout_toRightOf="@+id/txtCategoryTitle"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="2dp"
-                android:layout_alignParentRight="true" />
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/etProductName"/>
 
             <TextView
                 android:id="@+id/txtCategoryTitle"
@@ -57,14 +57,15 @@
                 android:layout_alignParentStart="true"
                 android:text="@string/category_title"
                 android:textSize="18sp"
-                android:layout_alignParentLeft="true" />
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/etProductName"/>
 
             <ImageView
                 android:id="@+id/imgItemImage"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/etProductName"
+                android:layout_below="@+id/btnChooseCategory"
                 android:adjustViewBounds="false"
                 android:background="@drawable/image_border"
                 android:contentDescription="@string/product_picture"
@@ -73,7 +74,8 @@
                 android:maxHeight="300dp"
                 android:maxWidth="300dp"
                 android:src="@android:drawable/ic_menu_gallery"
-                android:layout_alignParentLeft="true" />
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="10dp" />
 
         </RelativeLayout>
 

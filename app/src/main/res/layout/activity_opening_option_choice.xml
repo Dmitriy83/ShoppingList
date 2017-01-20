@@ -10,6 +10,16 @@
     tools:context="com.RightDirection.ShoppingList.activities.OpeningOptionChoiceActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:text="@string/mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textStyle="normal|bold"
+        android:textSize="@dimen/text_size_large"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingBottom="10dp" />
+
     <Button
         android:text="@string/in_shop"
         android:layout_width="match_parent"

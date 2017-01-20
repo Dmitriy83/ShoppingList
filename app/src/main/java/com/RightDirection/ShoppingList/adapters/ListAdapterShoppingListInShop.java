@@ -202,7 +202,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         mIsFiltered = value;
     }
 
-    public void showChecked() {
+    public void  showChecked() {
         mIsFiltered = false;
 
         // Восстановим первоначальный список

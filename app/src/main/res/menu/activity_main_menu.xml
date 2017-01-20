@@ -32,4 +32,10 @@
         android:orderInCategory="120"
         android:title="@string/feedback"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_estimate"
+        android:orderInCategory="130"
+        android:title="@string/estimate"
+        app:showAsAction="never" />
 </menu>
