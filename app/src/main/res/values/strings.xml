@@ -83,7 +83,7 @@
     <string name="main_activity_title">All shopping lists</string>
     <string name="pref_key_show_help_in_main_activity" translatable="false">pref_key_show_help_in_main_screen</string>
     <string name="action_remove_checked">Remove checked products</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-4981714129483110/3643326589</string>
     <string name="email_activity_not_found_exception_text">Not found email client application</string>
     <string name="category_name_hint">Enter category name</string>
     <string name="main_activity_no_data_text">Add the first shopping list</string>
