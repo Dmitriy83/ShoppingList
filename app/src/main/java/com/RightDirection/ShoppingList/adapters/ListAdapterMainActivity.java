@@ -17,6 +17,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -47,7 +48,10 @@ public class ListAdapterMainActivity extends ListAdapter {
             mSelectedView.setSelected(true);
 
             ShoppingList shoppingList = (ShoppingList) view.getTag();
-            shoppingList.startOpeningOptionChoiceActivity(mParentActivity);
+            if (Utils.showChooseModeDialog(mParentActivity))
+                shoppingList.startOpeningOptionChoiceActivity(mParentActivity);
+            else
+                shoppingList.startInShopActivity(mParentActivity);
         }
     };
 

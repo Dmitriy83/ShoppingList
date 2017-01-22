@@ -222,4 +222,10 @@ public class Utils {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         return sharedPref.getBoolean(context.getString(R.string.pref_key_show_help_in_main_activity), true);
     }
+
+    public static boolean showChooseModeDialog(Context context) {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_activity_opening_option_choice), true);
+    }
 }

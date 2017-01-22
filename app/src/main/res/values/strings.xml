@@ -94,4 +94,7 @@
     <string name="products_list_activity_no_data_text">Add new products.</string>
     <string name="mode">Choose mode</string>
     <string name="estimate">Estimate app</string>
+    <string name="pref_key_show_activity_opening_option_choice">pref_key_show_activity_opening_option_choice</string>
+    <string name="pref_show_activity_opening_option_choice_summary">Show choose mode dialog after click on shopping list in main screen</string>
+    <string name="pref_show_activity_opening_option_choice">Show choose mode dialog</string>
 </resources>

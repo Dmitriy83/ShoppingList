@@ -29,6 +29,12 @@
         android:defaultValue="true"
         />
 
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_activity_opening_option_choice"
+        android:summary="@string/pref_show_activity_opening_option_choice_summary"
+        android:title="@string/pref_show_activity_opening_option_choice"
+        android:defaultValue="true"/>
+
     <!--
     Пока отключим возможность получения и загрузки писем с файлом json,
     т.к. настройка эл. почты слишком сложна для простого пользователя.

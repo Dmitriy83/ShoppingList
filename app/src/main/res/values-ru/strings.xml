@@ -76,4 +76,6 @@
     <string name="action_save_list">Сохранить список</string>
     <string name="item_image">Изображение товара</string>
     <string name="estimate">Оценить приложение</string>
+    <string name="pref_show_activity_opening_option_choice_summary">Показывать диалог выбора режима при клике на списке покупок на главном экране</string>
+    <string name="pref_show_activity_opening_option_choice">Показывать диалог выбора режима</string>
 </resources>
