@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Простые покупки</string>
+    <string name="app_name">Просто покупки</string>
     <string name="action_edit_products_list">Товары</string>
     <string name="action_settings">Настройки</string>
     <string name="addItemHint">Введите название товара</string>
