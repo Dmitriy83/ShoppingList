@@ -14,14 +14,18 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 
 public class InShopActivityTest extends ActivitiesTest {
 
@@ -81,6 +85,20 @@ public class InShopActivityTest extends ActivitiesTest {
         }
     }
 
+    private void changeCountToNotInteger(){
+        // Длинный клик на новом списке покупок
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+
+        // В меню действий нажимаем кнопку редактирования списка
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "3"))))
+                .perform(clearText())
+                .perform(typeText("1.3"));
+        onView(withId(R.id.action_save_list)).perform(click());
+    }
+
     @LargeTest
     @Test
     public void testActivityInShop_CategoriesShowing() throws UiObjectNotFoundException {
@@ -88,6 +106,7 @@ public class InShopActivityTest extends ActivitiesTest {
         // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
         addNewShoppingList();
         editNewShoppingList();
+        changeCountToNotInteger();
 
         testActivityInShop();
         inShopActivity_SavingCheckedItems();
@@ -105,6 +124,7 @@ public class InShopActivityTest extends ActivitiesTest {
         // Создаем новый список покупок и редактируем его (чтобы получить три элемента)
         addNewShoppingList();
         editNewShoppingList();
+        changeCountToNotInteger();
 
         testActivityInShop();
         inShopActivity_SavingCheckedItems();
@@ -180,7 +200,7 @@ public class InShopActivityTest extends ActivitiesTest {
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
                 "" + mNewProductNamePattern + "1, 1.0;"
                         + "\n" + mNewProductNamePattern + "2, 1.0;"
-                        + "\n" + mNewProductNamePattern + "3, 1.0;");
+                        + "\n" + mNewProductNamePattern + "3, 1.3;");
     }
 
     private void inShopActivity_LoadShoppingList(){
@@ -334,7 +354,7 @@ public class InShopActivityTest extends ActivitiesTest {
         // Для следующего теста добавим удаленные товары в список
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
         addProductInList(mNewProductNamePattern + 1, false);
-        addProductInList(mNewProductNamePattern + 3, false);
+        addProductInList(mNewProductNamePattern + 3, false, 1.3);
         onView(withId(R.id.action_save_list)).perform(click());
     }
 
@@ -395,7 +415,7 @@ public class InShopActivityTest extends ActivitiesTest {
         // Для следующего теста добавим удаленные товары в список
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
         addProductInList(mNewProductNamePattern + 1, false);
-        addProductInList(mNewProductNamePattern + 3, false);
+        addProductInList(mNewProductNamePattern + 3, false, 1.3);
         onView(withId(R.id.action_save_list)).perform(click());
     }
 }

@@ -40,6 +40,7 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
@@ -366,6 +367,16 @@ abstract class ActivitiesTest {
         }
         // Проверим, что элемент появился в списке
         onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+    }
+
+    void addProductInList(String textForTyping, boolean pressImeActionButton, double count){
+        addProductInList(textForTyping, pressImeActionButton);
+
+        // Изменим количество
+        onView(allOf(withId(R.id.etCount),
+                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                .perform(clearText())
+                .perform(typeText(String.valueOf(count)));
     }
 
     void timeout(int duration) {

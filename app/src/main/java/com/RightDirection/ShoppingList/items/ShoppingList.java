@@ -38,6 +38,9 @@ import java.util.HashMap;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
+    // В БД дробные числа сохраняются с погрешностью.
+    // Поэтому для поиска записи по количеству необхоимо эту погрешность учитывать.
+    private final double COUNT_INFELICITY = 0.00000001;
     private ArrayList<IListItem> mProducts;
 
     public ShoppingList(long id, String name) {
@@ -160,7 +163,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             contentResolver.update(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
                     SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
                             + SL_ContentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
-                            + SL_ContentProvider.KEY_COUNT + "=" + item.getCount(), null);
+                            + SL_ContentProvider.KEY_COUNT + " BETWEEN " + (item.getCount() - COUNT_INFELICITY)
+                            + " AND " + (item.getCount() + COUNT_INFELICITY),
+                    null);
         }
     }
 
@@ -171,7 +176,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 contentResolver.delete(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                         SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
                                 + SL_ContentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
-                                + SL_ContentProvider.KEY_COUNT + "=" + item.getCount(), null);
+                                + SL_ContentProvider.KEY_COUNT + " BETWEEN " + (item.getCount() - COUNT_INFELICITY)
+                                + " AND " + (item.getCount() + COUNT_INFELICITY),
+                        null);
             }
         }
 
