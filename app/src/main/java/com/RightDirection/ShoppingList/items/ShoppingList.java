@@ -38,9 +38,6 @@ import java.util.HashMap;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
-    // В БД дробные числа сохраняются с погрешностью.
-    // Поэтому для поиска записи по количеству необхоимо эту погрешность учитывать.
-    private final double COUNT_INFELICITY = 0.00000001;
     private ArrayList<IListItem> mProducts;
 
     public ShoppingList(long id, String name) {
@@ -159,25 +156,25 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         for (IListItem item: mProducts) {
-            contentValues.put(SL_ContentProvider.KEY_IS_CHECKED, item.isChecked());
-            contentResolver.update(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
-                    SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
-                            + SL_ContentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
-                            + SL_ContentProvider.KEY_COUNT + " BETWEEN " + (item.getCount() - COUNT_INFELICITY)
-                            + " AND " + (item.getCount() + COUNT_INFELICITY),
-                    null);
+            if (item instanceof Product) {
+                Product product = (Product)item;
+                contentValues.put(SL_ContentProvider.KEY_IS_CHECKED, item.isChecked());
+                contentResolver.update(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
+                        SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
+                                + SL_ContentProvider.KEY_ID + "=" + product.getRowId(),
+                        null);
+            }
         }
     }
 
     public void removeCheckedFromDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         for (IListItem item: mProducts) {
-            if (item.isChecked()) {
+            if (item instanceof Product && item.isChecked()) {
+                Product product = (Product)item;
                 contentResolver.delete(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                         SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
-                                + SL_ContentProvider.KEY_PRODUCT_ID + "=" + item.getId() + " AND "
-                                + SL_ContentProvider.KEY_COUNT + " BETWEEN " + (item.getCount() - COUNT_INFELICITY)
-                                + " AND " + (item.getCount() + COUNT_INFELICITY),
+                                + SL_ContentProvider.KEY_ID + "=" + product.getRowId(),
                         null);
             }
         }

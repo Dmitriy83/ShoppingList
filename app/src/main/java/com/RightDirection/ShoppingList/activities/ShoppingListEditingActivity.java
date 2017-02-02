@@ -194,7 +194,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         }
 
         return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
+                SL_ContentProvider.getShoppingListContentProjection(), SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
     }
 
     @Override

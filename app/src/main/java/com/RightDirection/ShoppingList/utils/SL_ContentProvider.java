@@ -65,6 +65,7 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_ORDER = "CATEGORY_ORDER";
     public static final String KEY_CATEGORY_PICTURE_URI = "CATEGORY_PICTURE_URI";
     public static final String KEY_IS_CHECKED = "IS_CHECKED";
+    public static final String KEY_SHOPPING_LIST_ROW_ID = "SHOPPING_LIST_ROW_ID";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
@@ -323,6 +324,33 @@ public class SL_ContentProvider extends ContentProvider {
         }
 
         return selection;
+    }
+
+    public static String[] getShoppingListContentProjection(){
+        return new String[]{
+                SHOPPING_LIST_CONTENT_TABLE_NAME + "." + KEY_ID + " AS " + KEY_SHOPPING_LIST_ROW_ID,
+                KEY_PRODUCT_ID,
+                KEY_NAME,
+                KEY_COUNT,
+                KEY_IS_CHECKED,
+                KEY_PICTURE,
+                KEY_CATEGORY_NAME,
+                CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID  + " AS " + KEY_CATEGORY_ID,
+                KEY_CATEGORY_ORDER,
+                KEY_CATEGORY_PICTURE_URI
+        };
+    }
+
+    public static String[] getProductsProjection(){
+        return new String[]{
+                PRODUCTS_TABLE_NAME + "." + KEY_ID + " AS " + KEY_PRODUCT_ID,
+                KEY_NAME,
+                KEY_PICTURE,
+                KEY_CATEGORY_NAME,
+                CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID  + " AS " + KEY_CATEGORY_ID,
+                KEY_CATEGORY_ORDER,
+                KEY_CATEGORY_PICTURE_URI
+        };
     }
 
     @Nullable

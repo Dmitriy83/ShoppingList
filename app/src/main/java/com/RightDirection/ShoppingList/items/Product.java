@@ -22,6 +22,7 @@ import com.RightDirection.ShoppingList.utils.Utils;
 public class Product extends ListItem implements IDataBaseOperations {
 
     private Category category;
+    private long rowId;
 
     public Product(long id) {
         super(id, "");
@@ -42,15 +43,14 @@ public class Product extends ListItem implements IDataBaseOperations {
     }
 
     public Product(Cursor data, Category category){
-        super(data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID)),
+        super(data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID)),
                 data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME)),
                 SL_ContentProvider.getImageUri(data));
 
         try {
-            int countColumnIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
-            int countIsCheckedIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED);
-            this.count = data.getFloat(countColumnIndex);
-            this.isChecked = data.getInt(countIsCheckedIndex) != 0;
+            this.count = data.getFloat(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT));
+            this.isChecked = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED)) != 0;
+            this.rowId =  data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_SHOPPING_LIST_ROW_ID));
         } catch (Exception e){
             // Столбец не найден
             this.count = 1;
@@ -163,5 +163,13 @@ public class Product extends ListItem implements IDataBaseOperations {
         Intent intent = new Intent(activity, ProductActivity.class);
         intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), this);
         activity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+    }
+
+    public long getRowId() {
+        return rowId;
+    }
+
+    public void setRowId(long rowId) {
+        this.rowId = rowId;
     }
 }

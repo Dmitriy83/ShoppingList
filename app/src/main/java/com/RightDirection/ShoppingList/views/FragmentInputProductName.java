@@ -197,7 +197,7 @@ public class FragmentInputProductName extends Fragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                null, null, null ,null);
+                SL_ContentProvider.getProductsProjection(), null, null ,null);
     }
 
     @Override
