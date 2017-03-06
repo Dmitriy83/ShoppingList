@@ -21,7 +21,7 @@
         android:id="@+id/common_toolbar"
         layout="@layout/common_toolbar" />
 
-    <com.RightDirection.ShoppingList.utils.CustomRecyclerView
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rvProducts"

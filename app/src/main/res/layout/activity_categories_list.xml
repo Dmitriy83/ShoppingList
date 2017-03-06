@@ -30,7 +30,7 @@
         android:layout_below="@id/common_toolbar"
         android:layout_above="@+id/adView">
 
-        <com.RightDirection.ShoppingList.utils.CustomRecyclerView
+        <com.RightDirection.ShoppingList.views.CustomRecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rvCategories"

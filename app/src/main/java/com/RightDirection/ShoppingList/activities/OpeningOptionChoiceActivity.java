@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
-import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.models.ShoppingList;
 
 public class OpeningOptionChoiceActivity extends AppCompatActivity {
 

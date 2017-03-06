@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.models.Product;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

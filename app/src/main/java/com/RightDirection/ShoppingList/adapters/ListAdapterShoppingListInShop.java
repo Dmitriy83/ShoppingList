@@ -16,8 +16,8 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.DoneActivity;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.models.Product;
 
 import java.util.ArrayList;
 
@@ -202,15 +202,32 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         mIsFiltered = value;
     }
 
+    public void deselectAll(){
+        if (mOriginalValues == null){ // фильтрация еще не устанавливалась
+            for (IListItem product: mObjects) {
+                product.setUnchecked();
+            }
+        } else{
+            for (IListItem product: mOriginalValues) {
+                product.setUnchecked();
+            }
+            retrieveOriginalValues();
+        }
+    }
+
     public void  showChecked() {
         mIsFiltered = false;
 
         // Восстановим первоначальный список
-        mObjects.clear();
-        mObjects.addAll(mOriginalValues);
+        retrieveOriginalValues();
 
         // Оповестим об изменении данных
         this.notifyDataSetChanged();
+    }
+
+    private void retrieveOriginalValues() {
+        mObjects.clear();
+        mObjects.addAll(mOriginalValues);
     }
 
     public void hideChecked() {
@@ -222,8 +239,7 @@ public class ListAdapterShoppingListInShop extends ListAdapter {
         }
 
         // Сначала восстановим первоначальный список, чтобы не потерять значения
-        mObjects.clear();
-        mObjects.addAll(mOriginalValues);
+        retrieveOriginalValues();
 
         // Удалим "вычеркнутые" продукты и категории из списка
         for (int i = mObjects.size() - 1; i >= 0; i--) {

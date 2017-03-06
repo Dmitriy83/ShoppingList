@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterChooseCategory;
-import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import java.util.ArrayList;

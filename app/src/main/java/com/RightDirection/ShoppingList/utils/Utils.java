@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.models.Product;
 
 import org.json.JSONArray;
 import org.json.JSONException;

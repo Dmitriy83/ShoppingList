@@ -29,5 +29,10 @@
         android:id="@+id/action_remove_checked"
         android:orderInCategory="010"
         android:title="@string/action_remove_checked"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_deselect_all"
+        android:orderInCategory="007"
+        android:title="@string/action_deselect_all"
+        app:showAsAction="ifRoom" />
 </menu>

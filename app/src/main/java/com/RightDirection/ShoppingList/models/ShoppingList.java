@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.items;
+package com.RightDirection.ShoppingList.models;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

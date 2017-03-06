@@ -19,10 +19,10 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListInShop;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.Category;
-import com.RightDirection.ShoppingList.items.Product;
-import com.RightDirection.ShoppingList.items.ShoppingList;
-import com.RightDirection.ShoppingList.utils.CustomRecyclerView;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 
@@ -160,57 +160,66 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         View view = findViewById(android.R.id.content);
         if (view == null) return super.onOptionsItemSelected(item);
 
-        if (id == R.id.action_filter) {
-            if (mProductsAdapter.isFiltered()) {
-                setFilterItemUnselected();
-                mProductsAdapter.showChecked();
-            }
-            else{
-                setFilterItemSelected();
-                mProductsAdapter.hideChecked();
-            }
-        }
-        else if (id == R.id.action_edit_shopping_list) {
-            saveCheckedInDB();
-            mShoppingList.startEditingActivity(this);
-            finish();
-        }
-        else if (id == R.id.action_send_by_email) {
-            // Создадим вспомагательный массив и удалим из него категории
-            ArrayList<IListItem> array;
-            // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
-            if (mProductsAdapter.getOriginalValues() == null) {
-                array = new ArrayList<>(mProducts);
-            }else{
-                array = new ArrayList<>(mProductsAdapter.getOriginalValues());
-            }
-            Utils.removeCategoriesFromArrayListOfProducts(array);
-            mShoppingList.setProducts(array);
-            mShoppingList.sendByEmail(this);
-        }
-        else if (id == R.id.action_load_list) {
-            mShoppingList.startLoadShoppingListActivity(this);
-            finish();
-        }
-        else if (id == R.id.action_remove_checked) {
-            // Сначала необходимо снять фильтр
-            if (mProductsAdapter.isFiltered()) {
-                setFilterItemUnselected();
-                mProductsAdapter.showChecked();
-            }
-            // сначала заполним объект списком для изменения
-            Utils.removeCategoriesFromArrayListOfProducts(mProducts);
-            mShoppingList.setProducts(mProducts);
-            // удалим вычеркнутые элементы из БД
-            mShoppingList.removeCheckedFromDB(this);
-            if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
-            // заменим массив для фильтрации
-            ArrayList<IListItem> originalValues = new ArrayList<>(mProducts);
-            mProductsAdapter.setOriginalValues(originalValues);
-            mProductsAdapter.notifyDataSetChanged();
+        switch (id) {
+            case R.id.action_filter:
+                if (mProductsAdapter.isFiltered()) {
+                    setFilterItemUnselected();
+                    mProductsAdapter.showChecked();
+                } else {
+                    setFilterItemSelected();
+                    mProductsAdapter.hideChecked();
+                }
+                break;
+            case R.id.action_edit_shopping_list:
+                saveCheckedInDB();
+                mShoppingList.startEditingActivity(this);
+                finish();
+                break;
+            case R.id.action_send_by_email:
+                // Создадим вспомагательный массив и удалим из него категории
+                ArrayList<IListItem> array;
+                // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
+                if (mProductsAdapter.getOriginalValues() == null) {
+                    array = new ArrayList<>(mProducts);
+                } else {
+                    array = new ArrayList<>(mProductsAdapter.getOriginalValues());
+                }
+                Utils.removeCategoriesFromArrayListOfProducts(array);
+                mShoppingList.setProducts(array);
+                mShoppingList.sendByEmail(this);
+                break;
+            case R.id.action_load_list:
+                mShoppingList.startLoadShoppingListActivity(this);
+                finish();
+                break;
+            case R.id.action_remove_checked:
+                // Сначала необходимо снять фильтр
+                removeFilter();
+                // сначала заполним объект списком для изменения
+                Utils.removeCategoriesFromArrayListOfProducts(mProducts);
+                mShoppingList.setProducts(mProducts);
+                // удалим вычеркнутые элементы из БД
+                mShoppingList.removeCheckedFromDB(this);
+                if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
+                // заменим массив для фильтрации
+                ArrayList<IListItem> originalValues = new ArrayList<>(mProducts);
+                mProductsAdapter.setOriginalValues(originalValues);
+                mProductsAdapter.notifyDataSetChanged();
+                break;
+            case R.id.action_deselect_all:
+                mProductsAdapter.deselectAll();
+                mProductsAdapter.notifyDataSetChanged();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void removeFilter() {
+        if (mProductsAdapter.isFiltered()) {
+            setFilterItemUnselected();
+            mProductsAdapter.showChecked();
+        }
     }
 
     private void setFilterItemSelected(){

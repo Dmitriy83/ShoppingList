@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.Product;
+import com.RightDirection.ShoppingList.models.Product;
 
 import java.util.ArrayList;
 

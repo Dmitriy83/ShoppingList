@@ -17,7 +17,7 @@
         android:textSize="@dimen/text_size_large"
         android:layout_alignParentLeft="true" />
 
-    <com.RightDirection.ShoppingList.utils.CustomRecyclerView
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"

@@ -26,6 +26,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 public class InShopActivityTest extends ActivitiesTest {
 
@@ -109,6 +110,8 @@ public class InShopActivityTest extends ActivitiesTest {
         changeCountToNotInteger();
 
         testActivityInShop();
+        inShopActivity_DeselectAll();
+        inShopActivity_Filtered_DeselectAll();
         inShopActivity_SavingCheckedItems();
         inShopActivity_Filtered_SavingCheckedItems();
         inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB();
@@ -127,6 +130,8 @@ public class InShopActivityTest extends ActivitiesTest {
         changeCountToNotInteger();
 
         testActivityInShop();
+        inShopActivity_DeselectAll();
+        inShopActivity_Filtered_DeselectAll();
         inShopActivity_SavingCheckedItems();
         inShopActivity_Filtered_SavingCheckedItems();
         inShopActivity_RemoveUnfilteredCheckedItemsFromListInDB();
@@ -220,6 +225,72 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
     }
 
+    private void inShopActivity_DeselectAll(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        // Выделяем все элементы
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
+        pressBack();
+
+        // Снимаем выделение со всех
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_deselect_all))).perform(click());
+
+        // Опять выделяем. Проверяем отсутствие надписи.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(doesNotExist());
+
+        // Снимаем выделение для следующего этапа
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_deselect_all))).perform(click());
+
+        pressBack();
+    }
+
+    private void inShopActivity_Filtered_DeselectAll(){
+        // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
+        setSettingCrossOutProduct();
+
+        // Переходим в активность В магазине
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        // Устанавливаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        // Выделяем все элементы
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
+
+        // Проверяем, что продукты не отображаются
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(doesNotExist());
+
+        // Снимаем выделение со всех
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_deselect_all))).perform(click());
+
+        // Опять выделяем. Проверяем отсутствие надписи.
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
+        onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(doesNotExist());
+
+        // Проверяем, что отображается только один продукт
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(matches(isDisplayed()));
+
+        // Снимаем выделение для следующего этапа
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(mActivity.getString(R.string.action_deselect_all))).perform(click());
+
+        pressBack();
+    }
+
     private void inShopActivity_SavingCheckedItems(){
         // Проверяем способ выделения в активности В магазине. При необходимости меняем на выделение свайпом.
         setSettingCrossOutProduct();
@@ -299,7 +370,7 @@ public class InShopActivityTest extends ActivitiesTest {
         pressBack();
         // Снимаем фильтр
         onView(withId(R.id.action_filter)).perform(click());
-        // Снимаем выделение с одного из элементво и переходим к активности Редактирования списка
+        // Снимаем выделение с одного из элементов и переходим к активности Редактирования списка
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeLeft());
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
         // Возвращаемся к активности В магазине и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.

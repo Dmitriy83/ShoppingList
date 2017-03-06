@@ -22,7 +22,7 @@
         android:visibility="gone"
         android:textSize="@dimen/text_size_large" />
 
-    <com.RightDirection.ShoppingList.utils.CustomRecyclerView
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
         android:id="@+id/rvShoppingLists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

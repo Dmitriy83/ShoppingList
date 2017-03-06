@@ -1,10 +1,11 @@
-package com.RightDirection.ShoppingList.utils;
+package com.RightDirection.ShoppingList.views;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+// RecyclerView с надписью о пустом списке
 public class CustomRecyclerView extends RecyclerView {
     private View emptyView;
 

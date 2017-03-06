@@ -16,7 +16,7 @@ import android.view.View;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.items.ShoppingList;
+import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;

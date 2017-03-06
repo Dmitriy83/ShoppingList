@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
-import com.RightDirection.ShoppingList.items.Category;
+import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 

@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.items;
+package com.RightDirection.ShoppingList.models;
 
 import android.support.test.filters.SmallTest;
 import android.support.test.rule.ActivityTestRule;
