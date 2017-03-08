@@ -7,9 +7,7 @@ import com.RightDirection.ShoppingList.R;
 
 import org.junit.Test;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -72,7 +70,7 @@ public class ProductActivitiesTest extends ActivitiesTest {
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
         // Нажимаем кнопку вызова подменю
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openMainMenu();
         // Выбираем "Список продуктов"
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
         // Проверяем, что открылась активность "Список продуктов"

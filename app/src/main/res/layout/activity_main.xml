@@ -1,49 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.MainActivity"
+    tools:openDrawer="start">
 
-    <include
-        android:id="@+id/common_toolbar"
-        layout="@layout/common_toolbar" />
-
-    <TextView
-        android:id="@+id/empty_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/common_toolbar"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/main_activity_no_data_text"
-        android:visibility="gone"
-        android:textSize="@dimen/text_size_large" />
+        android:layout_height="match_parent">
 
-    <com.RightDirection.ShoppingList.views.CustomRecyclerView
-        android:id="@+id/rvShoppingLists"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/common_toolbar"
-        android:choiceMode="singleChoice" />
+        <include
+            android:id="@+id/common_toolbar"
+            layout="@layout/common_toolbar" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabAddNewShoppingList"
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/common_toolbar"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/main_activity_no_data_text"
+            android:textSize="@dimen/text_size_large"
+            android:visibility="gone" />
+
+        <com.RightDirection.ShoppingList.views.CustomRecyclerView
+            android:id="@+id/rvShoppingLists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/common_toolbar"
+            android:choiceMode="singleChoice" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabAddNewShoppingList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_add_white"
+            app:fabSize="normal" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white"
-        app:fabSize="normal" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_menu" />
 
-</RelativeLayout>
-
-
-
+</android.support.v4.widget.DrawerLayout>

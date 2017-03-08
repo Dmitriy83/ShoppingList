@@ -1,7 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,11 +10,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -36,10 +39,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        InputNameDialog.IInputListNameDialogListener{
+        InputNameDialog.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener{
 
     private ArrayList<IListItem> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
+    private DrawerLayout mDrawerLayout;
+    //private MenuItem mMenuItemWaiting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,26 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Подключим меню
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        /*{
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+
+                // Если панель навигации еще не закрыта, подождем пока анимация закрытия доиграет до конца.
+                // Иначе будет заметный глазу лаг.
+                if(mMenuItemWaiting != null) {
+                    onNavigationItemSelected(mMenuItemWaiting);
+                }
+            }
+        };*/
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Подключим обработчики
         FloatingActionButton fabAddNewShoppingList = (FloatingActionButton) findViewById(R.id.fabAddNewShoppingList);
@@ -85,6 +110,23 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     }
 
     @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START))
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -94,91 +136,6 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Откроем подсказку, если необходимо
         if (Utils.showHelpMainActivity(getApplicationContext()))
             startActivity(new Intent(this, HelpMainActivity.class));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Заполним меню (добавим элементы из menu_main.xml).
-        getMenuInflater().inflate(R.menu.activity_main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Обработаем нажатие на элемент подменю.
-        int id = item.getItemId();
-
-        View view = findViewById(android.R.id.content);
-        if (view == null) return super.onOptionsItemSelected(item);
-
-        if (id == R.id.action_settings) {
-            Context context = view.getContext();
-                if (context != null) {
-                    Intent intent = new Intent(context, SettingsActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-        }
-        else if (id == R.id.action_edit_products_list) {
-            Intent intent = new Intent(view.getContext(), ProductsListActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        else if (id == R.id.action_receive_shopping_list_by_email) {
-            try {
-                // Получим параметры подключения из настроек приложения
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                String host = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_host), "");
-                String port = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_port), "");
-                String userName = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_login), "");
-                String password = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_password), "");
-
-                // В отдельном потоке скачем и обработаем электронные письма
-                AsyncTaskDownloadEmail asyncTaskDownloadEmail = new AsyncTaskDownloadEmail();
-                EmailReceiver receiver = new EmailReceiver(this);
-                receiver.setServerProperties(host, port);
-                receiver.setLogin(userName);
-                receiver.setPassword(password);
-                asyncTaskDownloadEmail.execute(receiver);
-
-                // Сообщим пользователю о начале загрузки
-                Toast.makeText(this, getString(R.string.loading), Toast.LENGTH_LONG).show();
-            } catch (WrongEmailProtocolException e) {
-                e.printStackTrace();
-                Toast.makeText(this, getString(R.string.wrong_email_protocol_exception_message),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
-        else if (id == R.id.action_edit_categories_list) {
-            Intent intent = new Intent(view.getContext(), CategoriesListActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        else if (id == R.id.action_feedback) {
-            try{
-                startActivity(Utils.getSendEmailIntent(getString(R.string.feedback_email),
-                        getString(R.string.feedback),
-                        "\n" + "\n" + "\n" + "\n" + getString(R.string.email_body_divider)
-                                + "\n" + Utils.getDeviceName() + "\nAndroid " + Build.VERSION.RELEASE,
-                        null));
-            }
-            catch(ActivityNotFoundException e){
-                System.out.println("Exception raises during sending mail. Discription: " + e);
-                Toast.makeText(this, R.string.email_activity_not_found_exception_text,
-                        Toast.LENGTH_SHORT).show();
-            }
-            catch(Exception e){
-                System.out.println("Exception raises during sending mail. Discription: " + e);
-            }
-        }
-        else if (id == R.id.action_estimate) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("market://details?id=com.RightDirection.ShoppingList"));
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private final View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
@@ -222,6 +179,95 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     @Override
     public void onDialogNegativeClick() {}
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        // В настоящий момент принято решение закрывать drawer в событии onStop
+        //
+        /* Если панель навигации еще не закрыта, подождем пока анимация закрытия доиграет до конца.
+            Иначе будет заметный глазу лаг.
+        mMenuItemWaiting = null;
+        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mMenuItemWaiting = item;
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return false;
+        };*/
+
+        // Обработаем нажатие на пункт меню после закрытия панели навигации, чтобы позволить
+        // анимации закрытия панели навигации доиграть до конца. Иначе будет заметный лаг.
+        handleItemClick(item.getItemId());
+
+        return true;
+    }
+
+    private void handleItemClick(int id) {
+        switch (id) {
+            case R.id.action_settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_edit_products_list: {
+                Intent intent = new Intent(this, ProductsListActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_receive_shopping_list_by_email: {
+                try {
+                    // Получим параметры подключения из настроек приложения
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    String host = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_host), "");
+                    String port = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_port), "");
+                    String userName = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_login), "");
+                    String password = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_password), "");
+
+                    // В отдельном потоке скачем и обработаем электронные письма
+                    AsyncTaskDownloadEmail asyncTaskDownloadEmail = new AsyncTaskDownloadEmail();
+                    EmailReceiver receiver = new EmailReceiver(this);
+                    receiver.setServerProperties(host, port);
+                    receiver.setLogin(userName);
+                    receiver.setPassword(password);
+                    asyncTaskDownloadEmail.execute(receiver);
+
+                    // Сообщим пользователю о начале загрузки
+                    Toast.makeText(this, getString(R.string.loading), Toast.LENGTH_LONG).show();
+                } catch (WrongEmailProtocolException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, getString(R.string.wrong_email_protocol_exception_message),
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+            }
+            case R.id.action_edit_categories_list: {
+                Intent intent = new Intent(this, CategoriesListActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_feedback: {
+                try {
+                    startActivity(Utils.getSendEmailIntent(getString(R.string.feedback_email),
+                            getString(R.string.feedback),
+                            "\n" + "\n" + "\n" + "\n" + getString(R.string.email_body_divider)
+                                    + "\n" + Utils.getDeviceName() + "\nAndroid " + Build.VERSION.RELEASE,
+                            null));
+                } catch (ActivityNotFoundException e) {
+                    System.out.println("Exception raises during sending mail. Discription: " + e);
+                    Toast.makeText(this, R.string.email_activity_not_found_exception_text,
+                            Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    System.out.println("Exception raises during sending mail. Discription: " + e);
+                }
+                break;
+            }
+            case R.id.action_estimate: {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("market://details?id=com.RightDirection.ShoppingList"));
+                startActivity(intent);
+                break;
+            }
+        }
+    }
 
     private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{
         @Override

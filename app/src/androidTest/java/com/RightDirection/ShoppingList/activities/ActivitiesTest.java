@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
@@ -36,9 +37,7 @@ import org.junit.Rule;
 
 import java.util.Date;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -71,7 +70,7 @@ abstract class ActivitiesTest {
     final static String mNewProductNamePattern = "testNewProduct";
     final static String mNewCategoryNamePattern = "testNewCategory";
     static UiDevice mDevice = null;
-    static MainActivity mActivity = null;
+    MainActivity mActivity = null;
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
@@ -129,14 +128,21 @@ abstract class ActivitiesTest {
     }
 
     void openSettings() {
-        // Нажимаем на кнопку вызова подменю
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openMainMenu();
 
         // Выбираем "Настройки"
         onView(withText(mActivity.getString(R.string.action_settings))).perform(click());
 
         // Проверяем, что открылась форма настроек
         onView(withText(mActivity.getString(R.string.pref_cross_out_action))).check(matches(isDisplayed()));
+    }
+
+    void openMainMenu() {
+        /*// Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());*/
+
+        // Открываем панель навигации
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
     }
 
     static Matcher<View> isChildOfRecyclerViewItem(final Matcher<View> recyclerViewItem) {
@@ -369,7 +375,7 @@ abstract class ActivitiesTest {
         onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
     }
 
-    void addProductInList(String textForTyping, boolean pressImeActionButton, double count){
+    void addProductInList(String textForTyping, @SuppressWarnings("SameParameterValue") boolean pressImeActionButton, @SuppressWarnings("SameParameterValue") double count){
         addProductInList(textForTyping, pressImeActionButton);
 
         // Изменим количество
@@ -399,7 +405,7 @@ abstract class ActivitiesTest {
 
     void addNewProduct(String name){
         // Нажимаем кнопку вызова подменю
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openMainMenu();
 
         // Выбираем "Список продуктов"
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
@@ -455,7 +461,7 @@ abstract class ActivitiesTest {
 
     void addNewCategory(){
         // Нажимаем кнопку вызова подменю
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openMainMenu();
 
         // Выбираем "Категории"
         onView(withText(mActivity.getString(R.string.action_edit_categories_list))).perform(click());

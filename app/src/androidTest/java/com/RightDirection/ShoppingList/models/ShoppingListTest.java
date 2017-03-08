@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 
 public class ShoppingListTest {
 
-    private static MainActivity mActivity = null;
+    private MainActivity mActivity = null;
 
     @Rule
     public final ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(

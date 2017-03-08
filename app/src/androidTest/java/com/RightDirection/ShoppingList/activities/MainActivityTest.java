@@ -13,7 +13,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.clearText;
@@ -140,7 +139,7 @@ public class MainActivityTest extends ActivitiesTest {
         // В меню действий нажимаем кнопку отправки списка по почте
         onView(withId(R.id.action_send_by_email)).perform(click());
 
-        // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
+        // С помощбю UIAutomator проверяем сфорировалось ли письмо?
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
                 "" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;");
@@ -164,7 +163,7 @@ public class MainActivityTest extends ActivitiesTest {
     @Test
     @MediumTest
     public void feedback(){
-        openActionBarOverflowOrOptionsMenu(getTargetContext());
+        openMainMenu();
         onView(withText(mActivity.getString(R.string.feedback))).perform(click());
         feedbackCheckEmailAppearing(mActivity.getString(R.string.feedback),
                 "\n" + "\n" + "\n" + "\n"

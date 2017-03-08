@@ -10,9 +10,7 @@ import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -146,7 +144,7 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
                 contentValues, SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1'", null);
 
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openMainMenu();
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
         // Находим новый товар с картинкой из Assets
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
