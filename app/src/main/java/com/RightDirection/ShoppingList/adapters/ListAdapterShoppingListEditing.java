@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Product;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ListAdapterShoppingListEditing extends ListAdapter {
+public class ListAdapterShoppingListEditing extends BaseListAdapter {
 
     private Timer mTimer;
 

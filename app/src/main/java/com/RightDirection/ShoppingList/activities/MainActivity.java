@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -27,16 +28,27 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
+import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
 import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.utils.FirebaseUtil;
+import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputNameDialog.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener{
@@ -44,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     private ArrayList<IListItem> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
     private DrawerLayout mDrawerLayout;
-    //private MenuItem mMenuItemWaiting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,25 +67,13 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Установим заголовок активности
         setTitle(getString(R.string.main_activity_title));
 
-        // Подключим меню
+        // Подключим панель навигации
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
-        /*{
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-
-                // Если панель навигации еще не закрыта, подождем пока анимация закрытия доиграет до конца.
-                // Иначе будет заметный глазу лаг.
-                if(mMenuItemWaiting != null) {
-                    onNavigationItemSelected(mMenuItemWaiting);
-                }
-            }
-        };*/
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -107,6 +106,35 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Добавим текстовое поле для пустого списка
         TextView emptyView = (TextView)findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayUserInformation();
+    }
+
+    private void displayUserInformation() {
+        // Скроем/отобразим кнопки "Sign in"/"Profile"
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        Menu navMenu = navView.getMenu();
+        boolean userSignedIn = userSignedIn();
+        navMenu.findItem(R.id.action_sign_in).setVisible(!userSignedIn);
+        MenuItem actionProfile = navMenu.findItem(R.id.action_profile);
+        actionProfile.setVisible(userSignedIn);
+        navMenu.findItem(R.id.action_friends).setVisible(userSignedIn);
+        navMenu.findItem(R.id.action_receive_shopping_lists).setVisible(userSignedIn);
+
+        if (userSignedIn){
+            User user = FirebaseUtil.readUserFromPref(this);
+            assert user !=null;
+            actionProfile.setTitle(user.getName());
+        }
+    }
+
+    private boolean userSignedIn() {
+        User user = FirebaseUtil.readUserFromPref(this);
+        return (user != null);
     }
 
     @Override
@@ -183,17 +211,6 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        // В настоящий момент принято решение закрывать drawer в событии onStop
-        //
-        /* Если панель навигации еще не закрыта, подождем пока анимация закрытия доиграет до конца.
-            Иначе будет заметный глазу лаг.
-        mMenuItemWaiting = null;
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mMenuItemWaiting = item;
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-            return false;
-        };*/
-
         // Обработаем нажатие на пункт меню после закрытия панели навигации, чтобы позволить
         // анимации закрытия панели навигации доиграть до конца. Иначе будет заметный лаг.
         handleItemClick(item.getItemId());
@@ -266,7 +283,102 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 startActivity(intent);
                 break;
             }
+            case R.id.action_sign_in:
+            case R.id.action_profile:{
+                Intent intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_friends:{
+                Intent intent = new Intent(this, FriendsActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_receive_shopping_lists:{
+                receiveShoppingListsFromFirebase();
+                break;
+            }
         }
+    }
+
+    private void receiveShoppingListsFromFirebase(){
+        Toast.makeText(this, R.string.receiving, Toast.LENGTH_SHORT).show();
+
+        final ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
+
+        final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+        timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
+            @Override
+            public void onTimeout() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), R.string.connection_timeout_exceeded, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+        timeoutControl.start();
+
+        FirebaseUtil.getCurrentUserRef().child(FirebaseUtil.getShoppingListsPath())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        timeoutControl.stop();
+                        ArrayList<FirebaseShoppingList> firebaseLists = new ArrayList<>();
+                        if (!dataSnapshot.hasChildren()) {
+                            Toast.makeText(getApplicationContext(), R.string.no_shoppping_for_loading, Toast.LENGTH_LONG).show();
+                        } else {
+                            for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                                FirebaseShoppingList firebaseShoppingList = childDataSnapshot.getValue(FirebaseShoppingList.class);
+                                firebaseShoppingList.setName(childDataSnapshot.getKey());
+                                firebaseLists.add(firebaseShoppingList);
+                            }
+                        }
+
+                        // Загружаем новый списков покупок
+                        for (FirebaseShoppingList firebaseList: firebaseLists) {
+                            // Сформируем имя нового списка покупок
+                            Calendar calendar = Calendar.getInstance();
+                            DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+                            String newListName = firebaseList.getName() + " "
+                                    + getString(R.string.loaded) + " "
+                                    + dateFormat.format(calendar.getTime());
+
+                            // Создадим  новый объект-лист покупок
+                            ShoppingList newShoppingList = new ShoppingList(-1, newListName);
+                            newShoppingList.loadProductsFromString(getApplicationContext(), firebaseList.getContent());
+                            newShoppingList.addNotExistingProductsToDB(getApplicationContext());
+                            // Сначала нужно добавить новые продукты из списка в базу данных.
+                            // Синхронизацияя должна производиться по полю Name
+                            newShoppingList.addNotExistingProductsToDB(getApplicationContext());
+                            // Сохраним новый лист покупок в базе данных
+                            newShoppingList.addToDB(getApplicationContext());
+                            loadedShoppingLists.add(newShoppingList);
+                        }
+
+                        // В случае, успешной загрузки оповестим адаптер об изменении
+                        if (loadedShoppingLists.size() > 0) {
+                            for (ShoppingList newShoppingList: loadedShoppingLists) {
+                                mShoppingListsAdapter.add(newShoppingList);
+                            }
+                            mShoppingListsAdapter.notifyDataSetChanged();
+
+                            // Все загруженные листы следует удалить
+                            FirebaseUtil.getCurrentUserRef()
+                                    .child(FirebaseUtil.getShoppingListsPath()).removeValue();
+                        }else{
+                            Toast.makeText(getApplicationContext(), getString(R.string.no_shoppping_for_loading),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        timeoutControl.stop();
+                        System.out.println(R.string.connection_failed + " " + databaseError.getCode());
+                    }
+                });
     }
 
     private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>>{

@@ -20,8 +20,10 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -47,7 +49,7 @@ public class CategoryActivitiesTest extends ActivitiesTest {
 
         // Проверим удаление категории из списка
         onView(allOf(withId(R.id.imgDelete),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                hasSibling(recyclerViewItemWithText(textForTyping))))
                 .perform(click());
         // Категория более не должна отображаться в списке
         onView(recyclerViewItemWithText(textForTyping)).check(doesNotExist());

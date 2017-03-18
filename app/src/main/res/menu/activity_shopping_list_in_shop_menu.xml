@@ -2,17 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ShoppingListInShopActivity">
-
-    <item android:id="@+id/action_load_list"
-        android:icon="@drawable/ic_load"
-        android:title="@string/load"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="005" />
-    <item android:title="@string/send_by_email"
-        android:orderInCategory="004"
-        android:id="@+id/action_send_by_email"
-        android:icon="@drawable/ic_send_by_email"
-        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_edit_shopping_list"
         android:orderInCategory="001"
@@ -25,14 +14,29 @@
         android:icon="@drawable/ic_filter"
         android:title="@string/action_filter"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_remove_checked"
-        android:orderInCategory="010"
-        android:title="@string/action_remove_checked"
+    <item android:title="@string/send_to_friend"
+        android:orderInCategory="003"
+        android:id="@+id/action_send_to_friend"
+        android:icon="@drawable/ic_send"
         app:showAsAction="ifRoom" />
+    <item android:title="@string/share"
+        android:orderInCategory="004"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_load_list"
+        android:icon="@drawable/ic_load"
+        android:title="@string/load"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="005" />
     <item
         android:id="@+id/action_deselect_all"
-        android:orderInCategory="007"
+        android:orderInCategory="006"
         android:title="@string/action_deselect_all"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_remove_checked"
+        android:orderInCategory="007"
+        android:title="@string/action_remove_checked"
         app:showAsAction="ifRoom" />
 </menu>

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,14 +15,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.ChooseRecipientActivity;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
-public class ListAdapterMainActivity extends ListAdapter {
+public class ListAdapterMainActivity extends BaseListAdapter {
 
     private ActionMode mActionMode;
     private ShoppingList mSelectedItem = null;
@@ -101,8 +104,7 @@ public class ListAdapterMainActivity extends ListAdapter {
             if (mSelectedItem == null) { return false; }
 
             switch (item.getItemId()) {
-                case R.id.imgDelete:
-
+                case R.id.imgDelete: {
                     // Выведем вопрос об удалении списка покупок
                     AlertDialog alertDialog = new AlertDialog.Builder(
                             new ContextThemeWrapper(mParentActivity, mParentActivity.getApplicationInfo().theme)).create();
@@ -125,21 +127,21 @@ public class ListAdapterMainActivity extends ListAdapter {
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, mParentActivity.getString(R.string.cancel),
                             new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) { mActionMode.finish(); }
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mActionMode.finish();
+                                }
                             });
 
                     alertDialog.show();
 
                     return true;
-
-                case R.id.action_edit_shopping_list:
-
+                }
+                case R.id.action_edit_shopping_list: {
                     mSelectedItem.startEditingActivity(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-
-                case R.id.action_change_list_name:
-
+                }
+                case R.id.action_change_list_name: {
                     // Откроем окно для ввода нового наименования списка/
                     // Сохранение будет производиться в методе onDialogPositiveClick
                     InputNameDialog inputNameDialog = new InputNameDialog();
@@ -150,19 +152,26 @@ public class ListAdapterMainActivity extends ListAdapter {
 
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-
-                case R.id.action_send_by_email:
-                    mSelectedItem.sendByEmail(mParentActivity);
+                }
+                case R.id.action_share: {
+                    mSelectedItem.share(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-
-                case R.id.action_load_list:
+                }
+                case R.id.action_load_list: {
                     mSelectedItem.startLoadShoppingListActivity(mParentActivity);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
-
-                default:
+                }
+                case R.id.action_send_to_friend:{
+                    Intent intent = new Intent(mParentActivity, ChooseRecipientActivity.class);
+                    intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mSelectedItem);
+                    mParentActivity.startActivity(intent);
+                    return true;
+                }
+                default: {
                     return false;
+                }
             }
         }
 

@@ -17,6 +17,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -37,7 +38,7 @@ public class ProductActivitiesTest extends ActivitiesTest {
 
         // Проверим удаление продукта из списка продуктов
         onView(allOf(withId(R.id.imgDelete),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                hasSibling(recyclerViewItemWithText(textForTyping))))
                 .perform(click());
         // Товар более не должен отображаться в списке
         onView(recyclerViewItemWithText(textForTyping)).check(doesNotExist());

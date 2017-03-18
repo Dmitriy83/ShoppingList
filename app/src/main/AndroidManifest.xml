@@ -112,6 +112,23 @@
             android:noHistory="true"
             android:theme="@style/AppThemeDialog">
         </activity>
+        <activity android:name=".activities.ProfileActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.FriendsActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.ChooseRecipientActivity"
+            android:theme="@style/AppThemeDialogFixedSize">
+        </activity>
     </application>
 
 </manifest>

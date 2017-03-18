@@ -22,8 +22,10 @@ import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
@@ -93,7 +95,7 @@ public class InShopActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
 
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "3"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "3")))))
                 .perform(clearText())
                 .perform(typeText("1.3"));
         onView(withId(R.id.action_save_list)).perform(click());
@@ -198,7 +200,7 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Нажимаем кнопку отправки списка покупок по почте
         openActionBarOverflowOrOptionsMenu(getTargetContext());
-        onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
+        onView(withText(mActivity.getString(R.string.share))).perform(click());
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",

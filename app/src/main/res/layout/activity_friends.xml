@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/common_toolbar"
+        layout="@layout/common_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etFriendEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/input_friends_email"
+            android:inputType="textPersonName|textWebEmailAddress" />
+
+        <Button
+            android:id="@+id/btnSearchFriend"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ic_search_friend"
+            android:contentDescription="@string/search_friend" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/friends_no_data_text"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_large" />
+
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
+        android:id="@+id/rvFriends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
+    </com.RightDirection.ShoppingList.views.CustomRecyclerView>
+
+</LinearLayout>

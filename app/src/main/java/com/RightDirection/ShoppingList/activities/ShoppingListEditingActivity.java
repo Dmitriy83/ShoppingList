@@ -243,27 +243,47 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         View view = findViewById(android.R.id.content);
         if (view == null) return super.onOptionsItemSelected(item);
 
-        if (id == R.id.action_save_list) {
-            saveListAndFinish();
-        }
-        else if (id == R.id.action_remove_all_items) {
-            removeAllItems();
-        }
-        else if (id == R.id.action_go_to_in_shop_activity) {
-            // Сохраним список покупок и перейдем к активности "В магазине"
-            mGoToInShop = true;
-            saveListAndFinish();
-        }
-        else if (id == R.id.action_send_by_email) {
-            if (mShoppingList.getName() == null) mShoppingList.setName(getString(R.string.no_name));
-            mShoppingList.setProducts(mProducts);
-            mShoppingList.sendByEmail(this);
-        }
-        else if (id == R.id.action_load_list) {
-            mShoppingList.startLoadShoppingListActivity(this);
-            finish();
+        switch (id) {
+            case R.id.action_save_list: {
+                saveListAndFinish();
+                break;
+            }
+            case R.id.action_remove_all_items: {
+                removeAllItems();
+                break;
+            }
+            case R.id.action_go_to_in_shop_activity: {
+                // Сохраним список покупок и перейдем к активности "В магазине"
+                mGoToInShop = true;
+                saveListAndFinish();
+                break;
+            }
+            case R.id.action_share: {
+                prepareShoppingListForSending();
+                mShoppingList.share(this);
+                break;
+            }
+            case R.id.action_load_list: {
+                mShoppingList.startLoadShoppingListActivity(this);
+                finish();
+                break;
+            }
+            case R.id.action_send_to_friend: {
+                Intent intent = new Intent(this, ChooseRecipientActivity.class);
+                prepareShoppingListForSending();
+                intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mShoppingList);
+                intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), mShoppingList.getProducts());
+                startActivity(intent);
+                break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void prepareShoppingListForSending() {
+        if (mShoppingList.getName() == null)
+            mShoppingList.setName(getString(R.string.no_name));
+        mShoppingList.setProducts(mProducts);
     }
 }

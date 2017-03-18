@@ -22,13 +22,13 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Locale;
 
-abstract public class ListAdapter extends RecyclerView.Adapter {
+abstract public class BaseListAdapter extends RecyclerView.Adapter {
 
     final int mResource;
     final ArrayList<IListItem> mObjects;
     final Activity mParentActivity;
 
-    ListAdapter(Context context, int resource, ArrayList<IListItem> objects) {
+    BaseListAdapter(Context context, int resource, ArrayList<IListItem> objects) {
         super();
 
         mResource = resource;

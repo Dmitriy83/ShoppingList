@@ -9,7 +9,7 @@ import com.RightDirection.ShoppingList.models.Product;
 
 import java.util.ArrayList;
 
-public class ListAdapterProductsList extends ListAdapter {
+public class ListAdapterProductsList extends BaseListAdapter {
 
     public ListAdapterProductsList(Context context, ArrayList<IListItem> objects) {
         super(context, com.RightDirection.ShoppingList.R.layout.list_item_products_list, objects);

@@ -5,6 +5,38 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/action_sign_in"
+            android:icon="@drawable/ic_sign_in"
+            android:orderInCategory="90"
+            android:title="@string/action_sign_in"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_profile"
+            android:orderInCategory="91"
+            android:title="@string/action_profile"
+            android:icon="@drawable/ic_person_outline"
+            app:showAsAction="never"
+            android:visible="false"/>
+        <item
+            android:id="@+id/action_friends"
+            android:orderInCategory="95"
+            android:title="@string/action_friends"
+            android:icon="@drawable/ic_friends"
+            app:showAsAction="never"
+            android:visible="false"/>
+        <item
+            android:id="@+id/action_receive_shopping_lists"
+            android:orderInCategory="95"
+            android:title="@string/action_receive_shopping_lists"
+            android:icon="@drawable/ic_receive_shopping_lists"
+            app:showAsAction="never"
+            android:visible="false"/>
+    </group>
+
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/menu_2">
+        <item
             android:id="@+id/action_edit_categories_list"
             android:orderInCategory="101"
             android:title="@string/action_edit_categories_list"
@@ -20,7 +52,7 @@
 
     <group
         android:checkableBehavior="single"
-        android:id="@+id/menu_two">
+        android:id="@+id/menu_3">
         <!--
         Пока отключим возможность получения и загрузки писем с файлом json,
         т.к. настройка эл. почты слишком сложна для простого пользователя.

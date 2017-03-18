@@ -21,8 +21,10 @@ import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -50,41 +52,41 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         //onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.etCount))
         //        .check(matches(withText("1.0")));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .check(matches(withText("1.0")));
 
 
         // Нажимаем два раза на кнопку "Increase"
         //onData(withItemValue(mNewProductNamePattern + "1")).onChildView(withId(R.id.imgIncrease))
         onView(allOf(withId(R.id.imgIncrease),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(click())
                 .perform(click());
 
         // Проверяем, что в текстовом поле отображается число 3
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .check(matches(withText("3.0")));
 
         // Нажимаем кнопку "Decrease"
         onView(allOf(withId(R.id.imgDecrease),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(click());
 
         // Проверяем, что в текстовом поле отображается число 2
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .check(matches(withText("2.0")));
 
         // Вводим в текстовое поле количество 5
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(clearText())
                 .perform(typeText("5.0"));
 
         // Попытаемся ввести не число
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(typeText("Not number"))
                 // Проверяем, что в окне снова отображается 5
                 .check(matches(withText("5.0")));
@@ -92,16 +94,16 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         // Выбираем другой элемент списка. С помощью кнопки добавим количество до 11
         for (int i=0; i<10; i++) {
             onView(allOf(withId(R.id.imgIncrease),
-                    isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
+                    withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "2")))))
                     .perform(click());
         }
 
         // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .check(matches(withText("5.0")));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "2")))))
                 .check(matches(withText("11.0")));
 
         // Сохраняем список покупок
@@ -146,10 +148,10 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Проверяем, что у одного элемента списка указано количество 5, у другого - 11
         onView(allOf(withId(R.id.txtCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("5.0")));
         onView(allOf(withId(R.id.txtCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
+                hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "2"))))
                 .check(matches(withText("11.0")));
     }
 
@@ -167,7 +169,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Нажимаем два раза на кнопку "Increase"
         onView(allOf(withId(R.id.imgIncrease),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(click())
                 .perform(click());
 
@@ -176,7 +178,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Проверяем, что в текстовом поле отображается число 3
         onView(allOf(withId(R.id.txtCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("3.0")));
 
         // Переключаемся на активность "Редактирование списка"
@@ -203,7 +205,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Нажимаем два раза на кнопку "Increase"
         onView(allOf(withId(R.id.imgIncrease),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1")))))
                 .perform(click());
 
         // "Глюк" Espresso - если не закрыть клавиатуру перед вызововм диалгового окна, то
@@ -225,7 +227,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Проверяем, что в активности "В магазине" в текстовом поле отображается число 2
         onView(allOf(withId(R.id.txtCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
+                hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "1"))))
                 .check(matches(withText("2.0")));
 
         // Переключаемся на активность "Редактирование списка"
@@ -248,7 +250,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
         // Нажимаем кнопку отправки списка покупок по почте
-        onView(withText(mActivity.getString(R.string.send_by_email))).perform(click());
+        onView(withText(mActivity.getString(R.string.share))).perform(click());
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",

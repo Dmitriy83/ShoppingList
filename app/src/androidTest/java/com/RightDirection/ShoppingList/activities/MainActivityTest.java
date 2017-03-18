@@ -68,7 +68,7 @@ public class MainActivityTest extends ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
         // В меню действий нажимаем кнопку отправки списка по почте
-        onView(withId(R.id.action_send_by_email)).perform(click());
+        onView(withId(R.id.action_share)).perform(click());
 
         // С помощбю UIAutomator ищем проверяем сфорировалось ли письмо?
         UiObject emailSubject = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'"));
@@ -136,8 +136,13 @@ public class MainActivityTest extends ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
+        UiObject btnMenu = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.menu_button_identifier)));
+        btnMenu.click();
+        onView(withText(mActivity.getString(R.string.share))).perform(click());
+
         // В меню действий нажимаем кнопку отправки списка по почте
-        onView(withId(R.id.action_send_by_email)).perform(click());
+        //onView(withId(R.id.action_share)).perform(click());
+        mDevice.findObject(new UiSelector().textContains(mActivity.getString(R.string.share))).click();
 
         // С помощбю UIAutomator проверяем сфорировалось ли письмо?
         checkEmailAppearing(
@@ -147,14 +152,15 @@ public class MainActivityTest extends ActivitiesTest {
 
     @Test
     @MediumTest
-    public void mainActivity_LoadShoppingList(){
+    public void mainActivity_LoadShoppingList() throws UiObjectNotFoundException {
         addNewShoppingList();
 
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
-        // В меню действий нажимаем кнопку отправки списка по почте
-        onView(withId(R.id.action_load_list)).perform(click());
+        UiObject btnMenu = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.menu_button_identifier)));
+        btnMenu.click();
+        onView(withText(mActivity.getString(R.string.load))).perform(click());
 
         // Открылась форма загрузки
         loadAndCheckList();

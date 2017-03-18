@@ -2,16 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.ShoppingListEditingActivity">
-    <item android:title="@string/send_by_email"
-        android:orderInCategory="004"
-        android:id="@+id/action_send_by_email"
-        android:icon="@drawable/ic_send_by_email"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/action_load_list"
-        android:icon="@drawable/ic_load"
-        android:title="@string/load"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="005" />
+    <item
+        android:id="@+id/action_go_to_in_shop_activity"
+        android:orderInCategory="001"
+        android:icon="@drawable/ic_in_shop"
+        android:title="@string/action_go_to_in_shop_activity"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_save_list"
         android:orderInCategory="002"
@@ -24,10 +20,19 @@
         android:icon="@drawable/ic_remove_items"
         android:title="@string/action_remove_all_items"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_go_to_in_shop_activity"
-        android:orderInCategory="001"
-        android:icon="@drawable/ic_in_shop"
-        android:title="@string/action_go_to_in_shop_activity"
-        app:showAsAction="always" />
+    <item android:title="@string/send_to_friend"
+        android:orderInCategory="004"
+        android:id="@+id/action_send_to_friend"
+        android:icon="@drawable/ic_send"
+        app:showAsAction="ifRoom" />
+    <item android:title="@string/share"
+        android:orderInCategory="005"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_load_list"
+        android:icon="@drawable/ic_load"
+        android:title="@string/load"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="006" />
 </menu>

@@ -21,7 +21,7 @@ import com.RightDirection.ShoppingList.models.Product;
 
 import java.util.ArrayList;
 
-public class ListAdapterShoppingListInShop extends ListAdapter {
+public class ListAdapterShoppingListInShop extends BaseListAdapter {
 
     private ArrayList<IListItem> mOriginalValues;
     private boolean mIsFiltered;

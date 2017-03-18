@@ -19,12 +19,10 @@ import android.support.test.uiautomator.UiSelector;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.adapters.ListAdapter;
+import com.RightDirection.ShoppingList.adapters.BaseListAdapter;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
@@ -51,11 +49,13 @@ import static android.support.test.espresso.intent.Checks.checkArgument;
 import static android.support.test.espresso.intent.Checks.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -145,30 +145,8 @@ abstract class ActivitiesTest {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
     }
 
-    static Matcher<View> isChildOfRecyclerViewItem(final Matcher<View> recyclerViewItem) {
-        checkNotNull(recyclerViewItem);
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is child of recycler view item: ");
-                recyclerViewItem.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent productRepresent = view.getParent();
-                if (((ViewGroup) productRepresent).getId() != R.id.productRepresent){
-                    // Еще не тот контейнер. Повторим получение родителя
-                    productRepresent = productRepresent.getParent();
-                }
-                View txtName = ((ViewGroup) productRepresent).findViewById(R.id.txtName);
-                return recyclerViewItem.matches(txtName);
-            }
-        };
-    }
-
     /**
-     * Процедура необходима для поиска объектов класса ListItem в ListAdapter по имени
+     * Процедура необходима для поиска объектов класса ListItem в BaseListAdapter по имени
      */
     @SuppressWarnings("unused")
     static Matcher<Object> withItemValue(final String value) {
@@ -380,7 +358,7 @@ abstract class ActivitiesTest {
 
         // Изменим количество
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText(textForTyping))))
+                withParent(hasSibling(recyclerViewItemWithText(textForTyping)))))
                 .perform(clearText())
                 .perform(typeText(String.valueOf(count)));
     }
@@ -396,7 +374,7 @@ abstract class ActivitiesTest {
     void checkDataNotExistInList(String text) {
         RecyclerView rv = (RecyclerView)mActivity.findViewById(R.id.rvShoppingLists);
         assertNotNull(rv);
-        ListAdapter listAdapter = (ListAdapter) rv.getAdapter();
+        BaseListAdapter listAdapter = (BaseListAdapter) rv.getAdapter();
         for (int i = 0; i < listAdapter.getItemCount(); i++) {
             IListItem listItem = listAdapter.getItem(i);
             assertThat("Item is in the list", text, is(not(listItem.getName())));
@@ -434,23 +412,23 @@ abstract class ActivitiesTest {
         // Проверим загружены ли элементы
         onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText("test1"))))
+                withParent(hasSibling(recyclerViewItemWithText("test1")))))
                 .check(matches(withText("5.0")));
         onView(recyclerViewItemWithText("test2")).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText("test2"))))
+                withParent(hasSibling(recyclerViewItemWithText("test2")))))
                 .check(matches(withText("3.0")));
         onView(recyclerViewItemWithText("test3")).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText("test3"))))
+                withParent(hasSibling(recyclerViewItemWithText("test3")))))
                 .check(matches(withText("1.0")));
         onView(recyclerViewItemWithText("test4")).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText("test4"))))
+                withParent(hasSibling(recyclerViewItemWithText("test4")))))
                 .check(matches(withText("1.0")));
         onView(recyclerViewItemWithText("test5 555")).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.etCount),
-                isChildOfRecyclerViewItem(recyclerViewItemWithText("test5 555"))))
+                withParent(hasSibling(recyclerViewItemWithText("test5 555")))))
                 .check(matches(withText("2.3")));
 
         onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());

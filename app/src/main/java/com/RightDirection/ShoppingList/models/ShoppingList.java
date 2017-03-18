@@ -269,7 +269,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         return where;
     }
 
-    public void sendByEmail(Context context){
+    public void share(Context context){
 
         try{
             // Пока отключим возможность получения и загрузки писем с файлом json,
@@ -310,7 +310,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
     }
 
-    private String convertShoppingListToString(Context context){
+    public String convertShoppingListToString(Context context){
         if (mProducts == null || mProducts.size() == 0) {
             // Попробуем получить товары из БД. Такое возможно, когда вызов метода происходит
             // основной активности (товары для списков в ней не загружаются)

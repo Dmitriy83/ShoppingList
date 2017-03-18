@@ -161,7 +161,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         if (view == null) return super.onOptionsItemSelected(item);
 
         switch (id) {
-            case R.id.action_filter:
+            case R.id.action_filter: {
                 if (mProductsAdapter.isFiltered()) {
                     setFilterItemUnselected();
                     mProductsAdapter.showChecked();
@@ -170,29 +170,24 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                     mProductsAdapter.hideChecked();
                 }
                 break;
-            case R.id.action_edit_shopping_list:
+            }
+            case R.id.action_edit_shopping_list: {
                 saveCheckedInDB();
                 mShoppingList.startEditingActivity(this);
                 finish();
                 break;
-            case R.id.action_send_by_email:
-                // Создадим вспомагательный массив и удалим из него категории
-                ArrayList<IListItem> array;
-                // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
-                if (mProductsAdapter.getOriginalValues() == null) {
-                    array = new ArrayList<>(mProducts);
-                } else {
-                    array = new ArrayList<>(mProductsAdapter.getOriginalValues());
-                }
-                Utils.removeCategoriesFromArrayListOfProducts(array);
-                mShoppingList.setProducts(array);
-                mShoppingList.sendByEmail(this);
+            }
+            case R.id.action_share: {
+                prepareShoppingListForSending();
+                mShoppingList.share(this);
                 break;
-            case R.id.action_load_list:
+            }
+            case R.id.action_load_list: {
                 mShoppingList.startLoadShoppingListActivity(this);
                 finish();
                 break;
-            case R.id.action_remove_checked:
+            }
+            case R.id.action_remove_checked: {
                 // Сначала необходимо снять фильтр
                 removeFilter();
                 // сначала заполним объект списком для изменения
@@ -206,13 +201,35 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                 mProductsAdapter.setOriginalValues(originalValues);
                 mProductsAdapter.notifyDataSetChanged();
                 break;
-            case R.id.action_deselect_all:
+            }
+            case R.id.action_deselect_all: {
                 mProductsAdapter.deselectAll();
                 mProductsAdapter.notifyDataSetChanged();
                 break;
+            }
+            case R.id.action_send_to_friend: {
+                Intent intent = new Intent(this, ChooseRecipientActivity.class);
+                prepareShoppingListForSending();
+                intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mShoppingList);
+                startActivity(intent);
+                break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void prepareShoppingListForSending() {
+        // Создадим вспомагательный массив и удалим из него категории
+        ArrayList<IListItem> array;
+        // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался
+        if (mProductsAdapter.getOriginalValues() == null) {
+            array = new ArrayList<>(mProducts);
+        } else {
+            array = new ArrayList<>(mProductsAdapter.getOriginalValues());
+        }
+        Utils.removeCategoriesFromArrayListOfProducts(array);
+        mShoppingList.setProducts(array);
     }
 
     private void removeFilter() {
