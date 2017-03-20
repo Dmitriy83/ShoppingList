@@ -219,7 +219,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
         return super.onOptionsItemSelected(item);
     }
 
-    public void prepareShoppingListForSending() {
+    private void prepareShoppingListForSending() {
         // Создадим вспомагательный массив и удалим из него категории
         ArrayList<IListItem> array;
         // mProductsAdapter.getOriginalValues() может быть равен null, если фильтр еще не накладывался

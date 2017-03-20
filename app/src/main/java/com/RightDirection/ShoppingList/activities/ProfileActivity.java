@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.services.ReceiveShoppingListsService;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
-import com.RightDirection.ShoppingList.utils.Utils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -99,6 +99,10 @@ public class ProfileActivity extends BaseActivity implements
             case R.id.sign_out_button:
                 mAuth.signOut();
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+
+                Intent intent = new Intent(this, ReceiveShoppingListsService.class);
+                stopService(intent);
+
                 showSignedOutUI();
                 break;
         }
@@ -137,7 +141,7 @@ public class ProfileActivity extends BaseActivity implements
         showProgressDialog(getString(R.string.profile_progress_message));
 
         // Подключим обработчик таймаута
-        final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+        final TimeoutControl timeoutControl = new TimeoutControl();
         timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
             @Override
             public void onTimeout() {
@@ -201,7 +205,7 @@ public class ProfileActivity extends BaseActivity implements
         updateValues.put("photoUrl", photoUrl);
         // По адроесу эл. почты будет осуществляться поиск друзей в базе
         String userEmail = firebaseUser.getEmail();
-        updateValues.put(FirebaseUtil.getEmailKey(), userEmail);
+        updateValues.put(FirebaseUtil.EMAIL_KEY, userEmail);
 
         FirebaseUtil.getUsersRef().child(firebaseUser.getUid()).updateChildren(
                 updateValues,

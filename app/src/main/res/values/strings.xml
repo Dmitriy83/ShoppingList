@@ -118,7 +118,6 @@
     <string name="friends_no_data_text">Friends list is empty. Add new friends!</string>
     <string name="connection_timeout_exceeded">Connection timeout exceeded</string>
     <string name="send_to_friend">Send to friend</string>
-    <string name="action_choose_recipient">Choose receipient</string>
     <string name="shopping_list_transfer_error">Shopping list transfer error</string>
     <string name="sending">Sending…</string>
     <string name="error_savin_user_data">Couldn\'t save user data:</string>
@@ -127,4 +126,5 @@
     <string name="no_shoppping_for_loading">There are no shopping lists to downloading</string>
     <string name="receiving">Receiving…</string>
     <string name="received_new_shopping_lists">Received new shopping lists.</string>
+    <string name="error_saving_user_data">Couldn\'t save user data:</string>
 </resources>

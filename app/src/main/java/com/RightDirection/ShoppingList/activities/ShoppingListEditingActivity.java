@@ -281,7 +281,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         return super.onOptionsItemSelected(item);
     }
 
-    public void prepareShoppingListForSending() {
+    private void prepareShoppingListForSending() {
         if (mShoppingList.getName() == null)
             mShoppingList.setName(getString(R.string.no_name));
         mShoppingList.setProducts(mProducts);

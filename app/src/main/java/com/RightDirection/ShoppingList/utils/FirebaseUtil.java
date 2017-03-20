@@ -10,6 +10,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseUtil {
+
+    public static final String SHOPPING_LISTS_PATH = "shopping_lists/";
+    public static final String EMAIL_KEY = "userEmail";
+
     public static DatabaseReference getBaseRef() {
         return FirebaseDatabase.getInstance().getReference();
     }
@@ -30,16 +34,8 @@ public class FirebaseUtil {
         return null;
     }
 
-    public static String getShoppingListsPath() {
-        return "shopping_lists/";
-    }
-
     public static DatabaseReference getUsersRef() {
         return getBaseRef().child("users");
-    }
-
-    public static String getUsersPath() {
-        return "users/";
     }
 
     public static void writeUserToPref(Context context, User user){
@@ -73,8 +69,14 @@ public class FirebaseUtil {
     }
 
     public static DatabaseReference getFriendsRef() {
-        return FirebaseUtil.getUsersRef().child(FirebaseUtil.getCurrentUserId()).child("friends");
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef == null) return null;
+        return currentUserRef.child("friends");
     }
 
-    public static String getEmailKey(){return "userEmail";}
+    public static DatabaseReference getShoppingListsRef() {
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef == null) return null;
+        return currentUserRef.child(FirebaseUtil.SHOPPING_LISTS_PATH);
+    }
 }

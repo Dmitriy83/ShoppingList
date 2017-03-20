@@ -3,6 +3,7 @@ package com.RightDirection.ShoppingList.interfaces;
 import android.content.Context;
 
 public interface IDataBaseOperations {
+    @SuppressWarnings("unused")
     void addToDB(Context context);
 
     @SuppressWarnings("unused")

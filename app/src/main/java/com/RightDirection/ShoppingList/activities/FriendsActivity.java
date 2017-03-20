@@ -18,7 +18,6 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterFriends;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
-import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,7 +66,7 @@ public class FriendsActivity extends BaseActivity implements
             EditText etFriendEmail = (EditText) findViewById(R.id.etFriendEmail);
             assert etFriendEmail != null;
             showProgressDialog(getString(R.string.searching));
-            final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+            final TimeoutControl timeoutControl = new TimeoutControl();
             timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
                 @Override
                 public void onTimeout() {
@@ -81,7 +80,7 @@ public class FriendsActivity extends BaseActivity implements
                 }
             });
             timeoutControl.start();
-            FirebaseUtil.getUsersRef().orderByChild(FirebaseUtil.getEmailKey())
+            FirebaseUtil.getUsersRef().orderByChild(FirebaseUtil.EMAIL_KEY)
                     .equalTo(etFriendEmail.getText().toString())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -91,25 +90,33 @@ public class FriendsActivity extends BaseActivity implements
                             if (!dataSnapshot.hasChildren()) {
                                 Toast.makeText(getApplicationContext(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
                             } else {
+                                DatabaseReference friendsRef = FirebaseUtil.getFriendsRef();
+                                if (friendsRef == null) return;
                                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                                    User newFriend = childDataSnapshot.getValue(User.class);
-                                    newFriend.setUid(childDataSnapshot.getKey());
-                                    // Добавим в список друзей в FireBase
-                                    Map<String, Object> updateValues = new HashMap<>();
-                                    updateValues.put("name", newFriend.getName());
-                                    updateValues.put("photoUrl", newFriend.getPhotoUrl());
-                                    updateValues.put("userEmail", newFriend.getUserEmail());
-                                    FirebaseUtil.getFriendsRef().child(newFriend.getUid()).updateChildren(updateValues,
-                                            new DatabaseReference.CompletionListener() {
-                                                @Override
-                                                public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {
-                                                    if (firebaseError != null) {
-                                                        Toast.makeText(FriendsActivity.this,
-                                                                "Couldn't save user data: " + firebaseError.getMessage(),
-                                                                Toast.LENGTH_LONG).show();
+                                    try {
+                                        User newFriend = childDataSnapshot.getValue(User.class);
+                                        newFriend.setUid(childDataSnapshot.getKey());
+                                        // Добавим в список друзей в FireBase
+                                        Map<String, Object> updateValues = new HashMap<>();
+                                        updateValues.put("name", newFriend.getName());
+                                        updateValues.put("photoUrl", newFriend.getPhotoUrl());
+                                        updateValues.put("userEmail", newFriend.getUserEmail());
+                                        friendsRef.child(newFriend.getUid()).updateChildren(updateValues,
+                                                new DatabaseReference.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {
+                                                        if (firebaseError != null) {
+                                                            Toast.makeText(FriendsActivity.this,
+                                                                    getString(R.string.error_saving_user_data) + firebaseError.getMessage(),
+                                                                    Toast.LENGTH_LONG).show();
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                    }catch (Exception e){
+                                        Toast.makeText(FriendsActivity.this,
+                                                getString(R.string.error_saving_user_data) + e.getMessage(),
+                                                Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                         }
@@ -146,7 +153,7 @@ public class FriendsActivity extends BaseActivity implements
         recyclerView.setAdapter(mFriendsAdapter);
 
         // Обработаем таймаут
-        final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+        final TimeoutControl timeoutControl = new TimeoutControl();
         timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
             @Override
             public void onTimeout() {

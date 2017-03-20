@@ -19,7 +19,6 @@ import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
-import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -94,7 +93,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         recyclerView.setAdapter(mRecipientsAdapter);
 
         // Обработаем таймаут
-        final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+        final TimeoutControl timeoutControl = new TimeoutControl();
         timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
             @Override
             public void onTimeout() {
@@ -152,7 +151,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         showProgressDialog(getString(R.string.sending));
 
         // Обработаем таймаут
-        final TimeoutControl timeoutControl = new TimeoutControl(Utils.TIMEOUT);
+        final TimeoutControl timeoutControl = new TimeoutControl();
         timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
             @Override
             public void onTimeout() {
@@ -170,7 +169,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         // Отправим список покупок в FireBase
         Map<String, Object> updateValues = new HashMap<>();
         updateValues.put("content", mShoppingList.convertShoppingListToString(this));
-        FirebaseUtil.getUsersRef().child(userKey).child(FirebaseUtil.getShoppingListsPath())
+        FirebaseUtil.getUsersRef().child(userKey).child(FirebaseUtil.SHOPPING_LISTS_PATH)
                 .child(mShoppingList.getNameForFirebase()).updateChildren(updateValues,
                 new DatabaseReference.CompletionListener() {
                     @Override

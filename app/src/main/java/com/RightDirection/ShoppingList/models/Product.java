@@ -165,10 +165,11 @@ public class Product extends ListItem implements IDataBaseOperations {
         activity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
     }
 
-    public long getRowId() {
+    long getRowId() {
         return rowId;
     }
 
+    @SuppressWarnings("unused")
     public void setRowId(long rowId) {
         this.rowId = rowId;
     }

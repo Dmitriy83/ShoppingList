@@ -45,6 +45,7 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
         android.util.Log.w("test", "application is visible: " + (started > stopped));
     }
 
+    @SuppressWarnings("unused")
     public static boolean isApplicationVisible() {
         return started > stopped;
     }

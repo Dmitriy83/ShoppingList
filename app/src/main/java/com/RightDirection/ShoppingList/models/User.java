@@ -6,7 +6,7 @@ public class User {
     public String name;
     @SuppressWarnings("WeakerAccess")
     public String photoUrl;
-    @SuppressWarnings("unused|WeakerAccess")
+    @SuppressWarnings("unused, WeakerAccess")
     public String userEmail;
     private String uid;
 

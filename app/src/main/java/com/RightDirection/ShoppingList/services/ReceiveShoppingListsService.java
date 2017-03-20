@@ -19,6 +19,7 @@ import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
@@ -27,7 +28,7 @@ import java.util.Calendar;
 
 import static com.RightDirection.ShoppingList.utils.AppLifecycleHandler.isApplicationInForeground;
 
-public class ReceiveShoppingLists extends Service {
+public class ReceiveShoppingListsService extends Service {
     private static final String TAG = "ReceiveShoppingLists";
 
     @Nullable
@@ -42,21 +43,23 @@ public class ReceiveShoppingLists extends Service {
 
         Log.d(TAG, "Service was started");
 
-        ValueEventListener handler = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange, app in foreground = " + isApplicationInForeground());
-                receiveShoppingListsFromFirebase(dataSnapshot);
-            }
+        DatabaseReference shoppingListsRef = FirebaseUtil.getShoppingListsRef();
+        if (shoppingListsRef == null) {
+            stopSelf();
+            return;
+        }
+        shoppingListsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange, app in foreground = " + isApplicationInForeground());
+                        receiveShoppingListsFromFirebase(dataSnapshot);
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled");
-            }
-        };
-
-        FirebaseUtil.getCurrentUserRef().child(FirebaseUtil.getShoppingListsPath())
-                .addValueEventListener(handler);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(TAG, "onCancelled");
+                    }
+                });
     }
 
     private void postNotification(String notificationString) {
@@ -110,8 +113,9 @@ public class ReceiveShoppingLists extends Service {
         // В случае, успешной загрузки и работе приложения в foreground оповестим адаптер об изменении
         if (loadedShoppingLists.size() > 0) {
             // Все загруженные листы следует удалить
-            FirebaseUtil.getCurrentUserRef()
-                    .child(FirebaseUtil.getShoppingListsPath()).removeValue();
+            DatabaseReference shoppingListsRef = FirebaseUtil.getShoppingListsRef();
+            if (shoppingListsRef != null)
+                shoppingListsRef.removeValue();
 
             if (!isApplicationInForeground()) {
                 postNotification(getString(R.string.received_new_shopping_lists));

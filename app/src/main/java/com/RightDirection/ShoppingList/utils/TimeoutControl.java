@@ -10,12 +10,11 @@ import java.util.TimerTask;
  */
 public class TimeoutControl {
 
+    @SuppressWarnings("CanBeFinal")
     private ArrayList<IOnTimeoutListener> mListeners;
-    private long mTimeout;
     private Timer mTimer;
 
-    public TimeoutControl(long timeout){
-        mTimeout = timeout;
+    public TimeoutControl(){
         mListeners = new ArrayList<>();
     }
 
@@ -25,7 +24,7 @@ public class TimeoutControl {
 
     private void startTimer(){
         mTimer = new Timer();
-        mTimer.schedule(new Timeout(), mTimeout);
+        mTimer.schedule(new Timeout(), Utils.TIMEOUT);
     }
 
     private void stopTimer(){

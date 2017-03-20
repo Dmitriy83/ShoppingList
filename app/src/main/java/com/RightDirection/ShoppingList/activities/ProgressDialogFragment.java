@@ -3,6 +3,7 @@ package com.RightDirection.ShoppingList.activities;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
 public class ProgressDialogFragment extends DialogFragment {
@@ -17,6 +18,7 @@ public class ProgressDialogFragment extends DialogFragment {
         return frag;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         ProgressDialog dialog = new ProgressDialog(getActivity(), getTheme());

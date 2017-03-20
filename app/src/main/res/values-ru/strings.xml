@@ -99,7 +99,6 @@
     <string name="friends_no_data_text">Список друзей пуст. Срочно добавьте новых друзей!</string>
     <string name="connection_timeout_exceeded">Превышено время ожидания установки соединения</string>
     <string name="send_to_friend">Отправить другу</string>
-    <string name="action_choose_recipient">Выбор получателя</string>
     <string name="shopping_list_transfer_error">При передаче списка покупок возникла непредвиденная ошибка.</string>
     <string name="sending">Отправка…</string>
     <string name="error_savin_user_data">Сохранить данные не удалось:</string>
@@ -108,4 +107,5 @@
     <string name="no_shoppping_for_loading">Списки покупок для загрузки отсутствуют</string>
     <string name="receiving">Получение…</string>
     <string name="received_new_shopping_lists">Получены новые списки покупок.</string>
+    <string name="error_saving_user_data">При сохранении данных пользователя возникла ошибка:</string>
 </resources>

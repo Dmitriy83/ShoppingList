@@ -1,7 +1,7 @@
 package com.RightDirection.ShoppingList.models;
 
 public class FirebaseShoppingList {
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings({"WeakerAccess", "CanBeFinal", "unused"})
     public String content;
     private String name;
 
