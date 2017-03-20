@@ -107,4 +107,5 @@
     <string name="action_receive_shopping_lists">Получить списки покупок</string>
     <string name="no_shoppping_for_loading">Списки покупок для загрузки отсутствуют</string>
     <string name="receiving">Получение…</string>
+    <string name="received_new_shopping_lists">Получены новые списки покупок.</string>
 </resources>

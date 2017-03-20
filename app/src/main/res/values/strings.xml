@@ -126,4 +126,5 @@
     <string name="action_receive_shopping_lists">Receive shopping lists</string>
     <string name="no_shoppping_for_loading">There are no shopping lists to downloading</string>
     <string name="receiving">Receiving…</string>
+    <string name="received_new_shopping_lists">Received new shopping lists.</string>
 </resources>

@@ -114,7 +114,7 @@ public class ReceiveShoppingLists extends Service {
                     .child(FirebaseUtil.getShoppingListsPath()).removeValue();
 
             if (!isApplicationInForeground()) {
-                postNotification("Received new shopping lists.");
+                postNotification(getString(R.string.received_new_shopping_lists));
             }else{
                 sendUpdateMainActivityBroadcast(loadedShoppingLists);
             }
