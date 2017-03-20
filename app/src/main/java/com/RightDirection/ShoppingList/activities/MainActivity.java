@@ -1,8 +1,11 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,10 +30,12 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.services.ReceiveShoppingLists;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
@@ -40,15 +45,11 @@ import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputNameDialog.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener{
@@ -112,6 +113,10 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     protected void onStart() {
         super.onStart();
         displayUserInformation();
+
+        // Запустим сервис получения списков из Firebase
+        Intent intent = new Intent(this, ReceiveShoppingLists.class);
+        startService(intent);
     }
 
     private void displayUserInformation() {
@@ -164,6 +169,27 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         // Откроем подсказку, если необходимо
         if (Utils.showHelpMainActivity(getApplicationContext()))
             startActivity(new Intent(this, HelpMainActivity.class));
+
+        final IntentFilter serviceActiveFilter = new IntentFilter(Utils.ACTION_UPDATE_MAIN_ACTIVITY);
+        BroadcastReceiver serviceReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent != null) {
+                    ArrayList<ShoppingList> loadedShoppingLists = intent.getParcelableArrayListExtra(EXTRAS_KEYS.SHOPPING_LISTS.getValue());
+                    if (loadedShoppingLists != null){
+                        updateWithLoadedShoppingLists(loadedShoppingLists);
+                    }
+                }
+            }
+        };
+        this.registerReceiver(serviceReceiver, serviceActiveFilter);
+    }
+
+    public void updateWithLoadedShoppingLists(ArrayList<ShoppingList> loadedShoppingLists) {
+        for (ShoppingList newShoppingList: loadedShoppingLists) {
+            mShoppingListsAdapter.add(newShoppingList);
+        }
+        mShoppingListsAdapter.notifyDataSetChanged();
     }
 
     private final View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
@@ -359,10 +385,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
                         // В случае, успешной загрузки оповестим адаптер об изменении
                         if (loadedShoppingLists.size() > 0) {
-                            for (ShoppingList newShoppingList: loadedShoppingLists) {
-                                mShoppingListsAdapter.add(newShoppingList);
-                            }
-                            mShoppingListsAdapter.notifyDataSetChanged();
+                            updateWithLoadedShoppingLists(loadedShoppingLists);
 
                             // Все загруженные листы следует удалить
                             FirebaseUtil.getCurrentUserRef()
@@ -431,10 +454,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
             // В случае, успешной загрузки оповестим адаптер об изменении
             if (loadedShoppingLists.size() > 0) {
-                for (ShoppingList newShoppingList: loadedShoppingLists) {
-                    mShoppingListsAdapter.add(newShoppingList);
-                }
-                mShoppingListsAdapter.notifyDataSetChanged();
+                updateWithLoadedShoppingLists(loadedShoppingLists);
             }else{
                 Toast.makeText(getApplicationContext(), getString(R.string.no_emails_for_loading),
                         Toast.LENGTH_LONG).show();

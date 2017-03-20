@@ -65,6 +65,10 @@ public class ListItem implements IListItem {
         return name;
     }
 
+    public String getNameForFirebase() {
+        return name.replaceAll("[#.${}]", "_");
+    }
+
     public void setName(String name) {
         this.name = name;
     }

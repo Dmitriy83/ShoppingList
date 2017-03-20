@@ -16,7 +16,6 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterRecipients;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
-import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
@@ -172,7 +171,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         Map<String, Object> updateValues = new HashMap<>();
         updateValues.put("content", mShoppingList.convertShoppingListToString(this));
         FirebaseUtil.getUsersRef().child(userKey).child(FirebaseUtil.getShoppingListsPath())
-                .child(mShoppingList.getName()).updateChildren(updateValues,
+                .child(mShoppingList.getNameForFirebase()).updateChildren(updateValues,
                 new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {

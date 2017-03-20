@@ -10,6 +10,7 @@ public enum EXTRAS_KEYS implements IGetValue {
     PRODUCTS_ORIGINAL_VALUES("Products - original values"),
     ITEM_IMAGE("Item image"),
     IS_FILTERED("Is filtered"),
+    SHOPPING_LISTS("Shopping lists"),
     CATEGORY ("Category");
 
     private final String numValue;

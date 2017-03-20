@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Product;
 

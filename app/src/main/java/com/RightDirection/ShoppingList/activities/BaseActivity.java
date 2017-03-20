@@ -1,17 +1,9 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-
-import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {

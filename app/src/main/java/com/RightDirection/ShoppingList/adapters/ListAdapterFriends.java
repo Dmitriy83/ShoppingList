@@ -1,28 +1,16 @@
 package com.RightDirection.ShoppingList.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
-import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapterFriends.ViewHolder> {
     private final Context mContext;
@@ -41,7 +29,7 @@ public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapte
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        ViewHolder(View rowView) {
+        public ViewHolder(View rowView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(rowView);

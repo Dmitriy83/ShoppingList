@@ -1,10 +1,7 @@
 package com.RightDirection.ShoppingList.utils;
 
 
-import android.app.Activity;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
@@ -27,7 +26,7 @@ public class ListAdapterRecipients extends FirebaseRecyclerAdapter<User, ListAda
         final ImageView imgFriendPhoto;
         final RelativeLayout productRepresent;
 
-        ViewHolder(View rowView) {
+        public ViewHolder(View rowView) {
             super(rowView);
             txtName = (TextView) rowView.findViewById(R.id.txtName);
             imgFriendPhoto = (ImageView) rowView.findViewById(R.id.imgFriendPhoto);
