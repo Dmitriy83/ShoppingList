@@ -39,16 +39,11 @@ import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.services.ReceiveShoppingListsAlarmReceiver;
 import com.RightDirection.ShoppingList.services.ReceiveShoppingListsService;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
-import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -61,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     private ListAdapterMainActivity mShoppingListsAdapter;
     private DrawerLayout mDrawerLayout;
     private BroadcastReceiver mServiceReceiver;
-    private static final long INTERVAL_THIRTEEN_SECONDS = 15000;
+    private static final long INTERVAL_THIRTEEN_SECONDS = 30000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

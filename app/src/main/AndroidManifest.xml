@@ -18,10 +18,9 @@
         android:name=".utils.ShoppingListApplication">
         <service
             android:name=".services.ReceiveShoppingListsService"
-            android:exported="false"/>
+            android:exported="false" />
         <receiver
-            android:name=".services.ReceiveShoppingListsAlarmReceiver"
-            android:process=":remote" />
+            android:name=".services.ReceiveShoppingListsAlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -29,7 +28,6 @@
             android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>

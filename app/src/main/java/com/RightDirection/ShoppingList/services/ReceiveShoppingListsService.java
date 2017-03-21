@@ -84,21 +84,25 @@ public class ReceiveShoppingListsService extends IntentService {
         Log.d(TAG, "onDestroy");
     }
 
-    private void postNotification(String notificationString) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_products)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(notificationString);
+    private void postNotification(String notificationSummary, String notificationText) {
         Intent resultIntent = new Intent(this, MainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setStyle(new NotificationCompat.BigTextStyle(builder)
+                .bigText(notificationText)
+                .setSummaryText(notificationSummary));
+        builder.setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(getString(R.string.app_name))
+                .setAutoCancel(true)
+                .setContentText(notificationSummary)
+                .setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(0, builder.build());
     }
 
     private void receiveShoppingListsFromFirebase(DataSnapshot dataSnapshot) {
@@ -111,21 +115,22 @@ public class ReceiveShoppingListsService extends IntentService {
             FirebaseUtil.removeCurrentUserShoppingListsFromFirebase();
 
             if (!isApplicationInForeground()) {
-                postNotification(getLoadedShoppingListsNamesString(loadedShoppingLists));
+                postNotification(getString(R.string.received_new_shopping_lists_summary), getLoadedShoppingListsNamesString(loadedShoppingLists));
             } else {
                 sendUpdateMainActivityBroadcast(loadedShoppingLists);
             }
-        }else{
+        } else {
             sendNotificationBroadcast(getString(R.string.no_shoppping_for_loading));
         }
     }
 
     private String getLoadedShoppingListsNamesString(ArrayList<ShoppingList> loadedShoppingLists) {
-        String msg = getString(R.string.received_new_shopping_lists) + " ";
-        for (ShoppingList list: loadedShoppingLists) {
-            msg += list.getName() + ",";
+        String msg = getString(R.string.received_new_shopping_lists) + "\n";
+        for (ShoppingList list : loadedShoppingLists) {
+            msg += list.getName() + ",\n";
         }
-        msg = msg.substring(0, msg.length() - 1);
+        // Уберем последнюю запятую и символ переноса
+        msg = msg.substring(0, msg.length() - 2);
         return msg;
     }
 

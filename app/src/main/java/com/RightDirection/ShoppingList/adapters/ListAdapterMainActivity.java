@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,15 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.ChooseRecipientActivity;
 import com.RightDirection.ShoppingList.activities.InputNameDialog;
-import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
-import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;

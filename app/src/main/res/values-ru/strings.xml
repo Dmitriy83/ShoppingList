@@ -109,4 +109,5 @@
     <string name="received_new_shopping_lists">Получены новые списки покупок:</string>
     <string name="error_saving_user_data">При сохранении данных пользователя возникла ошибка:</string>
     <string name="log_in_suggestion">Авторизуйтесь, пожалуйста</string>
+    <string name="received_new_shopping_lists_summary">Новые списки покупок загружены</string>
 </resources>
