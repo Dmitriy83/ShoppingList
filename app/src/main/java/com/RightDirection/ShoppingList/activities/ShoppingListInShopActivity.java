@@ -208,10 +208,8 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
                 break;
             }
             case R.id.action_send_to_friend: {
-                Intent intent = new Intent(this, ChooseRecipientActivity.class);
                 prepareShoppingListForSending();
-                intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mShoppingList);
-                startActivity(intent);
+                mShoppingList.sendToFriend(this);
                 break;
             }
         }

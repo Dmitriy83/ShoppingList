@@ -10,6 +10,8 @@ public enum EXTRAS_KEYS implements IGetValue {
     PRODUCTS_ORIGINAL_VALUES("Products - original values"),
     ITEM_IMAGE("Item image"),
     IS_FILTERED("Is filtered"),
+    NOTIFICATION("NOTIFICATION"),
+    NOTIFY_SOURCE_ACTIVITY("NOTIFY_SOURCE_ACTIVITY"),
     SHOPPING_LISTS("Shopping lists"),
     CATEGORY ("Category");
 

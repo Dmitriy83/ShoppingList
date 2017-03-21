@@ -106,6 +106,7 @@
     <string name="action_receive_shopping_lists">Получить списки покупок</string>
     <string name="no_shoppping_for_loading">Списки покупок для загрузки отсутствуют</string>
     <string name="receiving">Получение…</string>
-    <string name="received_new_shopping_lists">Получены новые списки покупок.</string>
+    <string name="received_new_shopping_lists">Получены новые списки покупок:</string>
     <string name="error_saving_user_data">При сохранении данных пользователя возникла ошибка:</string>
+    <string name="log_in_suggestion">Авторизуйтесь, пожалуйста</string>
 </resources>

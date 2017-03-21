@@ -19,6 +19,9 @@
         <service
             android:name=".services.ReceiveShoppingListsService"
             android:exported="false"/>
+        <receiver
+            android:name=".services.ReceiveShoppingListsAlarmReceiver"
+            android:process=":remote" />
 
         <activity
             android:name=".activities.MainActivity"

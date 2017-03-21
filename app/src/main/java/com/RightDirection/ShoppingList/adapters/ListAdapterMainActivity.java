@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ChooseRecipientActivity;
@@ -20,6 +21,7 @@ import com.RightDirection.ShoppingList.activities.InputNameDialog;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
@@ -155,19 +157,16 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                 }
                 case R.id.action_share: {
                     mSelectedItem.share(mParentActivity);
-                    mode.finish(); // Action picked, so close the CAB
+                    mode.finish();
                     return true;
                 }
                 case R.id.action_load_list: {
                     mSelectedItem.startLoadShoppingListActivity(mParentActivity);
-                    mode.finish(); // Action picked, so close the CAB
+                    mode.finish();
                     return true;
                 }
                 case R.id.action_send_to_friend:{
-                    Intent intent = new Intent(mParentActivity, ChooseRecipientActivity.class);
-                    intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mSelectedItem);
-                    mParentActivity.startActivity(intent);
-                    return true;
+                    return mSelectedItem.sendToFriend(mParentActivity);
                 }
                 default: {
                     return false;

@@ -1,5 +1,8 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +16,7 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
-import com.RightDirection.ShoppingList.services.ReceiveShoppingListsService;
+import com.RightDirection.ShoppingList.services.ReceiveShoppingListsAlarmReceiver;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -100,8 +103,7 @@ public class ProfileActivity extends BaseActivity implements
                 mAuth.signOut();
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
 
-                Intent intent = new Intent(this, ReceiveShoppingListsService.class);
-                stopService(intent);
+                cancelReceiveShoppingListsAlarm();
 
                 showSignedOutUI();
                 break;
@@ -241,6 +243,14 @@ public class ProfileActivity extends BaseActivity implements
 
         // Очистим информацию о пользователе из настроек
         FirebaseUtil.removeUserFromPref(this);
+    }
+
+    private void cancelReceiveShoppingListsAlarm() {
+        Intent intent = new Intent(getApplicationContext(), ReceiveShoppingListsAlarmReceiver.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, ReceiveShoppingListsAlarmReceiver.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pIntent);
     }
 
     @Override

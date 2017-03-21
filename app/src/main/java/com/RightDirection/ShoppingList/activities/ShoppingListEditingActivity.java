@@ -269,11 +269,8 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                 break;
             }
             case R.id.action_send_to_friend: {
-                Intent intent = new Intent(this, ChooseRecipientActivity.class);
                 prepareShoppingListForSending();
-                intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), mShoppingList);
-                intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), mShoppingList.getProducts());
-                startActivity(intent);
+                mShoppingList.sendToFriend(this);
                 break;
             }
         }

@@ -35,8 +35,9 @@ public class Utils {
     public static final int NEED_TO_UPDATE = 1;
     public static final int GET_CATEGORY = 2;
     public static final int GET_CATEGORY_IMAGE = 3;
-    public static final int TIMEOUT = 15000;
+    static final int TIMEOUT = 15000;
     public static final String ACTION_UPDATE_MAIN_ACTIVITY = "com.RightDirection.ShoppingList.ACTION_UPDATE_MAIN_ACTIVITY";
+    public static final String ACTION_NOTIFICATION = "com.RightDirection.ShoppingList.ACTION_NOTIFICATION";
 
     public static String getListNameFromJSON(String jsonStr) throws JSONException {
         JSONObject json = new JSONObject(jsonStr);

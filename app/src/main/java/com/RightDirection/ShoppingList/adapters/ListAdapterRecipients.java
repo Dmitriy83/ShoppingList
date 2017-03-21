@@ -55,7 +55,6 @@ public class ListAdapterRecipients extends FirebaseRecyclerAdapter<User, ListAda
                 } catch (ClassCastException e) {
                     throw new ClassCastException(mContext.toString() + " должна поддерживать итерфейс IOnNewItemAddedListener");
                 }
-
             }
         });
     }

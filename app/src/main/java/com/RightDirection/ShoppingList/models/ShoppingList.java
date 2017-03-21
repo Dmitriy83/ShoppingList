@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.ChooseRecipientActivity;
 import com.RightDirection.ShoppingList.activities.LoadShoppingListActivity;
 import com.RightDirection.ShoppingList.activities.OpeningOptionChoiceActivity;
 import com.RightDirection.ShoppingList.activities.ShoppingListEditingActivity;
@@ -22,6 +23,7 @@ import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
+import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.json.JSONArray;
@@ -516,5 +518,18 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         Intent intent = new Intent(context, OpeningOptionChoiceActivity.class);
         intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() , this);
         context.startActivity(intent);
+    }
+
+    public boolean sendToFriend(Context context) {
+        if (FirebaseUtil.userSignedIn(context)) {
+            Intent intent = new Intent(context, ChooseRecipientActivity.class);
+            intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), this);
+            intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), getProducts());
+            context.startActivity(intent);
+            return true;
+        }else{
+            Toast.makeText(context, R.string.log_in_suggestion, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

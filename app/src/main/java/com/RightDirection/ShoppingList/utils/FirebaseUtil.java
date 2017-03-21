@@ -2,12 +2,21 @@ package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
+import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
+import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class FirebaseUtil {
 
@@ -26,7 +35,7 @@ public class FirebaseUtil {
         return null;
     }
 
-    public static DatabaseReference getCurrentUserRef() {
+    private static DatabaseReference getCurrentUserRef() {
         String uid = getCurrentUserId();
         if (uid != null) {
             return getBaseRef().child("users").child(getCurrentUserId());
@@ -78,5 +87,49 @@ public class FirebaseUtil {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef == null) return null;
         return currentUserRef.child(FirebaseUtil.SHOPPING_LISTS_PATH);
+    }
+
+    public static ArrayList<ShoppingList> loadShoppingLists(Context context, DataSnapshot dataSnapshot){
+
+        ArrayList<FirebaseShoppingList> firebaseLists = new ArrayList<>();
+        for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+            FirebaseShoppingList firebaseShoppingList = childDataSnapshot.getValue(FirebaseShoppingList.class);
+            firebaseShoppingList.setName(childDataSnapshot.getKey());
+            firebaseLists.add(firebaseShoppingList);
+        }
+
+        // Загружаем новый списков покупок
+        ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
+        for (FirebaseShoppingList firebaseList: firebaseLists) {
+            // Сформируем имя нового списка покупок
+            Calendar calendar = Calendar.getInstance();
+            DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+            String newListName = firebaseList.getName() + " "
+                    + context.getString(R.string.loaded) + " "
+                    + dateFormat.format(calendar.getTime());
+
+            // Создадим  новый объект-лист покупок
+            ShoppingList newShoppingList = new ShoppingList(-1, newListName);
+            newShoppingList.loadProductsFromString(context, firebaseList.getContent());
+            newShoppingList.addNotExistingProductsToDB(context);
+            // Сначала нужно добавить новые продукты из списка в базу данных.
+            // Синхронизацияя должна производиться по полю Name
+            newShoppingList.addNotExistingProductsToDB(context);
+            // Сохраним новый лист покупок в базе данных
+            newShoppingList.addToDB(context);
+            loadedShoppingLists.add(newShoppingList);
+        }
+
+        return loadedShoppingLists;
+    }
+
+    public static void removeCurrentUserShoppingListsFromFirebase() {
+        DatabaseReference shoppingListsRef = FirebaseUtil.getShoppingListsRef();
+        if (shoppingListsRef != null) shoppingListsRef.removeValue();
+    }
+
+    public static boolean userSignedIn(Context context) {
+        User user = readUserFromPref(context);
+        return (user != null);
     }
 }

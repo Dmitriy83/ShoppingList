@@ -123,8 +123,9 @@
     <string name="error_savin_user_data">Couldn\'t save user data:</string>
     <string name="sent_successfully">Sent successfully</string>
     <string name="action_receive_shopping_lists">Receive shopping lists</string>
-    <string name="no_shoppping_for_loading">There are no shopping lists to downloading</string>
+    <string name="no_shoppping_for_loading">There are no shopping lists to download</string>
     <string name="receiving">Receiving…</string>
-    <string name="received_new_shopping_lists">Received new shopping lists.</string>
+    <string name="received_new_shopping_lists">Received new shopping lists:</string>
     <string name="error_saving_user_data">Couldn\'t save user data:</string>
+    <string name="log_in_suggestion">Log in, please</string>
 </resources>
