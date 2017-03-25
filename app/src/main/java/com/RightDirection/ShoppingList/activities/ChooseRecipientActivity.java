@@ -17,6 +17,7 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterRecipients;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
@@ -169,8 +170,14 @@ public class ChooseRecipientActivity extends BaseActivity implements
         // Отправим список покупок в FireBase
         Map<String, Object> updateValues = new HashMap<>();
         updateValues.put("content", mShoppingList.convertShoppingListToString(this));
+        User currentUser = FirebaseUtil.readUserFromPref(this);
+        updateValues.put("author", currentUser);
+        updateValues.put("name", mShoppingList.getName());
+        // Сформируем идентифиатор для списка - <id автора>_<название списка>
+        String userUid = (currentUser == null) ? "" : (currentUser.getUid() == null) ? "" : currentUser.getUid();
+        String listId = userUid + "_" + mShoppingList.getNameForFirebase();
         FirebaseUtil.getUsersRef().child(userKey).child(FirebaseUtil.SHOPPING_LISTS_PATH)
-                .child(mShoppingList.getNameForFirebase()).updateChildren(updateValues,
+                .child(listId).updateChildren(updateValues,
                 new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {

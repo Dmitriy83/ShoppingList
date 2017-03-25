@@ -129,4 +129,5 @@
     <string name="error_saving_user_data">Couldn\'t save user data:</string>
     <string name="log_in_suggestion">Log in, please</string>
     <string name="received_new_shopping_lists_summary">New shopping lists uploaded</string>
+    <string name="from">from</string>
 </resources>

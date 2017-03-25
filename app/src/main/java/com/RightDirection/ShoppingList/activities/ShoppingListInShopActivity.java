@@ -209,7 +209,7 @@ public class ShoppingListInShopActivity extends AppCompatActivity implements and
             }
             case R.id.action_send_to_friend: {
                 prepareShoppingListForSending();
-                mShoppingList.sendToFriend(this);
+                mShoppingList.openChooseRecipientActivity(this);
                 break;
             }
         }

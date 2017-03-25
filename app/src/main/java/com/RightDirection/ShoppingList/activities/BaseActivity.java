@@ -18,7 +18,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    void dismissProgressDialog() {
+    public void dismissProgressDialog() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getExistingDialogFragment();
         if (prev != null) {

@@ -270,7 +270,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             }
             case R.id.action_send_to_friend: {
                 prepareShoppingListForSending();
-                mShoppingList.sendToFriend(this);
+                mShoppingList.openChooseRecipientActivity(this);
                 break;
             }
         }

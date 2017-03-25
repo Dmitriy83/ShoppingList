@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
-import com.RightDirection.ShoppingList.services.ReceiveShoppingListsAlarmReceiver;
+import com.RightDirection.ShoppingList.services.AlarmReceiver;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -224,7 +224,7 @@ public class ProfileActivity extends BaseActivity implements
 
         // Сохраним текущего пользователя в настройках, чтобы отображать информацию о нем,
         // даже если соединение с интернет отсутствует
-        FirebaseUtil.writeUserToPref(this, new User(photoUrl, userName, firebaseUser.getUid()));
+        FirebaseUtil.writeUserToPref(this, new User(firebaseUser.getUid(), userName, photoUrl));
     }
 
     private void loadProfileIcon(String url) {
@@ -246,8 +246,8 @@ public class ProfileActivity extends BaseActivity implements
     }
 
     private void cancelReceiveShoppingListsAlarm() {
-        Intent intent = new Intent(getApplicationContext(), ReceiveShoppingListsAlarmReceiver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, ReceiveShoppingListsAlarmReceiver.REQUEST_CODE,
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarm.cancel(pIntent);

@@ -161,7 +161,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                     return true;
                 }
                 case R.id.action_send_to_friend:{
-                    return mSelectedItem.sendToFriend(mParentActivity);
+                    return mSelectedItem.openChooseRecipientActivity(mParentActivity);
                 }
                 default: {
                     return false;

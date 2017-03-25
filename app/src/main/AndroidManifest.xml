@@ -17,10 +17,10 @@
         android:theme="@style/AppTheme"
         android:name=".utils.ShoppingListApplication">
         <service
-            android:name=".services.ReceiveShoppingListsService"
+            android:name=".services.ExchangeService"
             android:exported="false" />
         <receiver
-            android:name=".services.ReceiveShoppingListsAlarmReceiver" />
+            android:name=".services.AlarmReceiver" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -141,7 +141,7 @@
             android:theme="@style/AppThemeDialogFixedSize" />
 
         <service
-            android:name=".services.ReceiveShoppingListsService"
+            android:name=".services.ExchangeService"
             android:exported="false" />
     </application>
 

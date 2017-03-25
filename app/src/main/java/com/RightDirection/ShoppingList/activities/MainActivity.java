@@ -36,8 +36,8 @@ import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
-import com.RightDirection.ShoppingList.services.ReceiveShoppingListsAlarmReceiver;
-import com.RightDirection.ShoppingList.services.ReceiveShoppingListsService;
+import com.RightDirection.ShoppingList.services.AlarmReceiver;
+import com.RightDirection.ShoppingList.services.ExchangeService;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
@@ -114,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
     // Setup a recurring alarm every half hour
     private void scheduleReceiveShoppingListsAlarm() {
         // Создаем намерение, которое будет выполняться AlarmReceiver-ом
-        Intent intent = new Intent(getApplicationContext(), ReceiveShoppingListsAlarmReceiver.class);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         // Создаем "ожидающее намерение", которое будет срабатывать на событии AlarmManager-а
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, ReceiveShoppingListsAlarmReceiver.REQUEST_CODE,
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Запускаем AlarmManager с текущего момента
         long firstMillis = System.currentTimeMillis();
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
     private void receiveShoppingListsFromFirebase() {
         Toast.makeText(this, R.string.receiving, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, ReceiveShoppingListsService.class);
+        Intent intent = new Intent(this, ExchangeService.class);
         // Т.к. пользователь запустил команду интерактивно, будем оповещать его о таймаутах, ошибках соединения и т.д.
         intent.putExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), true);
         startService(intent);

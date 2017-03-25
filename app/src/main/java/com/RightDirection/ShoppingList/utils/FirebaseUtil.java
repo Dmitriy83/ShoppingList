@@ -10,8 +10,10 @@ import com.RightDirection.ShoppingList.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class FirebaseUtil {
 
     public static final String SHOPPING_LISTS_PATH = "shopping_lists/";
     public static final String EMAIL_KEY = "userEmail";
+    private static User author;
 
     public static DatabaseReference getBaseRef() {
         return FirebaseDatabase.getInstance().getReference();
@@ -88,47 +91,37 @@ public class FirebaseUtil {
         return currentUserRef.child(FirebaseUtil.SHOPPING_LISTS_PATH);
     }
 
-    public static ArrayList<ShoppingList> loadShoppingLists(Context context, DataSnapshot dataSnapshot){
-
+    public static ArrayList<FirebaseShoppingList> getShoppingListsFromFB(Context context, DataSnapshot dataSnapshot){
         ArrayList<FirebaseShoppingList> firebaseLists = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
             FirebaseShoppingList firebaseShoppingList = childDataSnapshot.getValue(FirebaseShoppingList.class);
-            firebaseShoppingList.setName(childDataSnapshot.getKey());
+            firebaseShoppingList.setId(childDataSnapshot.getKey());
             firebaseLists.add(firebaseShoppingList);
         }
 
-        // Загружаем новый списков покупок
-        ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
-        for (FirebaseShoppingList firebaseList: firebaseLists) {
-            // Сформируем имя нового списка покупок
-            Calendar calendar = Calendar.getInstance();
-            DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-            String newListName = firebaseList.getName() + " "
-                    + context.getString(R.string.loaded) + " "
-                    + dateFormat.format(calendar.getTime());
-
-            // Создадим  новый объект-лист покупок
-            ShoppingList newShoppingList = new ShoppingList(-1, newListName);
-            newShoppingList.loadProductsFromString(context, firebaseList.getContent());
-            newShoppingList.addNotExistingProductsToDB(context);
-            // Сначала нужно добавить новые продукты из списка в базу данных.
-            // Синхронизацияя должна производиться по полю Name
-            newShoppingList.addNotExistingProductsToDB(context);
-            // Сохраним новый лист покупок в базе данных
-            newShoppingList.addToDB(context);
-            loadedShoppingLists.add(newShoppingList);
-        }
-
-        return loadedShoppingLists;
+        return firebaseLists;
     }
 
-    public static void removeCurrentUserShoppingListsFromFirebase() {
+    public static void removeCurrentUserShoppingListsFromFirebase(ArrayList<FirebaseShoppingList> shoppingListsForDelete) {
         DatabaseReference shoppingListsRef = FirebaseUtil.getShoppingListsRef();
-        if (shoppingListsRef != null) shoppingListsRef.removeValue();
+        if (shoppingListsRef == null) return;
+
+        for (FirebaseShoppingList fbList: shoppingListsForDelete) {
+            DatabaseReference fbListRef = shoppingListsRef.child(fbList.getId());
+            if (fbListRef != null){
+                fbListRef.removeValue();
+            }
+        }
     }
 
     public static boolean userSignedIn(Context context) {
         User user = readUserFromPref(context);
         return (user != null);
+    }
+
+    public static DatabaseReference getBlackListRef() {
+        DatabaseReference currentUserRef = getCurrentUserRef();
+        if (currentUserRef == null) return null;
+        return currentUserRef.child("black_list");
     }
 }

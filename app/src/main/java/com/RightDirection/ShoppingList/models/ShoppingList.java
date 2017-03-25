@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.activities.BaseActivity;
 import com.RightDirection.ShoppingList.activities.ChooseRecipientActivity;
 import com.RightDirection.ShoppingList.activities.LoadShoppingListActivity;
 import com.RightDirection.ShoppingList.activities.OpeningOptionChoiceActivity;
@@ -25,6 +26,9 @@ import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.utils.TimeoutControl;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +41,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
@@ -520,7 +525,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         context.startActivity(intent);
     }
 
-    public boolean sendToFriend(Context context) {
+    public boolean openChooseRecipientActivity(Context context) {
         if (FirebaseUtil.userSignedIn(context)) {
             Intent intent = new Intent(context, ChooseRecipientActivity.class);
             intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue(), this);
@@ -532,4 +537,5 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             return false;
         }
     }
+
 }

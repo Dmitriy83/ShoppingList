@@ -23,8 +23,10 @@ public class TimeoutControl {
     }
 
     private void startTimer(){
-        mTimer = new Timer();
-        mTimer.schedule(new Timeout(), Utils.TIMEOUT);
+        if (mTimer == null) { // не перезапускаем таймер, а включаем только если он уже был остановлен или не создан ранее
+            mTimer = new Timer();
+            mTimer.schedule(new Timeout(), Utils.TIMEOUT);
+        }
     }
 
     private void stopTimer(){
