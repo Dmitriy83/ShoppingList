@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.activities;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 import com.RightDirection.ShoppingList.R;
 
-public class InputNameDialog extends DialogFragment{
+public class InputNameDialogFragment extends DialogFragment{
 
     private final boolean mIsProduct = false;
     private String mInitName = "";

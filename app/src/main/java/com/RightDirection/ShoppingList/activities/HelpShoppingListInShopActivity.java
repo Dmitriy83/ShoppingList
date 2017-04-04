@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.views.FragmentInShopHelp1;
-import com.RightDirection.ShoppingList.views.FragmentInShopHelp2;
+import com.RightDirection.ShoppingList.fragments.InShopHelp1Fragment;
+import com.RightDirection.ShoppingList.fragments.InShopHelp2Fragment;
 
 public class HelpShoppingListInShopActivity extends AppCompatActivity {
 
@@ -24,8 +24,8 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_shopping_list_in_shop);
 
-        fragment1 = new FragmentInShopHelp1();
-        fragment2 = new FragmentInShopHelp2();
+        fragment1 = new InShopHelp1Fragment();
+        fragment2 = new InShopHelp2Fragment();
 
         FrameLayout fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {

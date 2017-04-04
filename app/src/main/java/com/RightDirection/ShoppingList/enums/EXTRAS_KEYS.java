@@ -13,6 +13,7 @@ public enum EXTRAS_KEYS implements IGetValue {
     NOTIFICATION("NOTIFICATION"),
     NOTIFY_SOURCE_ACTIVITY("NOTIFY_SOURCE_ACTIVITY"),
     SHOPPING_LISTS("Shopping lists"),
+    AUTHOR("AUTHOR"),
     CATEGORY ("Category");
 
     private final String numValue;

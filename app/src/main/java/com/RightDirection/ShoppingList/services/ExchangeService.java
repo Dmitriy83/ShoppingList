@@ -1,10 +1,11 @@
 package com.RightDirection.ShoppingList.services;
 
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -17,207 +18,66 @@ import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.models.UserData;
+import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
-import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Cancellable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.functions.Function3;
 
 import static com.RightDirection.ShoppingList.utils.AppLifecycleHandler.isApplicationInForeground;
 
-public class ExchangeService extends IntentService {
+// Не используем IntentService, чтобы преркащать работу сервиса самостоятельно. Иначе сервис запустит выполнение Observable и прекратится не дождавшись окончания.
+public class ExchangeService extends Service {
     private static final String TAG = "ReceiveShoppingLists";
     private static boolean mNotifySourceActivity = false;
-    private TimeoutControl mTimeoutControl;
-
-    public ExchangeService() {
-        super("");
-    }
-
-    public ExchangeService(String name) {
-        super(name);
-    }
-
-    private Observable<ArrayList<User>> fbFriendsObservable(){
-        return Observable.create(new ObservableOnSubscribe<ArrayList<User>>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<ArrayList<User>> emitter) throws Exception { addFBListenerToReceiveFriends(emitter); }
-                });
-    }
-
-    private Observable<ArrayList<User>> fbBlackListsObservable(){
-        return Observable.create(new ObservableOnSubscribe<ArrayList<User>>() {
-            @Override
-            public void subscribe(ObservableEmitter<ArrayList<User>> emitter) throws Exception { addFBListenerToReceiveBlackList(emitter); }
-        });
-    }
-
-    private Observable<ArrayList<FirebaseShoppingList>> fbShoppingListsObservable(){
-        return Observable.create( new ObservableOnSubscribe<ArrayList<FirebaseShoppingList>>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<ArrayList<FirebaseShoppingList>> emitter) throws Exception { addFBListenerToReceiveShoppingLists(emitter); }
-                });
-    }
-
-    private void addFBListenerToReceiveFriends(final ObservableEmitter<ArrayList<User>> emitter) {
-        DatabaseReference friendsRef = FirebaseUtil.getFriendsRef();
-        if (friendsRef == null) {
-            stopSelf();
-            return;
-        }
-
-        friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mTimeoutControl.stop();
-                Log.d(TAG, "onDataChange, app in foreground = " + isApplicationInForeground());
-                emitter.onNext(receiveFriendsFromFirebase(dataSnapshot));
-                emitter.onComplete();
-            }
-
-            @Override
-            public void onCancelled(final DatabaseError databaseError) {
-                mTimeoutControl.stop();
-                emitter.setCancellable(new Cancellable() {
-                    @Override
-                    public void cancel() throws Exception {
-                        System.out.println(R.string.connection_failed + " " + databaseError.getCode());
-                        Log.d(TAG, "onCancelled");
-                    }
-                });
-                emitter.onComplete();
-            }
-        });
-    }
-
-    private void addFBListenerToReceiveBlackList(final ObservableEmitter<ArrayList<User>> emitter) {
-        DatabaseReference blackListRef = FirebaseUtil.getBlackListRef();
-        if (blackListRef == null) {
-            stopSelf();
-            return;
-        }
-
-        blackListRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mTimeoutControl.stop();
-                Log.d(TAG, "onDataChange, app in foreground = " + isApplicationInForeground());
-                emitter.onNext(receiveBlackListFromFirebase(dataSnapshot));
-                emitter.onComplete();
-            }
-
-            @Override
-            public void onCancelled(final DatabaseError databaseError) {
-                mTimeoutControl.stop();
-                emitter.setCancellable(new Cancellable() {
-                    @Override
-                    public void cancel() throws Exception {
-                        System.out.println(R.string.connection_failed + " " + databaseError.getCode());
-                        Log.d(TAG, "onCancelled");
-                    }
-                });
-                emitter.onComplete();
-            }
-        });
-    }
-
-    private void addFBListenerToReceiveShoppingLists(final ObservableEmitter<ArrayList<FirebaseShoppingList>> emitter){
-        DatabaseReference shoppingListsRef = FirebaseUtil.getShoppingListsRef();
-        if (shoppingListsRef == null) {
-            stopSelf();
-            return;
-        }
-
-        shoppingListsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mTimeoutControl.stop();
-                Log.d(TAG, "onDataChange, app in foreground = " + isApplicationInForeground());
-                emitter.onNext(FirebaseUtil.getShoppingListsFromFB(getApplicationContext(), dataSnapshot));
-                emitter.onComplete();
-            }
-
-            @Override
-            public void onCancelled(final DatabaseError databaseError) {
-                mTimeoutControl.stop();
-                emitter.setCancellable(new Cancellable() {
-                    @Override
-                    public void cancel() throws Exception {
-                        System.out.println(R.string.connection_failed + " " + databaseError.getCode());
-                        Log.d(TAG, "onCancelled");
-                    }
-                });
-                emitter.onComplete();
-            }
-        });
-    }
-
-    private ArrayList<User> receiveFriendsFromFirebase(DataSnapshot dataSnapshot) {
-        ArrayList<User> friends = new ArrayList<>();
-        for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-            User friend = childDataSnapshot.getValue(User.class);
-            friend.setUid(childDataSnapshot.getKey());
-            friends.add(friend);
-        }
-        return friends;
-    }
-
-    private ArrayList<User> receiveBlackListFromFirebase(DataSnapshot dataSnapshot) {
-        ArrayList<User> blackList = new ArrayList<>();
-        for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-            User user = childDataSnapshot.getValue(User.class);
-            user.setUid(childDataSnapshot.getKey());
-            blackList.add(user);
-        }
-        return blackList;
-    }
+    private Disposable mSubscriber;
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        Log.d(TAG, "onHandleIntent");
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand");
 
         if (intent != null)
             mNotifySourceActivity = intent.getBooleanExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), false);
 
-        mTimeoutControl = new TimeoutControl();
-        mTimeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
-            @Override
-            public void onTimeout() { sendNotificationBroadcast(getString(R.string.connection_timeout_exceeded)); }
-        });
-        mTimeoutControl.start();
-
-        Observable<UserData> userDataObservable = Observable.zip(fbShoppingListsObservable(), fbFriendsObservable(), fbBlackListsObservable(),
+        Observable<UserData> userDataObservable = Observable.zip(
+                FirebaseObservables.shoppingListsObservable(),
+                FirebaseObservables.friendsObservable(),
+                FirebaseObservables.blackListsObservable(),
                 new Function3<ArrayList<FirebaseShoppingList>, ArrayList<User>, ArrayList<User>, UserData>() {
                     @Override
-                    public UserData apply(ArrayList<FirebaseShoppingList> shoppingLists, ArrayList<User> friends, ArrayList<User> blackList) throws Exception { return new UserData(shoppingLists, friends, blackList); }
-        });
-        userDataObservable
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<UserData>() {
+                    public UserData apply(ArrayList<FirebaseShoppingList> shoppingLists, ArrayList<User> friends, ArrayList<User> blackList) {
+                        return new UserData(shoppingLists, friends, blackList);
+                    }
+                })
+                .timeout(Utils.TIMEOUT, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
+        mSubscriber = userDataObservable.subscribe(
+                new Consumer<UserData>() {
                     @Override
-                    public void accept(UserData userData) throws Exception {
+                    public void accept(UserData userData) {
+                        if (userData == null) return;
+
                         // Переменная для хранения успешно загруженных списков покупок
                         ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
                         // Переменная для хранения списков, которые необходимо удалить
                         ArrayList<FirebaseShoppingList> shoppingListsForDelete = new ArrayList<>();
+                        // Массив пользователей, которых нет ни в друзьях, ни в черном списке, и по которым
+                        // необходимо задать вопрос
+                        ArrayList<User> unknownUsers = new ArrayList<>();
 
                         ArrayList<FirebaseShoppingList> fbShoppingLists = userData.getShoppingLists();
                         Context context = getApplicationContext();
-                        for (FirebaseShoppingList fbList: fbShoppingLists) {
+                        for (FirebaseShoppingList fbList : fbShoppingLists) {
 
                             User author = fbList.getAuthor();
                             if (author == null) continue;
@@ -233,8 +93,8 @@ public class ExchangeService extends IntentService {
                             // Если автор не в друзьях, то прежде чем загрузить список, необходимо
                             // задать вопрос пользователю (и добавить в друзья в случае согласия).
                             // Если автор в друзьях, просто загружаем его список в локальную БД.
-                            if (!isAuthorInFriends(userData.getFriends(), author)){
-                                // TODO: Реализовать функционал отправки сообщения о добавлении в друзья.
+                            if (!isAuthorInFriends(userData.getFriends(), author)) {
+                                if (!isAuthorInList(unknownUsers, author)) unknownUsers.add(author);
                                 // Удалять данный список покупок не надо.
                                 continue;
                             }
@@ -272,16 +132,45 @@ public class ExchangeService extends IntentService {
                         } else {
                             sendNotificationBroadcast(getString(R.string.no_shoppping_for_loading));
                         }
+
+                        // Отправим сообщения по пользователям, которых нет ни в одном из списков
+                        for (User user : unknownUsers) {
+                            if (!isApplicationInForeground()) {
+                                postNotification(getString(R.string.message_from_user_not_in_friends), getString(R.string.message_from_user_not_in_friends));
+                            } else {
+                                sendAddUserToFriendsBroadcast(user);
+                            }
+                        }
+
+                        stopSelf();
+                    }
+                },
+                new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable e) throws Exception {
+                        if (e instanceof TimeoutException) {
+                            Log.d(TAG, "TimeoutException");
+                            sendNotificationBroadcast(getString(R.string.connection_timeout_exceeded));
+                        }
+                        stopSelf();
                     }
                 });
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private boolean isAuthorInList(ArrayList<User> list, User author) {
 
         if (list == null) return false;
 
-        for (User user: list) {
-            if (user.getUid().equals(author.getUid())){
+        for (User user : list) {
+            if (user.getUid().equals(author.getUid())) {
                 return true;
             }
         }
@@ -300,6 +189,7 @@ public class ExchangeService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSubscriber.dispose();
         Log.d(TAG, "onDestroy");
     }
 
@@ -349,6 +239,13 @@ public class ExchangeService extends IntentService {
         intent.setAction(Utils.ACTION_NOTIFICATION);
         intent.putExtra(EXTRAS_KEYS.NOTIFICATION.getValue(), notification);
 
+        this.sendBroadcast(intent);
+    }
+
+    private void sendAddUserToFriendsBroadcast(User author) {
+        Intent intent = new Intent();
+        intent.setAction(Utils.ACTION_ADD_USER_TO_FRIENDS);
+        intent.putExtra(EXTRAS_KEYS.AUTHOR.getValue(), author);
         this.sendBroadcast(intent);
     }
 }

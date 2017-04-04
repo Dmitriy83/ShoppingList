@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.views;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.R;
 
-public class FragmentMainHelp1 extends Fragment {
+public class MainHelp1Fragment extends Fragment {
 
     @Nullable
     @Override

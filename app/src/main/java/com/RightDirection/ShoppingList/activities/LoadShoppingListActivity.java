@@ -12,7 +12,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 
-public class LoadShoppingListActivity extends AppCompatActivity {
+public class LoadShoppingListActivity extends BaseActivity {
 
     // Лист покупок для загрузки
     private ShoppingList mShoppingList;

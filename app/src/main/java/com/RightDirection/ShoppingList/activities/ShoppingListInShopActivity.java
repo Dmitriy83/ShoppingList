@@ -28,7 +28,7 @@ import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
-public class ShoppingListInShopActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class ShoppingListInShopActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<IListItem> mProducts;
     private ListAdapterShoppingListInShop mProductsAdapter;

@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.views;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.R;
 
-public class FragmentInShopHelp1 extends Fragment {
+public class InShopHelp2Fragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_help_in_shop1, container, false);
+        return inflater.inflate(R.layout.fragment_help_in_shop2, container, false);
     }
 }

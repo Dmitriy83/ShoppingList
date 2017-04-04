@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.views.FragmentMainHelp1;
+import com.RightDirection.ShoppingList.fragments.MainHelp1Fragment;
 
 public class HelpMainActivity extends AppCompatActivity {
 
@@ -21,8 +21,8 @@ public class HelpMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_main);
 
-        Fragment fragment1 = new FragmentMainHelp1();
-        //fragment2 = new FragmentInShopHelp2();
+        Fragment fragment1 = new MainHelp1Fragment();
+        //fragment2 = new InShopHelp2Fragment();
 
         FrameLayout fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {

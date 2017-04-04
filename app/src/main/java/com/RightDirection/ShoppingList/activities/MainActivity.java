@@ -21,7 +21,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterMainActivity;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.fragments.InputNameDialogFragment;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
@@ -49,8 +49,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        InputNameDialog.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
+        InputNameDialogFragment.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener {
 
     private ArrayList<IListItem> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         if (FirebaseUtil.userSignedIn(this)) scheduleReceiveShoppingListsAlarm();
     }
 
-    // Setup a recurring alarm every half hour
+    // Запустим расписание
     private void scheduleReceiveShoppingListsAlarm() {
         // Создаем намерение, которое будет выполняться AlarmReceiver-ом
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         MenuItem actionProfile = navMenu.findItem(R.id.action_profile);
         actionProfile.setVisible(userSignedIn);
         navMenu.findItem(R.id.action_friends).setVisible(userSignedIn);
+        navMenu.findItem(R.id.action_black_list).setVisible(userSignedIn);
         navMenu.findItem(R.id.action_receive_shopping_lists).setVisible(userSignedIn);
 
         if (userSignedIn) {
@@ -179,20 +180,16 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
 
         final IntentFilter serviceActiveFilter = new IntentFilter();
         serviceActiveFilter.addAction(Utils.ACTION_UPDATE_MAIN_ACTIVITY);
-        serviceActiveFilter.addAction(Utils.ACTION_NOTIFICATION);
         mServiceReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent == null) return;
 
-                if (intent.getAction().equals(Utils.ACTION_UPDATE_MAIN_ACTIVITY)){
+                if (intent.getAction().equals(Utils.ACTION_UPDATE_MAIN_ACTIVITY)) {
                     ArrayList<ShoppingList> loadedShoppingLists = intent.getParcelableArrayListExtra(EXTRAS_KEYS.SHOPPING_LISTS.getValue());
                     if (loadedShoppingLists != null) {
                         updateWithLoadedShoppingLists(loadedShoppingLists);
                     }
-                }else if (intent.getAction().equals(Utils.ACTION_NOTIFICATION)){
-                    String msg = intent.getStringExtra(EXTRAS_KEYS.NOTIFICATION.getValue());
-                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -343,6 +340,13 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
                 }
                 break;
             }
+            case R.id.action_black_list: {
+                if (FirebaseUtil.userSignedIn(this)) {
+                    Intent intent = new Intent(this, BlackListActivity.class);
+                    startActivity(intent);
+                }
+                break;
+            }
             case R.id.action_receive_shopping_lists: {
                 if (FirebaseUtil.userSignedIn(this)) {
                     receiveShoppingListsFromFirebase();
@@ -357,6 +361,9 @@ public class MainActivity extends AppCompatActivity implements android.app.Loade
         Intent intent = new Intent(this, ExchangeService.class);
         // Т.к. пользователь запустил команду интерактивно, будем оповещать его о таймаутах, ошибках соединения и т.д.
         intent.putExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), true);
+        // Если сервис был запущен по таймеру, остановим его, чтобы пользователю
+        // передавались сообщения (по таймеру сообщения не возвращаются).
+        stopService(intent);
         startService(intent);
     }
 

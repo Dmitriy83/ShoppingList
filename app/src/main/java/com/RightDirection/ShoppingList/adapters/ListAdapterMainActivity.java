@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.activities.InputNameDialog;
+import com.RightDirection.ShoppingList.fragments.InputNameDialogFragment;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -141,7 +141,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                 case R.id.action_change_list_name: {
                     // Откроем окно для ввода нового наименования списка/
                     // Сохранение будет производиться в методе onDialogPositiveClick
-                    InputNameDialog inputNameDialog = new InputNameDialog();
+                    InputNameDialogFragment inputNameDialog = new InputNameDialogFragment();
                     inputNameDialog.setInitName(mSelectedItem.getName());
                     inputNameDialog.setId(mSelectedItem.getId());
                     FragmentManager fragmentManager = mParentActivity.getFragmentManager();

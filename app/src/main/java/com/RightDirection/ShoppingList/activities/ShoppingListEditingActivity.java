@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.fragments.InputNameDialogFragment;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.models.Category;
@@ -29,12 +30,12 @@ import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.RightDirection.ShoppingList.views.FragmentInputProductName;
+import com.RightDirection.ShoppingList.fragments.InputProductNameFragment;
 
 import java.util.ArrayList;
 
-public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
-        InputNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class ShoppingListEditingActivity extends BaseActivity implements IOnNewItemAddedListener,
+        InputNameDialogFragment.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     private ArrayList<IListItem> mProducts;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
@@ -123,7 +124,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         if (mShoppingList.isNew) {
             // Откроем окно для ввода наименования нового списка/
             // Сохранение будет производиться в методе onDialogPositiveClick
-            InputNameDialog inputNameDialog = new InputNameDialog();
+            InputNameDialogFragment inputNameDialog = new InputNameDialogFragment();
             FragmentManager fragmentManager = getFragmentManager();
             inputNameDialog.show(fragmentManager, null);
         }
@@ -222,7 +223,7 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
                     mShoppingListItemsAdapter.updateItem(product);
 
                     // Обновим элемент выпадающего списка
-                    FragmentInputProductName fragment = (FragmentInputProductName)getFragmentManager()
+                    InputProductNameFragment fragment = (InputProductNameFragment)getFragmentManager()
                             .findFragmentById(R.id.newItemFragment);
                     fragment.updateProductName(product);
                 }

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ProductsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ProductsListActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private ArrayList<IListItem> mProducts;
     private ListAdapterProductsList mProductsAdapter;

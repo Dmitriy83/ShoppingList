@@ -12,7 +12,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.GridAdapterChooseCategoryImage;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 
-public class ChooseCategoryImageActivity extends AppCompatActivity{
+public class ChooseCategoryImageActivity extends BaseActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

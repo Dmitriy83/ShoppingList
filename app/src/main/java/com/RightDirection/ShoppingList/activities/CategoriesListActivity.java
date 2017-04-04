@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class CategoriesListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class CategoriesListActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private ArrayList<IListItem> mCategories;
     private ListAdapterCategoriesList mCategoriesAdapter;

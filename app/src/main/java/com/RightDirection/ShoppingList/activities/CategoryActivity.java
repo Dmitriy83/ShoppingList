@@ -16,7 +16,7 @@ import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
-public class CategoryActivity extends AppCompatActivity{
+public class CategoryActivity extends BaseActivity{
 
     private Category mCategory;
 

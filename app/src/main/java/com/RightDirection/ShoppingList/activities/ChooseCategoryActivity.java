@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ChooseCategoryActivity extends AppCompatActivity
+public class ChooseCategoryActivity extends BaseActivity
         implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private ArrayList<Category> mCategories;

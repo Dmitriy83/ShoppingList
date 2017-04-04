@@ -22,7 +22,7 @@ import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
-public class ProductActivity extends AppCompatActivity {
+public class ProductActivity extends BaseActivity {
 
     private Product mProduct;
 

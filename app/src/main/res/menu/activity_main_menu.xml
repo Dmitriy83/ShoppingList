@@ -25,8 +25,15 @@
             app:showAsAction="never"
             android:visible="false"/>
         <item
+            android:id="@+id/action_black_list"
+            android:orderInCategory="97"
+            android:title="@string/action_black_list"
+            android:icon="@drawable/ic_black_list"
+            app:showAsAction="never"
+            android:visible="false"/>
+        <item
             android:id="@+id/action_receive_shopping_lists"
-            android:orderInCategory="95"
+            android:orderInCategory="99"
             android:title="@string/action_receive_shopping_lists"
             android:icon="@drawable/ic_receive_shopping_lists"
             app:showAsAction="never"

@@ -3,29 +3,25 @@ package com.RightDirection.ShoppingList.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
-import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class FirebaseUtil {
 
-    public static final String SHOPPING_LISTS_PATH = "shopping_lists/";
+    static final String SHOPPING_LISTS_PATH = "shopping_lists/";
+    private static final String BLACK_LIST_PATH = "black_list/";
     public static final String EMAIL_KEY = "userEmail";
-    private static User author;
+    private static final String FRIENDS_PATH = "friends/";
+    private static final String USERS_PATH = "users/";
 
-    public static DatabaseReference getBaseRef() {
+    static DatabaseReference getBaseRef() {
         return FirebaseDatabase.getInstance().getReference();
     }
 
@@ -40,13 +36,13 @@ public class FirebaseUtil {
     private static DatabaseReference getCurrentUserRef() {
         String uid = getCurrentUserId();
         if (uid != null) {
-            return getBaseRef().child("users").child(getCurrentUserId());
+            return getBaseRef().child(USERS_PATH).child(getCurrentUserId());
         }
         return null;
     }
 
     public static DatabaseReference getUsersRef() {
-        return getBaseRef().child("users");
+        return getBaseRef().child(USERS_PATH);
     }
 
     public static void writeUserToPref(Context context, User user){
@@ -82,16 +78,16 @@ public class FirebaseUtil {
     public static DatabaseReference getFriendsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef == null) return null;
-        return currentUserRef.child("friends");
+        return currentUserRef.child(FRIENDS_PATH);
     }
 
-    public static DatabaseReference getShoppingListsRef() {
+    static DatabaseReference getShoppingListsRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef == null) return null;
         return currentUserRef.child(FirebaseUtil.SHOPPING_LISTS_PATH);
     }
 
-    public static ArrayList<FirebaseShoppingList> getShoppingListsFromFB(Context context, DataSnapshot dataSnapshot){
+    static ArrayList<FirebaseShoppingList> getShoppingListsFromFB(DataSnapshot dataSnapshot){
         ArrayList<FirebaseShoppingList> firebaseLists = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
             FirebaseShoppingList firebaseShoppingList = childDataSnapshot.getValue(FirebaseShoppingList.class);
@@ -122,6 +118,6 @@ public class FirebaseUtil {
     public static DatabaseReference getBlackListRef() {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef == null) return null;
-        return currentUserRef.child("black_list");
+        return currentUserRef.child(BLACK_LIST_PATH);
     }
 }

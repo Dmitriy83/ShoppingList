@@ -1,6 +1,9 @@
 package com.RightDirection.ShoppingList.models;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class User implements Parcelable{
 
     @SuppressWarnings("WeakerAccess")
     public String name;
@@ -17,6 +20,25 @@ public class User {
         this.photoUrl = photoUrl;
         this.uid = uid;
     }
+
+    protected User(Parcel in) {
+        name = in.readString();
+        photoUrl = in.readString();
+        userEmail = in.readString();
+        uid = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getUid() {
         return uid;
@@ -36,5 +58,18 @@ public class User {
 
     public void setUid(String uid){
         this.uid = uid;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(photoUrl);
+        dest.writeString(userEmail);
+        dest.writeString(uid);
     }
 }

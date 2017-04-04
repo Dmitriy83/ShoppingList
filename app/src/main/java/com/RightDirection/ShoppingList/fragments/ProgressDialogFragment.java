@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.activities;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;

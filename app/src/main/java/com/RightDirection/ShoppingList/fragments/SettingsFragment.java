@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.views;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;

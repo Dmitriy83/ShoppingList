@@ -1,4 +1,4 @@
-package com.RightDirection.ShoppingList.views;
+package com.RightDirection.ShoppingList.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -30,7 +30,7 @@ import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import java.util.ArrayList;
 
-public class FragmentInputProductName extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class InputProductNameFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private IOnNewItemAddedListener onNewItemAddedListener;
 

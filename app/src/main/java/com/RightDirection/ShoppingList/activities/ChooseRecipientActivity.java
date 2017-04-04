@@ -18,8 +18,10 @@ import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.TimeoutControl;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +34,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class ChooseRecipientActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener, ListAdapterRecipients.IOnRecipientChosenListener{
@@ -93,41 +100,34 @@ public class ChooseRecipientActivity extends BaseActivity implements
         mRecipientsAdapter = new ListAdapterRecipients(this);
         recyclerView.setAdapter(mRecipientsAdapter);
 
-        // Обработаем таймаут
-        final TimeoutControl timeoutControl = new TimeoutControl();
-        timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
-            @Override
-            public void onTimeout() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Уберем ProgressBar и изменим надпись в RecyclerView
-                        hideRecyclerViewProgressBar();
-                        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-                        assert emptyView != null;
-                        emptyView.setText(R.string.connection_timeout_exceeded);
-                    }
-                });
-            }
-        });
-        timeoutControl.start();
-
         // Добавим слушателя на событие, которое будет вызываться один раз.
         // В данном случае, при окончании первоначальной загрузки данных в адаптер.
-        FirebaseUtil.getBaseRef().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                timeoutControl.stop();
-                hideRecyclerViewProgressBar();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                timeoutControl.stop();
-                hideRecyclerViewProgressBar();
-                System.out.println(R.string.connection_failed + " " + databaseError.getCode());
-            }
-        });
+        FirebaseObservables.endLoadingToAdapterObservable()
+                .timeout(Utils.TIMEOUT, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) throws Exception {
+                                hideRecyclerViewProgressBar();
+                            }
+                        },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable e) throws Exception {
+                                hideRecyclerViewProgressBar();
+                                if (e instanceof TimeoutException) {
+                                    Toast.makeText(getApplicationContext(),
+                                            R.string.connection_timeout_exceeded,
+                                            Toast.LENGTH_LONG).show();
+                                    TextView emptyView = (TextView) findViewById(R.id.empty_view);
+                                    assert emptyView != null;
+                                    emptyView.setText(R.string.connection_timeout_exceeded);
+                                } else{
+                                    System.out.println(R.string.connection_failed + " " + e.getMessage());
+                                }
+                            }
+                        });
     }
 
     @Override
@@ -151,48 +151,33 @@ public class ChooseRecipientActivity extends BaseActivity implements
     public void onRecipientChosen(String userKey) {
         showProgressDialog(getString(R.string.sending));
 
-        // Обработаем таймаут
-        final TimeoutControl timeoutControl = new TimeoutControl();
-        timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
-            @Override
-            public void onTimeout() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        dismissProgressDialog();
-                        Toast.makeText(getApplicationContext(), R.string.connection_timeout_exceeded, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-        timeoutControl.start();
-
-        // Отправим список покупок в FireBase
-        Map<String, Object> updateValues = new HashMap<>();
-        updateValues.put("content", mShoppingList.convertShoppingListToString(this));
-        User currentUser = FirebaseUtil.readUserFromPref(this);
-        updateValues.put("author", currentUser);
-        updateValues.put("name", mShoppingList.getName());
-        // Сформируем идентифиатор для списка - <id автора>_<название списка>
-        String userUid = (currentUser == null) ? "" : (currentUser.getUid() == null) ? "" : currentUser.getUid();
-        String listId = userUid + "_" + mShoppingList.getNameForFirebase();
-        FirebaseUtil.getUsersRef().child(userKey).child(FirebaseUtil.SHOPPING_LISTS_PATH)
-                .child(listId).updateChildren(updateValues,
-                new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {
-                        timeoutControl.stop();
-                        dismissProgressDialog();
-                        if (firebaseError != null) {
-                            Toast.makeText(getApplicationContext(),
-                                    getString(R.string.error_savin_user_data) + firebaseError.getMessage(),
-                                    Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(getApplicationContext(), getString(R.string.sent_successfully),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        finish();
-                    }
-                });
+        FirebaseObservables.sendShoppingListToFBObservable(mShoppingList, this, userKey)
+                .timeout(Utils.TIMEOUT, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) throws Exception {
+                                dismissProgressDialog();
+                                Toast.makeText(getApplicationContext(), getString(R.string.sent_successfully),
+                                        Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable e) throws Exception {
+                                dismissProgressDialog();
+                                if (e instanceof TimeoutException) {
+                                    Toast.makeText(getApplicationContext(), R.string.connection_timeout_exceeded,
+                                            Toast.LENGTH_LONG).show();
+                                } else{
+                                    Toast.makeText(getApplicationContext(),
+                                            getString(R.string.error_savin_user_data) + e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                finish();
+                            }
+                        });
     }
 }

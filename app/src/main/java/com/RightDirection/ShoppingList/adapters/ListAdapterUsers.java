@@ -8,15 +8,15 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
-import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 
-public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapterFriends.ViewHolder> {
+public class ListAdapterUsers extends FirebaseRecyclerAdapter<User, ListAdapterUsers.ViewHolder> {
     private final Context mContext;
 
-    public ListAdapterFriends(Context context) {
-        super(User.class, R.layout.list_item_friends, ViewHolder.class, FirebaseUtil.getFriendsRef());
+    public ListAdapterUsers(Context context, DatabaseReference tableRef) {
+        super(User.class, R.layout.list_item_users, ViewHolder.class, tableRef);
         mContext = context;
     }
 
@@ -24,7 +24,7 @@ public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapte
     // Used to cache the views within the item layout for fast access
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView txtName;
-        public final ImageView imgFriendPhoto;
+        final ImageView imgUserPhoto;
         public final ImageView imgDelete;
 
         // We also create a constructor that accepts the entire item row
@@ -35,7 +35,7 @@ public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapte
             super(rowView);
 
             txtName = (TextView) rowView.findViewById(R.id.txtName);
-            imgFriendPhoto = (ImageView) rowView.findViewById(R.id.imgFriendPhoto);
+            imgUserPhoto = (ImageView) rowView.findViewById(R.id.imgFriendPhoto);
             imgDelete = (ImageView) rowView.findViewById(R.id.imgDelete);
             imgDelete.setTag(this);
         }
@@ -49,7 +49,7 @@ public class ListAdapterFriends extends FirebaseRecyclerAdapter<User, ListAdapte
                 .load(friend.getPhotoUrl())
                 .placeholder(R.drawable.ic_person_outline)
                 .fit()
-                .into(viewHolder.imgFriendPhoto);
+                .into(viewHolder.imgUserPhoto);
 
         viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
             @Override
