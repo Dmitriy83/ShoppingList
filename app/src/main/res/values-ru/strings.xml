@@ -115,7 +115,7 @@
     <string name="action_black_list_no_data_text">Черный список пуст</string>
     <string name="message_from_user_not_in_friends">Пользователь, отсутствующий списке друзей отправил Вам список покупок.</string>
     <string name="new_user_sent_list">Новый пользователь %1$s! прислал список/ки покупок</string>
-    <string name="add_to_friends_and_receive_list">Получить и добавить в друзья</string>
-    <string name="add_to_black_list_and_decline_list">Отклонить, в дальнейшем игнорировать</string>
+    <string name="add_to_friends_and_receive_list">Получить</string>
+    <string name="add_to_black_list_and_decline_list">Игнорировать</string>
 
 </resources>

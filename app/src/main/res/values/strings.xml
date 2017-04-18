@@ -134,6 +134,6 @@
     <string name="action_black_list_no_data_text">Black list is empty</string>
     <string name="message_from_user_not_in_friends">User not from friends list sent you shopping list.</string>
     <string name="new_user_sent_list">New user %1$s! sent shopping list for you.</string>
-    <string name="add_to_friends_and_receive_list">Receive and add to the friends</string>
-    <string name="add_to_black_list_and_decline_list">Decline, ignore next time</string>
+    <string name="add_to_friends_and_receive_list">Receive</string>
+    <string name="add_to_black_list_and_decline_list">Ignore</string>
 </resources>
