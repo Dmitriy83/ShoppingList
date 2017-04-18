@@ -15,14 +15,10 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.ListAdapterUsers;
 import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
-import com.RightDirection.ShoppingList.utils.TimeoutControl;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;

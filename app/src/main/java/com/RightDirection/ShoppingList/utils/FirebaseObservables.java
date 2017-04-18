@@ -1,8 +1,6 @@
 package com.RightDirection.ShoppingList.utils;
 
-import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;

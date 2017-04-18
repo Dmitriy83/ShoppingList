@@ -13,11 +13,8 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.fragments.AddNewUserDialogFragment;
 import com.RightDirection.ShoppingList.fragments.ProgressDialogFragment;
-import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.utils.Utils;
-
-import java.util.ArrayList;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
