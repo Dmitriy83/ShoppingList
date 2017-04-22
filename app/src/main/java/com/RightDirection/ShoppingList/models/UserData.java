@@ -6,9 +6,9 @@ import java.util.ArrayList;
  * POJO для данных пользователя, полученных из FireBase
  */
 public class UserData extends ArrayList<ShoppingList> {
-    private ArrayList<FirebaseShoppingList> shoppingLists;
-    private ArrayList<User> friends;
-    private ArrayList<User> blackList;
+    private final ArrayList<FirebaseShoppingList> shoppingLists;
+    private final ArrayList<User> friends;
+    private final ArrayList<User> blackList;
 
     public UserData(ArrayList<FirebaseShoppingList> shoppingLists, ArrayList<User> friends, ArrayList<User> blackList) {
         this.shoppingLists = shoppingLists;

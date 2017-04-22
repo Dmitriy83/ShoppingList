@@ -3,9 +3,9 @@ package com.RightDirection.ShoppingList.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +19,7 @@ import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -115,7 +116,7 @@ public class FriendsActivity extends BaseActivity implements
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
         mFriendsAdapter = new ListAdapterUsers(this, FirebaseUtil.getFriendsRef());
         recyclerView.setAdapter(mFriendsAdapter);
 
@@ -164,5 +165,17 @@ public class FriendsActivity extends BaseActivity implements
     private void hideRecyclerViewProgressBar() {
         FrameLayout pb = (FrameLayout) findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                super.onBackPressed();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

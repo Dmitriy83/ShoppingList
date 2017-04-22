@@ -21,11 +21,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +43,8 @@ import com.RightDirection.ShoppingList.utils.EmailReceiver;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     private DrawerLayout mDrawerLayout;
     private BroadcastReceiver mServiceReceiver;
     private static final long INTERVAL_THIRTEEN_SECONDS = 30000;
+    private boolean mUserSignInInfoExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,14 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
+                R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // При след. открытии инфо пользователя должно быть свернуто
+                mUserSignInInfoExpanded = false;
+                configNavView();
+            }
+        };
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -90,7 +99,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
 
         // Создаем массив для хранения списков покупок
         mShoppingLists = new ArrayList<>();
@@ -128,26 +137,63 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     @Override
     protected void onStart() {
         super.onStart();
-        displayUserInformation();
+        configNavView();
     }
 
-    private void displayUserInformation() {
+    private void configNavView() {
         // Скроем/отобразим кнопки "Sign in"/"Profile"
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
-        Menu navMenu = navView.getMenu();
-        boolean userSignedIn = FirebaseUtil.userSignedIn(this);
-        navMenu.findItem(R.id.action_sign_in).setVisible(!userSignedIn);
-        MenuItem actionProfile = navMenu.findItem(R.id.action_profile);
-        actionProfile.setVisible(userSignedIn);
-        navMenu.findItem(R.id.action_friends).setVisible(userSignedIn);
-        navMenu.findItem(R.id.action_black_list).setVisible(userSignedIn);
-        navMenu.findItem(R.id.action_receive_shopping_lists).setVisible(userSignedIn);
+        final NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        assert navView != null;
+        View headerLayout = navView.getHeaderView(0);
+        View appTitle = headerLayout.findViewById(R.id.appTitle);
+        View userSignInInfo = headerLayout.findViewById(R.id.userSignInInfo);
+        navView.getMenu().clear();
+        if (FirebaseUtil.userSignedIn(this)) {
+            navView.inflateMenu(R.menu.activity_main_menu_authorized);
 
-        if (userSignedIn) {
+            appTitle.setVisibility(View.GONE);
+            userSignInInfo.setVisibility(View.VISIBLE);
+
+            MenuItem actionSignIn = navView.getMenu().findItem(R.id.action_sign_in);
+            if (actionSignIn != null) actionSignIn.setVisible(false);
+
             User user = FirebaseUtil.readUserFromPref(this);
-            assert user != null;
-            actionProfile.setTitle(user.getName());
+            if (user != null) {
+                TextView txtUserName = (TextView) userSignInInfo.findViewById(R.id.txtUserName);
+                txtUserName.setText(user.getName());
+                ImageView userPhoto = (ImageView) userSignInInfo.findViewById(R.id.imgUserPhoto);
+                Picasso.with(this)
+                        .load(user.getPhotoUrl())
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .fit()
+                        .into(userPhoto);
+            }
+
+        } else{
+            navView.inflateMenu(R.menu.activity_main_menu);
+
+            appTitle.setVisibility(View.VISIBLE);
+            userSignInInfo.setVisibility(View.GONE);
         }
+
+        final View arrow = userSignInInfo.findViewById(R.id.imgArrow);
+        arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow); // по умолчанию
+        userSignInInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Изменяем стрелку и подменяем меню
+                if (mUserSignInInfoExpanded){
+                    navView.getMenu().clear();
+                    navView.inflateMenu(R.menu.activity_main_menu_authorized);
+                    arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow);
+                }else{
+                    navView.getMenu().clear();
+                    navView.inflateMenu(R.menu.activity_main_user_authorized_actions);
+                    arrow.setBackgroundResource(R.drawable.ic_drop_up_arrow);
+                }
+                mUserSignInInfoExpanded = !mUserSignInInfoExpanded;
+            }
+        });
     }
 
     @Override

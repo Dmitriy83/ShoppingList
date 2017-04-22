@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +19,7 @@ import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.crash.FirebaseCrash;
@@ -87,7 +87,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
         mRecipientsAdapter = new ListAdapterRecipients(this);
         recyclerView.setAdapter(mRecipientsAdapter);
 

@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -50,7 +50,7 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
         //recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         // Создаем массив для хранения списка товаров

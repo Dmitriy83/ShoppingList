@@ -4,7 +4,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
@@ -12,6 +11,7 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterChooseCategory;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class ChooseCategoryActivity extends BaseActivity
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
 
         // Создаем массив для хранения списка товаров
         mCategories = new ArrayList<>();

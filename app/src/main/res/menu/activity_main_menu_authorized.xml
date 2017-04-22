@@ -3,15 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MainActivity">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/action_sign_in"
-            android:icon="@drawable/ic_sign_in"
-            android:orderInCategory="90"
-            android:title="@string/action_sign_in"
-            app:showAsAction="never" />
-    </group>
-
     <group
         android:checkableBehavior="single"
         android:id="@+id/menu_2">

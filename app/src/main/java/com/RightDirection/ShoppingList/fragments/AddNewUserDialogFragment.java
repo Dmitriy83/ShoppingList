@@ -16,7 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 
 public class AddNewUserDialogFragment extends DialogFragment {
-    private String TAG = "AddNewUserFragment";
+    private final String TAG = "AddNewUserFragment";
 
     public static AddNewUserDialogFragment newInstance(User user) {
         AddNewUserDialogFragment f = new AddNewUserDialogFragment();

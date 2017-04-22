@@ -17,21 +17,19 @@ import android.widget.Toast;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.services.AlarmReceiver;
-import com.RightDirection.ShoppingList.utils.TimeoutControl;
+import com.RightDirection.ShoppingList.utils.FirebaseObservables;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
@@ -39,12 +37,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class ProfileActivity extends BaseActivity implements
         View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
+
     private static final String TAG = "ProfileActivity";
     private ViewGroup mProfileUi;
     private ViewGroup mSignInUi;
@@ -142,48 +145,37 @@ public class ProfileActivity extends BaseActivity implements
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         showProgressDialog(getString(R.string.profile_progress_message));
 
-        // Подключим обработчик таймаута
-        final TimeoutControl timeoutControl = new TimeoutControl();
-        timeoutControl.addListener(new TimeoutControl.IOnTimeoutListener() {
-            @Override
-            public void onTimeout() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        dismissProgressDialog();
-                        Toast.makeText(getApplicationContext(), R.string.connection_timeout_exceeded, Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
-        timeoutControl.start();
-
-        mAuth.signInWithCredential(credential)
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult result) {
-                        timeoutControl.stop();
-                        handleFirebaseAuthResult(result);
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        timeoutControl.stop();
-                        FirebaseCrash.logcat(Log.ERROR, TAG, "auth:onFailure:" + e.getMessage());
-                        handleFirebaseAuthResult(null);
-                    }
-                });
+        FirebaseObservables.signInObservable(mAuth, credential)
+                .timeout(Utils.TIMEOUT, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Consumer<AuthResult>() {
+                            @Override
+                            public void accept(AuthResult result) throws Exception {
+                                handleFirebaseAuthResult(result);
+                            }
+                        },
+                        new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable e) throws Exception {
+                                if (e instanceof TimeoutException) {
+                                    Toast.makeText(getApplicationContext(), R.string.connection_timeout_exceeded,
+                                            Toast.LENGTH_LONG).show();
+                                } else{
+                                    Toast.makeText(getApplicationContext(),
+                                            getString(R.string.authentithication_failed) + e.getMessage(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                handleFirebaseAuthResult(null);
+                            }
+                        });
     }
 
     private void handleFirebaseAuthResult(AuthResult result) {
-        // TODO: This auth callback isn't being called after orientation change. Investigate.
         dismissProgressDialog();
         if (result != null) {
-            Log.d(TAG, "handleFirebaseAuthResult:SUCCESS");
             showSignedInUI(result.getUser());
         } else {
-            Toast.makeText(this, R.string.authentithication_failed, Toast.LENGTH_SHORT).show();
             showSignedOutUI();
         }
     }

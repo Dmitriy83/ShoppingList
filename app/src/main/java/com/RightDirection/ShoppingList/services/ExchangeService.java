@@ -182,6 +182,7 @@ public class ExchangeService extends Service {
         return isAuthorInList(blackList, author);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isAuthorInFriends(ArrayList<User> friends, User author) {
         return isAuthorInList(friends, author);
     }

@@ -1,11 +1,17 @@
 package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -305,5 +311,27 @@ public class FirebaseObservables {
                         }
                     }
                 });
+    }
+
+    public static Observable<AuthResult> signInObservable(final FirebaseAuth auth, final AuthCredential credential) {
+        return Observable.create(new ObservableOnSubscribe<AuthResult>() {
+            @Override
+            public void subscribe(final ObservableEmitter<AuthResult> emitter) throws Exception {
+                auth.signInWithCredential(credential)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult result) {
+                                emitter.onNext(result);
+                                emitter.onComplete();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                emitter.onError(new Throwable(e.getMessage()));
+                            }
+                        });
+            }
+        });
     }
 }

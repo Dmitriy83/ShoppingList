@@ -50,6 +50,7 @@ public class AppLifecycleHandler implements Application.ActivityLifecycleCallbac
         return started > stopped;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isApplicationInForeground() {
         return resumed > paused;
     }
