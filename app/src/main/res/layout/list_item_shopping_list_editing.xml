@@ -21,12 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/imgItemImage"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imgItemImage">
 
         <TextView
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
@@ -55,12 +56,13 @@
                 android:layout_width="60dp"
                 android:background="@null"
                 android:src="@drawable/ic_remove_circle"
+                android:layout_centerVertical="true"
                 android:scaleType="fitEnd"/>
 
             <EditText
                 android:id="@+id/etCount"
                 android:layout_width="@dimen/large_size"
-                android:layout_height="@dimen/count_text_field_size"
+                android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/imgDecrease"
                 android:gravity="end"
                 android:hint=""
@@ -73,12 +75,13 @@
                 android:id="@+id/imgIncrease"
                 android:layout_width="60dp"
                 android:layout_height="@dimen/small_size"
-                android:layout_toEndOf="@+id/etCount"
                 android:contentDescription="@string/increase"
                 android:background="@null"
                 android:src="@drawable/ic_add_circle"
                 android:scaleType="fitStart"
-                android:layout_toRightOf="@+id/etCount" />
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/etCount"
+                android:layout_toEndOf="@+id/etCount" />
         </RelativeLayout>
 
         <ImageButton

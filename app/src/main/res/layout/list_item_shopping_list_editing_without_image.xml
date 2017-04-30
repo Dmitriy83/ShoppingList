@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/txtName"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
@@ -49,11 +49,12 @@
             android:background="@null"
             android:src="@drawable/ic_remove_circle"
             android:scaleType="fitEnd"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true" />
 
         <EditText
             android:layout_width="@dimen/large_size"
-            android:layout_height="@dimen/count_text_field_size"
+            android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imgDecrease"
             android:id="@+id/etCount"
             android:hint=""
@@ -73,6 +74,7 @@
             android:background="@null"
             android:src="@drawable/ic_add_circle"
             android:scaleType="fitStart"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/etCount" />
     </RelativeLayout>
 
