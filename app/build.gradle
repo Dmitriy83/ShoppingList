@@ -7,7 +7,7 @@ android {
         applicationId 'com.RightDirection.ShoppingList'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 18
+        versionCode 24
         versionName "1.0.8"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
