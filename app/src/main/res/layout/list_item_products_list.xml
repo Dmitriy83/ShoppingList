@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/normal_size"
+            android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/imgItemImage"
             android:layout_toStartOf="@+id/imgDelete"
             android:padding="10dp"
@@ -40,6 +40,7 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/ic_delete"
             android:contentDescription="@string/cross"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 

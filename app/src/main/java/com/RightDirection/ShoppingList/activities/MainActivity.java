@@ -9,6 +9,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,6 +25,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -142,7 +146,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
     private void configNavView() {
         // Скроем/отобразим кнопки "Sign in"/"Profile"
-        final NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         assert navView != null;
         View headerLayout = navView.getHeaderView(0);
         View appTitle = headerLayout.findViewById(R.id.appTitle);
@@ -182,6 +186,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             @Override
             public void onClick(View v) {
                 // Изменяем стрелку и подменяем меню
+                NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
                 if (mUserSignInInfoExpanded){
                     navView.getMenu().clear();
                     navView.inflateMenu(R.menu.activity_main_menu_authorized);

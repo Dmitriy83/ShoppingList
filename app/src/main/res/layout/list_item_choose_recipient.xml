@@ -22,7 +22,7 @@
     <TextView
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imgFriendPhoto"
         android:layout_toEndOf="@+id/imgFriendPhoto"

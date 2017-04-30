@@ -23,13 +23,14 @@
         <TextView
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/normal_size"
-            android:layout_toStartOf="@+id/imgDelete"
+            android:layout_height="wrap_content"
             android:padding="10dp"
-            android:layout_toEndOf="@+id/imgItemImage"
             android:textSize="@dimen/text_size_normal"
             android:textStyle="normal|bold"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/imgItemImage"
             android:layout_toLeftOf="@+id/imgDelete"
+            android:layout_toStartOf="@+id/imgDelete"
             android:layout_toRightOf="@+id/imgItemImage" />
 
         <ImageButton
@@ -40,6 +41,7 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/ic_delete"
             android:contentDescription="@string/cross"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 
