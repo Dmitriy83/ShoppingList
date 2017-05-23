@@ -290,8 +290,7 @@ public class FirebaseObservables {
 
     private static void addUserToTable(DatabaseReference tableRef, final User user, final ObservableEmitter<Boolean> emitter){
         if (user == null || tableRef == null) {
-            emitter.onNext(false);
-            emitter.onComplete();
+            emitter.onError(new Throwable("User can not be added"));
             return;
         }
 

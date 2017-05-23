@@ -14,7 +14,6 @@
         android:text="@string/mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
         android:textStyle="normal|bold"
         android:textSize="@dimen/text_size_large"
         android:gravity="center_vertical|center_horizontal"

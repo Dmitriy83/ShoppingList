@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentEnd="false"
-    android:id="@+id/appBar"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     android:layout_alignParentRight="false"
     tools:showIn="@layout/activity_shopping_list_in_shop">

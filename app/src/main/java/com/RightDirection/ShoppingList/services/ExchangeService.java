@@ -129,17 +129,17 @@ public class ExchangeService extends Service {
                             } else {
                                 sendUpdateMainActivityBroadcast(loadedShoppingLists);
                             }
-                        } else {
+                        } else if (unknownUsers.size() == 0) {
                             sendNotificationBroadcast(getString(R.string.no_shoppping_for_loading));
                         }
 
                         // Отправим сообщения по пользователям, которых нет ни в одном из списков
-                        for (User user : unknownUsers) {
-                            if (!isApplicationInForeground()) {
+                        if (!isApplicationInForeground()) {
+                            for (User user : unknownUsers) {
                                 postNotification(getString(R.string.message_from_user_not_in_friends), getString(R.string.message_from_user_not_in_friends));
-                            } else {
-                                sendAddUserToFriendsBroadcast(user);
                             }
+                        }else if (unknownUsers.size() > 0) {
+                            sendAddUserToFriendsBroadcast(unknownUsers);
                         }
 
                         stopSelf();
@@ -228,7 +228,7 @@ public class ExchangeService extends Service {
     private void sendUpdateMainActivityBroadcast(ArrayList<ShoppingList> loadedShoppingLists) {
         Intent intent = new Intent();
         intent.setAction(Utils.ACTION_UPDATE_MAIN_ACTIVITY);
-        intent.putExtra(EXTRAS_KEYS.SHOPPING_LISTS.getValue(), loadedShoppingLists);
+        intent.putParcelableArrayListExtra(EXTRAS_KEYS.SHOPPING_LISTS.getValue(), loadedShoppingLists);
 
         this.sendBroadcast(intent);
     }
@@ -243,10 +243,10 @@ public class ExchangeService extends Service {
         this.sendBroadcast(intent);
     }
 
-    private void sendAddUserToFriendsBroadcast(User author) {
+    private void sendAddUserToFriendsBroadcast(ArrayList<User> authors) {
         Intent intent = new Intent();
         intent.setAction(Utils.ACTION_ADD_USER_TO_FRIENDS);
-        intent.putExtra(EXTRAS_KEYS.AUTHOR.getValue(), author);
+        intent.putExtra(EXTRAS_KEYS.AUTHORS.getValue(), authors);
         this.sendBroadcast(intent);
     }
 }

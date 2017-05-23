@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MainActivity">
 
-    <group android:id="@+id/menuGroup">
+    <group>
         <item
             android:id="@+id/action_profile"
             android:icon="@drawable/ic_person_outline"

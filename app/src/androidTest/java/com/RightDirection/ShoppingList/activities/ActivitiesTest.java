@@ -10,25 +10,20 @@ import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.BaseListAdapter;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -45,17 +40,14 @@ import static android.support.test.espresso.action.ViewActions.pressImeActionBut
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Checks.checkArgument;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
@@ -142,144 +134,6 @@ abstract class ActivitiesTest {
 
         // Открываем панель навигации
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-    }
-
-    /**
-     * Процедура необходима для поиска объектов класса ListItem в BaseListAdapter по имени
-     */
-    @SuppressWarnings("unused")
-    static Matcher<Object> withItemValue(final String value) {
-        return new BoundedMatcher<Object, IListItem>(IListItem.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("has value " + value);
-            }
-
-            @Override
-            public boolean matchesSafely(IListItem item) {
-                return item.getName().equals(String.valueOf(value));
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemWithText(final String itemText)
-    {
-        checkArgument(!TextUtils.isEmpty(itemText),"cannot be null");
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withText(itemText)).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView with text: " + itemText);
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemWithImage(final int imageId)
-    {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        hasDescendant(withContentDescription(String.valueOf(imageId)))).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView with image id: " + imageId);
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemWithImageAndText(final int imageId, final String itemText)
-    {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withId(R.id.productRepresent),
-                        hasDescendant(withContentDescription(String.valueOf(imageId))),
-                        hasDescendant(withText(itemText))).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView with image id: " + imageId
-                        + " and with text: " + itemText);
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemWithImageAndText(final String imageURI, final String itemText)
-    {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withId(R.id.productRepresent),
-                        hasDescendant(withContentDescription(imageURI)),
-                        hasDescendant(withText(itemText))).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView with image id: " + imageURI
-                        + " and with text: " + itemText);
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemWithImageAndTextForScrolling(final int imageId, final String itemText)
-    {
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(hasDescendant(withContentDescription(String.valueOf(imageId))),
-                        hasDescendant(withText(itemText))).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView with image id: " + imageId
-                        + " and with text: " + itemText);
-            }
-        };
-    }
-
-    Matcher<View> recyclerViewItemContainsText(final String subString)
-    {
-        checkArgument(!TextUtils.isEmpty(subString),"cannot be null");
-        return new TypeSafeMatcher<View>() {
-            @Override
-            protected boolean matchesSafely(View view) {
-                return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        containsText(subString)).matches(view);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is descendant of a RecyclerView that contains text: " + subString);
-            }
-        };
-    }
-
-    private static Matcher<View> containsText(final String subString) {
-        checkArgument(!TextUtils.isEmpty(subString),"cannot be null");
-        return new BoundedMatcher<View, TextView>(TextView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("contains text: " + subString);
-            }
-
-            @Override
-            public boolean matchesSafely(TextView textView) {
-                return textView.getText().toString().contains(String.valueOf(subString));
-            }
-        };
     }
 
     void addNewShoppingList(){

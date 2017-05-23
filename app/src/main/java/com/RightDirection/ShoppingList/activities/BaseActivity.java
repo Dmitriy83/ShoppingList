@@ -1,6 +1,7 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,13 +9,17 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.fragments.AddNewUserDialogFragment;
 import com.RightDirection.ShoppingList.fragments.ProgressDialogFragment;
 import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
+
+import java.util.ArrayList;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
@@ -32,14 +37,19 @@ public class BaseActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent == null) return;
-
                 if (intent.getAction().equals(Utils.ACTION_NOTIFICATION)){
                     String msg = intent.getStringExtra(EXTRAS_KEYS.NOTIFICATION.getValue());
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }else if (intent.getAction().equals(Utils.ACTION_ADD_USER_TO_FRIENDS)){
-                    User user = intent.getParcelableExtra(EXTRAS_KEYS.AUTHOR.getValue());
-                    AddNewUserDialogFragment dialog = AddNewUserDialogFragment.newInstance(user);
-                    dialog.show(getFragmentManager(), dialog.getTag());
+                    ArrayList<User> unknownUsers = intent.getParcelableArrayListExtra(EXTRAS_KEYS.AUTHORS.getValue());
+                    if (unknownUsers != null) {
+                        for (int i = 0; unknownUsers.size() > i; i++) {
+                            User user = unknownUsers.get(i);
+                            boolean lastDialog = (i == 0); // Первый диалог будет закрыт последним
+                            AddNewUserDialogFragment dialog = AddNewUserDialogFragment.newInstance(user, lastDialog);
+                            dialog.show(getFragmentManager(), dialog.getTag());
+                        }
+                    }
                 }
             }
         };

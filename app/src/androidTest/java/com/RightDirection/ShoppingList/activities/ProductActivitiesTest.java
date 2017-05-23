@@ -21,6 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static org.hamcrest.Matchers.allOf;
 
 public class ProductActivitiesTest extends ActivitiesTest {

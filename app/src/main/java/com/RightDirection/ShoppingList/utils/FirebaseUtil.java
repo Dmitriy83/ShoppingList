@@ -1,10 +1,15 @@
 package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
+import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;
 import com.RightDirection.ShoppingList.models.User;
+import com.RightDirection.ShoppingList.services.ExchangeService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -119,5 +124,19 @@ public class FirebaseUtil {
         DatabaseReference currentUserRef = getCurrentUserRef();
         if (currentUserRef == null) return null;
         return currentUserRef.child(BLACK_LIST_PATH);
+    }
+
+    public static void restartServiceToReceiveShoppingListsFromFirebase(Context context){
+        if (context == null) return;
+
+        Toast.makeText(context, R.string.receiving, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(context, ExchangeService.class);
+        // Т.к. пользователь запустил команду интерактивно, будем оповещать его о таймаутах, ошибках соединения и т.д.
+        intent.putExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), true);
+        // Если сервис был запущен по таймеру, остановим его, чтобы пользователю
+        // передавались сообщения (по таймеру сообщения не возвращаются).
+        context.stopService(intent);
+        context.startService(intent);
     }
 }

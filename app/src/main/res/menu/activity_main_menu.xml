@@ -13,8 +13,7 @@
     </group>
 
     <group
-        android:checkableBehavior="single"
-        android:id="@+id/menu_2">
+        android:checkableBehavior="single">
         <item
             android:id="@+id/action_edit_categories_list"
             android:orderInCategory="101"
@@ -30,8 +29,7 @@
     </group>
 
     <group
-        android:checkableBehavior="single"
-        android:id="@+id/menu_3">
+        android:checkableBehavior="single">
         <!--
         Пока отключим возможность получения и загрузки писем с файлом json,
         т.к. настройка эл. почты слишком сложна для простого пользователя.

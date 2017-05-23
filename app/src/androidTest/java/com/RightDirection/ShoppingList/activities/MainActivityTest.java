@@ -23,6 +23,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static junit.framework.Assert.assertTrue;
 
 public class MainActivityTest extends ActivitiesTest {
@@ -136,9 +137,9 @@ public class MainActivityTest extends ActivitiesTest {
         // Длинный клик на новом списке покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
 
-        UiObject btnMenu = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.menu_button_identifier)));
-        btnMenu.click();
-        onView(withText(mActivity.getString(R.string.share))).perform(click());
+        /*UiObject btnMenu = mDevice.findObject(new UiSelector().description(mActivity.getString(R.string.menu_button_identifier)));
+        btnMenu.click();*/
+        onView(withId(R.id.action_share)).perform(click());
 
         // В меню действий нажимаем кнопку отправки списка по почте
         //onView(withId(R.id.action_share)).perform(click());

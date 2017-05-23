@@ -7,6 +7,11 @@
         android:icon="@drawable/ic_send"
         android:showAsAction="always"
         tools:ignore="AlwaysShowAction,AppCompatResource" />
+    <item android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share"
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
     <item android:id="@+id/action_edit_shopping_list"
         android:icon="@drawable/ic_edit"
         android:title="@string/edit"
@@ -17,11 +22,6 @@
         android:title="@string/delete"
         android:showAsAction="always"
         tools:ignore="AlwaysShowAction,AppCompatResource" />
-    <item android:id="@+id/action_share"
-        android:icon="@drawable/ic_share"
-        android:title="@string/share"
-        android:showAsAction="ifRoom"
-        tools:ignore="AppCompatResource" />
     <item android:id="@+id/action_load_list"
         android:icon="@drawable/ic_load"
         android:title="@string/load"

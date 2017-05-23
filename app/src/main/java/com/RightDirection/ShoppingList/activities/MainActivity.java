@@ -9,7 +9,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,9 +24,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +36,6 @@ import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.services.AlarmReceiver;
-import com.RightDirection.ShoppingList.services.ExchangeService;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.EmailReceiver;
@@ -121,11 +116,11 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         TextView emptyView = (TextView) findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
 
-        if (FirebaseUtil.userSignedIn(this)) scheduleReceiveShoppingListsAlarm();
+        if (FirebaseUtil.userSignedIn(this)) scheduleStartServiceReceiveShoppingListsAlarm();
     }
 
     // Запустим расписание
-    private void scheduleReceiveShoppingListsAlarm() {
+    private void scheduleStartServiceReceiveShoppingListsAlarm() {
         // Создаем намерение, которое будет выполняться AlarmReceiver-ом
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         // Создаем "ожидающее намерение", которое будет срабатывать на событии AlarmManager-а
@@ -408,14 +403,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     }
 
     private void receiveShoppingListsFromFirebase() {
-        Toast.makeText(this, R.string.receiving, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, ExchangeService.class);
-        // Т.к. пользователь запустил команду интерактивно, будем оповещать его о таймаутах, ошибках соединения и т.д.
-        intent.putExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), true);
-        // Если сервис был запущен по таймеру, остановим его, чтобы пользователю
-        // передавались сообщения (по таймеру сообщения не возвращаются).
-        stopService(intent);
-        startService(intent);
+        FirebaseUtil.restartServiceToReceiveShoppingListsFromFirebase(this);
     }
 
     private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>> {
