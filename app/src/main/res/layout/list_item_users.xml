@@ -44,10 +44,9 @@
         android:layout_alignParentRight="true" />
 
     <View
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/txtName"
-        android:background="@color/border_color"/>
+        android:layout_below="@+id/imgFriendPhoto"
+        android:background="@color/border_color"    />
 
 </RelativeLayout>
