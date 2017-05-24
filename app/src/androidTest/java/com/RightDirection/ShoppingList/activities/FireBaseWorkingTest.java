@@ -25,7 +25,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static com.RightDirection.ShoppingList.utils.FirebaseUtil.userSignedIn;
-import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertTrue;
 
 public class FireBaseWorkingTest extends ActivitiesTest {
@@ -125,6 +124,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     /**
      * Рекурсивная функция для очистки списка пользователей (друзей, черного списка и т.п.)
      */
+    @SuppressWarnings("InfiniteRecursion")
     private void pressRemoveUsersIfExist(int usersList) {
         try {
             onView(withId(usersList))

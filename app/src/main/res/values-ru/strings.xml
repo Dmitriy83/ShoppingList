@@ -92,19 +92,18 @@
     <string name="search_friend">Найти друга</string>
     <string name="searching">Поиск…</string>
     <string name="connection_failed">Соединение не установлено.</string>
-    <string name="authentithication_failed">Ошибка аутентификации.</string>
+    <string name="authentication_failed">Ошибка аутентификации.</string>
     <string name="user_not_found">Пользователь не найден</string>
-    <string name="authentithication">Авторизация</string>
+    <string name="authentication">Авторизация</string>
     <string name="friend_photo">Фото друга</string>
     <string name="friends_no_data_text">Список друзей пуст. Срочно добавьте новых друзей!</string>
     <string name="connection_timeout_exceeded">Превышено время ожидания установки соединения</string>
     <string name="send_to_friend">Отправить другу</string>
     <string name="shopping_list_transfer_error">При передаче списка покупок возникла непредвиденная ошибка.</string>
     <string name="sending">Отправка…</string>
-    <string name="error_savin_user_data">Сохранить данные не удалось:</string>
     <string name="sent_successfully">Отправлено успешно</string>
     <string name="action_receive_shopping_lists">Получить списки покупок</string>
-    <string name="no_shoppping_for_loading">Списки покупок для загрузки отсутствуют</string>
+    <string name="no_shopping_for_loading">Списки покупок для загрузки отсутствуют</string>
     <string name="receiving">Получение…</string>
     <string name="received_new_shopping_lists">Получены новые списки покупок:</string>
     <string name="error_saving_user_data">При сохранении данных пользователя возникла ошибка:</string>
@@ -117,5 +116,8 @@
     <string name="new_user_sent_list">Новый пользователь %1$s! прислал список/ки покупок</string>
     <string name="add_to_friends_and_receive_list">Получить</string>
     <string name="add_to_black_list_and_decline_list">Игнорировать</string>
-
+    <string name="invitation_title">Спасибо за рекомендации!</string>
+    <string name="invitation_message">Скачай "Просто покупки".</string>
+    <string name="invitation_call_to_action_text">Скачать</string>
+    <string name="invite_friends">Поделиться с друзьями</string>
 </resources>

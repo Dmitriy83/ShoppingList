@@ -1,7 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +8,12 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.fragments.AddNewUserDialogFragment;
 import com.RightDirection.ShoppingList.fragments.ProgressDialogFragment;
 import com.RightDirection.ShoppingList.models.User;
-import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;

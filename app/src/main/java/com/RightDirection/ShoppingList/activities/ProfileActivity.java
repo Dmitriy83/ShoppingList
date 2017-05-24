@@ -70,7 +70,7 @@ public class ProfileActivity extends BaseActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setTitle(R.string.authentithication);
+        setTitle(R.string.authentication);
 
         // Initialize authentication and set up callbacks
         mAuth = FirebaseAuth.getInstance();
@@ -163,7 +163,7 @@ public class ProfileActivity extends BaseActivity implements
                                             Toast.LENGTH_LONG).show();
                                 } else{
                                     Toast.makeText(getApplicationContext(),
-                                            getString(R.string.authentithication_failed) + e.getMessage(),
+                                            getString(R.string.authentication_failed) + e.getMessage(),
                                             Toast.LENGTH_LONG).show();
                                 }
                                 handleFirebaseAuthResult(null);

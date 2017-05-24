@@ -164,7 +164,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
                                             Toast.LENGTH_LONG).show();
                                 } else{
                                     Toast.makeText(getApplicationContext(),
-                                            getString(R.string.error_savin_user_data) + e.getMessage(),
+                                            getString(R.string.error_saving_user_data) + e.getMessage(),
                                             Toast.LENGTH_LONG).show();
                                 }
                                 finish();

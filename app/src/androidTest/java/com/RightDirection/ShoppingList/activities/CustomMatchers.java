@@ -206,6 +206,7 @@ class CustomMatchers {
         };
     }
 
+    @SuppressWarnings("SameParameterValue")
     static ViewAction clickChildViewWithId(final int id) {
         return new ViewAction() {
             @Override

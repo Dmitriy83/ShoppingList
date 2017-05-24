@@ -130,7 +130,7 @@ public class ExchangeService extends Service {
                                 sendUpdateMainActivityBroadcast(loadedShoppingLists);
                             }
                         } else if (unknownUsers.size() == 0) {
-                            sendNotificationBroadcast(getString(R.string.no_shoppping_for_loading));
+                            sendNotificationBroadcast(getString(R.string.no_shopping_for_loading));
                         }
 
                         // Отправим сообщения по пользователям, которых нет ни в одном из списков

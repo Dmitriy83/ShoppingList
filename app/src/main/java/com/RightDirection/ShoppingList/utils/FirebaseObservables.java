@@ -259,7 +259,7 @@ public class FirebaseObservables {
                             @Override
                             public void onComplete(DatabaseError firebaseError, DatabaseReference databaseReference) {
                                 if (firebaseError != null) {
-                                    emitter.onError(new Throwable(context.getString(R.string.error_savin_user_data)));
+                                    emitter.onError(new Throwable(context.getString(R.string.error_saving_user_data)));
                                 }else{
                                     emitter.onNext(true);
                                     emitter.onComplete();

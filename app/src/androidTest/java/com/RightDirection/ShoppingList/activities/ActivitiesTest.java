@@ -133,6 +133,7 @@ abstract class ActivitiesTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());*/
 
         // Открываем панель навигации
+
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
     }
 

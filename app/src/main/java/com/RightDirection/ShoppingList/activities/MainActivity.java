@@ -22,6 +22,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,6 +44,9 @@ import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
 import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
+import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -50,14 +54,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
-        InputNameDialogFragment.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener {
+        InputNameDialogFragment.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private ArrayList<IListItem> mShoppingLists;
     private ListAdapterMainActivity mShoppingListsAdapter;
     private DrawerLayout mDrawerLayout;
     private BroadcastReceiver mServiceReceiver;
-    private static final long INTERVAL_THIRTEEN_SECONDS = 30000;
+    private static final long CHECK_INTERVAL = 30000;
     private boolean mUserSignInInfoExpanded = false;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_INVITE = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +137,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-                INTERVAL_THIRTEEN_SECONDS, pIntent);
+                CHECK_INTERVAL, pIntent);
     }
 
     @Override
@@ -369,7 +376,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             }
             case R.id.action_estimate: {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("market://details?id=com.RightDirection.ShoppingList"));
+                intent.setData(Uri.parse(getString(R.string.market_app_link)));
                 startActivity(intent);
                 break;
             }
@@ -399,11 +406,20 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                 }
                 break;
             }
+            case R.id.action_invite_friends: {
+                sendInvitation();
+                break;
+            }
         }
     }
 
     private void receiveShoppingListsFromFirebase() {
         FirebaseUtil.restartServiceToReceiveShoppingListsFromFirebase(this);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.w(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>> {
@@ -460,6 +476,35 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             } else {
                 Toast.makeText(getApplicationContext(), getString(R.string.no_emails_for_loading),
                         Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
+     */
+    private void sendInvitation() {
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setDeepLink(Uri.parse(getString(R.string.market_app_link)))
+                .setCallToActionText(getString(R.string.invitation_call_to_action_text))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Проверим сколько приглашений было отправлено
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                Log.d(TAG, "Invitations sent: " + ids.length);
+            } else {
+                Log.d(TAG, "Failed to send invitation.");
             }
         }
     }
