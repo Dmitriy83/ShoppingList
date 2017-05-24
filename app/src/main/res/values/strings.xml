@@ -138,7 +138,7 @@
     <string name="arrow" translatable="false">arrow</string>
     <string name="invitation_title">Thanks for recommendations!</string>
     <string name="invitation_message">Get "Just buying"!</string>
-    <string name="invitation_call_to_action_text">Download</string>
+    <string name="invitation_call_to_action_text">Download to phone</string>
     <string name="invite_friends">Invite friends</string>
     <string name="market_app_link" translatable="false">market://details?id=com.RightDirection.ShoppingList</string>
 </resources>

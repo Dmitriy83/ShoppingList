@@ -118,6 +118,6 @@
     <string name="add_to_black_list_and_decline_list">Игнорировать</string>
     <string name="invitation_title">Спасибо за рекомендации!</string>
     <string name="invitation_message">Скачай "Просто покупки".</string>
-    <string name="invitation_call_to_action_text">Скачать</string>
+    <string name="invitation_call_to_action_text">Скачать на телефон</string>
     <string name="invite_friends">Поделиться с друзьями</string>
 </resources>
