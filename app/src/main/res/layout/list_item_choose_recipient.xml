@@ -35,10 +35,9 @@
         android:paddingRight="5dp" />
 
     <View
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/txtName"
+        android:layout_below="@+id/imgFriendPhoto"
         android:background="@color/border_color"/>
 
 </RelativeLayout>

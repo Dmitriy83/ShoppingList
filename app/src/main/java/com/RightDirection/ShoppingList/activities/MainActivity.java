@@ -407,7 +407,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                 break;
             }
             case R.id.action_invite_friends: {
-                sendInvitation();
+                Utils.sendInvitation(this, getString(R.string.invitation_message), REQUEST_INVITE);
                 break;
             }
         }
@@ -478,18 +478,6 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                         Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    /**
-     * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
-     */
-    private void sendInvitation() {
-        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                .setMessage(getString(R.string.invitation_message))
-                .setDeepLink(Uri.parse(getString(R.string.market_app_link)))
-                .setCallToActionText(getString(R.string.invitation_call_to_action_text))
-                .build();
-        startActivityForResult(intent, REQUEST_INVITE);
     }
 
     @Override

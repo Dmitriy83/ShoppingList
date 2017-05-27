@@ -330,4 +330,30 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         openMainMenu();
         onView(withBackground(R.drawable.ic_drop_down_arrow)).perform(click());
     }
+
+    @Test
+    public void enterWrongFriendEmailTest() throws UiObjectNotFoundException {
+        // Открываем панель навигации. Если пользователь авторизован, выходим. Авторизуемся под zhiharevtest1@gmail.com.
+        authorizeAs("zhiharevtest1@gmail.com");
+        // Заходим в список Друзей.
+        openUserSubmenu();
+        onView(withText(mActivity.getString(R.string.action_friends))).perform(click());
+        // Набираем в поле поиска "wrongemail". Нажимаем добавить.
+        onView(withId(R.id.etFriendEmail)).perform(typeText("wrongemail"));
+        onView(withId(R.id.btnSearchFriend)).perform(click());
+        // Должно появиться диалоговое окно с вопросом "Пользователь не зарегистрирован. Отправить приглашение другу?". Проверяем текст вопроса.
+        onView(withText(mActivity.getString(R.string.wrong_email_dialog_question))).check(matches(isDisplayed()));
+        // Нажимаем Нет.
+        onView(withText(mActivity.getString(R.string.no))).perform(click());
+        // Снова нажимаем кнопку Найти.
+        onView(withId(R.id.btnSearchFriend)).perform(click());
+        // В диалоговом окне выбираем Да.
+        onView(withText(mActivity.getString(R.string.yes))).perform(click());
+        timeout(1000);
+        // Проверяем появление окна приглашения (с помощью UiAutomator). Текст приглашения - "Это приложение - электронный список покупок. Скачай и зарегистрируйся ;)".
+        UiObject txtInvitation = mDevice.findObject(new UiSelector().text(mActivity.getString(R.string.friend_invitation_question)));
+        txtInvitation.exists();
+        mDevice.pressBack();
+        pressBack();
+    }
 }

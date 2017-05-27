@@ -1,8 +1,12 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -32,8 +36,10 @@ import io.reactivex.functions.Consumer;
 public class FriendsActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "FriendsActivity";
+    private static final String TAG = FriendsActivity.class.getSimpleName();
     private ListAdapterUsers mFriendsAdapter;
+    private static final int REQUEST_INVITE = 6;
+    private Activity mActivity; // для доступа из обработчиков событий
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class FriendsActivity extends BaseActivity implements
         TextView emptyView = (TextView) findViewById(R.id.empty_view);
         CustomRecyclerView recyclerView = (CustomRecyclerView) findViewById(R.id.rvFriends);
         if (emptyView != null && recyclerView != null) recyclerView.setEmptyView(emptyView);
+
+        mActivity = this;
     }
 
     private final Button.OnClickListener btnSearchFriendOnClickListener = new Button.OnClickListener() {
@@ -75,9 +83,10 @@ public class FriendsActivity extends BaseActivity implements
                                 public void accept(Boolean success) throws Exception {
                                     dismissProgressDialog();
                                     if (!success){
-                                        Toast.makeText(getApplicationContext(),
+                                        /*Toast.makeText(getApplicationContext(),
                                                 R.string.user_not_found,
-                                                Toast.LENGTH_LONG).show();
+                                                Toast.LENGTH_LONG).show();*/
+                                        showWrongFriendEmailDialog();
                                     }
                                 }
                             },
@@ -99,6 +108,26 @@ public class FriendsActivity extends BaseActivity implements
                             });
         }
     };
+
+    private void showWrongFriendEmailDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(
+                new ContextThemeWrapper(this, getApplicationInfo().theme)).create();
+        alertDialog.setMessage(getString(R.string.wrong_email_dialog_question));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utils.sendInvitation(mActivity, getString(R.string.friend_invitation_question), REQUEST_INVITE);
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

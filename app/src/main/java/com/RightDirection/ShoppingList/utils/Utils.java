@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.utils;
 
 //Класс с глобальными константами и методами
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -231,5 +233,17 @@ public class Utils {
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_activity_opening_option_choice), true);
+    }
+
+    /**
+     * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
+     */
+    public static void sendInvitation(Activity activity, String message, int requestCode) {
+        Intent intent = new AppInviteInvitation.IntentBuilder(activity.getString(R.string.invitation_title))
+                .setMessage(message)
+                .setDeepLink(Uri.parse(activity.getString(R.string.market_app_link)))
+                .setCallToActionText(activity.getString(R.string.invitation_call_to_action_text))
+                .build();
+        activity.startActivityForResult(intent, requestCode);
     }
 }

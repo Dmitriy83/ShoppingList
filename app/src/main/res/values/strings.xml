@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Just buying</string>
     <string name="action_settings">Settings</string>
     <string name="action_edit_products_list">Products</string>
@@ -112,7 +112,7 @@
     <string name="searching">Searching…</string>
     <string name="connection_failed">Connection failed.</string>
     <string name="authentication_failed">Authentication failed.</string>
-    <string name="user_not_found">User has not been found by this e-mail</string>
+    <string name="user_not_found" tools:ignore="UnusedResources">User has not been found by this e-mail</string>
     <string name="authentication">Authentication</string>
     <string name="friend_photo">Friend\'s photo</string>
     <string name="friends_no_data_text">Friends list is empty. Add new friends!</string>
@@ -141,4 +141,8 @@
     <string name="invitation_call_to_action_text">Download to phone</string>
     <string name="invite_friends">Invite friends</string>
     <string name="market_app_link" translatable="false">market://details?id=com.RightDirection.ShoppingList</string>
+    <string name="wrong_email_dialog_question">This user is not registered yet. Should I send him an invitation?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="friend_invitation_question">This application is an electronic shopping list JustBuying. Download and register ;)</string>
 </resources>
