@@ -171,4 +171,20 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         onView(recyclerViewItemWithImageAndText(imagePath, mNewProductNamePattern + "1"))
                 .check(matches(isDisplayed()));
     }
+
+    @Test
+    public void emptyOrderTest(){
+        // Добавляем новую категорию
+        addNewCategory();
+        // Открываем новую категорию
+        onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
+        // Очищаем текст из поля Порядок
+        onView(withId(R.id.etOrder)).perform(clearText());
+        // Сохраняем
+        onView(withId(R.id.btnSave)).perform(click());
+        // Открываем категорию, проверяем, что порядок равен 100
+        onView(recyclerViewItemWithText(mNewCategoryNamePattern)).perform(click());
+        onView(withId(R.id.etOrder)).check(matches(withText("100")));
+        pressBack();
+    }
 }

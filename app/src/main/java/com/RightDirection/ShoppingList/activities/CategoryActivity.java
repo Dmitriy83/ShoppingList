@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 public class CategoryActivity extends BaseActivity{
 
     private Category mCategory;
+    private final int DEFAULT_ORDER = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class CategoryActivity extends BaseActivity{
         }
 
         if (mCategory == null) {
-            mCategory = new Category(-1, "", 100);
+            mCategory = new Category(-1, "", DEFAULT_ORDER);
             mCategory.isNew = true;
         }
 
@@ -86,7 +87,12 @@ public class CategoryActivity extends BaseActivity{
             EditText etCategoryOrder = (EditText) findViewById(R.id.etOrder);
             if (etCategoryName != null && etCategoryOrder != null) {
                 mCategory.setName(etCategoryName.getText().toString());
-                mCategory.setOrder(Integer.parseInt(etCategoryOrder.getText().toString()));
+
+                if (!etCategoryOrder.getText().toString().isEmpty()){
+                    mCategory.setOrder(Integer.parseInt(etCategoryOrder.getText().toString()));
+                }else {
+                    mCategory.setOrder(DEFAULT_ORDER);
+                }
 
                 if (mCategory.isNew) {
                     mCategory.addToDB(getApplicationContext());
