@@ -126,7 +126,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         // Удалим запись из БД по id
         ContentResolver contentResolver = context.getContentResolver();
         contentResolver.delete(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                SL_ContentProvider.KEY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Сначала удалим все записи редактируемого списка покупок из БД
         contentResolver.delete(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())});
 
         // Запишем составлящие списка покупок в базу данных
         for (IListItem item: mProducts) {
@@ -162,9 +162,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 Product product = (Product)item;
                 contentValues.put(SL_ContentProvider.KEY_IS_CHECKED, item.isChecked());
                 contentResolver.update(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues,
-                        SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
-                                + SL_ContentProvider.KEY_ID + "=" + product.getRowId(),
-                        null);
+                        SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ? AND " + SL_ContentProvider.KEY_ID + "= ?",
+                        new String[]{String.valueOf(getId()), String.valueOf(product.getRowId())});
             }
         }
     }
@@ -175,9 +174,9 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             if (item instanceof Product && item.isChecked()) {
                 Product product = (Product)item;
                 contentResolver.delete(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                        SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId() + " AND "
-                                + SL_ContentProvider.KEY_ID + "=" + product.getRowId(),
-                        null);
+                        SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ? AND "
+                                + SL_ContentProvider.KEY_ID + "= ?",
+                        new String[]{String.valueOf(getId()), String.valueOf(product.getRowId())});
             }
         }
 
@@ -194,19 +193,21 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         ContentValues values = new ContentValues();
         values.put(SL_ContentProvider.KEY_NAME, getName());
         contentResolver.update(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
-                values, SL_ContentProvider.KEY_ID +  " = " + getId(), null);
+                values, SL_ContentProvider.KEY_ID +  " = ?", new String[]{String.valueOf(getId())});
     }
 
     public void addNotExistingProductsToDB(Context context) {
         if (mProducts == null || mProducts.size() == 0) return;
 
         // Создадим строку условия
-        String where = getWhereConditionForName();
+        String where = getWhereForNames();
+        // Создадим строку аргументов
+        String[] whereArgs = getWhereArgsForNames();
 
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(SL_ContentProvider.PRODUCTS_CONTENT_URI, null,
-                where, null, null);
+                where, whereArgs, null);
 
         // Создадим массив с найденными именами продуктов
         ArrayList<String> foundProducts = new ArrayList<>();
@@ -234,11 +235,13 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         if (mProducts == null || mProducts.size() == 0) return;
 
         // Создадим строку условия
-        String where = getWhereConditionForName();
+        String where = getWhereForNames();
+        // Создадим строку аргументов
+        String[] whereArgs = getWhereArgsForNames();
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(SL_ContentProvider.PRODUCTS_CONTENT_URI, null,
-                where, null, null);
+                where, whereArgs, null);
 
         // Создадим массив с найденными именами продуктов
         assert data != null;
@@ -256,18 +259,31 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         }
     }
 
-    private String getWhereConditionForName() {
-        if (mProducts == null) return "";
+    private String getWhereForNames() {
+        if (mProducts == null) return null;
 
         String where = null;
         if (mProducts.size() > 0) {
-            where = SL_ContentProvider.KEY_NAME + " IN (";
-            where += "'" + mProducts.get(0).getName() + "'";
+            where = SL_ContentProvider.PRODUCTS_TABLE_NAME + "." + SL_ContentProvider.KEY_NAME + " IN (";
+            where += "?"; // первый раз без запятой в начале
             for (int i = 1; i < mProducts.size(); i++) {
-                where += ",'" + mProducts.get(i).getName() + "'";
+                where += ",?";
             }
             where += ")";
         }
+        return where;
+    }
+
+    private String[] getWhereArgsForNames() {
+        String[] where = null;
+
+        if (mProducts == null || mProducts.size() == 0) return where;
+
+        where = new String[mProducts.size()];
+        for (int i = 0; i < mProducts.size(); i++) {
+            where[i] = mProducts.get(i).getName();
+        }
+
         return where;
     }
 
@@ -341,7 +357,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
+                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())} ,null);
 
         // Определим индексы колонок для считывания
         assert data != null;
@@ -411,7 +427,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         ContentResolver contentResolver = context.getContentResolver();
         Cursor data = contentResolver.query(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, null,
-                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + getId(), null ,null);
+                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())} ,null);
 
         // Определим индексы колонок для считывания
         assert data != null;

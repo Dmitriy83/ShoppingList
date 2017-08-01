@@ -57,9 +57,9 @@ import static org.hamcrest.Matchers.allOf;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 abstract class ActivitiesTest {
 
-    static String mNewListName = "newTestShoppingList";
-    final static String mNewProductNamePattern = "testNewProduct";
-    final static String mNewCategoryNamePattern = "testNewCategory";
+    static String mNewListName = "newTestShoppingList'"; // Апостров добавлен, т.к. у пользователей возникала ошибка при добавлении этого символа к наименованию продуктов
+    final static String mNewProductNamePattern = "testNewProduct'";
+    final static String mNewCategoryNamePattern = "testNewCategory'";
     static UiDevice mDevice = null;
     MainActivity mActivity = null;
 

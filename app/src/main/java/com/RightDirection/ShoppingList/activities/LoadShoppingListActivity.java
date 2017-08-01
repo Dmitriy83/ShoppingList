@@ -26,6 +26,7 @@ public class LoadShoppingListActivity extends BaseActivity {
         mContext = this;
 
         Intent sourceIntent = getIntent();
+        // Получаем список покупок. При этом продукты списка становятся равны null
         mShoppingList = sourceIntent.getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
         Button btnGotIt = (Button) findViewById(R.id.btnLoad);

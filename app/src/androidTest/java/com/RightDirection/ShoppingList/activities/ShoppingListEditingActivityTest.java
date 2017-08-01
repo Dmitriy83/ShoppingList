@@ -116,9 +116,8 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         // Проверяем, что в таблице содержимого списка покупок для редактированных элементов проставлено корректное количество
         ContentResolver contentResolver = mActivity.getContentResolver();
         Cursor cursor = contentResolver.query(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1' OR "
-                        + SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "2'",
-                null, null);
+                null, SL_ContentProvider.KEY_NAME + " = ? OR " + SL_ContentProvider.KEY_NAME + " = ?",
+                new String[]{mNewProductNamePattern + "1", mNewProductNamePattern + "2"}, null);
         assertNotNull(cursor);
         assertTrue(cursor.getCount() == 2);
         int keyCountIndex = cursor.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);

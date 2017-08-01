@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +67,9 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             mProducts = new ArrayList<>();
         }
         else{
+            //Log.d("SL_ISSUE", "savedInstanceState <> null");
             mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
+            //Log.d("SL_ISSUE", "mProducts[0] " + mProducts.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
         }
 
         int listItemLayout = R.layout.list_item_shopping_list_in_shop;
@@ -85,6 +88,8 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue()));
             ArrayList<IListItem> originalValues = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
             mProductsAdapter.setOriginalValues(originalValues);
+
+            //Log.d("SL_ISSUE", "originalValues[0] " + originalValues.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
         }
 
         // Откроем подсказку, если необходимо
@@ -106,6 +111,8 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
+        //Log.d("SL_ISSUE", "onSaveInstanceState mProducts[0] " + mProducts.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
+
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue(), mProductsAdapter.getOriginalValues());
         outState.putBoolean(EXTRAS_KEYS.IS_FILTERED.getValue(), mProductsAdapter.isFiltered());
@@ -165,6 +172,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
                     setFilterItemUnselected();
                     mProductsAdapter.showChecked();
                 } else {
+                    //Log.d("SL_ISSUE", "Action Filter pressed. mProductsAdapter.isFiltered = " + mProductsAdapter.isFiltered());
                     setFilterItemSelected();
                     mProductsAdapter.hideChecked();
                 }
@@ -287,7 +295,9 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
 
     private void saveCheckedInDB(){
         // Сохраним "вычеркивания" в БД
-        mShoppingList.setProducts(mProductsAdapter.getOriginalValues());
+        ArrayList<IListItem> values = mProductsAdapter.getOriginalValues();
+        if (values == null) values = mProducts; // Если ранее фильтр не ставился
+        mShoppingList.setProducts(values);
         mShoppingList.updateCheckedInDB(this);
     }
 }

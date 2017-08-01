@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -233,10 +234,16 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
     public void hideChecked() {
         mIsFiltered = true;
 
+        //Log.d("SL_ISSUE", "mOriginalValues = null = " + (mOriginalValues == null));
+        //Log.d("SL_ISSUE", "mObjects size = " + (mObjects.size()));
+        //Log.d("SL_ISSUE", "mObjects[0] " + mObjects.get(0).getName() + ", checked = " + mObjects.get(0).isChecked());
+
         // При первом обращении сохраним первоначальный список
         if (mOriginalValues == null) {
             mOriginalValues = new ArrayList<>(mObjects);
         }
+
+        //Log.d("SL_ISSUE", "mObjects = mOriginalValues " + (mObjects.equals(mOriginalValues)));
 
         // Сначала восстановим первоначальный список, чтобы не потерять значения
         retrieveOriginalValues();
@@ -270,8 +277,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
     }
 
     public ArrayList<IListItem> getOriginalValues() {
-        if (mOriginalValues == null) return mObjects;
-        else return mOriginalValues;
+        return mOriginalValues;
     }
 
     public void setOriginalValues(ArrayList<IListItem> originalValues) {

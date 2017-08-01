@@ -90,7 +90,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         // Если товар с данным именем уже есть в БД, то создавать новый не нужно.
         // Необходимо присвоить id найденного элемента текущему.
         Cursor data = contentResolver.query(SL_ContentProvider.PRODUCTS_CONTENT_URI, null,
-                SL_ContentProvider.KEY_NAME + " = '" + getName() + "'", null, null);
+                SL_ContentProvider.KEY_NAME + " = ?", new String[]{getName()}, null);
         if (data != null){
             if (data.moveToNext()) {
                 int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID);
@@ -121,7 +121,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         // Удалим запись из БД по id
         ContentResolver contentResolver = context.getContentResolver();
         contentResolver.delete(SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                SL_ContentProvider.KEY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         if (getImageUri() != null)
             contentValues.put(SL_ContentProvider.KEY_PICTURE, getImageUri().toString());
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues,
-                SL_ContentProvider.KEY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     @Override
@@ -143,7 +143,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         ContentValues values = new ContentValues();
         values.put(SL_ContentProvider.KEY_NAME, getName());
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                values, SL_ContentProvider.KEY_ID +  " = " + getId(), null);
+                values, SL_ContentProvider.KEY_ID +  " = ?", new String[]{String.valueOf(getId())});
     }
 
     public Category getCategory() {

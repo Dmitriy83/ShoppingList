@@ -144,7 +144,7 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         contentValues.put(SL_ContentProvider.KEY_PICTURE,
                 imagePath);
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                contentValues, SL_ContentProvider.KEY_NAME + " = '" + mNewProductNamePattern + "1'", null);
+                contentValues, SL_ContentProvider.KEY_NAME + " = ?", new String[]{mNewProductNamePattern + "1"});
 
         openMainMenu();
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());

@@ -78,7 +78,7 @@ public class Category extends ListItem implements IDataBaseOperations {
     public void removeFromDB(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         contentResolver.delete(SL_ContentProvider.CATEGORIES_CONTENT_URI,
-                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_CATEGORY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Category extends ListItem implements IDataBaseOperations {
             contentValues.put(SL_ContentProvider.KEY_CATEGORY_PICTURE_URI, (byte[]) null);
         }
         contentResolver.update(SL_ContentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_CATEGORY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     @Override
@@ -102,7 +102,7 @@ public class Category extends ListItem implements IDataBaseOperations {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_CATEGORY_NAME, getName());
         contentResolver.update(SL_ContentProvider.CATEGORIES_CONTENT_URI, contentValues,
-                SL_ContentProvider.KEY_CATEGORY_ID + "=" + getId(), null);
+                SL_ContentProvider.KEY_CATEGORY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
 
     public int getOrder() {

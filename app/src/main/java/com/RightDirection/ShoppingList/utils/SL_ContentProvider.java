@@ -68,7 +68,7 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_SHOPPING_LIST_ROW_ID = "SHOPPING_LIST_ROW_ID";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
-    private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
+    public static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
@@ -239,9 +239,9 @@ public class SL_ContentProvider extends ContentProvider {
 
         // Если это запрос одной строки, то ограничим выборку переданной строкой
         selection = supplementedSelection(selection, uri);
-        if (selection != null) {
+        /*if (selection != null) {
             queryBuilder.appendWhere(selection);
-        }
+        }*/
 
         return queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     }
