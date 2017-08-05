@@ -79,4 +79,25 @@ public class BaseActivity extends AppCompatActivity {
     private Fragment getExistingDialogFragment() {
         return getSupportFragmentManager().findFragmentByTag(TAG_DIALOG_FRAGMENT);
     }
+
+    /*@Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        notify("onSaveInstanceState");
+    }
+
+    public void notify(String methodName) {
+        String name = this.getClass().getName();
+
+        if (name.contains("MainActivity")) return;
+
+        String[] strings = name.split("\\.");
+        Notification noti = new Notification.Builder(this)
+                .setContentTitle(methodName + " " + strings[strings.length - 1]).setAutoCancel(true)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText(name).build();
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify((int) System.currentTimeMillis(), noti);
+    }*/
 }

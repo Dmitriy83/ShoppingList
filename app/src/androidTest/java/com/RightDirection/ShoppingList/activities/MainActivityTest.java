@@ -1,12 +1,10 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.os.Build;
-import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
-import android.support.v7.widget.RecyclerView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.utils.Utils;

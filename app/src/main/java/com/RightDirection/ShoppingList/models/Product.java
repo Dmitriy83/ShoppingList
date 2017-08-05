@@ -63,6 +63,7 @@ public class Product extends ListItem implements IDataBaseOperations {
     private Product(Parcel in) {
         super(in);
         category = in.readParcelable(Category.class.getClassLoader());
+        rowId = in.readLong();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -81,6 +82,7 @@ public class Product extends ListItem implements IDataBaseOperations {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeParcelable(category, flags);
+        dest.writeLong(rowId);
     }
 
     @Override
@@ -165,7 +167,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         activity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
     }
 
-    long getRowId() {
+    public long getRowId() {
         return rowId;
     }
 

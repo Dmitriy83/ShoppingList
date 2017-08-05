@@ -155,6 +155,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Повторяем проверку
         cleanFriendsList();
         cleanBlackList();
+        timeout(1000);
 
         // Добавляем новый список покупок
         addNewShoppingList();

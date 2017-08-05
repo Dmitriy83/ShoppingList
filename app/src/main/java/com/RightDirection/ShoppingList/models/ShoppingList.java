@@ -41,6 +41,7 @@ import java.util.HashMap;
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     private ArrayList<IListItem> mProducts;
+    private boolean isFiltered;
 
     public ShoppingList(long id, String name) {
         super(id, name);
@@ -58,6 +59,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     private ShoppingList(Parcel in) {
         super(in);
+        isFiltered = in.readByte() != 0;
     }
 
     public static final Creator<ShoppingList> CREATOR = new Creator<ShoppingList>() {
@@ -71,6 +73,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             return new ShoppingList[size];
         }
     };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeByte((byte) (isFiltered ? 1 : 0));
+    }
 
     private void addProduct(Product product){
         if (mProducts == null) mProducts = new ArrayList<>();
@@ -90,6 +98,14 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             if (item instanceof Product) mProducts.add((Product)item);
         }
         */
+    }
+
+    public boolean isFiltered() {
+        return isFiltered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        isFiltered = filtered;
     }
 
     @Override
@@ -275,15 +291,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     }
 
     private String[] getWhereArgsForNames() {
-        String[] where = null;
+        if (mProducts == null || mProducts.size() == 0) return null;
 
-        if (mProducts == null || mProducts.size() == 0) return where;
-
-        where = new String[mProducts.size()];
+        String[] where = new String[mProducts.size()];
         for (int i = 0; i < mProducts.size(); i++) {
             where[i] = mProducts.get(i).getName();
         }
-
         return where;
     }
 
@@ -548,5 +561,4 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             return false;
         }
     }
-
 }

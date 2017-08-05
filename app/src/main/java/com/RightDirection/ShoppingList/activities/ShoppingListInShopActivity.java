@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,11 +40,6 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
 
         setContentView(R.layout.activity_shopping_list_in_shop);
 
-        // Установка доработанного меню
-        //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        //setContentView(R.layout.activity_shopping_list_in_shop);
-        //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.window_title);
-
         // Получим значения из переданных параметров родительской активности
         mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() );
 
@@ -67,9 +61,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             mProducts = new ArrayList<>();
         }
         else{
-            //Log.d("SL_ISSUE", "savedInstanceState <> null");
-            mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
-            //Log.d("SL_ISSUE", "mProducts[0] " + mProducts.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
+            mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
         }
 
         int listItemLayout = R.layout.list_item_shopping_list_in_shop;
@@ -85,11 +77,11 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             getLoaderManager().initLoader(0, null, this);
         }
         else{
-            mProductsAdapter.setIsFiltered(savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue()));
-            ArrayList<IListItem> originalValues = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue());
-            mProductsAdapter.setOriginalValues(originalValues);
-
-            //Log.d("SL_ISSUE", "originalValues[0] " + originalValues.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
+            mProductsAdapter.setOriginalValues();
+            boolean isFiltered = savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue());
+            if (isFiltered) {
+                mProductsAdapter.hideChecked();
+            }
         }
 
         // Откроем подсказку, если необходимо
@@ -111,9 +103,8 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        //Log.d("SL_ISSUE", "onSaveInstanceState mProducts[0] " + mProducts.get(0).getName() + ", checked = " + mProducts.get(0).isChecked());
-
-        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
+        //outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
+        mProductsAdapter.setOriginalValues();
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue(), mProductsAdapter.getOriginalValues());
         outState.putBoolean(EXTRAS_KEYS.IS_FILTERED.getValue(), mProductsAdapter.isFiltered());
 
