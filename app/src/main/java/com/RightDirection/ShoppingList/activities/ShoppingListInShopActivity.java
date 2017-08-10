@@ -78,8 +78,10 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         }
         else{
             mProductsAdapter.setOriginalValues();
-            boolean isFiltered = savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue());
-            if (isFiltered) {
+            mShoppingList.setFiltered(savedInstanceState.getBoolean(EXTRAS_KEYS.IS_FILTERED.getValue()));
+            // Отфильтруем список, если он ранее был отфильтрован
+            if (mShoppingList.isFiltered()) {
+                // Иконка фильтрации устанавливается в onCreateOptionsMenu
                 mProductsAdapter.hideChecked();
             }
         }
@@ -104,7 +106,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
     protected void onSaveInstanceState(Bundle outState) {
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         //outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
-        mProductsAdapter.setOriginalValues();
+        mProductsAdapter.setOriginalValues(); // На случай, если список до этого не фильтровали
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue(), mProductsAdapter.getOriginalValues());
         outState.putBoolean(EXTRAS_KEYS.IS_FILTERED.getValue(), mProductsAdapter.isFiltered());
 
@@ -128,6 +130,12 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         Utils.sortArrayListByCategories(mProducts);
         if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
+
+        // Отфильтруем список, если он ранее был отфильтрован
+        if (mShoppingList.isFiltered()) {
+            // Иконка фильтрации устанавливается в onCreateOptionsMenu
+            mProductsAdapter.hideChecked();
+        }
     }
 
     @Override
@@ -162,10 +170,11 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
                 if (mProductsAdapter.isFiltered()) {
                     setFilterItemUnselected();
                     mProductsAdapter.showChecked();
+                    mShoppingList.setFiltered(false);
                 } else {
-                    //Log.d("SL_ISSUE", "Action Filter pressed. mProductsAdapter.isFiltered = " + mProductsAdapter.isFiltered());
                     setFilterItemSelected();
                     mProductsAdapter.hideChecked();
+                    mShoppingList.setFiltered(true);
                 }
                 break;
             }
@@ -276,6 +285,14 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         return sharedPref.getBoolean(getApplicationContext().getString(R.string.pref_key_show_images), true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Сохраняем значение отфильтрован или нет здесь, т.к. onStop этой активности вызывается после onCreate новой
+        mShoppingList.saveFilteredValueInDB(this);
     }
 
     @Override

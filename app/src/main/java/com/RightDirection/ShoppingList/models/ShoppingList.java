@@ -45,16 +45,19 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     public ShoppingList(long id, String name) {
         super(id, name);
+        isFiltered = false;
     }
 
     public ShoppingList(long id, String name, ArrayList<IListItem> products) {
         super(id, name);
         mProducts = products;
+        isFiltered = false;
     }
 
     public ShoppingList(Cursor data){
         super(data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID)),
                 data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME)));
+        isFiltered = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_FILTERED)) != 0;
     }
 
     private ShoppingList(Parcel in) {
@@ -208,6 +211,14 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put(SL_ContentProvider.KEY_NAME, getName());
+        contentResolver.update(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
+                values, SL_ContentProvider.KEY_ID +  " = ?", new String[]{String.valueOf(getId())});
+    }
+
+    public void saveFilteredValueInDB(Context context){
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(SL_ContentProvider.KEY_IS_FILTERED, isFiltered());
         contentResolver.update(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 values, SL_ContentProvider.KEY_ID +  " = ?", new String[]{String.valueOf(getId())});
     }

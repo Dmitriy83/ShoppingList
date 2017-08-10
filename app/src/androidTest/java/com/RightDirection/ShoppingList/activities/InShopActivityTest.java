@@ -290,6 +290,9 @@ public class InShopActivityTest extends ActivitiesTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText(mActivity.getString(R.string.action_deselect_all))).perform(click());
 
+        // Снимаем фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+
         pressBack();
     }
 
@@ -349,20 +352,40 @@ public class InShopActivityTest extends ActivitiesTest {
         // Выделяем два элемента из трех
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
+
+        // Проверяем, что в списке отображается то, что нужно
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+
         // Нажимаем кнопку назад
         pressBack();
         // Снова открываем список покупок и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
-        onView(withId(R.id.action_filter)).perform(click());
+
+        // Проверяем, что в списке отображается то, что нужно (фильтр сохранился)
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(doesNotExist());
+
         onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
         // Нажимаем кнопку назад
         pressBack();
         pressBack();
+
         // Снова открываем список покупок и снимаем выделение с одного из элементов списка.
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
+
+        // Сначала необходимо снять фильтр
+        onView(withId(R.id.action_filter)).perform(click());
+        // Проверяем, что в списке отображается то, что нужно (фильтр снят)
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(matches(isDisplayed()));
+
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeLeft());
         // Устанавливаем фильтр
         onView(withId(R.id.action_filter)).perform(click());
@@ -370,15 +393,29 @@ public class InShopActivityTest extends ActivitiesTest {
         onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).perform(swipeRight());
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
         pressBack();
+
         // Снимаем фильтр
         onView(withId(R.id.action_filter)).perform(click());
         // Снимаем выделение с одного из элементов и переходим к активности Редактирования списка
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeLeft());
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
         // Возвращаемся к активности В магазине и выделяем оставшийся элемент списка. Должна появиться надпись об окончании редактиирования списка.
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
+
+        // Проверяем, что в списке отображается то, что нужно (фильтр снят)
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(matches(isDisplayed()));
+
         // Устанавливаем фильтр
         onView(withId(R.id.action_filter)).perform(click());
+
+        // Проверяем, что в списке отображается то, что нужно (фильтр сохранился)
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 1)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).check(doesNotExist());
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).check(matches(isDisplayed()));
+
         onView(recyclerViewItemWithText(mNewProductNamePattern + 3)).perform(swipeRight());
         onView(withText(mActivity.getString(R.string.in_shop_ending_work_message))).check(matches(isDisplayed()));
         pressBack();

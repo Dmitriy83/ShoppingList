@@ -66,24 +66,29 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_CATEGORY_PICTURE_URI = "CATEGORY_PICTURE_URI";
     public static final String KEY_IS_CHECKED = "IS_CHECKED";
     public static final String KEY_SHOPPING_LIST_ROW_ID = "SHOPPING_LIST_ROW_ID";
+    public static final String KEY_IS_FILTERED = "IS_FILTERED";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
     public static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
-    @Override
-    public boolean onCreate() {
-        // Определим имя базы данных в зависимости от локализации (по умолчанию - Английская)
+    /**
+     * Возвращает имя базы данных в зависимости от локализации (по умолчанию - Английская).
+     */
+    private String getDataBaseName(){
         String dbName = DATABASE_NAME_ENG;
         if (Locale.getDefault().getLanguage().equals(new Locale("ru").getLanguage())) {
             dbName = DATABASE_NAME_RU;
         }
+        return dbName;
+    }
 
-        sqLiteOpenHelper = new ShoppingListSQLiteOpenHelper(getContext(),
-                dbName);
+    @Override
+    public boolean onCreate() {
+        sqLiteOpenHelper = new ShoppingListSQLiteOpenHelper(getContext(), getDataBaseName());
         return true;
     }
 
@@ -413,94 +418,11 @@ public class SL_ContentProvider extends ContentProvider {
 
     class ShoppingListSQLiteOpenHelper extends SQLiteAssetHelper {
 
-        private static final String TAG = "ShoppingListSQLite";
-
         ShoppingListSQLiteOpenHelper(Context context, String name) {
             super(context, name, null, DATABASE_VERSION);
         }
 
-        /**
-         * Использовалась с SQLiteOpenHelper. В SQLiteAssetHelper создание БД происходит
-         * при первом чтении, если БД отсутствует
-        /
-        // Вызывается, когда на диске нет базы данных, чтобы вспомогательный класс создал новую
-        //@Override
-        public void onCreate(SQLiteDatabase db) {
-            // Создадим таблицы, если они не были созданы ранее
-            // Таблица "Категориии"
-            String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
-            + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_CATEGORY_NAME + ","
-            + KEY_CATEGORY_ORDER + ");";
-            db.execSQL(queryCreateCategoriesTable);
-
-            // Таблица "Продукты"
-            String queryCreateProductsTable = "CREATE TABLE " + PRODUCTS_TABLE_NAME
-            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_NAME + ", " + KEY_PICTURE + ", " + KEY_CATEGORY_ID + " INTEGER);";
-            db.execSQL(queryCreateProductsTable);
-
-            // Таблица "Списки покупок"
-            String queryCreateShoppingListsTable = "CREATE TABLE " + SHOPPING_LISTS_TABLE_NAME
-            + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_NAME + ");";
-            db.execSQL(queryCreateShoppingListsTable);
-
-            // Таблица "Состав списка покупок"
-            String queryCreateShoppingListContentTable = "CREATE TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
-            + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER, "
-            + KEY_COUNT + " REAL);";
-            db.execSQL(queryCreateShoppingListContentTable);
-        }
-        */
-
-        // Вызывается при несовпадении версий базы данных, т.е. когда база данных, хранящаяся на диске,
-        // должна быть обновлена до текущей версии.
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // Запишем в лог информацию об обновлении версии базы данных.
-            Log.w(TAG, "Обновление с версии " + oldVersion + " до " + newVersion + ".");
-
-            if (newVersion == 5) {
-                // Уничтожаем таблицу и создаем новую
-                db.execSQL("DROP TABLE IF EXISTS " + SHOPPING_LIST_CONTENT_TABLE_NAME);
-                String queryCreateShoppingListContentTable = "CREATE TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
-                        + "(" + KEY_ID +" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + KEY_SHOPPING_LIST_ID + " INTEGER, " + KEY_PRODUCT_ID + " INTEGER);";
-                db.execSQL(queryCreateShoppingListContentTable);
-            }
-
-            if (newVersion == 6) {
-                // Добавим колонку в таблицу SHOPPING_LIST_CONTENT
-                String queryAddColumn = "ALTER TABLE " + SHOPPING_LIST_CONTENT_TABLE_NAME
-                        + " ADD COLUMN '" + KEY_COUNT + "' DEFAULT 1;";
-                db.execSQL(queryAddColumn);
-            }
-
-            if (newVersion == 7) {
-                // Создадим таблицу "Категории"
-                String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
-                        + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + KEY_NAME + ");";
-                db.execSQL(queryCreateCategoriesTable);
-
-                // Добавим колонку в таблицу PRODUCTS
-                String queryAddColumn = "ALTER TABLE " + PRODUCTS_TABLE_NAME
-                        + " ADD COLUMN '" + KEY_CATEGORY_ID + "' DEFAULT 0;";
-                db.execSQL(queryAddColumn);
-            }
-
-            if (newVersion == 8) {
-                // Пересоздадим таблицу "Категории"
-                db.execSQL("DROP TABLE IF EXISTS " + CATEGORIES_TABLE_NAME);
-                String queryCreateCategoriesTable = "CREATE TABLE " + CATEGORIES_TABLE_NAME
-                        + "(" + KEY_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + KEY_CATEGORY_NAME + ","
-                        + KEY_CATEGORY_ORDER + ");";
-                db.execSQL(queryCreateCategoriesTable);
-            }
-        }
+        // Обновление SQLiteAssetHelper происходит с помощью текстового файла sql, расположенного в директории databases
     }
 }
 

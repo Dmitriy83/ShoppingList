@@ -112,7 +112,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
     }
 
-    private void saveListAndFinish(){
+    private void saveListAndGoToInShopActivity(){
         // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
         // данный момент редактируется количество с помощью клавиватуры (сохранение количества
         // происходит при потере фокуса)
@@ -245,7 +245,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
 
         switch (id) {
             case R.id.action_save_list: {
-                saveListAndFinish();
+                saveListAndGoToInShopActivity();
                 break;
             }
             case R.id.action_remove_all_items: {
@@ -255,7 +255,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
             case R.id.action_go_to_in_shop_activity: {
                 // Сохраним список покупок и перейдем к активности "В магазине"
                 mGoToInShop = true;
-                saveListAndFinish();
+                saveListAndGoToInShopActivity();
                 break;
             }
             case R.id.action_share: {

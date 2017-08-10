@@ -55,7 +55,7 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
     }
 
     private int[] getImageIds() {
-        int[] array = new int[15];
+        int[] array = new int[20];
 
         array[0] = R.drawable.category_alcohol;
         array[1] = R.drawable.category_bread;
@@ -72,6 +72,11 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
         array[12] = R.drawable.category_add3;
         array[13] = R.drawable.category_add4;
         array[14] = R.drawable.category_add5;
+        array[15] = R.drawable.category_household_chemicals;
+        array[16] = R.drawable.category_pills;
+        array[17] = R.drawable.category_hygienic_means;
+        array[18] = R.drawable.category_electronics;
+        array[19] = R.drawable.category_car;
 
         return array;
     }

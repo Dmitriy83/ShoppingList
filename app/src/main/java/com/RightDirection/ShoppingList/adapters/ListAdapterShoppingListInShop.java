@@ -200,10 +200,6 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         return mIsFiltered;
     }
 
-    public void setIsFiltered(boolean value) {
-        mIsFiltered = value;
-    }
-
     public void deselectAll(){
         if (mOriginalValues == null){ // фильтрация еще не устанавливалась
             for (IListItem product: mObjects) {
