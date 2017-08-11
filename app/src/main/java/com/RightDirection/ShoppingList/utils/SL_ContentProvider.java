@@ -158,11 +158,11 @@ public class SL_ContentProvider extends ContentProvider {
         switch(uriMatcher.match(uri)){
             case PRODUCTS_SINGLE_ROW:
             case PRODUCTS_ALL_ROWS:
-                deleteShoppingListRowsByProductId(selection);
+                deleteShoppingListRowsByProductId(selection, selectionArgs);
                 break;
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LISTS_ALL_ROWS:
-                deleteShoppingListRowsByShoppingListId(selection);
+                deleteShoppingListRowsByShoppingListId(selection, selectionArgs);
                 break;
             case CATEGORIES_SINGLE_ROW:
             case CATEGORIES_ALL_ROWS:
@@ -190,22 +190,22 @@ public class SL_ContentProvider extends ContentProvider {
         update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues, newSelection, selectionArgs);
     }
 
-    private void deleteShoppingListRowsByProductId(String selection) {
+    private void deleteShoppingListRowsByProductId(String selection, String[] selectionArgs) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, 0);
         String newSelection = SL_ContentProvider.KEY_PRODUCT_ID
                 + " IN (SELECT " + SL_ContentProvider.KEY_ID
                 + " FROM " + PRODUCTS_TABLE_NAME + " WHERE " + selection + ")";
-        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, null);
+        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, selectionArgs);
     }
 
-    private void deleteShoppingListRowsByShoppingListId(String selection) {
+    private void deleteShoppingListRowsByShoppingListId(String selection, String[] selectionArgs) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_SHOPPING_LIST_ID, 0);
         String newSelection = SL_ContentProvider.KEY_SHOPPING_LIST_ID
                 + " IN (SELECT " + SL_ContentProvider.KEY_ID
                 + " FROM " + SHOPPING_LISTS_TABLE_NAME + " WHERE " + selection + ")";
-        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, null);
+        delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, selectionArgs);
     }
 
     @Override
