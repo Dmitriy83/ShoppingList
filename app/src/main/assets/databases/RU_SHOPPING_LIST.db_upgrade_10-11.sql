@@ -9,6 +9,6 @@ VALUES
 ("Медикаменты", "57", "drawable/category_pills"),
 ("Средства гигиены", "58", "drawable/category_hygienic_means"),
 ("Электроника", "59", "drawable/category_electronics"),
-("Акссесуары для машины", "60", "drawable/category_car");
+("Аксессуары для машины", "60", "drawable/category_car");
 
 UPDATE "CATEGORIES" SET "CATEGORY_ORDER" = "90" WHERE "CATEGORY_ID" = "10"
