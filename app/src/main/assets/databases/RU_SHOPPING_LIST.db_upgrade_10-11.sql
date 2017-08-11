@@ -5,10 +5,10 @@ DROP TABLE "SHOPPING_LISTS_TEMP";
 
 INSERT INTO "CATEGORIES" ("CATEGORY_NAME", "CATEGORY_ORDER", "CATEGORY_PICTURE_URI") 
 VALUES 
-("Бытовая химия", "56", "drawable/category_household_chemicals"),
-("Медикаменты", "57", "drawable/category_pills"),
-("Средства гигиены", "58", "drawable/category_hygienic_means"),
-("Электроника", "59", "drawable/category_electronics"),
-("Акссесуары для машины", "60", "drawable/category_car");
+("Р‘С‹С‚РѕРІР°СЏ С…РёРјРёСЏ", "56", "drawable/category_household_chemicals"),
+("РњРµРґРёРєР°РјРµРЅС‚С‹", "57", "drawable/category_pills"),
+("РЎСЂРµРґСЃС‚РІР° РіРёРіРёРµРЅС‹", "58", "drawable/category_hygienic_means"),
+("Р­Р»РµРєС‚СЂРѕРЅРёРєР°", "59", "drawable/category_electronics"),
+("РђРєСЃСЃРµСЃСѓР°СЂС‹ РґР»СЏ РјР°С€РёРЅС‹", "60", "drawable/category_car");
 
 UPDATE "CATEGORIES" SET "CATEGORY_ORDER" = "90" WHERE "CATEGORY_ID" = "10"
