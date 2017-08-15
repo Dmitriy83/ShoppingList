@@ -35,6 +35,12 @@
         android:title="@string/pref_show_activity_opening_option_choice"
         android:defaultValue="true"/>
 
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_sort_shopping_lists_in_reverse_order"
+        android:summary="@string/pref_key_sort_shopping_lists_in_reverse_order_summary"
+        android:title="@string/pref_sort_shopping_lists_in_reverse_order"
+        android:defaultValue="false"/>
+
     <!--
     Пока отключим возможность получения и загрузки писем с файлом json,
     т.к. настройка эл. почты слишком сложна для простого пользователя.

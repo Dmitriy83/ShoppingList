@@ -145,4 +145,7 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="friend_invitation_question">This application is an electronic shopping list JustBuying. Download and register ;)</string>
+    <string name="pref_key_sort_shopping_lists_in_reverse_order" translatable="false">pref_key_sort_shopping_lists_in_reverse_order</string>
+    <string name="pref_sort_shopping_lists_in_reverse_order">Shopping lists sort order</string>
+    <string name="pref_key_sort_shopping_lists_in_reverse_order_summary">New shopping list will be added to the beginning</string>
 </resources>

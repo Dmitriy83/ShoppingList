@@ -235,6 +235,12 @@ public class Utils {
         return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_activity_opening_option_choice), true);
     }
 
+    public static boolean sortShoppingListsInReverseOrder(Context context) {
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_sort_shopping_lists_in_reverse_order), false);
+    }
+
     /**
      * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
      */

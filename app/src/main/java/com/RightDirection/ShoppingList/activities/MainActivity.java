@@ -52,6 +52,8 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputNameDialogFragment.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener,
@@ -285,6 +287,19 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             mShoppingLists.add(newShoppingList);
         }
 
+        if (Utils.sortShoppingListsInReverseOrder(this)) {
+            // Отсортируем список, чтобы вверху был последним добавленный список
+            Collections.sort(mShoppingLists, new Comparator<IListItem>() {
+                @Override
+                public int compare(IListItem lhs, IListItem rhs) {
+                    return compare(rhs.getId(), lhs.getId());
+                }
+
+                private int compare(long x, long y) {
+                    return (x < y) ? -1 : ((x == y) ? 0 : 1);
+                }
+            });
+        }
         mShoppingListsAdapter.notifyDataSetChanged();
     }
 
