@@ -50,7 +50,7 @@ public class ListAdapterShoppingListEditing extends BaseListAdapter {
         if (viewHolder.imgIncrease != null)
             viewHolder.imgIncrease.setOnTouchListener(new PlusMinusOnTouchListener(1));
         if (viewHolder.etCount != null) {
-            viewHolder.etCount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(10, 1)}); // ограничим ввод одним знаком после запятой
+            //viewHolder.etCount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(10, 1)}); // ограничим ввод одним знаком после запятой
             viewHolder.etCount.setOnFocusChangeListener(onEtCountFocusChange);
         }
     }

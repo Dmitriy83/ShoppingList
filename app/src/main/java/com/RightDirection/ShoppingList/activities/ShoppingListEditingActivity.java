@@ -72,6 +72,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         if (mProducts == null) mProducts = new ArrayList<>();
 
         // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int listItemLayout = R.layout.list_item_shopping_list_editing;
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
