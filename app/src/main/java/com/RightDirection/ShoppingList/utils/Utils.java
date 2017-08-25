@@ -241,6 +241,11 @@ public class Utils {
         return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_sort_shopping_lists_in_reverse_order), false);
     }
 
+    public static boolean showImages(Context context){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_images), true);
+    }
+
     /**
      * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
      */
