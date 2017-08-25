@@ -12,6 +12,6 @@
         android:hint="@string/input_shopping_list_name"
         android:id="@+id/inputNewListName"
         android:inputType="textCapSentences"
-        android:imeOptions="flagNoExtractUi"/>
+        android:imeOptions="flagNoExtractUi" />
 
 </LinearLayout>

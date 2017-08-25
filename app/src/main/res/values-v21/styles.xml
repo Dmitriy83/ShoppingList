@@ -1,9 +1,6 @@
-<resources>>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+<resources>
+    <style name="AppTheme" parent="AppThemePattern">
+        <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor">@android:color/holo_green_dark</item>
     </style>
-
 </resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/frameProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/frameProgressBar"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/friends_no_data_text"
+        android:textSize="@dimen/text_size_large"
+        android:visibility="gone" />
+
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
+        android:id="@+id/rvRecipients"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.RightDirection.ShoppingList.views.CustomRecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAddNewFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin_right"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin_right"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:src="@drawable/ic_add_white"
+        app:backgroundTint="@android:color/holo_green_dark"
+        app:fabSize="normal" />
+
+</RelativeLayout>

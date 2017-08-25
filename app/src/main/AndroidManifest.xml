@@ -1,39 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.RightDirection.ShoppingList">
+    package="com.RightDirection.ShoppingList"
+    android:installLocation="preferExternal">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".utils.ShoppingListApplication">
+        <service
+            android:name=".services.ExchangeService"
+            android:exported="false" />
+        <receiver
+            android:name=".services.AlarmReceiver" />
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppThemeNoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data
+                    android:host="www.right_direction.com"
+                    android:pathPrefix="/just_buying"
+                    android:scheme="http" />
+                <!-- note that the leading "/" is required for pathPrefix -->
+                <!-- Accepts URIs that begin with "right_direction://just_buying” -->
+                <data
+                    android:host="just_buying"
+                    android:scheme="right_direction" />
+            </intent-filter>
         </activity>
-        <activity android:name=".activities.ShoppingListEditingActivity" />
-        <activity android:name=".activities.ProductsListActivity"/>
-        <activity android:name=".activities.ItemActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustResize"/>
-        <activity android:name=".activities.ShoppingListInShopActivity"
-            android:theme="@style/AppTheme.InShop"/>
-        <activity android:name=".activities.ActionsSubmenuActivity"
-            android:theme="@style/Theme.Actions_Submenu_Theme"/>
-        <activity android:name=".activities.SettingsActivity"/>
+        <activity
+            android:name=".activities.ShoppingListEditingActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ProductsListActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.CategoriesListActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ProductActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity
+            android:name=".activities.CategoryActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity
+            android:name=".activities.ShoppingListInShopActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity android:name=".activities.SettingsActivity" />
 
         <provider
+            android:name=".utils.SL_ContentProvider"
             android:authorities="com.RightDirection.shoppinglistcontentprovider"
-            android:name=".helpers.ShoppingListContentProvider"
-            android:exported="false"/>
+            android:exported="false"
+            android:grantUriPermissions="true" />
 
+        <activity
+            android:name=".activities.HelpMainActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.HelpShoppingListInShopActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.ChooseCategoryActivity"
+            android:theme="@style/AppThemeDialogFixedSize" />
+        <activity
+            android:name=".activities.ChooseCategoryImageActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.LoadShoppingListActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.OpeningOptionChoiceActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.DoneActivity"
+            android:noHistory="true"
+            android:theme="@style/AppThemeDialog" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.FriendsActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.BlackListActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ChooseRecipientActivity"
+            android:theme="@style/AppThemeDialogFixedSize" />
+
+        <service
+            android:name=".services.ExchangeService"
+            android:exported="false" />
     </application>
 
 </manifest>

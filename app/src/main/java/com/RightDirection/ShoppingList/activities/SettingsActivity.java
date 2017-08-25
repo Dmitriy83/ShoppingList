@@ -5,7 +5,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.views.SettingsFragment;
+import com.RightDirection.ShoppingList.fragments.SettingsFragment;
 
 
 public class SettingsActivity extends PreferenceActivity {

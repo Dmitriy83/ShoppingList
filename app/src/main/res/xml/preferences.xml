@@ -4,9 +4,69 @@
     android:layout_height="match_parent"
     android:title="@string/pref_title"
     android:key="pref_key_settings">
-    <CheckBoxPreference
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
         android:key="@string/pref_key_cross_out_action"
         android:summary="@string/pref_cross_out_action_summary"
         android:title="@string/pref_cross_out_action"
         android:defaultValue="true"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_images"
+        android:summary="@string/pref_show_images_summary"
+        android:title="@string/pref_show_images"
+        android:defaultValue="true"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_categories"
+        android:summary="@string/pref_show_categories_summary"
+        android:title="@string/pref_show_categories"
+        android:defaultValue="false"/>
+
+    <com.RightDirection.ShoppingList.views.ShowHelpCheckBoxPreference
+        android:key="@string/pref_key_show_help_screens"
+        android:title="@string/pref_key_show_help_screens"
+        android:defaultValue="true"
+        />
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_activity_opening_option_choice"
+        android:summary="@string/pref_show_activity_opening_option_choice_summary"
+        android:title="@string/pref_show_activity_opening_option_choice"
+        android:defaultValue="true"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_sort_shopping_lists_in_reverse_order"
+        android:summary="@string/pref_key_sort_shopping_lists_in_reverse_order_summary"
+        android:title="@string/pref_sort_shopping_lists_in_reverse_order"
+        android:defaultValue="false"/>
+
+    <!--
+    Пока отключим возможность получения и загрузки писем с файлом json,
+    т.к. настройка эл. почты слишком сложна для простого пользователя.
+    <PreferenceScreen
+        android:key="email_settings"
+        android:title="@string/email_settings_to_load_shopping_lists"
+        android:persistent="false">
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_host"
+            android:title="@string/email_host"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_port"
+            android:title="@string/email_port"
+            android:inputType="number"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreference
+            android:key="@string/pref_key_email_login"
+            android:title="@string/email_login"
+            android:inputType="textEmailAddress"
+            android:summary="%s"/>
+        <com.RightDirection.ShoppingList.views.CustomEditTextPreferenceForPassword
+            android:key="@string/pref_key_email_password"
+            android:title="@string/email_password"
+            android:inputType="textPassword"/>
+    </PreferenceScreen>
+    -->
+
 </PreferenceScreen>

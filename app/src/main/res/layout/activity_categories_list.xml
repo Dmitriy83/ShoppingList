@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CategoriesListActivity"
+    >
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/common_toolbar"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/categories_list_activity_no_data_text"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_large" />
+
+    <include
+        android:id="@+id/common_toolbar"
+        layout="@layout/common_toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/common_toolbar"
+        android:layout_above="@+id/adView">
+
+        <com.RightDirection.ShoppingList.views.CustomRecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rvCategories"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabAddCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@drawable/ic_add_white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:fabSize="normal"
+            app:backgroundTint="@android:color/holo_orange_light"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin_right"
+            android:layout_marginRight="@dimen/fab_margin_right"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true">
+    </com.google.android.gms.ads.AdView>
+</RelativeLayout>

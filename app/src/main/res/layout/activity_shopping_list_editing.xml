@@ -1,64 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.ShoppingListEditingActivity"
-    android:focusable="false"
-    android:id="@+id/shoppingListEditingContainerLayout"
-    >
+    android:focusable="false">
 
-    <fragment android:name="com.RightDirection.ShoppingList.views.InputNewItemFragment"
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/newItemFragment"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/editing_activity_no_data_text"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_large" />
+
+    <include
+        android:id="@+id/common_toolbar"
+        layout="@layout/common_toolbar" />
+
+    <fragment android:name="com.RightDirection.ShoppingList.fragments.InputProductNameFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/newItemFragment"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        tools:layout="@layout/new_item_edit_text_fragment"
+        tools:layout="@layout/fragment_input_product_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/common_toolbar"
         />
 
-    <fragment android:name="com.RightDirection.ShoppingList.views.ItemsListFragment"
+    <com.RightDirection.ShoppingList.views.CustomRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frgShoppingList"
-        android:layout_alignParentLeft="true"
+        android:id="@+id/rvProducts"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/newItemFragment"
-        />
+        android:descendantFocusability="afterDescendants"
+        android:animateLayoutChanges="false"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/newItemFragment" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonsPanel"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:clipToPadding="false"
-        >
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnShoppingListDeleteAllItems"
-            android:background="@android:drawable/ic_menu_delete"
-            android:layout_alignParentBottom="true"
-            />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnShoppingListSave"
-            android:background="@android:drawable/ic_menu_save"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/btnShoppingListDeleteAllItems"
-            android:layout_toEndOf="@id/btnShoppingListDeleteAllItems"
-            />
-
-    </RelativeLayout>
-
-</com.RightDirection.ShoppingList.views.SoftKeyboardListenedRelativeLayout>
+</RelativeLayout>

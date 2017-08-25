@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ProductActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etCategoryName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:hint="@string/category_name_hint"
+        android:inputType="textCapSentences"
+        android:imeOptions="flagNoExtractUi"
+        android:textColor="@android:color/black"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/btnSave"
+        android:textColor="@android:color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_order"
+        android:ems="10"
+        android:layout_below="@+id/etCategoryName"
+        android:id="@+id/etOrder"
+        android:inputType="number"
+        android:hint="@string/enter_order"
+        android:layout_toEndOf="@+id/tvOrder"
+        android:gravity="end|center_vertical"
+        android:layout_toRightOf="@+id/tvOrder" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvOrder"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:text="@string/order"
+        android:layout_alignBaseline="@+id/etOrder"
+        android:layout_alignBottom="@+id/etOrder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true" />
+
+    <ImageView
+        android:layout_width="150dp"
+        app:srcCompat="@drawable/ic_default_product_image"
+        android:id="@+id/imgItemImage"
+        android:layout_below="@+id/etOrder"
+        android:maxHeight="300dp"
+        android:maxWidth="300dp"
+        android:layout_height="150dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/image_border"
+        android:contentDescription="@string/item_image"/>
+
+</RelativeLayout>

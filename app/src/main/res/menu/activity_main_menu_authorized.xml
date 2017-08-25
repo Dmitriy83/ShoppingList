@@ -1,0 +1,62 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.MainActivity">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_edit_categories_list"
+            android:orderInCategory="101"
+            android:title="@string/action_edit_categories_list"
+            android:icon="@drawable/ic_categories"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_edit_products_list"
+            android:orderInCategory="100"
+            android:title="@string/action_edit_products_list"
+            android:icon="@drawable/ic_products"
+            app:showAsAction="never" />
+    </group>
+
+    <group
+        android:checkableBehavior="single">
+        <!--
+        Пока отключим возможность получения и загрузки писем с файлом json,
+        т.к. настройка эл. почты слишком сложна для простого пользователя.
+        <item
+            android:id="@+id/action_receive_shopping_list_by_email"
+            android:orderInCategory="101"
+            android:title="@string/action_receive_shopping_list_by_email"
+            app:showAsAction="never" />
+            -->
+        <item
+            android:id="@+id/action_settings"
+            android:orderInCategory="102"
+            android:title="@string/action_settings"
+            android:icon="@drawable/ic_settings"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_feedback"
+            android:orderInCategory="120"
+            android:title="@string/feedback"
+            android:icon="@drawable/ic_feedback"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_invite_friends"
+            android:orderInCategory="125"
+            android:title="@string/invite_friends"
+            android:icon="@drawable/ic_heart"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_estimate"
+            android:orderInCategory="130"
+            android:title="@string/estimate"
+            android:icon="@drawable/ic_star"
+            app:showAsAction="never" />
+    </group>
+
+</menu>

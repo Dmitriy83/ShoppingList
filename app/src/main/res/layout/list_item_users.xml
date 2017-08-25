@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:id="@+id/productRepresent"
+    android:background="?android:attr/selectableItemBackground">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgFriendPhoto"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/friend_photo"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/imgDelete"
+        android:layout_toRightOf="@+id/imgFriendPhoto"
+        android:layout_toEndOf="@+id/imgFriendPhoto"
+        android:layout_toStartOf="@+id/imgDelete"
+        android:paddingEnd="5dp"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:textColor="#F000"
+        android:textSize="@dimen/text_size_normal"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp" />
+
+    <ImageButton
+        android:id="@+id/imgDelete"
+        android:layout_width="@dimen/normal_size"
+        android:layout_height="@dimen/normal_size"
+        android:background="@drawable/ic_delete"
+        android:contentDescription="@string/delete"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/imgFriendPhoto"
+        android:background="@color/border_color"    />
+
+</RelativeLayout>

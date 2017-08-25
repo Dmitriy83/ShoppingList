@@ -1,36 +1,45 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.app.FragmentManager;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.RightDirection.ShoppingList.helpers.ListAdapterShoppingListEditing;
-import com.RightDirection.ShoppingList.helpers.ShoppingListContentProvider;
-import com.RightDirection.ShoppingList.helpers.Utils;
-import com.RightDirection.ShoppingList.views.ItemsListFragment;
-import com.RightDirection.ShoppingList.ListItem;
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.adapters.ListAdapterShoppingListEditing;
+import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.fragments.InputNameDialogFragment;
+import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.views.CustomRecyclerView;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.fragments.InputProductNameFragment;
+import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
 
 import java.util.ArrayList;
 
-public class ShoppingListEditingActivity extends AppCompatActivity implements IOnNewItemAddedListener,
-        InputListNameDialog.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class ShoppingListEditingActivity extends BaseActivity implements IOnNewItemAddedListener,
+        InputNameDialogFragment.IInputListNameDialogListener, android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
-    private ArrayList<ListItem> mShoppingListItems;
+    private ArrayList<IListItem> mProducts;
     private ListAdapterShoppingListEditing mShoppingListItemsAdapter;
-    private boolean mIsNewList;
-    private String mListId;
+    private ShoppingList mShoppingList;
+    private boolean mGoToInShop = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,124 +47,137 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
         setContentView(R.layout.activity_shopping_list_editing);
 
         // Получим значения из переданных параметров родительской активности
-        Intent sourceIntent = getIntent();
-        mIsNewList = sourceIntent.getBooleanExtra(String.valueOf(R.string.is_new_list), false);
-        mListId = sourceIntent.getStringExtra(String.valueOf(R.string.list_id));
+        mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
-        // Добавим обработчики кликов по кнопкам
-        Button btnSave = (Button) findViewById(R.id.btnShoppingListSave);
-        if (btnSave != null) {
-            btnSave.setOnClickListener(onBtnSaveClick);
+        if (mShoppingList == null){
+            mShoppingList = new ShoppingList(-1, "");
+            mShoppingList.isNew = true;
         }
 
-        Button btnDeleteAllItems = (Button) findViewById(R.id.btnShoppingListDeleteAllItems);
-        if (btnDeleteAllItems != null) {
-            btnDeleteAllItems.setOnClickListener(onBtnDeleteAllItemsClick);
+        if (mShoppingList.isNew){
+            // Попробуем получить продукты (если активность открылась из активности загрузки списка товаров)
+            mProducts = getIntent().getParcelableArrayListExtra(EXTRAS_KEYS.PRODUCTS.getValue());
         }
 
-        // Получим ссылки на фрагемнты
-        FragmentManager fragmentManager = getFragmentManager();
-        ItemsListFragment shoppingListFragment = (ItemsListFragment)fragmentManager.findFragmentById(R.id.frgShoppingList);
-
-        if (savedInstanceState == null) {
-            // Создаем массив для хранения списка покупок
-            mShoppingListItems = new ArrayList<>();
-        }
-        else {
-            mShoppingListItems = savedInstanceState.getParcelableArrayList(String.valueOf(R.string.shopping_list_items));
+        // Установим заголовок активности
+        if (mShoppingList.isNew){
+            setTitle(getString(R.string.new_list));
+        }else{
+            setTitle(mShoppingList.getName());
         }
 
+        if (savedInstanceState != null)
+            mProducts = savedInstanceState.getParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue());
+
+        if (mProducts == null) mProducts = new ArrayList<>();
+
+        // Прочитаем настройки приложения
+        int listItemLayout = R.layout.list_item_shopping_list_editing;
         // Создадим новый адаптер для работы со списком покупок
-        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, R.layout.list_item_shopping_list_editing, mShoppingListItems);
+        mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
 
+        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
+        if (recyclerView == null) return;
+        // Используем этот метод для увеличения производительности,
+        // т.к. содержимое не изменяет размер макета
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new NpaLinearLayoutManager(this));
         // Привяжем адаптер к фрагменту
-        shoppingListFragment.setListAdapter(mShoppingListItemsAdapter);
-        Log.i("setListAdapter", "setListAdapter called.");
+        recyclerView.setAdapter(mShoppingListItemsAdapter);
 
-        if (!mIsNewList && savedInstanceState == null) {
+        if (!mShoppingList.isNew && savedInstanceState == null) {
             // Заполним список покупок из базы данных
             getLoaderManager().initLoader(0, null, this);
         }
+
+        // Подключим меню
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Добавим кнопку Up на toolbar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Добавим текстовое поле для пустого списка
+        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
-        outState.putParcelableArrayList(String.valueOf(R.string.shopping_list_items), mShoppingListItems);
+        outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
     }
 
-    private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mIsNewList) {
-                // Откроем окно для ввода наименования нового списка/
-                // Сохранение будет производиться в методе onDialogPositiveClick
-                InputListNameDialog inputListNameDialog = new InputListNameDialog();
-                FragmentManager fragmentManager = getFragmentManager();
-                inputListNameDialog.show(fragmentManager, null);
-            }
-            else {
-                // Обновим текущий список покупок
-                ContentResolver contentResolver = getContentResolver();
-                ContentValues contentValues = new ContentValues();
+    private void saveListAndGoToInShopActivity(){
+        // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
+        // данный момент редактируется количество с помощью клавиватуры (сохранение количества
+        // происходит при потере фокуса)
+        AutoCompleteTextView textView = (AutoCompleteTextView)findViewById(R.id.newItemEditText);
+        if (textView != null)
+            textView.requestFocus();
 
-                // Сначала удалим все записи редактируемого списка покупок из БД
-                contentResolver.delete(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                        ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null);
-
-                // Запишем составлящие списка покупок в базу данных
-                for (ListItem item: mShoppingListItems) {
-                    contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, mListId);
-                    contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-                    contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
-                }
-
-                finish();
-            }
+        if (mShoppingList.isNew) {
+            // Откроем окно для ввода наименования нового списка/
+            // Сохранение будет производиться в методе onDialogPositiveClick
+            InputNameDialogFragment inputNameDialog = new InputNameDialogFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            inputNameDialog.show(fragmentManager, null);
         }
-    };
+        else {
+            // Обновим текущий список покупок
+            mShoppingList.setProducts(mProducts);
+            mShoppingList.updateInDB(getApplicationContext());
 
-    private final View.OnClickListener onBtnDeleteAllItemsClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            mShoppingListItems.clear();
-            mShoppingListItemsAdapter.notifyDataSetChanged();
+            if (mGoToInShop) {
+                // Перейдем к активности "В магазине"
+                mShoppingList.startInShopActivity(this);
+            }
 
-            Log.i("onBtnDeleteAllClick", "onBtnDeleteAllItemsClick called, notifyDataSetChanged called.");
+            finish();
         }
-    };
+    }
 
-    @Override
-    public void OnNewItemAdded(ListItem newItem) {
-        mShoppingListItems.add(0, newItem);
+    private void removeAllItems(){
+        mProducts.clear();
         mShoppingListItemsAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onDialogPositiveClick(String listName) {
-        // Сохраним список продуктов в БД
-        ContentResolver contentResolver = getContentResolver();
-        ContentValues contentValues = new ContentValues();
+    public void OnNewItemAdded(Product newItem) {
+        if (newItem == null) return;
 
-        // Заполним значения для сохранения в базе данных
-        if (mIsNewList) {
-            // Запишем новый списко покупок в таблицу SHOPPING_LISTS
-            contentValues.put(ShoppingListContentProvider.KEY_NAME, listName);
-            Uri insertedId = contentResolver.insert(ShoppingListContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
-            long listId = ContentUris.parseId(insertedId);
-            contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
-
-            // Запишем составлящие списка покупок в базу данных
-            for (ListItem item: mShoppingListItems) {
-                contentValues.put(ShoppingListContentProvider.KEY_SHOPPING_LIST_ID, listId);
-                contentValues.put(ShoppingListContentProvider.KEY_PRODUCT_ID, item.getId());
-                contentResolver.insert(ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
-            }
+        // Если элемент уже присутствует в списке, то добавлять не нужно
+        if (!mProducts.contains(newItem)) {
+            mProducts.add(0, newItem);
+            mShoppingListItemsAdapter.notifyDataSetChanged();
+        }else{
+            // Сообщим о том, что элемент уже есть в списке
+            Toast.makeText(this, getString(R.string.item_already_added), Toast.LENGTH_LONG).show();
         }
+    }
 
-        finish();
+    @Override
+    public void onDialogPositiveClick(String name, long productId, boolean isProduct) {
+
+        if (isProduct) {
+            // Создадим вспомогательный объект Product и вызовем команду переименования
+            Product renamedProduct = new Product(productId, name);
+            renamedProduct.renameInDB(getApplicationContext());
+            mShoppingListItemsAdapter.updateItem(renamedProduct);
+        }else {
+            // Сохраним список продуктов в БД
+            mShoppingList.setName(name);
+            mShoppingList.setProducts(mProducts);
+            mShoppingList.addToDB(getApplicationContext());
+
+            if (mGoToInShop) {
+                // Перейдем к активности "В магазине"
+                mShoppingList.startInShopActivity(this);
+            }
+
+            finish();
+        }
     }
 
     @Override
@@ -164,23 +186,19 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        if (mIsNewList){
+        if (mShoppingList.isNew){
             return null;
         }
 
-        return new CursorLoader(this, ShoppingListContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                null, ShoppingListContentProvider.KEY_SHOPPING_LIST_ID + "=" + mListId, null ,null);
+        return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
+                SL_ContentProvider.getShoppingListContentProjection(), SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        int keyIdIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(ShoppingListContentProvider.KEY_NAME);
-
-        mShoppingListItems.clear();
+        mProducts.clear();
         while (data.moveToNext()){
-            ListItem newListItem = new ListItem(data.getString(keyIdIndex), data.getString(keyNameIndex), ShoppingListContentProvider.getImageUri(data));
-            mShoppingListItems.add(newListItem);
+            mProducts.add(new Product(data, new Category(data)));
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
@@ -197,15 +215,69 @@ public class ShoppingListEditingActivity extends AppCompatActivity implements IO
             case Utils.NEED_TO_UPDATE:
                 if (resultCode == RESULT_OK) {
                     // Получим значения из переданных параметров
-                    String id = data.getStringExtra(String.valueOf(R.string.item_id));
-                    String name = data.getStringExtra(String.valueOf(R.string.name));
-                    String strImageUri = data.getStringExtra(String.valueOf(R.string.item_image));
-                    Uri imageUri = null;
-                    if (strImageUri != null){
-                        imageUri = Uri.parse(strImageUri);
-                    }
-                    mShoppingListItemsAdapter.updateItem(id, name, imageUri);
+                    Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
+                    mShoppingListItemsAdapter.updateItem(product);
+
+                    // Обновим элемент выпадающего списка
+                    InputProductNameFragment fragment = (InputProductNameFragment)getFragmentManager()
+                            .findFragmentById(R.id.newItemFragment);
+                    fragment.updateProductName(product);
                 }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_shopping_list_editing_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Обработаем нажатие на элемент подменю.
+        int id = item.getItemId();
+
+        View view = findViewById(android.R.id.content);
+        if (view == null) return super.onOptionsItemSelected(item);
+
+        switch (id) {
+            case R.id.action_save_list: {
+                saveListAndGoToInShopActivity();
+                break;
+            }
+            case R.id.action_remove_all_items: {
+                removeAllItems();
+                break;
+            }
+            case R.id.action_go_to_in_shop_activity: {
+                // Сохраним список покупок и перейдем к активности "В магазине"
+                mGoToInShop = true;
+                saveListAndGoToInShopActivity();
+                break;
+            }
+            case R.id.action_share: {
+                prepareShoppingListForSending();
+                mShoppingList.share(this);
+                break;
+            }
+            case R.id.action_load_list: {
+                mShoppingList.startLoadShoppingListActivity(this);
+                finish();
+                break;
+            }
+            case R.id.action_send_to_friend: {
+                prepareShoppingListForSending();
+                mShoppingList.openChooseRecipientActivity(this);
+                break;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void prepareShoppingListForSending() {
+        if (mShoppingList.getName() == null)
+            mShoppingList.setName(getString(R.string.no_name));
+        mShoppingList.setProducts(mProducts);
     }
 }

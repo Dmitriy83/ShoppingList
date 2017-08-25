@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="GifUsage">
+        <ignore path="src/main/res/drawable-mdpi-v11/help_edit_button.gif" />
+        <ignore path="src/main/res/drawable-mdpi-v11/help_product_cross_out.gif" />
+    </issue>
+</lint>

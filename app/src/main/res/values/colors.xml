@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4e64d0</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#eac718</color>
+    <color name="colorPrimaryDark">#558b2f</color>
+    <color name="white">#ffffff</color>
+    <color name="gray">#d1cbcb</color>
+    <color name="action_mode_background_color">#83af00</color>
+    <color name="popup_menu_background_color">#ffffff</color>
+    <color name="border_color">#d7d5d5</color>
+    <color name="category_text_color">#8f8282</color>
+    <color name="orange">#ef6c00</color>
 </resources>
