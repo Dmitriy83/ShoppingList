@@ -164,10 +164,13 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Выход, авторизуемся под первым пользователем.
         authorizeAs("zhiharevtest1@gmail.com");
 
+        cleanFriendsList();
+        cleanBlackList();
+
         // Открываем панель навинации, щелчок на имени пользователя, пункт меню Получить списки покупок.
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_receive_shopping_lists))).perform(click());
-        timeout(3000);
+        timeout(1000);
         onView(withText(mActivity.getString(R.string.add_to_friends_and_receive_list))).perform(click());
         timeout(1000);
         pressBack();
@@ -177,6 +180,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     }
 
     private void cleanBlackList() {
+        timeout(1000);
         // Переходим в список друзей черещ панель навигации
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_black_list))).perform(click());
@@ -188,6 +192,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     }
 
     private void cleanFriendsList() {
+        timeout(1000);
         // Переходим в список друзей черещ панель навигации
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_friends))).perform(click());
@@ -230,8 +235,10 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         authorizeAs("zhiharevtest1@gmail.com");
 
         // Проверяем, что список друзей и черный список пусты. При необходимости последовательно удаляем элементы.
+        timeout(1000);
         cleanFriendsList();
         cleanBlackList();
+        timeout(1000);
 
         // Выходим из этого пользователя, авторизуемся под zhiharevtest2@gmail.com
         openUserSubmenu();
@@ -239,7 +246,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         onView(withId(R.id.sign_out_button)).perform(click());
         pressBack();
         authorizeAs("zhiharevtest2@gmail.com");
-        timeout(500);
+        timeout(1000);
 
         // Повторяем проверку
         cleanFriendsList();
@@ -259,14 +266,14 @@ public class FireBaseWorkingTest extends ActivitiesTest {
 
         // Выход, авторизуемся под первым пользователем.
         authorizeAs("zhiharevtest1@gmail.com");
-        timeout(500);
+        timeout(1000);
 
         // Добавляем в черный список zhiharevtest2@gmail.com
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_receive_shopping_lists))).perform(click());
-        timeout(500);
+        timeout(3000);
         onView(withText(mActivity.getString(R.string.add_to_black_list_and_decline_list))).perform(click());
-        timeout(500);
+        timeout(1000);
         pressBack();
 
         // Проверяем, что список покупок не появился на основном экране
@@ -275,23 +282,23 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Повторяем получение - должен быть тот же результат.
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_receive_shopping_lists))).perform(click());
-        timeout(500);
+        timeout(1000);
         pressBack();
         onView(recyclerViewItemContainsText(mNewListName)).check(doesNotExist());
 
         // Уберем пользователя из черного списка, отправим и проверим получение.
         cleanBlackList();
         authorizeAs("zhiharevtest2@gmail.com");
-        timeout(500);
+        timeout(1000);
         addNewShoppingList();
         sendAndRemoveShoppingListNotEmptyFriendsList();
         authorizeAs("zhiharevtest1@gmail.com");
-        timeout(500);
+        timeout(1000);
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_receive_shopping_lists))).perform(click());
-        timeout(500);
+        timeout(1000);
         onView(withText(mActivity.getString(R.string.add_to_friends_and_receive_list))).perform(click());
-        timeout(500);
+        timeout(1000);
         pressBack();
         onView(recyclerViewItemContainsText(mNewListName)).check(matches(isDisplayed()));
     }
