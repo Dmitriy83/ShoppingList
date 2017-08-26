@@ -87,6 +87,9 @@ public class Product extends ListItem implements IDataBaseOperations {
 
     @Override
     public void addToDB(Context context) {
+        // Продукт более не новый
+        isNew = false;
+
         ContentResolver contentResolver = context.getContentResolver();
 
         // Если товар с данным именем уже есть в БД, то создавать новый не нужно.
@@ -103,9 +106,6 @@ public class Product extends ListItem implements IDataBaseOperations {
                 return;
             }
             data.close();
-
-            // Продукт более не новый
-            isNew = false;
         }
 
         ContentValues contentValues = new ContentValues();
@@ -131,10 +131,16 @@ public class Product extends ListItem implements IDataBaseOperations {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_NAME, getName());
-        if (category != null)
+        if (category != null) {
             contentValues.put(SL_ContentProvider.KEY_CATEGORY_ID, category.getId());
-        if (getImageUri() != null)
+        }else{
+            contentValues.put(SL_ContentProvider.KEY_CATEGORY_ID, 0);
+        }
+        if (getImageUri() != null) {
             contentValues.put(SL_ContentProvider.KEY_PICTURE, getImageUri().toString());
+        }else{
+            contentValues.put(SL_ContentProvider.KEY_PICTURE, (String) null);
+        }
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues,
                 SL_ContentProvider.KEY_ID + "= ?", new String[]{String.valueOf(getId())});
     }
@@ -167,7 +173,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         activity.startActivityForResult(intent, Utils.NEED_TO_UPDATE);
     }
 
-    public long getRowId() {
+    long getRowId() {
         return rowId;
     }
 

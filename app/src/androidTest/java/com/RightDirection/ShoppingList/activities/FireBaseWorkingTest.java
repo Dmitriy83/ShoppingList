@@ -225,7 +225,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Выбираем пользователя zhiharevtest1@gmail.com
         UiObject btnUser = mDevice.findObject(new UiSelector().textContains(account));
         btnUser.click();
-        timeout(1000);
+        timeout(3000);
         pressBack();
     }
 
@@ -271,7 +271,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Добавляем в черный список zhiharevtest2@gmail.com
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_receive_shopping_lists))).perform(click());
-        timeout(3000);
+        timeout(5000);
         onView(withText(mActivity.getString(R.string.add_to_black_list_and_decline_list))).perform(click());
         timeout(1000);
         pressBack();

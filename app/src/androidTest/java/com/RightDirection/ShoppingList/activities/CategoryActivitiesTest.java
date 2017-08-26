@@ -138,13 +138,7 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         pressBack();
 
         // Назначаем товару картинку из assets
-        ContentResolver contentResolver = mActivity.getContentResolver();
-        ContentValues contentValues = new ContentValues();
-        String imagePath = "file:///android_asset/test_image.jpg";
-        contentValues.put(SL_ContentProvider.KEY_PICTURE,
-                imagePath);
-        contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                contentValues, SL_ContentProvider.KEY_NAME + " = ?", new String[]{mNewProductNamePattern + "1"});
+        setProductImageTestFromAssets(mNewProductNamePattern + "1");
 
         openMainMenu();
         onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
@@ -152,7 +146,7 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewProductNamePattern + "1"))));
         timeout(500); // подождем пока картинка загрузится
-        onView(recyclerViewItemWithImageAndText(imagePath, mNewProductNamePattern + "1"))
+        onView(recyclerViewItemWithImageAndText(IMAGE_PATH, mNewProductNamePattern + "1"))
                 .check(matches(isDisplayed()));
         pressBack();
         // Проверяемя, что товар отобразился с данной картинкой в активностях "Редактирование списка",
@@ -162,13 +156,13 @@ public class CategoryActivitiesTest extends ActivitiesTest {
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewProductNamePattern + "1"))));
         timeout(500); // подождем пока картинка загрузится
-        onView(recyclerViewItemWithImageAndText(imagePath, mNewProductNamePattern + "1"))
+        onView(recyclerViewItemWithImageAndText(IMAGE_PATH, mNewProductNamePattern + "1"))
                 .check(matches(isDisplayed()));
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewProductNamePattern + "1"))));
         timeout(500); // подождем пока картинка загрузится
-        onView(recyclerViewItemWithImageAndText(imagePath, mNewProductNamePattern + "1"))
+        onView(recyclerViewItemWithImageAndText(IMAGE_PATH, mNewProductNamePattern + "1"))
                 .check(matches(isDisplayed()));
     }
 

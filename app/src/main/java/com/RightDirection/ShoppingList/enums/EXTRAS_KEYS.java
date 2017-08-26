@@ -6,6 +6,7 @@ public enum EXTRAS_KEYS implements IGetValue {
     SHOPPING_LIST ("Shopping list"),
     PRODUCT ("Product"),
     PRODUCTS("Products"),
+    PRODUCT_NAME("Product name"),
     PRODUCTS_NAMES("Products names"),
     PRODUCTS_ORIGINAL_VALUES("Products - original values"),
     ITEM_IMAGE("Item image"),

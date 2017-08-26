@@ -126,4 +126,7 @@
     <string name="friend_invitation_question">Это приложение - электронный список покупок ПростоПокупки. Скачай и зарегистрируйся ;)</string>
     <string name="pref_sort_shopping_lists_in_reverse_order">Порядок сортировки списков покупок</string>
     <string name="pref_key_sort_shopping_lists_in_reverse_order_summary">Новый список покупок добавляется в начало листа</string>
+    <string name="show_product_image">Посмотреть картнику</string>
+    <string name="clear_product_image">Очистить картинку</string>
+    <string name="product_image_activity_title">Изображение %1$s</string>
 </resources>

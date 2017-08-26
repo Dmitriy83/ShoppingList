@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -368,5 +369,16 @@ abstract class ActivitiesTest {
             btnOk.click();
             mDevice.pressBack();
         }
+    }
+
+    final String IMAGE_PATH = "file:///android_asset/test_image.jpg";
+
+    void setProductImageTestFromAssets(String productName){
+        ContentResolver contentResolver = mActivity.getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_PICTURE,
+                IMAGE_PATH);
+        contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
+                contentValues, SL_ContentProvider.KEY_NAME + " = ?", new String[]{productName});
     }
 }

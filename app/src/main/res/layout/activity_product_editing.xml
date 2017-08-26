@@ -46,7 +46,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="2dp"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/etProductName"/>
+                android:layout_below="@+id/etProductName"
+                android:layout_marginBottom="10dp"/>
 
             <TextView
                 android:id="@+id/txtCategoryTitle"
@@ -58,7 +59,8 @@
                 android:text="@string/category_title"
                 android:textSize="18sp"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/etProductName"/>
+                android:layout_below="@+id/etProductName"
+                android:layout_marginBottom="10dp"/>
 
             <ImageView
                 android:id="@+id/imgItemImage"
@@ -75,7 +77,32 @@
                 android:maxWidth="300dp"
                 android:src="@android:drawable/ic_menu_gallery"
                 android:layout_alignParentLeft="true"
-                android:layout_marginTop="10dp" />
+                />
+
+            <ImageButton
+                android:id="@+id/ibShowImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnChooseCategory"
+                android:layout_centerHorizontal="true"
+                android:layout_toEndOf="@+id/imgItemImage"
+                android:layout_toRightOf="@+id/imgItemImage"
+                android:background="@drawable/ic_show_image"
+                android:contentDescription="@string/show_product_image"
+                android:scaleType="fitStart"
+                android:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/ibClearImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/ibShowImage"
+                android:layout_alignStart="@+id/ibShowImage"
+                android:layout_below="@+id/ibShowImage"
+                android:layout_toEndOf="@+id/imgItemImage"
+                android:layout_toRightOf="@+id/imgItemImage"
+                android:background="@drawable/ic_clear_image"
+                android:contentDescription="@string/clear_product_image" />
 
         </RelativeLayout>
 

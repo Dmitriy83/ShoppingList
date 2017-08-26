@@ -1,9 +1,12 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
 
 import com.RightDirection.ShoppingList.R;
+import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 
@@ -19,10 +22,12 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 public class ProductActivitiesTest extends ActivitiesTest {
 
@@ -109,6 +114,75 @@ public class ProductActivitiesTest extends ActivitiesTest {
         pressBack();
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @MediumTest
+    public void testShowClearImageButtons() {
+        // Добавим новый товар ии открываем карточке товара
+        addNewProduct(mNewProductNamePattern);
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithText(mNewProductNamePattern)).perform(click());
+
+        // Проверяем, что кнопок "Показать картинку" и "Очистить картинку" нет
+        onView(withId(R.id.ibShowImage)).check(matches(not(isDisplayed()))); //  метод doesNotExist использовать нельзя, т.к. VISIBILITY = GONE все равно оставляет View в иерархии
+        onView(withId(R.id.ibClearImage)).check(matches(not(isDisplayed())));
+
+        // Выбираем картинку
+        pressBack();
+        pressBack();
+        setProductImageTestFromAssets(mNewProductNamePattern);
+        openMainMenu();
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithText(mNewProductNamePattern)).perform(click());
+
+        // Проверяем, что кнопки "Показать картинку" и "Очистить картинку" появились
+        onView(withId(R.id.ibShowImage)).check(matches(isDisplayed()));
+        onView(withId(R.id.ibClearImage)).check(matches(isDisplayed()));
+
+        // Переходим в список товаров, проверяем, что новый товар отображается с картинкой
+        pressBack();
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        timeout(500); // подождем пока картинка загрузится
+        onView(recyclerViewItemWithImageAndText(IMAGE_PATH, mNewProductNamePattern))
+                .check(matches(isDisplayed()));
+
+        // Снова открываем товар
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithText(mNewProductNamePattern)).perform(click());
+
+        // Проверяем, что кнопки "Показать картинку" и "Очистить картинку" появились, отображается требуемая картинка
+        onView(withId(R.id.ibShowImage)).check(matches(isDisplayed()));
+        onView(withId(R.id.ibClearImage)).check(matches(isDisplayed()));
+        onView(withContentDescription(IMAGE_PATH)).check(matches(isDisplayed()));
+
+        // Нажимаем кнопку "Показать картинку", проверяем, что открылась активность с картинкой
+        onView(withId(R.id.ibShowImage)).perform(click());
+        onView(withText(mActivity.getString(R.string.product_image_activity_title, mNewProductNamePattern))).check(matches(isDisplayed())); // проверяемость нужную активность по заголовку
+        onView(withContentDescription(IMAGE_PATH)).check(matches(isDisplayed()));
+
+        // Возвращаемся к карточке продукта
+        pressBack();
+
+        // Нажимаем на кнопку "Очистить картинку"
+        onView(withId(R.id.ibClearImage)).perform(click());
+
+        // Проверяем, что в поле картинки отображается картинка по умолчанию
+        onView(withContentDescription(String.valueOf(android.R.drawable.ic_menu_crop))).check(matches(isDisplayed()));
+
+        // Сохраняем товар и переходим к списку продуктов
+        onView(withId(R.id.btnSave)).perform(click());
+
+        // Проверяем, что в списке отображается товар без картинки
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithImageAndText(R.drawable.ic_default_product_image, mNewProductNamePattern))
+                .check(matches(isDisplayed()));
     }
 
 }

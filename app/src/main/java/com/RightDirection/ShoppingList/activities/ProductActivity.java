@@ -3,6 +3,7 @@ package com.RightDirection.ShoppingList.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
@@ -89,6 +91,43 @@ public class ProductActivity extends BaseActivity {
         }
 
         setProductImage();
+
+        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        if (ibShowImage != null){
+            ibShowImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onShowImageClick();
+                }
+            });
+        }
+        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        if (ibClearImage != null){
+            ibClearImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClearImageClick();
+                }
+            });
+        }
+    }
+
+    private void onClearImageClick() {
+        mProduct.setImageUri(null);
+        setProductImage();
+    }
+
+    private void onShowImageClick() {
+        Uri imageUri = mProduct.getImageUri();
+        if (imageUri == null) return;
+
+        Intent intent = new Intent(getApplicationContext(), ShowItemImageActivity.class);
+        intent.putExtra(EXTRAS_KEYS.ITEM_IMAGE.getValue(), imageUri.toString());
+        EditText etProductName = (EditText) findViewById(R.id.etProductName);
+        if (etProductName != null) {
+            intent.putExtra(EXTRAS_KEYS.PRODUCT_NAME.getValue(), etProductName.getText().toString());
+        }
+        startActivity(intent);
     }
 
     @Override
@@ -213,17 +252,46 @@ public class ProductActivity extends BaseActivity {
                         public void onSuccess() {
                             // Для поиска элемента при тестировании запишем imageId в contentDescription
                             imgProduct.setContentDescription(String.valueOf(mProduct.getImageUri()));
+                            // Посде загрузки картинки отобразим кнопки "Посмотреть картинку" и "Очистить картинку"
+                            showImageButtons();
                         }
 
                         @Override
                         public void onError() {
                             // Для поиска элемента при тестировании запишем imageId в contentDescription
                             imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
+                            // Если произошла ошибка при загрузке картинки, то нужно скрыть кнопки "Посмотреть картинку" и "Очистить картинку"
+                            clearImageButtons();
                         }
                     });
             // Если mProduct.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
-            if (mProduct.getImageUri() == null) imgProduct.setContentDescription(
-                    String.valueOf(android.R.drawable.ic_menu_crop));
+            if (mProduct.getImageUri() == null) {
+                imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
+                // Если картинка по какой-то причине не загрузилась, нужно скрыть кнопки "Посмотреть картинку" и "Очистить картинку"
+                clearImageButtons();
+            }
+        }
+    }
+
+    private void showImageButtons(){
+        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        if (ibShowImage != null){
+            ibShowImage.setVisibility(View.VISIBLE);
+        }
+        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        if (ibClearImage != null){
+            ibClearImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void clearImageButtons(){
+        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        if (ibShowImage != null){
+            ibShowImage.setVisibility(View.GONE);
+        }
+        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        if (ibClearImage != null){
+            ibClearImage.setVisibility(View.GONE);
         }
     }
 

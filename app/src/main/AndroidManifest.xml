@@ -75,6 +75,14 @@
             android:name=".activities.ProductActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
+            android:name=".activities.ShowItemImageActivity"
+            android:parentActivityName=".activities.ProductActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ProductActivity" />
+        </activity>
+        <activity
             android:name=".activities.CategoryActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
