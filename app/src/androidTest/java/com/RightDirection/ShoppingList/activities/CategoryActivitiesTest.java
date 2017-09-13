@@ -1,12 +1,9 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 

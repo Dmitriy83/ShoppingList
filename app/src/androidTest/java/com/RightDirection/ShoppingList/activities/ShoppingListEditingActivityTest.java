@@ -254,7 +254,8 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
-                "" + mNewProductNamePattern + "2, 1.0;" + "\n" + mNewProductNamePattern + "1, 1.0;");
+                "" + mNewProductNamePattern + "2, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;"
+                        + "\n" + mNewProductNamePattern + "1, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;");
     }
 
     @Test

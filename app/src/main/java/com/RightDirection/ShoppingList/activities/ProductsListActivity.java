@@ -17,6 +17,7 @@ import com.RightDirection.ShoppingList.adapters.ListAdapterProductsList;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -42,7 +43,10 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
         // Добавим обработчики кликов по кнопкам
         FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabProductListAddProduct);
         if (fabAddProduct != null) {
-            fabAddProduct.setOnClickListener(onFabAddProductClick);
+            fabAddProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onFabAddProductClick(view); }
+            });
         }
 
         CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
@@ -89,26 +93,27 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
         getLoaderManager().restartLoader(0, null, this);
     }
 
-    private final View.OnClickListener onFabAddProductClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ProductActivity.class);
-            startActivityForResult(intent, Utils.NEED_TO_UPDATE);
-        }
-    };
+    private void onFabAddProductClick(View view) {
+        Intent intent = new Intent(view.getContext(), ProductActivity.class);
+        startActivityForResult(intent, Utils.NEED_TO_UPDATE);
+    }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                SL_ContentProvider.getProductsProjection(), null, null ,null);
+                null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProducts.clear();
         while (data.moveToNext()){
-            mProducts.add(new Product(data, new Category(data)));
+            Unit defaultUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_SHORT_NAME)));
+            mProducts.add(new Product(data, new Category(data), defaultUnit, null));
         }
 
         // Отсортируем список по алфавиту

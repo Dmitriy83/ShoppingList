@@ -41,6 +41,16 @@
         android:title="@string/pref_sort_shopping_lists_in_reverse_order"
         android:defaultValue="false"/>
 
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_prices"
+        android:title="@string/pref_show_prices"
+        android:defaultValue="false"/>
+
+    <com.RightDirection.ShoppingList.views.CustomCheckBoxPreference
+        android:key="@string/pref_key_show_units"
+        android:title="@string/pref_show_units"
+        android:defaultValue="false"/>
+
     <!--
     Пока отключим возможность получения и загрузки писем с файлом json,
     т.к. настройка эл. почты слишком сложна для простого пользователя.

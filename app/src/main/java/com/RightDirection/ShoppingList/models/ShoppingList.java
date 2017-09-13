@@ -25,6 +25,7 @@ import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +41,13 @@ import java.util.HashMap;
 
 public class ShoppingList extends ListItem implements IDataBaseOperations {
 
+    private static final String TAG = "ShoppingListPOJO";
     private ArrayList<IListItem> mProducts;
     private boolean isFiltered;
+
+    // Переменные заполняются при чтении инфо о списках покупок из БД. При этом сами продукты не загружаются (например, в MainActivity)
+    private int totalCountOfProducts = 0;
+    private int numberOfCrossedOutProducts = 0;
 
     public ShoppingList(long id, String name) {
         super(id, name);
@@ -57,12 +63,45 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     public ShoppingList(Cursor data){
         super(data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID)),
                 data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME)));
-        isFiltered = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_FILTERED)) != 0;
+        try {
+            isFiltered = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_FILTERED)) != 0;
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            isFiltered = false;
+        }
+        try {
+            totalCountOfProducts = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_TOTAL_COUNT));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            totalCountOfProducts = 0;
+        }
+        try {
+            numberOfCrossedOutProducts = data.getInt(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NUMBER_OF_CROSSED_OUT));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            numberOfCrossedOutProducts = 0;
+        }
     }
 
     private ShoppingList(Parcel in) {
         super(in);
         isFiltered = in.readByte() != 0;
+    }
+
+    public int getTotalCountOfProducts() {
+        return totalCountOfProducts;
+    }
+
+    public int getNumberOfCrossedOutProducts() {
+        return numberOfCrossedOutProducts;
+    }
+
+    public void setTotalCountOfProducts(int _totalCountOfProducts) {
+        totalCountOfProducts = _totalCountOfProducts;
+    }
+
+    public void setNumberOfCrossedOutProducts(int _numberOfCrossedOutProducts) {
+        numberOfCrossedOutProducts = _numberOfCrossedOutProducts;
     }
 
     public static final Creator<ShoppingList> CREATOR = new Creator<ShoppingList>() {
@@ -128,13 +167,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         if (mProducts == null) return;
 
         // Запишем составлящие списка покупок в базу данных
-        for (IListItem item : mProducts) {
-            contentValues.put(SL_ContentProvider.KEY_SHOPPING_LIST_ID, getId());
-            contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, item.getId());
-            contentValues.put(SL_ContentProvider.KEY_COUNT, item.getCount());
-            contentValues.put(SL_ContentProvider.KEY_IS_CHECKED, item.isChecked());
-            contentResolver.insert(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
-        }
+        writeShoppingListProductsToDB(context, contentResolver, contentValues);
 
         // Список покупок более не новый
         isNew = false;
@@ -161,12 +194,36 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())});
 
         // Запишем составлящие списка покупок в базу данных
+        writeShoppingListProductsToDB(context, contentResolver, contentValues);
+    }
+
+    private void writeShoppingListProductsToDB(Context context, ContentResolver contentResolver, ContentValues contentValues) {
         for (IListItem item: mProducts) {
             contentValues.put(SL_ContentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(SL_ContentProvider.KEY_COUNT, item.getCount());
             contentValues.put(SL_ContentProvider.KEY_IS_CHECKED, item.isChecked());
+            Product product = (Product)item;
+            contentValues.put(SL_ContentProvider.KEY_PRICE, product.getCurrentPrice());
+            Unit currentUnit = product.getCurrentUnit();
+            if (currentUnit != null && product.getCurrentUnit().getId() != Utils.EMPTY_ID) {
+                contentValues.put(SL_ContentProvider.KEY_UNIT_ID, product.getCurrentUnit().getId());
+            }
             contentResolver.insert(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
+
+            // Обновим цену и ед. измерения по умолчанию
+            boolean needToUpdate = false;
+            if (product.getCurrentPrice() != Product.EMPTY_CURRENT_PRICE && product.getCurrentPrice() != product.getLastPrice()){
+                product.setLastPrice(product.getCurrentPrice());
+                needToUpdate = true;
+            }
+            if (currentUnit != null && product.getCurrentUnit().getId() != Utils.EMPTY_ID && currentUnit != product.getDefaultUnit()) {
+                product.setDefaultUnit(currentUnit);
+                needToUpdate = true;
+            }
+            if (needToUpdate) {
+                product.updateInDB(context);
+            }
         }
     }
 
@@ -223,13 +280,13 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 values, SL_ContentProvider.KEY_ID +  " = ?", new String[]{String.valueOf(getId())});
     }
 
-    public void addNotExistingProductsToDB(Context context) {
+    public void addNotExistingProductsToDBandSetId(Context context) {
         if (mProducts == null || mProducts.size() == 0) return;
 
         // Создадим строку условия
-        String where = getWhereForNames();
+        String where = getWhere(SL_ContentProvider.KEY_NAME);
         // Создадим строку аргументов
-        String[] whereArgs = getWhereArgsForNames();
+        String[] whereArgs = getWhereArgs(SL_ContentProvider.KEY_NAME, context);
 
         // Произведем выборку из базы данных существующих продуктов
         ContentResolver contentResolver = context.getContentResolver();
@@ -237,61 +294,83 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 where, whereArgs, null);
 
         // Создадим массив с найденными именами продуктов
-        ArrayList<String> foundProducts = new ArrayList<>();
-        assert data != null;
-        int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
-        while (data.moveToNext()){
-            foundProducts.add(data.getString(keyNameIndex));
-        }
-        data.close();
+        if (data != null) {
+            HashMap<String, Product> foundProducts = new HashMap<>(data.getCount());
+            int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
+            int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
+            while (data.moveToNext()) {
+                foundProducts.put(data.getString(keyNameIndex), new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex)));
+            }
+            data.close();
 
-        // Добавим несуществующие продукты в базу данных
-        ContentValues contentValues = new ContentValues();
-        for (int i = 0; i < mProducts.size(); i++) {
-            String name = mProducts.get(i).getName();
-            if (!foundProducts.contains(name)){
-                contentValues.put(SL_ContentProvider.KEY_NAME, name);
-                contentResolver.insert(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues);
+            // Добавим несуществующие продукты в базу данных. Присвоим корректные id всем товарам
+            ContentValues contentValues = new ContentValues();
+            for (int i = 0; i < mProducts.size(); i++) {
+                Product currentProduct = (Product) mProducts.get(i);
+                Product productFromDB = foundProducts.get(currentProduct.getName());
+                if (productFromDB == null) {
+                    // Товар не найден в базе данных, и его необходимо добавить
+                    contentValues.put(SL_ContentProvider.KEY_NAME, currentProduct.getName());
+                    Uri insertedId = contentResolver.insert(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues);
+                    currentProduct.setId(ContentUris.parseId(insertedId));
+                }else{
+                    // Товар найден в базе данных, установим корректный id для него.
+                    currentProduct.setId(productFromDB.getId());
+                }
             }
         }
-
-        setProductsIdFromDB(context);
     }
 
-    private void setProductsIdFromDB(Context context) {
+    private void addNotExistingUnitsToDBandSetId(Context context) {
         if (mProducts == null || mProducts.size() == 0) return;
 
-        // Создадим строку условия
-        String where = getWhereForNames();
-        // Создадим строку аргументов
-        String[] whereArgs = getWhereArgsForNames();
-        // Произведем выборку из базы данных существующих продуктов
+        String where = getWhere(SL_ContentProvider.KEY_UNIT_SHORT_NAME);
+        String[] whereArgs = getWhereArgs(SL_ContentProvider.KEY_UNIT_SHORT_NAME, context);
+
+        // Произведем выборку из базы данных существующих ед. измерения
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor data = contentResolver.query(SL_ContentProvider.PRODUCTS_CONTENT_URI, null,
+        Cursor data = contentResolver.query(SL_ContentProvider.UNITS_CONTENT_URI, null,
                 where, whereArgs, null);
 
-        // Создадим массив с найденными именами продуктов
-        assert data != null;
-        HashMap<String, Long> map = new HashMap<>(data.getCount());
-        int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
-        while (data.moveToNext()){
-            map.put(data.getString(keyNameIndex), data.getLong(keyIdIndex));
-        }
-        data.close();
+        // Создадим массив с найденными ед. измерения
+        if  (data != null) {
+            HashMap<String, Unit> foundUnits = new HashMap<>(data.getCount());
+            int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_ID);
+            int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_NAME);
+            int keyShortNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_SHORT_NAME);
+            while (data.moveToNext()) {
+                foundUnits.put(data.getString(keyShortNameIndex), new Unit(data.getLong(keyIdIndex), data.getString(keyNameIndex), data.getString(keyShortNameIndex)));
+            }
+            data.close();
 
-        for (IListItem product: mProducts) {
-            long id = map.get(product.getName());
-            product.setId(id);
+            // Добавим несуществующие ед. измерения в базу данных. Присвоим корректные id всем еденицам измерения
+            ContentValues contentValues = new ContentValues();
+            for (int i = 0; i < mProducts.size(); i++) {
+                Product product = (Product) mProducts.get(i);
+                Unit currentUnit = product.getCurrentUnit();
+                if (currentUnit == null) { continue; }
+
+                Unit unitFromDB = foundUnits.get(product.getUnitShortName(context));
+                if (unitFromDB == null) {
+                    // Ед. измерения не найдена в базе данных, и ее необходимо добавить
+                    contentValues.put(SL_ContentProvider.KEY_UNIT_NAME, currentUnit.getName());
+                    contentValues.put(SL_ContentProvider.KEY_UNIT_SHORT_NAME, currentUnit.getShortName());
+                    Uri insertedId = contentResolver.insert(SL_ContentProvider.UNITS_CONTENT_URI, contentValues);
+                    currentUnit.setId(ContentUris.parseId(insertedId));
+                }else{
+                    // Ед. измерения найдена в базе данных, установим корректный id для ед. измерения продукта.
+                    currentUnit.setId(unitFromDB.getId());
+                }
+            }
         }
     }
 
-    private String getWhereForNames() {
+    private String getWhere(String key) {
         if (mProducts == null) return null;
 
         String where = null;
         if (mProducts.size() > 0) {
-            where = SL_ContentProvider.PRODUCTS_TABLE_NAME + "." + SL_ContentProvider.KEY_NAME + " IN (";
+            where = key + " IN (";
             where += "?"; // первый раз без запятой в начале
             for (int i = 1; i < mProducts.size(); i++) {
                 where += ",?";
@@ -301,12 +380,17 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         return where;
     }
 
-    private String[] getWhereArgsForNames() {
+    private String[] getWhereArgs(String key, Context context) {
         if (mProducts == null || mProducts.size() == 0) return null;
 
         String[] where = new String[mProducts.size()];
         for (int i = 0; i < mProducts.size(); i++) {
-            where[i] = mProducts.get(i).getName();
+            if (key.equals(SL_ContentProvider.KEY_NAME)) {
+                where[i] = mProducts.get(i).getName();
+            }else if (key.equals(SL_ContentProvider.KEY_UNIT_SHORT_NAME)){
+                Product product = (Product)mProducts.get(i);
+                where[i] = product.getUnitShortName(context);
+            }
         }
         return where;
     }
@@ -364,11 +448,15 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         String divider = context.getString(R.string.divider);
         String productDivider = context.getString(R.string.product_divider);
         boolean firstLine = true;
-        for (IListItem product: mProducts) {
+        for (IListItem item: mProducts) {
             if (!firstLine) result = result + "\n";
             else firstLine = false;
 
-            result = result + product.getName() + divider + " " + String.valueOf(product.getCount())
+            Product product = (Product)item;
+            result = result + product.getName()
+                    + divider + " " + String.valueOf(product.getCount())
+                    + divider + " " + String.valueOf(product.getUnitShortName(context))
+                    + divider + " " + String.valueOf(product.getPrice())
                     + productDivider;
         }
 
@@ -384,21 +472,22 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())} ,null);
 
         // Определим индексы колонок для считывания
-        assert data != null;
-        int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
-        int keyIsCheckedIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED);
+        if (data != null) {
+            int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
+            int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
+            int keyCountIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
+            int keyIsCheckedIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED);
 
-        // Читаем данные из базы
-        while (data.moveToNext()){
-            Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
-                    data.getFloat(keyCountIndex), data.getInt(keyIsCheckedIndex) != 0);
-            mProducts.add(newProduct);
+            // Читаем данные из базы
+            while (data.moveToNext()) {
+                Product newProduct = new Product(data.getLong(keyIdIndex), data.getString(keyNameIndex),
+                        data.getFloat(keyCountIndex), data.getInt(keyIsCheckedIndex) != 0);
+                mProducts.add(newProduct);
+            }
+
+            // Закроем курсор
+            data.close();
         }
-
-        // Закроем курсор
-        data.close();
     }
 
     @SuppressWarnings("unused")
@@ -454,27 +543,28 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())} ,null);
 
         // Определим индексы колонок для считывания
-        assert data != null;
-        int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
-        int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
-        int keyCountIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
-        int keyIsCheckedIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED);
+        if (data != null) {
+            int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
+            int keyNameIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_NAME);
+            int keyCountIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_COUNT);
+            int keyIsCheckedIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_IS_CHECKED);
 
-        // Читаем данные из базы и записываем в объект JSON
-        while (data.moveToNext()){
-            JSONObject jsonItem = new JSONObject();
+            // Читаем данные из базы и записываем в объект JSON
+            while (data.moveToNext()) {
+                JSONObject jsonItem = new JSONObject();
 
-            jsonItem.put(SL_ContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
-            jsonItem.put(SL_ContentProvider.KEY_NAME, data.getString(keyNameIndex));
-            jsonItem.put(SL_ContentProvider.KEY_COUNT, data.getString(keyCountIndex));
-            jsonItem.put(SL_ContentProvider.KEY_IS_CHECKED,  data.getInt(keyIsCheckedIndex) != 0);
+                jsonItem.put(SL_ContentProvider.KEY_PRODUCT_ID, data.getString(keyIdIndex));
+                jsonItem.put(SL_ContentProvider.KEY_NAME, data.getString(keyNameIndex));
+                jsonItem.put(SL_ContentProvider.KEY_COUNT, data.getString(keyCountIndex));
+                jsonItem.put(SL_ContentProvider.KEY_IS_CHECKED, data.getInt(keyIsCheckedIndex) != 0);
 
-            // Добавим объект JSON в массив
-            array.put(jsonItem);
+                // Добавим объект JSON в массив
+                array.put(jsonItem);
+            }
+
+            // Закроем курсор
+            data.close();
         }
-
-        // Закроем курсор
-        data.close();
 
         return array;
     }
@@ -510,29 +600,72 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
             // Первым элементом в массиве productArray всегда будет Name
             String name = productArray[0].trim();
-
             // Если имя не заполнено, то продукт пропускаем
             if (name.isEmpty()) continue;
 
-            float count = 1;
-            // Если элементов в массиве больше 2 или равно 1,
-            // значит количество введено некорректно и приравнивается 1.
-            if (productArray.length == 2){
-                // Попытаемся преобразовать строку в float
-                try {
-                    count = Float.parseFloat(productArray[1]);
-                }catch (Exception e){
-                    Log.i("LOAD_PRODUCT", e.getMessage());
-                }
-            }
-
-            // Если количество отрицательное, приравниваем его значению по умолчанию
-            if (count < 0) count = 1;
-
             // Создаем объект и добавляем в массив продуктов списка
-            Product product = new Product(-1, name, count);
+            Product product = new Product(
+                    Utils.EMPTY_ID,
+                    name,
+                    getCountFromArray(productArray),
+                    getPriceFromArray(productArray),
+                    getUnitFromArray(productArray, context));
             addProduct(product);
         }
+
+        // Сначала нужно добавить новые продукты из списка в базу данных.
+        // Синхронизацияя должна производиться по полю Name
+        addNotExistingProductsToDBandSetId(context);
+
+        // Также необходимо добавить в базу ед. измерения. Синхронизация по краткому наименованию/
+        // В этом же методе присваиваем правильные id единицам измерения из списка.
+        addNotExistingUnitsToDBandSetId(context);
+    }
+
+    private float getPriceFromArray(String[] productArray){
+        float price = Product.EMPTY_CURRENT_PRICE;
+        if (productArray.length >= 4){
+            // Попытаемся преобразовать строку в float
+            try {
+                price = Float.parseFloat(productArray[3]);
+                if (price < 0) price = Product.EMPTY_CURRENT_PRICE;
+            }catch (Exception e){
+                Log.i("LOAD_PRODUCT", e.getMessage());
+            }
+        }
+
+        return price;
+    }
+
+    private Unit getUnitFromArray(String[] productArray, Context context){
+        String unitShortName = null;
+        if (productArray.length >= 3){
+            unitShortName = productArray[2];
+        }
+
+        // Создаем "техническую" ед. измерения, которой в дальнейшем будет назначено корректное id и имя
+        if (unitShortName != null && !unitShortName.equals("") && !unitShortName.equals(context.getString(R.string.default_unit))) {
+            return new Unit(Utils.EMPTY_ID, unitShortName, unitShortName);
+        }else{
+            return null;
+        }
+    }
+
+    private float getCountFromArray(String[] productArray){
+        float count = 1;
+        // Если элементов в массиве меньше 2,
+        // значит количество введено некорректно и приравнивается 1.
+        if (productArray.length >= 2){
+            // Попытаемся преобразовать строку в float
+            try {
+                count = Float.parseFloat(productArray[1]);
+                if (count < 0) count = 1;
+            }catch (Exception e){
+                Log.i("LOAD_PRODUCT", e.getMessage());
+            }
+        }
+
+        return count;
     }
 
     public void startInShopActivity(Context context){

@@ -21,32 +21,32 @@ public class ListAdapterProductsList extends BaseListAdapter {
 
         ViewHolder viewHolder = (ViewHolder) holder;
         if (viewHolder.represent != null)
-            viewHolder.represent.setOnClickListener(onProductRepresentClick);
+            viewHolder.represent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onProductRepresentClick(view); }
+            });
         if (viewHolder.imgDelete != null)
-            viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+            viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onImgDeleteClick(view); }
+            });
         if (viewHolder.itemImage != null) {
             setProductImage(viewHolder.itemImage, mObjects.get(position));
         }
     }
 
-    private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // Получим объект item по элементу View
-            Product item = (Product) view.getTag();
-            // Удалим из БД
-            item.removeFromDB(mParentActivity);
-            // Удалим из списка
-            remove(item);
-        }
-    };
+    private void onImgDeleteClick(View view) {
+        // Получим объект item по элементу View
+        Product item = (Product) view.getTag();
+        // Удалим из БД
+        item.removeFromDB(mParentActivity);
+        // Удалим из списка
+        remove(item);
+    }
 
-    private final View.OnClickListener onProductRepresentClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Product product = (Product) view.getTag();
-            // Откроем активность редактирования продукта
-            product.startProductActivity(mParentActivity);
-        }
-    };
+    private void onProductRepresentClick(View view) {
+        Product product = (Product) view.getTag();
+        // Откроем активность редактирования продукта
+        product.startProductActivity(mParentActivity);
+    }
 }

@@ -3,9 +3,6 @@ package com.RightDirection.ShoppingList.utils;
 import android.text.InputFilter;
 import android.text.Spanned;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Input filter that limits the number of decimal digits that are allowed to be
  * entered.

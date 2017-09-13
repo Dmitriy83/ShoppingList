@@ -50,11 +50,12 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         onView(withId(R.id.launch_sign_in)).perform(click());
         UiObject btnUser = mDevice.findObject(new UiSelector().textContains("zhiharevtest1@gmail.com"));
         btnUser.click();
-        timeout(1000);
+        timeout(3000);
 
         // Нажимаем кнопку Назад
         pressBack();
 
+        timeout(1000);
         // Открываем панель Навигации
         openMainMenu();
         // Проверяем отображение имени пользователя в заголовке
@@ -77,6 +78,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
 
         // Нажимаем Назад, открываем панель навигации, нажимаем на стрелку рядом с именем пользователя, нажимаем профиль, выходим - таким образом возвращаем программу в исходное состояние для дальнейшего тестирования.
         pressBack();
+        timeout(1000);
         openMainMenu();
         //onView(withBackground(R.drawable.ic_drop_down_arrow)).perform(click());
         onView(withText(mActivity.getString(R.string.action_profile))).perform(click());

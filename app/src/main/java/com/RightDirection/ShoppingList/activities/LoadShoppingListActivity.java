@@ -41,7 +41,6 @@ public class LoadShoppingListActivity extends BaseActivity {
 
             assert etText != null;
             mShoppingList.loadProductsFromString(mContext, etText.getText().toString());
-            mShoppingList.addNotExistingProductsToDB(mContext);
             if (!mShoppingList.isNew) mShoppingList.updateInDB(mContext);
 
             // Откроем активность редактирования списка покупок

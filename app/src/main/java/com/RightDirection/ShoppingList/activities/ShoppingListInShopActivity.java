@@ -20,6 +20,7 @@ import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -44,7 +45,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() );
 
         // На всякий случай
-        if (mShoppingList == null) mShoppingList = new ShoppingList(-1, "");
+        if (mShoppingList == null) mShoppingList = new ShoppingList(Utils.EMPTY_ID, "");
 
         // Установим заголовок активности
         setTitle(mShoppingList.getName());
@@ -99,6 +100,29 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         // Добавим текстовое поле для пустого списка
         TextView emptyView = (TextView)findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
+
+        // Покажем общую информацию о списке покупок
+        TextView tvSumInfo = (TextView)findViewById(R.id.tvSumInfo);
+        if (tvSumInfo != null) {
+            if (Utils.showPrices(this)) {
+                tvSumInfo.setVisibility(View.VISIBLE);
+                tvSumInfo.setText(getString(R.string.shopping_list_info,
+                        String.valueOf(0),
+                        String.valueOf(0)));
+            } else {
+                tvSumInfo.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (mProductsAdapter.getOriginalValues() != null) {
+            Utils.calculateTotalSum(this, mProductsAdapter.getOriginalValues());
+        }else {
+            Utils.calculateTotalSum(this, mProducts);
+        }
     }
 
     @Override
@@ -115,20 +139,32 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                SL_ContentProvider.getShoppingListContentProjection(),
-                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
+                null,
+                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?",
+                new String[]{String.valueOf(mShoppingList.getId())},
+                null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
         mProducts.clear();
         while (data.moveToNext()){
-            mProducts.add(new Product(data, new Category(data)));
+            Unit defaultUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_SHORT_NAME)));
+            Unit currentUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_SHORT_NAME)));
+            mProducts.add(new Product(data, new Category(data), defaultUnit, currentUnit));
         }
 
         Utils.sortArrayListByCategories(mProducts);
         if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
+
+        Utils.calculateTotalSum(this, mProducts);
 
         // Отфильтруем список, если он ранее был отфильтрован
         if (mShoppingList.isFiltered()) {
@@ -286,11 +322,6 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
 
         // Сохраняем значение отфильтрован или нет здесь, т.к. onStop этой активности вызывается после onCreate новой
         mShoppingList.saveFilteredValueInDB(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
         saveCheckedInDB();
     }
 

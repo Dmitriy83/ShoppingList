@@ -6,10 +6,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
 public class ShowItemImageActivity extends BaseActivity{
@@ -52,7 +52,7 @@ public class ShowItemImageActivity extends BaseActivity{
     }
 
     private void setProductImage() {
-        final ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
+        final PhotoView imgProduct = (PhotoView) findViewById(R.id.imgItemImage);
         if (imgProduct != null) {
             // Установим картинку
             Picasso.with(this)

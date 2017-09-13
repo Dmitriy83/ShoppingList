@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,6 +18,8 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,10 +53,10 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         IListItem item = mObjects.get(position);
-        if (viewHolder.productNameView != null) {
-            viewHolder.productNameView.setTag(item);
+        if (viewHolder.nameView != null) {
+            viewHolder.nameView.setTag(item);
             // Заполним текстовое поле
-            viewHolder.productNameView.setText(item.getName());
+            viewHolder.nameView.setText(item.getName());
         }
         if (viewHolder.represent != null) {
             viewHolder.represent.setTag(item);
@@ -66,18 +69,6 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
             viewHolder.etCount.setTag(item);
             viewHolder.etCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
         }
-        if (viewHolder.txtCount != null) {
-            viewHolder.txtCount.setTag(item);
-            viewHolder.txtCount.setText(String.format(Locale.ENGLISH, "%.1f", item.getCount()));
-        }
-        if (viewHolder.imgDecrease != null) {
-            viewHolder.imgDecrease.setTag(R.id.item, item);
-            viewHolder.imgDecrease.setTag(R.id.etCount, viewHolder.etCount);
-        }
-        if (viewHolder.imgIncrease != null) {
-            viewHolder.imgIncrease.setTag(R.id.item, item);
-            viewHolder.imgIncrease.setTag(R.id.etCount, viewHolder.etCount);
-        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -87,7 +78,7 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView productNameView;
+        final TextView nameView;
         final ImageButton imgDelete;
         final ImageView itemImage;
         final RelativeLayout represent;
@@ -95,18 +86,44 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
         final ImageButton imgIncrease;
         final EditText etCount;
         final TextView txtCount;
+        final LinearLayout llShoppingListInfo;
+        final EditText etPrice;
+        final TextView tvUnit;
+        final RelativeLayout rlCount;
+        final RelativeLayout rlCountAndUnit;
+        final RelativeLayout rlCountAndPrice;
 
         ViewHolder(View itemView) {
             super(itemView);
 
-            productNameView = (TextView) itemView.findViewById(R.id.txtName);
+            nameView = (TextView) itemView.findViewById(R.id.txtName);
             imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
             itemImage = (ImageView) itemView.findViewById(R.id.imgItemImage);
-            represent = (RelativeLayout) itemView.findViewById(R.id.productRepresent);
-            etCount = (EditText) itemView.findViewById(R.id.etCount);
+            represent = (RelativeLayout) itemView.findViewById(R.id.itemRepresent);
             txtCount = (TextView) itemView.findViewById(R.id.txtCount);
-            imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease);
-            imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease);
+            llShoppingListInfo = (LinearLayout) itemView.findViewById(R.id.llShoppingListInfo);
+            etPrice = (EditText) itemView.findViewById(R.id.etLastPrice);
+            rlCount = (RelativeLayout) itemView.findViewById(R.id.rlCount);
+            rlCountAndUnit = (RelativeLayout) itemView.findViewById(R.id.rlCountAndUnit);
+            rlCountAndPrice = (RelativeLayout) itemView.findViewById(R.id.rlCountAndPriceAndUnit);
+
+            if (Utils.showPrices(mParentActivity)) {
+                tvUnit = (TextView) itemView.findViewById(R.id.tvUnit_CountAndPrice);
+                etCount = (EditText) itemView.findViewById(R.id.etCount_CountAndPrice);
+                imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease_CountAndPrice);
+                imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease_CountAndPrice);
+            }else {
+                tvUnit = (TextView) itemView.findViewById(R.id.tvUnit_CountAndUnit);
+                if (Utils.showUnits(mParentActivity)){
+                    etCount = (EditText) itemView.findViewById(R.id.etCount_CountAndUnit);
+                    imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease_CountAndUnit);
+                    imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease_CountAndUnit);
+                }else {
+                    etCount = (EditText) itemView.findViewById(R.id.etCount);
+                    imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease);
+                    imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease);
+                }
+            }
         }
     }
 
@@ -144,6 +161,15 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
                 if (listItem instanceof Product) {
                     Product product = (Product) item;
                     product.setCategory(((Product) listItem).getCategory());
+                    product.setDefaultUnit(((Product) listItem).getDefaultUnit());
+                    product.setLastPrice(((Product) listItem).getLastPrice());
+                    product.setCurrentUnit(((Product) listItem).getCurrentUnit());
+                    product.setCurrentPrice(((Product) listItem).getCurrentPrice());
+                }
+                if (listItem instanceof ShoppingList) {
+                    ShoppingList sl = (ShoppingList) item;
+                    sl.setNumberOfCrossedOutProducts(((ShoppingList)listItem).getNumberOfCrossedOutProducts());
+                    sl.setTotalCountOfProducts(((ShoppingList)listItem).getTotalCountOfProducts());
                 }
             }
 

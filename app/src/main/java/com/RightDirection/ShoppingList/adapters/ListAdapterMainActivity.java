@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.fragments.InputNameDialogFragment;
@@ -36,44 +38,75 @@ public class ListAdapterMainActivity extends BaseListAdapter {
         super.onBindViewHolder(holder, position);
 
         ViewHolder viewHolder = (ViewHolder)holder;
-        viewHolder.productNameView.setOnClickListener(onProductNameViewClick);
-        viewHolder.productNameView.setOnLongClickListener(onProductNameViewLongClick);
+        if (viewHolder.represent != null) {
+            viewHolder.represent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onShoppingListRepresentClick(view); }
+            });
+            viewHolder.represent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) { return onShoppingListRepresentLongClick(view); }
+            });
+        }
+
+        // Покажем общую информацию о списке покупок
+        if (viewHolder.llShoppingListInfo != null) {
+            if (Utils.showPrices(mParentActivity)) {
+                viewHolder.llShoppingListInfo.setVisibility(View.VISIBLE);
+
+                TextView tvSumInfo = (TextView)viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
+                if (tvSumInfo != null){
+                    tvSumInfo.setText(mParentActivity.getString(R.string.shopping_list_info,
+                            String.valueOf(0),
+                            String.valueOf(0)));
+                }
+
+                ShoppingList item = (ShoppingList)mObjects.get(position);
+                int totalCountOfProducts = 0;
+                int numberOfCrossedOutProducts = 0;
+                if (item != null){
+                    totalCountOfProducts = item.getTotalCountOfProducts();
+                    numberOfCrossedOutProducts = item.getNumberOfCrossedOutProducts();
+                }
+                ProgressBar pbShoppingListProgress = (ProgressBar)viewHolder.llShoppingListInfo.findViewById(R.id.pbShoppingListProgress);
+                if (pbShoppingListProgress != null){
+                    pbShoppingListProgress.setMax(totalCountOfProducts);
+                    pbShoppingListProgress.setProgress(numberOfCrossedOutProducts);
+                }
+            } else {
+                viewHolder.llShoppingListInfo.setVisibility(View.GONE);
+            }
+        }
     }
 
-    private final View.OnClickListener onProductNameViewClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mSelectedView != null) mSelectedView.setSelected(false);
-            mSelectedView = view;
-            mSelectedView.setSelected(true);
+    private void onShoppingListRepresentClick(View view){
+        if (mSelectedView != null) mSelectedView.setSelected(false);
+        mSelectedView = view;
+        mSelectedView.setSelected(true);
 
-            ShoppingList shoppingList = (ShoppingList) view.getTag();
-            if (Utils.showChooseModeDialog(mParentActivity))
-                shoppingList.startOpeningOptionChoiceActivity(mParentActivity);
-            else
-                shoppingList.startInShopActivity(mParentActivity);
+        ShoppingList shoppingList = (ShoppingList) view.getTag();
+        if (Utils.showChooseModeDialog(mParentActivity)) {
+            shoppingList.startOpeningOptionChoiceActivity(mParentActivity);
+        } else {
+            shoppingList.startInShopActivity(mParentActivity);
         }
-    };
+    }
 
-    private final View.OnLongClickListener onProductNameViewLongClick = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
+    private boolean onShoppingListRepresentLongClick(View view){
+        mSelectedItem = (ShoppingList) view.getTag();
 
-            mSelectedItem = (ShoppingList) view.getTag();
+        if (mSelectedView != null) mSelectedView.setSelected(false);
+        mSelectedView = view;
+        mSelectedView.setSelected(true);
 
-            if (mSelectedView != null) mSelectedView.setSelected(false);
-            mSelectedView = view;
-            mSelectedView.setSelected(true);
-
-            // Start the CAB using the ActionMode.Callback defined above
-            //mActionMode = mParentActivity.startActionMode(mActionModeCallback);
-            if (mActionMode == null) {
-                Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
-                if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
-            }
-            return true;
+        // Start the CAB using the ActionMode.Callback defined above
+        //mActionMode = mParentActivity.startActionMode(mActionModeCallback);
+        if (mActionMode == null) {
+            Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
+            if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
         }
-    };
+        return true;
+    }
 
     private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 

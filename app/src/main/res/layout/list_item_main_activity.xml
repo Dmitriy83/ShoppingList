@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:background="@drawable/item_selector"
+    android:id="@+id/itemRepresent"    >
 
     <TextView
         android:layout_width="fill_parent"
@@ -12,13 +13,44 @@
         android:scrollbars="vertical"
         android:fadingEdge="vertical"
         android:textColor="@color/orange"
-        android:background="@drawable/item_selector"
         android:textSize="@dimen/text_size_large"
         android:textStyle="normal|bold" />
+
+    <LinearLayout
+        android:id="@+id/llShoppingListInfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible"
+        android:layout_below="@+id/txtName">
+
+        <ProgressBar
+            android:id="@+id/pbShoppingListProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:progressDrawable="@drawable/main_activity_progressbar"
+            />
+
+        <TextView
+            android:id="@+id/tvSumInfo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text=""
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@+id/llShoppingListInfo"
         android:background="@color/border_color"/>
 
-</LinearLayout>
+</RelativeLayout>

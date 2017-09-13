@@ -26,7 +26,9 @@ import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -64,13 +66,22 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
 
         mTvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
         if (mTvNewItem != null) {
-            mTvNewItem.setOnEditorActionListener(newItemEditTextOnEditorActionListener);
-            mTvNewItem.setOnItemClickListener(onItemClickListener);
+            mTvNewItem.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) { return newItemEditTextOnEditorActionListener(actionId); }
+            });
+            mTvNewItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) { onItemClickListener(position);  }
+            });
         }
         // Добавим обработчик нажатия для кнопки добавляния нового элемента в базу данных
         Button btnAddProductToShoppingList = (Button) view.findViewById(R.id.btnAddProductToShoppingList);
         if (btnAddProductToShoppingList != null) {
-            btnAddProductToShoppingList.setOnClickListener(onBtnAddProductToShoppingListClickListener);
+            btnAddProductToShoppingList.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) { onBtnAddProductToShoppingListClickListener(); }
+            });
         }
 
         // Установим количество символов, которые пользователь должен ввести прежде чем выпадающий список будет показан
@@ -95,17 +106,13 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
         outState.putStringArrayList(EXTRAS_KEYS.PRODUCTS_NAMES.getValue(), mAllProductsNames);
     }
 
-    private final AutoCompleteTextView.OnEditorActionListener newItemEditTextOnEditorActionListener = new AutoCompleteTextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                createNewItem();
-                addItem();
-                return true;
-            }
-            return false;
+    private boolean newItemEditTextOnEditorActionListener(int actionId) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            onBtnAddProductToShoppingListClickListener();
+            return true;
         }
-    };
+        return false;
+    }
 
     private void addItem(){
         onNewItemAddedListener.OnNewItemAdded(mCurrentItem);
@@ -113,28 +120,22 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
         mCurrentItem = null;
     }
 
-    private final AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String name = mAdapter.getItem(position);
-            int index = mAllProductsNames.indexOf(name);
-            if (index >= 0) {
-                mCurrentItem = mAllProducts.get(index);
-                addItem();
-            }
-        }
-    };
-
-    private final Button.OnClickListener onBtnAddProductToShoppingListClickListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // Добавим новый товар в БД
-            createNewItem();
-
-            // Оповестим родительскую активность о выборе элемента
+    private void onItemClickListener(int position) {
+        String name = mAdapter.getItem(position);
+        int index = mAllProductsNames.indexOf(name);
+        if (index >= 0) {
+            mCurrentItem = mAllProducts.get(index);
             addItem();
         }
-    };
+    }
+
+    private void onBtnAddProductToShoppingListClickListener() {
+        // Добавим новый товар в БД
+        createNewItem();
+
+        // Оповестим родительскую активность о выборе элемента
+        addItem();
+    }
 
     private void createNewItem() {
         // Добавим новый товар в БД
@@ -145,7 +146,7 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
         }
 
         if (!mAllProductsNames.contains(newItemName)) {
-            mCurrentItem = new Product(-1, newItemName); // id будет назначено при сохранении продукта в БД
+            mCurrentItem = new Product(Utils.EMPTY_ID, newItemName); // id будет назначено при сохранении продукта в БД
             mCurrentItem.addToDB(getActivity());
 
             // Добавим новый товар в массив всех товаров текущего фрагмента (для построения списка выпадающего меню)
@@ -197,14 +198,18 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), SL_ContentProvider.PRODUCTS_CONTENT_URI,
-                SL_ContentProvider.getProductsProjection(), null, null ,null);
+                null, null, null ,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAllProducts.clear();
         while (data.moveToNext()){
-            Product product = new Product(data, new Category(data));
+            Unit defaultUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_SHORT_NAME)));
+            Product product = new Product(data, new Category(data), defaultUnit, null);
             addProductInArrays(product);
         }
     }

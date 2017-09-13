@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:id="@+id/productRepresent"
+    android:id="@+id/itemRepresent"
     android:background="?android:attr/selectableItemBackground">
 
     <de.hdodenhof.circleimageview.CircleImageView

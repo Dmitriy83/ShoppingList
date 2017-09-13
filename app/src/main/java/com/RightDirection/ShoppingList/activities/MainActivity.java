@@ -138,8 +138,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         // Запускаем AlarmManager с текущего момента
         long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
-                CHECK_INTERVAL, pIntent);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, CHECK_INTERVAL, pIntent);
     }
 
     @Override
@@ -184,25 +183,36 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             userSignInInfo.setVisibility(View.GONE);
         }
 
+        MenuItem actionEditUnits = navView.getMenu().findItem(R.id.action_edit_units_list);
+        if (actionEditUnits != null) {
+            if (Utils.showUnits(this)){
+                actionEditUnits.setVisible(true);
+            } else{
+                actionEditUnits.setVisible(false);
+            }
+        }
+
         final View arrow = userSignInInfo.findViewById(R.id.imgArrow);
         arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow); // по умолчанию
         userSignInInfo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // Изменяем стрелку и подменяем меню
-                NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
-                if (mUserSignInInfoExpanded){
-                    navView.getMenu().clear();
-                    navView.inflateMenu(R.menu.activity_main_menu_authorized);
-                    arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow);
-                }else{
-                    navView.getMenu().clear();
-                    navView.inflateMenu(R.menu.activity_main_user_authorized_actions);
-                    arrow.setBackgroundResource(R.drawable.ic_drop_up_arrow);
-                }
-                mUserSignInInfoExpanded = !mUserSignInInfoExpanded;
-            }
+            public void onClick(View v) { onUserSignInInfoClick(arrow); }
         });
+    }
+
+    private void onUserSignInInfoClick(View arrow) {
+        // Изменяем стрелку и подменяем меню
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        if (mUserSignInInfoExpanded){
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.activity_main_menu_authorized);
+            arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow);
+        }else{
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.activity_main_user_authorized_actions);
+            arrow.setBackgroundResource(R.drawable.ic_drop_up_arrow);
+        }
+        mUserSignInInfoExpanded = !mUserSignInInfoExpanded;
     }
 
     @Override
@@ -322,7 +332,6 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         // Обработаем нажатие на пункт меню после закрытия панели навигации, чтобы позволить
         // анимации закрытия панели навигации доиграть до конца. Иначе будет заметный лаг.
         handleItemClick(item.getItemId());
@@ -339,6 +348,11 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             }
             case R.id.action_edit_products_list: {
                 Intent intent = new Intent(this, ProductsListActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.action_edit_units_list: {
+                Intent intent = new Intent(this, UnitsListActivity.class);
                 startActivity(intent);
                 break;
             }
@@ -463,11 +477,11 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                             + dateFormat.format(calendar.getTime());
 
                     // Создадим  новый объект-лист покупок
-                    ShoppingList newShoppingList = new ShoppingList(-1, newListName, products);
+                    ShoppingList newShoppingList = new ShoppingList(Utils.EMPTY_ID, newListName, products);
 
                     // Сначала нужно добавить новые продукты из списка в базу данных.
                     // Синхронизацияя должна производиться по полю Name
-                    newShoppingList.addNotExistingProductsToDB(getApplicationContext());
+                    newShoppingList.addNotExistingProductsToDBandSetId(getApplicationContext());
 
                     // Сохраним новый лист покупок в базе данных
                     newShoppingList.addToDB(getApplicationContext());

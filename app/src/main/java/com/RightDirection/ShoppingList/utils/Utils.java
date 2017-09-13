@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
@@ -37,10 +38,12 @@ public class Utils {
     public static final int NEED_TO_UPDATE = 1;
     public static final int GET_CATEGORY = 2;
     public static final int GET_CATEGORY_IMAGE = 3;
+    public static final int GET_UNIT = 4;
     public static final int TIMEOUT = 15000;
     public static final String ACTION_UPDATE_MAIN_ACTIVITY = "com.RightDirection.ShoppingList.ACTION_UPDATE_MAIN_ACTIVITY";
     public static final String ACTION_NOTIFICATION = "com.RightDirection.ShoppingList.ACTION_NOTIFICATION";
     public static final String ACTION_ADD_USER_TO_FRIENDS = "com.RightDirection.ShoppingList.ACTION_ADD_USER_TO_FRIENDS";
+    public static final long EMPTY_ID = -1;
 
     public static String getListNameFromJSON(String jsonStr) throws JSONException {
         JSONObject json = new JSONObject(jsonStr);
@@ -142,7 +145,7 @@ public class Utils {
 
         Product product, prevProduct;
         Category category, prevCategory;
-        Category emptyCategory = new Category(-1, context.getString(R.string.category_not_assigned), 0);
+        Category emptyCategory = new Category(Utils.EMPTY_ID, context.getString(R.string.category_not_assigned), 0);
         for (int i = arrayList.size() - 2; i >= 0; i--) {
             product = (Product)arrayList.get(i);
             category = product.getCategory();
@@ -216,7 +219,6 @@ public class Utils {
         return emailIntent;
     }
 
-
     public static boolean showHelpInShop(Context context) {
         // Прочитаем настройки приложения
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
@@ -246,6 +248,16 @@ public class Utils {
         return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_images), true);
     }
 
+    public static boolean showPrices(Context context){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_prices), false);
+    }
+
+    public static boolean showUnits(Context context){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        return sharedPref.getBoolean(context.getApplicationContext().getString(R.string.pref_key_show_units), false);
+    }
+
     /**
      * Создание и запуск намерения, которое дает пользователю возможность отпрпвки приглашения
      */
@@ -256,5 +268,34 @@ public class Utils {
                 .setCallToActionText(activity.getString(R.string.invitation_call_to_action_text))
                 .build();
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void calculateTotalSum(Activity activity, ArrayList<IListItem> products){
+        TextView tvSumInfo = (TextView)activity.findViewById(R.id.tvSumInfo);
+        if (tvSumInfo == null) { return; }
+
+        float totalSum = 0;
+        float alreadyPurchasedFor = 0;
+        for (IListItem item: products) {
+            if (!(item instanceof Product)){ continue; }
+
+            Product product = (Product) item;
+            float price = 0;
+            if (product.getCurrentPrice() != Product.EMPTY_CURRENT_PRICE) {
+                price = product.getCurrentPrice();
+            } else if (product.getLastPrice() != Product.EMPTY_CURRENT_PRICE) {
+                price = product.getLastPrice();
+            }
+            float count = product.getCount();
+            float sum = price * count;
+            totalSum += sum;
+            if (product.isChecked()){
+                alreadyPurchasedFor += sum;
+            }
+        }
+
+        tvSumInfo.setText(activity.getString(R.string.shopping_list_info,
+                String.valueOf(totalSum),
+                String.valueOf(alreadyPurchasedFor)));
     }
 }

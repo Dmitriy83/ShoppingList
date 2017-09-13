@@ -54,7 +54,7 @@
     <string name="got_it">Got it</string>
     <string name="action_edit_categories_list">Categories</string>
     <string name="item_already_added">Item was added before</string>
-    <string name="category" translatable="false">Category</string>
+    <string name="category">Category:</string>
     <string name="new_category">New category</string>
     <string name="category_title">Category</string>
     <string name="choose_category">Choose category…</string>
@@ -151,4 +151,27 @@
     <string name="show_product_image">Show product image</string>
     <string name="clear_product_image">Clear product image</string>
     <string name="product_image_activity_title">Image of %1$s</string>
+    <string name="pref_key_show_prices" translatable="false">pref_key_show_prices</string>
+    <string name="pref_show_prices">Show prices</string>
+    <string name="shopping_list_info">Total sum: %1$s. Already purchased for: %2$s</string>
+    <string name="count">Qty:</string>
+    <string name="price">Price:</string>
+    <string name="default_unit">pc.</string>
+    <string name="enter_price">Enter price</string>
+    <string name="unit">Unit:</string>
+    <string name="in_developing">In developing…</string>
+    <string name="pref_key_show_units" translatable="false">pref_key+show_units</string>
+    <string name="pref_show_units">Show units</string>
+    <string name="unit_not_named">Unit was not named</string>
+    <string name="units_list_activity_no_data_text">Add new unit</string>
+    <string name="unit_name_hint">Enter unit short name</string>
+    <string name="short_name">Short name:</string>
+    <string name="action_edit_units_list">Units</string>
+    <string name="choose_unit_activity_no_data_text">Units list is empty</string>
+    <string name="unit_title">Unit</string>
+    <string name="new_unit">New unit</string>
+    <string name="props_text_with_price_and_unit">price: %1$s, %2$s %3$s</string>
+    <string name="props_text_with_price_only">price: %1$s, %2$s</string>
+    <string name="props_text_with_unit_only">%1$s %2$s</string>
+    <string name="price_change_graph">Price change graph</string>
 </resources>

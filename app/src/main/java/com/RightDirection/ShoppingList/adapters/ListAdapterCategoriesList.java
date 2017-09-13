@@ -21,31 +21,31 @@ public class ListAdapterCategoriesList extends BaseListAdapter {
 
         ViewHolder viewHolder = (ViewHolder) holder;
         if (viewHolder.represent != null)
-            viewHolder.represent.setOnClickListener(onRepresentClick);
+            viewHolder.represent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onRepresentClick(view); }
+            });
         if (viewHolder.imgDelete != null)
-            viewHolder.imgDelete.setOnClickListener(onImgDeleteClick);
+            viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onImageDeleteClick(view); }
+            });
         if (viewHolder.itemImage != null) {
             setProductImage(viewHolder.itemImage, mObjects.get(position));
         }
     }
 
-    private final View.OnClickListener onImgDeleteClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // Получим объект item по элементу View
-            Category item = (Category) view.getTag();
-            // Удалим из БД
-            item.removeFromDB(mParentActivity);
-            // Удалим из списка
-            remove(item);
-        }
-    };
+    private void onImageDeleteClick(View view) {
+        // Получим объект item по элементу View
+        Category item = (Category) view.getTag();
+        // Удалим из БД
+        item.removeFromDB(mParentActivity);
+        // Удалим из списка
+        remove(item);
+    }
 
-    private final View.OnClickListener onRepresentClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Category category = (Category) view.getTag();
-            category.startCategoryActivity(mParentActivity);
-        }
-    };
+    private void onRepresentClick(View view) {
+        Category category = (Category) view.getTag();
+        category.startCategoryActivity(mParentActivity);
+    }
 }

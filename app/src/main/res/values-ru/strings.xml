@@ -129,4 +129,26 @@
     <string name="show_product_image">Посмотреть картнику</string>
     <string name="clear_product_image">Очистить картинку</string>
     <string name="product_image_activity_title">Изображение %1$s</string>
+    <string name="pref_show_prices">Показывать цены</string>
+    <string name="shopping_list_info">Общая сумма: %1$s. Уже куплено на сумму: %2$s</string>
+    <string name="count">Кол.</string>
+    <string name="price">Цена:</string>
+    <string name="default_unit">шт.</string>
+    <string name="category">Категория:</string>
+    <string name="enter_price">Введите цену</string>
+    <string name="unit">Ед. изм.:</string>
+    <string name="in_developing">В разработке…</string>
+    <string name="pref_show_units">Показывать единицы измерения</string>
+    <string name="unit_not_named">\'Без имени\'</string>
+    <string name="units_list_activity_no_data_text">Добавьте новую единицу измерения</string>
+    <string name="unit_name_hint">Введите сокр. наименование</string>
+    <string name="short_name">Сокращенно:</string>
+    <string name="action_edit_units_list">Ед. измерения</string>
+    <string name="choose_unit_activity_no_data_text">Список ед. измерений не заполнен</string>
+    <string name="unit_title">Ед. изм.</string>
+    <string name="new_unit">Новая ед. изм.</string>
+    <string name="props_text_with_price_and_unit">ц.: %1$s, %2$s %3$s</string>
+    <string name="props_text_with_price_only">ц.: %1$s, %2$s</string>
+    <string name="props_text_with_unit_only">%1$s %2$s</string>
+    <string name="price_change_graph">График изменения цены</string>
 </resources>

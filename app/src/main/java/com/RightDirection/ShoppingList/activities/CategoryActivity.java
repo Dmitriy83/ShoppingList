@@ -34,7 +34,7 @@ public class CategoryActivity extends BaseActivity{
         }
 
         if (mCategory == null) {
-            mCategory = new Category(-1, "", DEFAULT_ORDER);
+            mCategory = new Category(Utils.EMPTY_ID, "", DEFAULT_ORDER);
             mCategory.isNew = true;
         }
 

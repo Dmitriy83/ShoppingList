@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:id="@+id/productRepresent"
+    android:id="@+id/itemRepresent"
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView
@@ -28,60 +29,235 @@
             android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:textColor="#F000"
-            android:textSize="@dimen/text_size_normal"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/imgDelete"
             android:layout_toLeftOf="@+id/imgDelete"
-            android:layout_alignParentLeft="true" />
+            android:layout_toStartOf="@+id/imgDelete"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:textColor="#F000"
+            android:textSize="@dimen/text_size_normal" />
 
         <RelativeLayout
             android:id="@+id/rlCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtName"
-            android:gravity="center"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/imgDelete"
+            android:layout_below="@+id/txtName"
             android:layout_toLeftOf="@+id/imgDelete"
-            android:layout_alignParentLeft="true">
+            android:layout_toStartOf="@+id/imgDelete"
+            android:gravity="center"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/imgDecrease"
-                android:layout_height="@dimen/small_size"
-                android:contentDescription="@string/decrease"
                 android:layout_width="60dp"
-                android:background="@null"
-                android:src="@drawable/ic_remove_circle"
+                android:layout_height="@dimen/small_size"
                 android:layout_centerVertical="true"
-                android:scaleType="fitEnd"/>
+                android:background="@null"
+                android:contentDescription="@string/decrease"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_remove_circle" />
 
             <EditText
                 android:id="@+id/etCount"
                 android:layout_width="@dimen/large_size"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/imgDecrease"
+                android:layout_toRightOf="@+id/imgDecrease"
                 android:gravity="end"
                 android:hint=""
                 android:inputType="numberDecimal"
-                android:textSize="@dimen/text_size_small"
                 android:textColor="@color/category_text_color"
-                android:layout_toRightOf="@+id/imgDecrease" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageButton
                 android:id="@+id/imgIncrease"
                 android:layout_width="60dp"
                 android:layout_height="@dimen/small_size"
-                android:contentDescription="@string/increase"
-                android:background="@null"
-                android:src="@drawable/ic_add_circle"
-                android:scaleType="fitStart"
                 android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/etCount"
                 android:layout_toRightOf="@+id/etCount"
-                android:layout_toEndOf="@+id/etCount" />
+                android:background="@null"
+                android:contentDescription="@string/increase"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_add_circle" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlCountAndUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txtName"
+            android:layout_toLeftOf="@+id/imgDelete"
+            android:layout_toStartOf="@+id/imgDelete"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/imgDecrease_CountAndUnit"
+                android:layout_width="35dp"
+                android:layout_height="@dimen/small_size"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:contentDescription="@string/decrease"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_remove_circle" />
+
+            <EditText
+                android:id="@+id/etCount_CountAndUnit"
+                android:layout_width="@dimen/large_size"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/imgDecrease_CountAndUnit"
+                android:layout_toRightOf="@+id/imgDecrease_CountAndUnit"
+                android:gravity="end"
+                android:hint=""
+                android:inputType="numberDecimal"
+                android:textColor="@color/category_text_color"
+                android:textSize="@dimen/text_size_small" />
+
+            <ImageButton
+                android:id="@+id/imgIncrease_CountAndUnit"
+                android:layout_width="35dp"
+                android:layout_height="@dimen/small_size"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/etCount_CountAndUnit"
+                android:layout_toRightOf="@+id/etCount_CountAndUnit"
+                android:background="@null"
+                android:contentDescription="@string/increase"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_add_circle" />
+
+            <TextView
+                android:id="@+id/tvUnit_CountAndUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/etCount_CountAndUnit"
+                android:layout_alignBottom="@+id/etCount_CountAndUnit"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/imgIncrease_CountAndUnit"
+                android:layout_toRightOf="@+id/imgIncrease_CountAndUnit"
+                android:background="@drawable/unit_button_shape"
+                android:gravity="center"
+                android:minWidth="30dp"
+                android:padding="4dp"
+                android:text="@string/default_unit"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlCountAndPriceAndUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtName"
+            android:layout_toLeftOf="@+id/imgDelete"
+            android:layout_toStartOf="@+id/imgDelete"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                tools:ignore="UselessParent">
+
+                <TextView
+                    android:id="@+id/tvCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/imgDecrease_CountAndPrice"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="start"
+                    android:text="@string/count"
+                    android:textAlignment="textStart" />
+
+                <ImageButton
+                    android:id="@+id/imgDecrease_CountAndPrice"
+                    android:layout_width="35dp"
+                    android:layout_height="@dimen/small_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/tvCount"
+                    android:layout_toRightOf="@id/tvCount"
+                    android:background="@null"
+                    android:contentDescription="@string/decrease"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_remove_circle" />
+
+                <EditText
+                    android:id="@+id/etCount_CountAndPrice"
+                    android:layout_width="@dimen/medium_size"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/imgDecrease_CountAndPrice"
+                    android:layout_toRightOf="@+id/imgDecrease_CountAndPrice"
+                    android:gravity="end"
+                    android:hint=""
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/category_text_color"
+                    android:textSize="@dimen/text_size_small" />
+
+                <ImageButton
+                    android:id="@+id/imgIncrease_CountAndPrice"
+                    android:layout_width="35dp"
+                    android:layout_height="@dimen/small_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/etCount_CountAndPrice"
+                    android:layout_toRightOf="@+id/etCount_CountAndPrice"
+                    android:background="@null"
+                    android:contentDescription="@string/increase"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/ic_add_circle" />
+
+                <TextView
+                    android:id="@+id/tvUnit_CountAndPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/imgDecrease_CountAndPrice"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imgIncrease_CountAndPrice"
+                    android:layout_toRightOf="@+id/imgIncrease_CountAndPrice"
+                    android:background="@drawable/unit_button_shape"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:text="@string/default_unit"
+                    android:textAlignment="center"
+                    android:textSize="12sp"
+                    android:visibility="visible"
+                    android:minWidth="30dp"/>
+
+                <TextView
+                    android:id="@+id/tvLastPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/imgDecrease_CountAndPrice"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tvUnit_CountAndPrice"
+                    android:layout_toRightOf="@+id/tvUnit_CountAndPrice"
+                    android:gravity="end"
+                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
+                    android:text="@string/price"
+                    android:textAlignment="textEnd" />
+
+                <EditText
+                    android:id="@+id/etLastPrice"
+                    android:layout_width="@dimen/large_size"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tvLastPrice"
+                    android:layout_toRightOf="@+id/tvLastPrice"
+                    android:gravity="end"
+                    android:hint=""
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/category_text_color"
+                    android:textSize="@dimen/text_size_small" />
+            </RelativeLayout>
         </RelativeLayout>
 
         <ImageButton

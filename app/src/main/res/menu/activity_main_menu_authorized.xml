@@ -17,6 +17,12 @@
             android:title="@string/action_edit_products_list"
             android:icon="@drawable/ic_products"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/action_edit_units_list"
+            android:orderInCategory="102"
+            android:title="@string/action_edit_units_list"
+            android:icon="@drawable/ic_units"
+            app:showAsAction="never" />
     </group>
 
     <group
@@ -32,7 +38,7 @@
             -->
         <item
             android:id="@+id/action_settings"
-            android:orderInCategory="102"
+            android:orderInCategory="105"
             android:title="@string/action_settings"
             android:icon="@drawable/ic_settings"
             app:showAsAction="never" />

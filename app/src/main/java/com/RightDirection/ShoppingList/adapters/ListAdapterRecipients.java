@@ -30,7 +30,7 @@ public class ListAdapterRecipients extends FirebaseRecyclerAdapter<User, ListAda
             super(rowView);
             txtName = (TextView) rowView.findViewById(R.id.txtName);
             imgFriendPhoto = (ImageView) rowView.findViewById(R.id.imgFriendPhoto);
-            productRepresent = (RelativeLayout)rowView.findViewById(R.id.productRepresent);
+            productRepresent = (RelativeLayout)rowView.findViewById(R.id.itemRepresent);
             assert productRepresent != null;
             productRepresent.setTag(this);
         }

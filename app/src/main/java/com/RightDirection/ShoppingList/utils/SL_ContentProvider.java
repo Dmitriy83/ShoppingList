@@ -27,6 +27,7 @@ public class SL_ContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.RightDirection.shoppinglistcontentprovider";
     public static final Uri PRODUCTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/products");
+    public static final Uri UNITS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/units");
     public static final Uri SHOPPING_LISTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglists");
     public static final Uri SHOPPING_LIST_CONTENT_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglistcontent");
     public static final Uri CATEGORIES_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/categories");
@@ -39,6 +40,8 @@ public class SL_ContentProvider extends ContentProvider {
     private static final int FILES = 7;
     private static final int CATEGORIES_ALL_ROWS = 8;
     private static final int CATEGORIES_SINGLE_ROW = 9;
+    private static final int UNITS_ALL_ROWS = 10;
+    private static final int UNITS_SINGLE_ROW = 11;
 
     private static final UriMatcher uriMatcher;
     static {
@@ -52,10 +55,16 @@ public class SL_ContentProvider extends ContentProvider {
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "files/*",                  FILES);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "categories",               CATEGORIES_ALL_ROWS);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "categories/#",             CATEGORIES_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "units",                    UNITS_ALL_ROWS);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "units/#",                  UNITS_SINGLE_ROW);
     }
 
     public static final String KEY_ID = "_id";
     public static final String KEY_NAME = "NAME";
+    public static final String KEY_UNIT_ID = "UNIT_ID";
+    public static final String KEY_PRICE = "PRICE";
+    public static final String KEY_UNIT_NAME = "UNIT_NAME";
+    public static final String KEY_UNIT_SHORT_NAME = "UNIT_SHORT_NAME";
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
@@ -67,13 +76,23 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_IS_CHECKED = "IS_CHECKED";
     public static final String KEY_SHOPPING_LIST_ROW_ID = "SHOPPING_LIST_ROW_ID";
     public static final String KEY_IS_FILTERED = "IS_FILTERED";
+    public static final String KEY_NUMBER_OF_CROSSED_OUT = "NUMBER_OF_CROSSED_OUT";
+    public static final String KEY_TOTAL_COUNT = "TOTAL_COUNT";
+    public static final String KEY_DEFAULT_UNIT_ID = "DEFAULT_UNIT_ID";
+    public static final String KEY_DEFAULT_UNIT_NAME = "DEFAULT_UNIT_NAME";
+    public static final String KEY_DEFAULT_UNIT_SHORT_NAME = "DEFAULT_UNIT_SHORT_NAME";
+    public static final String KEY_LAST_PRICE = "LAST_PRICE";
     private static final String DATABASE_NAME_RU = "RU_SHOPPING_LIST.db";
     private static final String DATABASE_NAME_ENG = "ENG_SHOPPING_LIST.db";
-    public static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
+    private static final String PRODUCTS_TABLE_NAME = "PRODUCTS";
     private static final String SHOPPING_LISTS_TABLE_NAME = "SHOPPING_LISTS";
+    private static final String SHOPPING_LISTS_WITH_ADDITIONAL_INFO_VIEW_NAME = "SHOPPING_LISTS_WITH_ADDITIONAL_INFO";
+    private static final String SHOPPING_LIST_CONTENT_WITH_ADDITIONAL_INFO_VIEW_NAME = "SHOPPING_LIST_CONTENT_WITH_ADDITIONAL_INFO";
+    private static final String PRODUCTS_WITH_ADDITIONAL_INFO_VIEW_NAME = "PRODUCTS_WITH_ADDITIONAL_INFO";
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
-    private static final int DATABASE_VERSION = 11;
+    private static final String UNITS_TABLE_NAME = "UNITS";
+    private static final int DATABASE_VERSION = 12;
 
     /**
      * Возвращает имя базы данных в зависимости от локализации (по умолчанию - Английская).
@@ -106,6 +125,8 @@ public class SL_ContentProvider extends ContentProvider {
             case FILES: return "vnd.android.file.dir/vnd.RightDirection.ShoppingList.files";
             case CATEGORIES_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.categories";
             case CATEGORIES_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.categories";
+            case UNITS_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.units";
+            case UNITS_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.units";
             default: throw new IllegalArgumentException("Неподдерживаемый URI:" + uri);
         }
     }
@@ -168,6 +189,10 @@ public class SL_ContentProvider extends ContentProvider {
             case CATEGORIES_ALL_ROWS:
                 cleanRefsOnCategory(selection, selectionArgs);
                 break;
+            case UNITS_SINGLE_ROW:
+            case UNITS_ALL_ROWS:
+                cleanRefsOnUnit(selection, selectionArgs);
+                break;
             default: break;
         }
 
@@ -188,6 +213,22 @@ public class SL_ContentProvider extends ContentProvider {
                 + " IN (SELECT " + SL_ContentProvider.KEY_CATEGORY_ID
                 + " FROM " + CATEGORIES_TABLE_NAME + " WHERE " + selection + ")";
         update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues, newSelection, selectionArgs);
+    }
+
+    private void cleanRefsOnUnit(String selection, String[] selectionArgs) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_DEFAULT_UNIT_ID, 0);
+        String newSelection = SL_ContentProvider.KEY_DEFAULT_UNIT_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_ID
+                + " FROM " + UNITS_TABLE_NAME + " WHERE " + selection + ")";
+        update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues, newSelection, selectionArgs);
+
+        contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_UNIT_ID, 0);
+        newSelection = SL_ContentProvider.KEY_UNIT_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_ID
+                + " FROM " + UNITS_TABLE_NAME + " WHERE " + selection + ")";
+        update(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues, newSelection, selectionArgs);
     }
 
     private void deleteShoppingListRowsByProductId(String selection, String[] selectionArgs) {
@@ -270,6 +311,10 @@ public class SL_ContentProvider extends ContentProvider {
             case CATEGORIES_SINGLE_ROW:
                 contentUri = CATEGORIES_CONTENT_URI;
                 break;
+            case UNITS_ALL_ROWS:
+            case UNITS_SINGLE_ROW:
+                contentUri = UNITS_CONTENT_URI;
+                break;
             default: break;
         }
         return contentUri;
@@ -281,9 +326,7 @@ public class SL_ContentProvider extends ContentProvider {
             case PRODUCTS_SINGLE_ROW:
             case PRODUCTS_ALL_ROWS:
                 if (forQuery) {
-                    tableName = PRODUCTS_TABLE_NAME + " LEFT OUTER JOIN " + CATEGORIES_TABLE_NAME + " ON ("
-                            + PRODUCTS_TABLE_NAME + "." + KEY_CATEGORY_ID
-                            + " = " + CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID + ")";
+                    tableName = PRODUCTS_WITH_ADDITIONAL_INFO_VIEW_NAME;
                 }
                 else {
                     tableName = PRODUCTS_TABLE_NAME;
@@ -291,17 +334,17 @@ public class SL_ContentProvider extends ContentProvider {
                 break;
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LISTS_ALL_ROWS:
-                tableName = SHOPPING_LISTS_TABLE_NAME;
+                if (forQuery) {
+                    tableName = SHOPPING_LISTS_WITH_ADDITIONAL_INFO_VIEW_NAME;
+                }
+                else {
+                    tableName = SHOPPING_LISTS_TABLE_NAME;
+                }
                 break;
             case SHOPPING_LIST_CONTENT_SINGLE_ROW:
             case SHOPPING_LIST_CONTENT_ALL_ROWS:
                 if (forQuery) {
-                    tableName = SHOPPING_LIST_CONTENT_TABLE_NAME + " LEFT OUTER JOIN " + PRODUCTS_TABLE_NAME + " ON ("
-                            + SHOPPING_LIST_CONTENT_TABLE_NAME + "." + KEY_PRODUCT_ID
-                            + " = " + PRODUCTS_TABLE_NAME + "." + KEY_ID + ")"
-                            + " LEFT OUTER JOIN " + CATEGORIES_TABLE_NAME + " ON ("
-                            + PRODUCTS_TABLE_NAME + "." + KEY_CATEGORY_ID
-                            + " = " + CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID + ")";
+                    tableName = SHOPPING_LIST_CONTENT_WITH_ADDITIONAL_INFO_VIEW_NAME;
                 }
                 else {
                     tableName = SHOPPING_LIST_CONTENT_TABLE_NAME;
@@ -310,6 +353,10 @@ public class SL_ContentProvider extends ContentProvider {
             case CATEGORIES_ALL_ROWS:
             case CATEGORIES_SINGLE_ROW:
                 tableName = CATEGORIES_TABLE_NAME;
+                break;
+            case UNITS_ALL_ROWS:
+            case UNITS_SINGLE_ROW:
+                tableName = UNITS_TABLE_NAME;
                 break;
             default: break;
         }
@@ -322,6 +369,7 @@ public class SL_ContentProvider extends ContentProvider {
             case SHOPPING_LISTS_SINGLE_ROW:
             case SHOPPING_LIST_CONTENT_SINGLE_ROW:
             case CATEGORIES_SINGLE_ROW:
+            case UNITS_SINGLE_ROW:
                 String rowID = uri.getPathSegments().get(1);
                 selection = KEY_ID + "=" + rowID
                         + (!TextUtils.isEmpty(selection)? " AND (" + selection + ")": "");
@@ -331,7 +379,7 @@ public class SL_ContentProvider extends ContentProvider {
         return selection;
     }
 
-    public static String[] getShoppingListContentProjection(){
+    /*public static String[] getShoppingListContentProjection(){
         return new String[]{
                 SHOPPING_LIST_CONTENT_TABLE_NAME + "." + KEY_ID + " AS " + KEY_SHOPPING_LIST_ROW_ID,
                 KEY_PRODUCT_ID,
@@ -342,11 +390,14 @@ public class SL_ContentProvider extends ContentProvider {
                 KEY_CATEGORY_NAME,
                 CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID  + " AS " + KEY_CATEGORY_ID,
                 KEY_CATEGORY_ORDER,
-                KEY_CATEGORY_PICTURE_URI
+                KEY_CATEGORY_PICTURE_URI,
+                UNITS_TABLE_NAME + "." + KEY_ID  + " AS " + KEY_UNIT_ID,
+                UNITS_TABLE_NAME + "." + KEY_NAME  + " AS " + KEY_UNIT_NAME,
+                UNITS_TABLE_NAME + "." + KEY_UNIT_SHORT_NAME  + " AS " + KEY_UNIT_SHORT_NAME,
         };
-    }
+    }*/
 
-    public static String[] getProductsProjection(){
+    /*public static String[] getProductsProjection(){
         return new String[]{
                 PRODUCTS_TABLE_NAME + "." + KEY_ID + " AS " + KEY_PRODUCT_ID,
                 KEY_NAME,
@@ -354,9 +405,12 @@ public class SL_ContentProvider extends ContentProvider {
                 KEY_CATEGORY_NAME,
                 CATEGORIES_TABLE_NAME + "." + KEY_CATEGORY_ID  + " AS " + KEY_CATEGORY_ID,
                 KEY_CATEGORY_ORDER,
-                KEY_CATEGORY_PICTURE_URI
+                KEY_CATEGORY_PICTURE_URI,
+                UNITS_TABLE_NAME + "." + KEY_ID  + " AS " + KEY_UNIT_ID,
+                UNITS_TABLE_NAME + "." + KEY_NAME  + " AS " + KEY_UNIT_NAME,
+                UNITS_TABLE_NAME + "." + KEY_UNIT_SHORT_NAME  + " AS " + KEY_UNIT_SHORT_NAME
         };
-    }
+    }*/
 
     @Nullable
     public static Uri getImageUri(@NonNull Cursor data) {

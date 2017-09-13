@@ -6,7 +6,7 @@
     android:focusable="true"
     android:layout_marginStart="5dp"
     android:layout_marginLeft="5dp"
-    android:id="@+id/productRepresent"
+    android:id="@+id/itemRepresent"
     android:background="?android:attr/selectableItemBackground"
     >
 

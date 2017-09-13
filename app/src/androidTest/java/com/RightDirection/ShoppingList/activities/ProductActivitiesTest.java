@@ -1,12 +1,9 @@
 package com.RightDirection.ShoppingList.activities;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
 
 import com.RightDirection.ShoppingList.R;
-import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 
 import org.junit.Test;
 
@@ -163,7 +160,8 @@ public class ProductActivitiesTest extends ActivitiesTest {
 
         // Нажимаем кнопку "Показать картинку", проверяем, что открылась активность с картинкой
         onView(withId(R.id.ibShowImage)).perform(click());
-        onView(withText(mActivity.getString(R.string.product_image_activity_title, mNewProductNamePattern))).check(matches(isDisplayed())); // проверяемость нужную активность по заголовку
+        // Убрали панель с заголовком
+        //onView(withText(mActivity.getString(R.string.product_image_activity_title, mNewProductNamePattern))).check(matches(isDisplayed())); // проверяемость нужную активность по заголовку
         onView(withContentDescription(IMAGE_PATH)).check(matches(isDisplayed()));
 
         // Возвращаемся к карточке продукта

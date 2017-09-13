@@ -17,7 +17,8 @@ public enum EXTRAS_KEYS implements IGetValue {
     AUTHOR("AUTHOR"),
     AUTHORS("AUTHORS"),
     LAST("LAST"),
-    CATEGORY ("Category");
+    CATEGORY ("Category"),
+    UNIT ("Unit");
 
     private final String numValue;
 

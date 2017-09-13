@@ -41,6 +41,17 @@
         android:descendantFocusability="afterDescendants"
         android:animateLayoutChanges="false"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/newItemFragment" />
+        android:layout_below="@+id/newItemFragment"
+        android:layout_above="@+id/tvSumInfo"/>
+
+    <TextView
+        android:id="@+id/tvSumInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text=""
+        android:textSize="12sp"
+        />
 
 </RelativeLayout>

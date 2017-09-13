@@ -140,7 +140,7 @@ class CustomMatchers {
             @Override
             protected boolean matchesSafely(View view) {
                 return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withId(R.id.productRepresent),
+                        withId(R.id.itemRepresent),
                         hasDescendant(withContentDescription(String.valueOf(imageId))),
                         hasDescendant(withText(itemText))).matches(view);
             }
@@ -159,7 +159,7 @@ class CustomMatchers {
             @Override
             protected boolean matchesSafely(View view) {
                 return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withId(R.id.productRepresent),
+                        withId(R.id.itemRepresent),
                         hasDescendant(withContentDescription(imageURI)),
                         hasDescendant(withText(itemText))).matches(view);
             }

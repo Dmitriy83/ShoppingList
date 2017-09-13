@@ -3,10 +3,8 @@ package com.RightDirection.ShoppingList.activities;
 import android.app.FragmentManager;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -25,6 +23,7 @@ import com.RightDirection.ShoppingList.interfaces.IOnNewItemAddedListener;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.models.ShoppingList;
+import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.views.CustomRecyclerView;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
@@ -50,7 +49,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
         if (mShoppingList == null){
-            mShoppingList = new ShoppingList(-1, "");
+            mShoppingList = new ShoppingList(Utils.EMPTY_ID, "");
             mShoppingList.isNew = true;
         }
 
@@ -72,7 +71,6 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         if (mProducts == null) mProducts = new ArrayList<>();
 
         // Прочитаем настройки приложения
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         int listItemLayout = R.layout.list_item_shopping_list_editing;
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
@@ -101,6 +99,16 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         // Добавим текстовое поле для пустого списка
         TextView emptyView = (TextView)findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
+
+        // Покажем общую информацию о списке покупок
+        TextView tvSumInfo = (TextView)findViewById(R.id.tvSumInfo);
+        if (tvSumInfo != null) {
+            if (Utils.showPrices(this)) {
+                tvSumInfo.setVisibility(View.VISIBLE);
+            } else {
+                tvSumInfo.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -192,17 +200,29 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         }
 
         return new CursorLoader(this, SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
-                SL_ContentProvider.getShoppingListContentProjection(), SL_ContentProvider.KEY_SHOPPING_LIST_ID + "=" + mShoppingList.getId(), null ,null);
+                null,
+                SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?",
+                new String[]{String.valueOf(mShoppingList.getId())},
+                null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
         mProducts.clear();
         while (data.moveToNext()){
-            mProducts.add(new Product(data, new Category(data)));
+            Unit defaultUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DEFAULT_UNIT_SHORT_NAME)));
+            Unit currentUnit = new Unit(
+                    data.getLong(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_ID)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_NAME)),
+                    data.getString(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_UNIT_SHORT_NAME)));
+            mProducts.add(new Product(data, new Category(data), defaultUnit, currentUnit));
         }
 
         mShoppingListItemsAdapter.notifyDataSetChanged();
+        Utils.calculateTotalSum(this, mProducts);
     }
 
     @Override
@@ -212,18 +232,24 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
-            case Utils.NEED_TO_UPDATE:
-                if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Utils.NEED_TO_UPDATE: {
                     // Получим значения из переданных параметров
                     Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
                     mShoppingListItemsAdapter.updateItem(product);
 
                     // Обновим элемент выпадающего списка
-                    InputProductNameFragment fragment = (InputProductNameFragment)getFragmentManager()
+                    InputProductNameFragment fragment = (InputProductNameFragment) getFragmentManager()
                             .findFragmentById(R.id.newItemFragment);
                     fragment.updateProductName(product);
                 }
+                case Utils.GET_UNIT: {
+                    // Получим значения из переданных параметров
+                    Product product = data.getParcelableExtra(EXTRAS_KEYS.PRODUCT.getValue());
+                    mShoppingListItemsAdapter.updateItem(product);
+                }
+            }
         }
     }
 
@@ -231,6 +257,12 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_shopping_list_editing_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        saveListAndGoToInShopActivity();
+        super.onBackPressed();
     }
 
     @Override
@@ -242,7 +274,8 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         if (view == null) return super.onOptionsItemSelected(item);
 
         switch (id) {
-            case R.id.action_save_list: {
+            case R.id.action_save_list:
+            case android.R.id.home: { // Нажатие на стрелку (кнопка Up){
                 saveListAndGoToInShopActivity();
                 break;
             }

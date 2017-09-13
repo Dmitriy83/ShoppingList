@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProductActivity" >
+    tools:context=".activities.ProductActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_above="@+id/btnSave">
+        android:layout_above="@+id/btnSave"
+        android:fillViewport="true">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -21,33 +22,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentStart="true"
                 android:hint="@string/product_name_hint"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="textCapSentences"
-                android:textColor="@android:color/black"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true" />
+                android:textColor="@android:color/black" />
 
             <Button
                 android:id="@+id/btnChooseCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/etProductName"
+                android:layout_marginBottom="10dp"
                 android:layout_marginEnd="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/txtCategoryTitle"
+                android:layout_toRightOf="@+id/txtCategoryTitle"
                 android:background="@drawable/button_shape"
                 android:hint="@string/choose_category"
                 android:textAlignment="center"
-                android:textSize="18sp"
-                android:layout_toRightOf="@+id/txtCategoryTitle"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="2dp"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/etProductName"
-                android:layout_marginBottom="10dp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txtCategoryTitle"
@@ -55,17 +56,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/btnChooseCategory"
                 android:layout_alignBottom="@+id/btnChooseCategory"
-                android:layout_alignParentStart="true"
-                android:text="@string/category_title"
-                android:textSize="18sp"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/etProductName"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:minWidth="90dp"
+                android:text="@string/category"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/imgItemImage"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/btnChooseCategory"
                 android:adjustViewBounds="false"
@@ -75,9 +78,7 @@
                 android:longClickable="false"
                 android:maxHeight="300dp"
                 android:maxWidth="300dp"
-                android:src="@android:drawable/ic_menu_gallery"
-                android:layout_alignParentLeft="true"
-                />
+                android:src="@android:drawable/ic_menu_gallery" />
 
             <ImageButton
                 android:id="@+id/ibShowImage"
@@ -104,6 +105,77 @@
                 android:background="@drawable/ic_clear_image"
                 android:contentDescription="@string/clear_product_image" />
 
+            <RelativeLayout
+                android:id="@+id/rlPriceAndUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/imgItemImage"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/tvLastPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/etLastPrice"
+                    android:layout_alignBottom="@+id/etLastPrice"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/price"
+                    android:textSize="18sp"
+                    android:layout_alignRight="@+id/tvUnit_CountAndPrice"
+                    android:layout_alignEnd="@+id/tvUnit_CountAndPrice"
+                    android:minWidth="90dp"/>
+
+                <EditText
+                    android:id="@+id/etLastPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/tvLastPrice"
+                    android:layout_toRightOf="@+id/tvLastPrice"
+                    android:ems="10"
+                    android:hint="@string/enter_price"
+                    android:inputType="numberDecimal" />
+
+                <ImageButton
+                    android:id="@+id/imgPriceChangeGraph"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/etLastPrice"
+                    android:layout_toEndOf="@+id/etLastPrice"
+                    android:layout_toRightOf="@+id/etLastPrice"
+                    android:contentDescription="@string/price_change_graph"
+                    app:srcCompat="@drawable/ic_price_change_graph" />
+
+                <TextView
+                    android:id="@+id/tvUnit_CountAndPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/btnUnit"
+                    android:layout_alignBottom="@+id/btnUnit"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:minWidth="90dp"
+                    android:text="@string/unit"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btnUnit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/etLastPrice"
+                    android:layout_alignStart="@+id/etLastPrice"
+                    android:layout_below="@+id/etLastPrice"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_shape"
+                    android:text="@string/default_unit" />
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
     </ScrollView>
@@ -115,10 +187,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:text="@string/save"
-        android:textColor="@android:color/black"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
+        android:textColor="@android:color/black" />
 
 </RelativeLayout>

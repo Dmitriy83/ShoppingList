@@ -8,4 +8,5 @@
     <color name="border_color">#d7d5d5</color>
     <color name="category_text_color">#8f8282</color>
     <color name="orange">#ef6c00</color>
+    <color name="light_orange">#ffa726</color>
 </resources>

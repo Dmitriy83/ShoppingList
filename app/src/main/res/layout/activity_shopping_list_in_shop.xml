@@ -27,6 +27,16 @@
         android:id="@+id/rvProducts"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/common_toolbar" />
+        android:layout_below="@id/common_toolbar"
+        android:layout_above="@id/tvSumInfo"/>
+
+    <TextView
+        android:id="@+id/tvSumInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text=""
+        android:textSize="12sp" />
 
 </RelativeLayout>

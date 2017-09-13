@@ -108,12 +108,8 @@ public class ExchangeService extends Service {
                                     + ", " + dateFormat.format(calendar.getTime());
 
                             // Создадим  новый объект-лист покупок
-                            ShoppingList newShoppingList = new ShoppingList(-1, newListName);
+                            ShoppingList newShoppingList = new ShoppingList(Utils.EMPTY_ID, newListName);
                             newShoppingList.loadProductsFromString(context, fbList.getContent());
-                            newShoppingList.addNotExistingProductsToDB(context);
-                            // Сначала нужно добавить новые продукты из списка в базу данных.
-                            // Синхронизацияя должна производиться по полю Name
-                            newShoppingList.addNotExistingProductsToDB(context);
                             // Сохраним новый лист покупок в базе данных
                             newShoppingList.addToDB(context);
                             loadedShoppingLists.add(newShoppingList);

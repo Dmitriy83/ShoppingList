@@ -26,7 +26,6 @@ public class ChooseCategoryActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_choose_category);
 
         CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvCategories);

@@ -72,6 +72,14 @@
                 android:value=".activities.MainActivity" />
         </activity>
         <activity
+            android:name=".activities.UnitsListActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
             android:name=".activities.ProductActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
@@ -84,6 +92,9 @@
         </activity>
         <activity
             android:name=".activities.CategoryActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity
+            android:name=".activities.UnitActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
             android:name=".activities.ShoppingListInShopActivity"
@@ -111,6 +122,9 @@
             android:theme="@style/AppThemeDialog" />
         <activity
             android:name=".activities.ChooseCategoryActivity"
+            android:theme="@style/AppThemeDialogFixedSize" />
+        <activity
+            android:name=".activities.ChooseUnitActivity"
             android:theme="@style/AppThemeDialogFixedSize" />
         <activity
             android:name=".activities.ChooseCategoryImageActivity"

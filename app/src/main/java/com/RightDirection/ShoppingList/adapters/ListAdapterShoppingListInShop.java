@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.DoneActivity;
+import com.RightDirection.ShoppingList.activities.ShoppingListInShopActivity;
 import com.RightDirection.ShoppingList.enums.ITEM_TYPES;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.models.Category;
@@ -23,7 +24,6 @@ import com.RightDirection.ShoppingList.utils.Utils;
 import java.util.ArrayList;
 
 public class ListAdapterShoppingListInShop extends BaseListAdapter {
-
     private ArrayList<IListItem> mOriginalValues;
     private boolean mIsFiltered;
     private final boolean mCrossOutProduct;
@@ -35,8 +35,6 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mParentActivity);
         mCrossOutProduct = sharedPref.getBoolean(mParentActivity.getString(R.string.pref_key_cross_out_action), true);
     }
-
-
 
     @Override
     public int getItemViewType(int position) {
@@ -68,21 +66,48 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         ViewHolder viewHolder = (ViewHolder) holder;
         if (viewHolder == null) return;
         if (viewHolder.represent != null) {
-            viewHolder.represent.setOnTouchListener(onProductTouch);
-            viewHolder.represent.setOnLongClickListener(onRepresentLongClick);
+            viewHolder.represent.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) { return onProductTouch(v, event); }
+            });
+            viewHolder.represent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) { return onRepresentLongClick(view); }
+            });
         }
-        if (viewHolder.itemImage != null) {
-            if (Utils.showImages(mParentActivity)) {
-                viewHolder.itemImage.setVisibility(View.VISIBLE);
-                setProductImage(viewHolder.itemImage, mObjects.get(position));
-            } else {
-                viewHolder.itemImage.setVisibility(View.GONE);
-            }
-        }
-
-        // Отрисуем выбор товара
         IListItem item = mObjects.get(position);
         if (item instanceof Product) {
+            Product product = (Product)item;
+            if (viewHolder.txtCount != null) {
+                viewHolder.txtCount.setTag(item);
+                String propsText;
+                if (Utils.showPrices(mParentActivity) && Utils.showUnits(mParentActivity)) {
+                    propsText = mParentActivity.getString(R.string.props_text_with_price_and_unit,
+                            String.valueOf(product.getPrice()),
+                            String.valueOf(product.getCount()),
+                            product.getUnitShortName(mParentActivity));
+                } else if (Utils.showPrices(mParentActivity)) {
+                    propsText = mParentActivity.getString(R.string.props_text_with_price_only,
+                            String.valueOf(product.getPrice()),
+                            String.valueOf(product.getCount()));
+                } else if (Utils.showUnits(mParentActivity)) {
+                    propsText = mParentActivity.getString(R.string.props_text_with_unit_only,
+                            String.valueOf(product.getCount()),
+                            product.getUnitShortName(mParentActivity));
+                } else {
+                    propsText = String.valueOf(item.getCount());
+                }
+                viewHolder.txtCount.setText(propsText);
+            }
+            if (viewHolder.itemImage != null) {
+                if (Utils.showImages(mParentActivity)) {
+                    viewHolder.itemImage.setVisibility(View.VISIBLE);
+                    setProductImage(viewHolder.itemImage, item);
+                } else {
+                    viewHolder.itemImage.setVisibility(View.GONE);
+                }
+            }
+
             if (item.isChecked()) {
                 setViewChecked(viewHolder);
             } else {
@@ -95,64 +120,60 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
     // Если произошло движение пальца, то обрабатывать долгое нажатие не нужно
     private boolean mFingerMoved = false;
 
-    private final View.OnTouchListener onProductTouch = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_UP) {
-                // Получим объект item, свзяанный с элементом View
-                Product item = (Product) v.getTag();
-                ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
+    private boolean onProductTouch(View v, MotionEvent event) {
+        if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_UP) {
+            // Получим объект item, свзяанный с элементом View
+            Product item = (Product) v.getTag();
+            ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
 
-                if (!item.isChecked()) {
+            if (!item.isChecked()) {
+                setViewAndItemChecked(item, viewHolder);
+            } else if (item.isChecked()) {
+                setViewUnchecked(viewHolder);
+                item.setUnchecked();
+            }
+            refreshTotalSum();
+
+            // Отфильтруем лист, если необходимо
+            if (mIsFiltered) hideChecked();
+        } else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN) {
+            mInitXTouch = event.getX();
+        } else if (mCrossOutProduct && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)) {
+            // Получим объект item, свзяанный с элементом View
+            Product item = (Product) v.getTag();
+
+            float mEndXTouch = event.getX();
+            float distance = mEndXTouch - mInitXTouch;
+            ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
+            if (distance > 50 || distance < -50) {
+                if (item.isChecked())
+                    setViewAndItemUnchecked(item, viewHolder);
+                else
                     setViewAndItemChecked(item, viewHolder);
-                } else if (item.isChecked()) {
-                    setViewUnchecked(viewHolder);
-                    item.setUnchecked();
-                }
-
-                // Отфильтруем лист, если необходимо
-                if (mIsFiltered) hideChecked();
-            } else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_DOWN) {
-                mInitXTouch = event.getX();
-            } else if (mCrossOutProduct && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)) {
-                // Получим объект item, свзяанный с элементом View
-                Product item = (Product) v.getTag();
-
-                float mEndXTouch = event.getX();
-                float distance = mEndXTouch - mInitXTouch;
-                ViewHolder viewHolder = (ViewHolder) v.getTag(R.string.view_holder);
-                if (distance > 50 || distance < -50) {
-                    if (item.isChecked())
-                        setViewAndItemUnchecked(item, viewHolder);
-                    else
-                        setViewAndItemChecked(item, viewHolder);
-                }
-
-                // Отфильтруем лист, если необходимо
-                if (mIsFiltered) hideChecked();
-
-                mFingerMoved = false;
-            }else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_MOVE){
-                float distance = event.getX() - mInitXTouch;
-                // Исключим мнезначительное "дергание" пальца
-                if (distance > 1 || distance < -1) mFingerMoved = true;
+                refreshTotalSum();
             }
 
-            return false;   // false означает, что другие обработчики события (например, onLongClick)
-            // также следует использовать
-        }
-    };
+            // Отфильтруем лист, если необходимо
+            if (mIsFiltered) hideChecked();
 
-    private final View.OnLongClickListener onRepresentLongClick = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-            if (mFingerMoved) return false;
-            Product product = (Product) view.getTag();
-            // Откроем активность редактирования продукта
-            product.startProductActivity(mParentActivity);
-            return false;
+            mFingerMoved = false;
+        }else if (mCrossOutProduct && event.getAction() == MotionEvent.ACTION_MOVE){
+            float distance = event.getX() - mInitXTouch;
+            // Исключим мнезначительное "дергание" пальца
+            if (distance > 1 || distance < -1) mFingerMoved = true;
         }
-    };
+
+        return false;   // false означает, что другие обработчики события (например, onLongClick)
+        // также следует использовать
+    }
+
+    private boolean onRepresentLongClick(View view) {
+        if (mFingerMoved) return false;
+        Product product = (Product) view.getTag();
+        // Откроем активность редактирования продукта
+        product.startProductActivity(mParentActivity);
+        return false;
+    }
 
     private void setViewAndItemChecked(Product item, ViewHolder viewHolder) {
         if (viewHolder != null) {
@@ -190,7 +211,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
 
     private void setViewChecked(ViewHolder vh) {
         // Покажем, что товар купили ("вычеркнем")
-        vh.productNameView.setPaintFlags(vh.productNameView.getPaintFlags()
+        vh.nameView.setPaintFlags(vh.nameView.getPaintFlags()
                 | Paint.STRIKE_THRU_TEXT_FLAG);
         vh.txtCount.setPaintFlags(vh.txtCount.getPaintFlags()
                 | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -199,7 +220,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
 
     private void setViewUnchecked(ViewHolder vh) {
         // Покажем, что  товар еще не купили (до этого выделили ошибочно)
-        vh.productNameView.setPaintFlags(vh.productNameView.getPaintFlags()
+        vh.nameView.setPaintFlags(vh.nameView.getPaintFlags()
                 & (~Paint.STRIKE_THRU_TEXT_FLAG));
         vh.txtCount.setPaintFlags(vh.txtCount.getPaintFlags()
                 & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -288,6 +309,16 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
     public void setOriginalValues() {
         if (mOriginalValues == null) {
             mOriginalValues = new ArrayList<>(mObjects);
+        }
+    }
+
+    private void refreshTotalSum() {
+        if (mParentActivity instanceof ShoppingListInShopActivity) {
+            if (mOriginalValues != null) {
+                Utils.calculateTotalSum(mParentActivity, mOriginalValues);
+            }else{
+                Utils.calculateTotalSum(mParentActivity, mObjects);
+            }
         }
     }
 }

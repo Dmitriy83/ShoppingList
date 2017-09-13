@@ -5,6 +5,7 @@ import android.support.test.rule.ActivityTestRule;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.MainActivity;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +40,7 @@ public class ShoppingListTest {
         String loadString;
 
         // Идеальный вариант: "test1, 2; test2, 1; test3, 5; test4, 1"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + " 2" + productDivider + " test2" + divider + " 1"
                 + productDivider + " test3" + divider + " 5" + productDivider + " test4"
                 + divider + " 1";
@@ -65,7 +66,7 @@ public class ShoppingListTest {
 
 
         // Вариант с различным сочетанием пробелов: "  test1,2;test2,   1;test3, 5   ; test4, 1   "
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "  test1" + divider + "2" + productDivider + "test2" + divider + "   1"
                 + productDivider + "test3" + divider + " 5   " + productDivider + " test4"
                 + divider + " 1   ";
@@ -93,7 +94,7 @@ public class ShoppingListTest {
 
         // Вариант с дробным и некорректным (в том числе отрицательным) количеством
         // (если некорректное, то указываем 1): "  test1,2.5;test2,   7.;test3, ...5   ; test4, -5"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "  test1" + divider + "2.5" + productDivider + "test2" + divider + "   7."
                 + productDivider + "test3" + divider + " ...5   " + productDivider + " test4"
                 + divider + " -5";
@@ -119,7 +120,7 @@ public class ShoppingListTest {
 
 
         // Вариант с некорректным именем внутри строки: "  test1,2;  ,   1;, 5   ; t, 1"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "  test1" + divider + "2" + productDivider + "  " + divider + "   1"
                 + productDivider + "" + divider + " 5   " + productDivider + " t"
                 + divider + " 1";
@@ -137,7 +138,7 @@ public class ShoppingListTest {
 
 
         // Вариант с некорректным именем по краям строки: ",2;test2,   1;test3, 5   ;, 1"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "" + divider + "2" + productDivider + "test2" + divider + "   1"
                 + productDivider + "test3" + divider + " 5   " + productDivider + ""
                 + divider + " 1";
@@ -155,7 +156,7 @@ public class ShoppingListTest {
 
 
         // Вариант с разделитеялми продуктов по краям строки: ";test2,   1;test3, 5   ;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = productDivider + "test2" + divider + "   1"
                 + productDivider + "test3" + divider + " 5   " + productDivider;
         testSL.loadProductsFromString(mActivity, loadString);
@@ -173,31 +174,31 @@ public class ShoppingListTest {
 
 
         // Вариант с пустой строкой: ""
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "";
         testSL.loadProductsFromString(mActivity, loadString);
         assertNull(testSL.getProducts());
 
         // Вариант с пустой строкой с пробелами: "     "
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "     ";
         testSL.loadProductsFromString(mActivity, loadString);
         assertNull(testSL.getProducts());
 
         // Вариант с пустой строкой с разделителями: ";;;;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "     ";
         testSL.loadProductsFromString(mActivity, loadString);
         assertNull(testSL.getProducts());
 
         // Вариант с пустой строкой с разделителями: ";,,,;,;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "     ";
         testSL.loadProductsFromString(mActivity, loadString);
         assertNull(testSL.getProducts());
 
         // Вариант с одним товаром: "test1,2"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + "2";
         testSL.loadProductsFromString(mActivity, loadString);
         // Должен быть загружен 1 продукт
@@ -208,7 +209,7 @@ public class ShoppingListTest {
         assertEquals(2, product.getCount(), 0);
 
         // Вариант с одним товаром: "test1,2;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + "2" + productDivider;
         testSL.loadProductsFromString(mActivity, loadString);
         // Должен быть загружен 1 продукт
@@ -219,7 +220,7 @@ public class ShoppingListTest {
         assertEquals(2, product.getCount(), 0);
 
         // Вариант с одним товаром без количества: "test1"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1";
         testSL.loadProductsFromString(mActivity, loadString);
         // Должен быть загружен 1 продукт
@@ -230,7 +231,7 @@ public class ShoppingListTest {
         assertEquals(1, product.getCount(), 0);
 
         // Вариант с несколькими товарами, в середине товар без количества: "test1, 2; test2; test3, 5;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + " 2" + productDivider + " test2"
                 + productDivider + " test3" + divider + " 5" + productDivider;
         testSL.loadProductsFromString(mActivity, loadString);
@@ -250,7 +251,7 @@ public class ShoppingListTest {
         assertEquals(5, product.getCount(), 0);
 
         // Еще один вариант с некорректным количеством: "test1, ,2; test2,; test3, ,,,5;"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + " ,2" + productDivider + " test2" + divider + ","
                 + productDivider + " test3" + divider + " ,,,5" + productDivider;
         testSL.loadProductsFromString(mActivity, loadString);
@@ -270,7 +271,7 @@ public class ShoppingListTest {
         assertEquals(1, product.getCount(), 0);
 
         // Вариант, когда явно указано количество, равное 0: "test1,    0   "
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + "    0   ";
         testSL.loadProductsFromString(mActivity, loadString);
         // Должен быть загружен 1 продукт
@@ -281,7 +282,7 @@ public class ShoppingListTest {
         assertEquals(0, product.getCount(), 0);
 
         // Вариант со знаками переноса: "test1, 2; test2, 1; test3, 5; test4, 1"
-        testSL = new ShoppingList(-1, "", null);
+        testSL = new ShoppingList(Utils.EMPTY_ID, "", null);
         loadString = "test1" + divider + " 2" + productDivider + "\n" + " test2" + divider + " 1"
                 + productDivider + "\n" + " test3" + divider + " 5" + productDivider + " test4"
                 + divider + " 1";

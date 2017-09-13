@@ -9,26 +9,31 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
+import com.RightDirection.ShoppingList.models.Unit;
+import com.RightDirection.ShoppingList.utils.DecimalDigitsInputFilter;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 public class ProductActivity extends BaseActivity {
 
     private Product mProduct;
-
     private static final int PICK_IMAGE = 1;
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final String TAG = ProductActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class ProductActivity extends BaseActivity {
         }
 
         if (mProduct == null) {
-            mProduct = new Product(-1);
+            mProduct = new Product(Utils.EMPTY_ID);
             mProduct.isNew = true;
         }
 
@@ -63,24 +68,28 @@ public class ProductActivity extends BaseActivity {
         if (btnChooseCategory != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnChooseCategory.setTransformationMethod(null);
-
-            Category category = mProduct.getCategory();
-            if (category != null && category.getName() != null)
-                btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
-
-            // Обработчик нажатия
-            btnChooseCategory.setOnClickListener(onBtnChooseCategoryClick);
+            btnChooseCategory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onBtnChooseCategoryClick(); }
+            });
+            setBtnChooseCategoryText();
         }
 
         Button btnSaveProduct = (Button) findViewById(R.id.btnSave);
         if (btnSaveProduct != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnSaveProduct.setTransformationMethod(null);
-            btnSaveProduct.setOnClickListener(onBtnSaveClick);
+            btnSaveProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onBtnSaveClick(); }
+            });
         }
         ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
         if (imgProduct != null) {
-            imgProduct.setOnClickListener(onImgProductClick);
+            imgProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onImgProductClick(); }
+            });
         }
 
         // Установим заголовок формы
@@ -110,6 +119,43 @@ public class ProductActivity extends BaseActivity {
                 }
             });
         }
+
+        ImageButton imgPriceChangeGraph = (ImageButton) findViewById(R.id.imgPriceChangeGraph);
+        if (imgPriceChangeGraph != null) {
+            imgPriceChangeGraph.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { onImgPriceChangeGraphClick(); }
+            });
+        }
+        Button btnUnit = (Button) findViewById(R.id.btnUnit);
+        if (btnUnit != null) {
+            btnUnit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBtnUnitClick();
+                }
+            });
+            setBtnUnitText();
+        }
+        // Ограничим ввод цены двумя знаками после запятой
+        EditText etPrice = (EditText) findViewById(R.id.etLastPrice);
+        if (etPrice != null) {
+            etPrice.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
+            try {
+                etPrice.setText(String.valueOf(mProduct.getLastPrice()));
+            }catch (Exception e){
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
+    private void onBtnUnitClick() {
+        Intent intent = new Intent(getBaseContext(), ChooseUnitActivity.class);
+        startActivityForResult(intent, Utils.GET_UNIT);
+    }
+
+    private void onImgPriceChangeGraphClick() {
+        Toast.makeText(this, R.string.in_developing, Toast.LENGTH_SHORT).show();
     }
 
     private void onClearImageClick() {
@@ -136,58 +182,55 @@ public class ProductActivity extends BaseActivity {
         super.onSaveInstanceState(outState);
     }
 
-    private final View.OnClickListener onBtnChooseCategoryClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(getBaseContext(), ChooseCategoryActivity.class);
-            startActivityForResult(intent, Utils.GET_CATEGORY);
+    private void onBtnChooseCategoryClick() {
+        Intent intent = new Intent(getBaseContext(), ChooseCategoryActivity.class);
+        startActivityForResult(intent, Utils.GET_CATEGORY);
+    }
+
+    private void onBtnSaveClick() {
+        EditText etProductName = (EditText) findViewById(R.id.etProductName);
+        if (etProductName != null) mProduct.setName(etProductName.getText().toString());
+
+        EditText etLastPrice = (EditText) findViewById(R.id.etLastPrice);
+        try {
+            if (etLastPrice != null) mProduct.setLastPrice(Long.valueOf(etLastPrice.getText().toString()));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
         }
-    };
 
-    private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            EditText etProductName = (EditText) findViewById(R.id.etProductName);
-            if (etProductName != null) mProduct.setName(etProductName.getText().toString());
-
-            if (mProduct.isNew) {
-                mProduct.addToDB(getApplicationContext());
-            } else {
-                mProduct.updateInDB(getApplicationContext());
-            }
-
-            // Обновим наименование в активности редактирования списка товаров
-            Intent intent = new Intent();
-            intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct);
-            setResult(RESULT_OK, intent);
-
-            finish();
+        if (mProduct.isNew) {
+            mProduct.addToDB(getApplicationContext());
+        } else {
+            mProduct.updateInDB(getApplicationContext());
         }
-    };
 
-    private final View.OnClickListener onImgProductClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+        // Обновим наименование в активности редактирования списка товаров
+        Intent intent = new Intent();
+        intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct);
+        setResult(RESULT_OK, intent);
 
-            Intent intent;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent = new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-            }
-            intent.setType("image/*");
+        finish();
+    }
 
-            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickIntent.setType("image/*");
-
-            Intent chooserIntent = Intent.createChooser(intent, "Select Image");
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
-            startActivityForResult(chooserIntent, PICK_IMAGE);
+    private void onImgProductClick() {
+        Intent intent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
         }
-    };
+        intent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(intent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,14 +245,32 @@ public class ProductActivity extends BaseActivity {
                 break;
             case Utils.GET_CATEGORY:
                 if (resultCode == RESULT_OK) {
-                    Category category = data.getParcelableExtra(getString(R.string.category));
-                    mProduct.setCategory(category);
-                    Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
-                    if (btnChooseCategory != null && category != null && category.getName() != null) {
-                        btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
-                    }
+                    mProduct.setCategory((Category) data.getParcelableExtra(EXTRAS_KEYS.CATEGORY.getValue()));
+                    setBtnChooseCategoryText();
                 }
                 break;
+            case Utils.GET_UNIT:
+                if (resultCode == RESULT_OK) {
+                    mProduct.setDefaultUnit((Unit) data.getParcelableExtra(EXTRAS_KEYS.UNIT.getValue()));
+                    setBtnUnitText();
+                }
+                break;
+        }
+    }
+
+    private void setBtnUnitText() {
+        Unit unit = mProduct.getDefaultUnit();
+        Button btnUnit = (Button) findViewById(R.id.btnUnit);
+        if (btnUnit != null && unit != null && unit.getShortName() != null) {
+            btnUnit.setText(unit.getShortName());
+        }
+    }
+
+    private void setBtnChooseCategoryText() {
+        Category category = mProduct.getCategory();
+        Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
+        if (btnChooseCategory != null && category != null && category.getName() != null) {
+            btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
         }
     }
 
