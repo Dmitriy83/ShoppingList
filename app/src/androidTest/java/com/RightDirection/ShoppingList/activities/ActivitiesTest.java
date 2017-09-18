@@ -61,6 +61,9 @@ abstract class ActivitiesTest {
     static String mNewListName = "newTestShoppingList'"; // Апостров добавлен, т.к. у пользователей возникала ошибка при добавлении этого символа к наименованию продуктов
     final static String mNewProductNamePattern = "testNewProduct'";
     final static String mNewCategoryNamePattern = "testNewCategory'";
+    final static String mNewUnitNamePattern = "testNewUnit'";
+    final static String mNewUnitShortNamePattern = "u.'";
+    final static String mNewUnitNamePlusShortNamePattern = "testNewUnit', u.'";
     static UiDevice mDevice = null;
     MainActivity mActivity = null;
 
@@ -313,6 +316,43 @@ abstract class ActivitiesTest {
         onView(withId(R.id.rvCategories)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewCategoryNamePattern))));
         onView(recyclerViewItemWithText(mNewCategoryNamePattern)).check(matches(isDisplayed()));
+    }
+
+    void setSettingsShowUnits(boolean show){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean showUnits = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_show_units), false);
+        if (show != showUnits) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_show_units))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+    }
+
+    void addNewUnit(){
+        setSettingsShowUnits(true);
+
+        // Нажимаем кнопку вызова подменю
+        openMainMenu();
+
+        // Выбираем "Ед. измерения"
+        onView(withText(mActivity.getString(R.string.action_edit_units_list))).perform(click());
+
+        // Нажимаем кнопку добавления новой категории
+        onView(withId(R.id.fabAddUnit)).perform(click());
+
+        // Вводим название новой ед. измерения, и нажимаем кнопку сохранения
+        onView(withId(R.id.etName)).perform(typeText(mNewUnitNamePattern));
+        onView(withId(R.id.etShortName)).perform(typeText(mNewUnitShortNamePattern));
+        onView(withId(R.id.btnSave)).perform(click());
+
+        // Проверяем, что новая ед. измерения отобразилась в списке
+        onView(withId(R.id.rvUnits)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewUnitNamePattern))));
+        onView(recyclerViewItemWithText(mNewUnitNamePattern)).check(matches(isDisplayed()));
     }
 
     class RecyclerViewItemCountAssertion implements ViewAssertion {

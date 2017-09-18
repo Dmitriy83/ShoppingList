@@ -275,27 +275,20 @@ public class Utils {
         if (tvSumInfo == null) { return; }
 
         float totalSum = 0;
-        float alreadyPurchasedFor = 0;
+        float leftToBuyOn = 0;
         for (IListItem item: products) {
             if (!(item instanceof Product)){ continue; }
 
             Product product = (Product) item;
-            float price = 0;
-            if (product.getCurrentPrice() != Product.EMPTY_CURRENT_PRICE) {
-                price = product.getCurrentPrice();
-            } else if (product.getLastPrice() != Product.EMPTY_CURRENT_PRICE) {
-                price = product.getLastPrice();
-            }
-            float count = product.getCount();
-            float sum = price * count;
+            float sum = product.getPrice() * product.getCount();
             totalSum += sum;
-            if (product.isChecked()){
-                alreadyPurchasedFor += sum;
+            if (!product.isChecked()){
+                leftToBuyOn += sum;
             }
         }
 
         tvSumInfo.setText(activity.getString(R.string.shopping_list_info,
                 String.valueOf(totalSum),
-                String.valueOf(alreadyPurchasedFor)));
+                String.valueOf(leftToBuyOn)));
     }
 }

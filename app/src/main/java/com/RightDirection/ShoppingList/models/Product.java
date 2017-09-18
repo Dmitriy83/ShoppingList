@@ -19,6 +19,10 @@ import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Product extends ListItem implements IDataBaseOperations {
 
     private Category category;
@@ -216,6 +220,8 @@ public class Product extends ListItem implements IDataBaseOperations {
         contentValues.put(SL_ContentProvider.KEY_LAST_PRICE, getLastPrice());
         Uri insertedId = contentResolver.insert(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
+
+        addPriceChangeHistory(context);
     }
 
     @Override
@@ -246,6 +252,17 @@ public class Product extends ListItem implements IDataBaseOperations {
         contentValues.put(SL_ContentProvider.KEY_LAST_PRICE, getLastPrice());
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues,
                 SL_ContentProvider.KEY_ID + "= ?", new String[]{String.valueOf(getId())});
+
+        addPriceChangeHistory(context);
+    }
+
+    private void addPriceChangeHistory(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_DATE, System.currentTimeMillis());
+        contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, getId());
+        contentValues.put(SL_ContentProvider.KEY_PRICE, getLastPrice());
+        contentResolver.insert(SL_ContentProvider.PRICE_CHANGE_HISTORY_URI, contentValues);
     }
 
     @Override

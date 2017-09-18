@@ -42,13 +42,6 @@ public class ShowItemImageActivity extends BaseActivity{
         }
 
         setProductImage();
-
-        // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Добавим кнопку Up на toolbar
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setProductImage() {
@@ -77,16 +70,5 @@ public class ShowItemImageActivity extends BaseActivity{
                 imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
             }
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: // Нажатие на стрелку (кнопка Up)
-                onBackPressed();
-                return true;
-        }
-
-        return(super.onOptionsItemSelected(item));
     }
 }

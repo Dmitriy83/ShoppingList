@@ -31,6 +31,7 @@ public class SL_ContentProvider extends ContentProvider {
     public static final Uri SHOPPING_LISTS_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglists");
     public static final Uri SHOPPING_LIST_CONTENT_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/shoppinglistcontent");
     public static final Uri CATEGORIES_CONTENT_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/categories");
+    public static final Uri PRICE_CHANGE_HISTORY_URI = Uri.parse("content://com.RightDirection.shoppinglistcontentprovider/price_change_history");
     private static final int PRODUCTS_ALL_ROWS = 1;
     private static final int PRODUCTS_SINGLE_ROW = 2;
     private static final int SHOPPING_LISTS_ALL_ROWS = 3;
@@ -42,6 +43,7 @@ public class SL_ContentProvider extends ContentProvider {
     private static final int CATEGORIES_SINGLE_ROW = 9;
     private static final int UNITS_ALL_ROWS = 10;
     private static final int UNITS_SINGLE_ROW = 11;
+    private static final int PRICE_CHANGE_HISTORY = 12;
 
     private static final UriMatcher uriMatcher;
     static {
@@ -57,6 +59,7 @@ public class SL_ContentProvider extends ContentProvider {
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "categories/#",             CATEGORIES_SINGLE_ROW);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "units",                    UNITS_ALL_ROWS);
         uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "units/#",                  UNITS_SINGLE_ROW);
+        uriMatcher.addURI("com.RightDirection.shoppinglistcontentprovider", "price_change_history",     PRICE_CHANGE_HISTORY);
     }
 
     public static final String KEY_ID = "_id";
@@ -68,6 +71,7 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_PICTURE = "PICTURE";
     public static final String KEY_SHOPPING_LIST_ID = "SHOPPING_LIST_ID";
     public static final String KEY_PRODUCT_ID = "PRODUCT_ID";
+    public static final String KEY_DATE = "DATE";
     public static final String KEY_COUNT = "COUNT";
     public static final String KEY_CATEGORY_ID = "CATEGORY_ID";
     public static final String KEY_CATEGORY_NAME = "CATEGORY_NAME";
@@ -77,6 +81,8 @@ public class SL_ContentProvider extends ContentProvider {
     public static final String KEY_SHOPPING_LIST_ROW_ID = "SHOPPING_LIST_ROW_ID";
     public static final String KEY_IS_FILTERED = "IS_FILTERED";
     public static final String KEY_NUMBER_OF_CROSSED_OUT = "NUMBER_OF_CROSSED_OUT";
+    public static final String KEY_TOTAL_SUM = "TOTAL_SUM";
+    public static final String KEY_LEFT_TO_BUY_ON = "LEFT_TO_BUY_ON";
     public static final String KEY_TOTAL_COUNT = "TOTAL_COUNT";
     public static final String KEY_DEFAULT_UNIT_ID = "DEFAULT_UNIT_ID";
     public static final String KEY_DEFAULT_UNIT_NAME = "DEFAULT_UNIT_NAME";
@@ -92,6 +98,7 @@ public class SL_ContentProvider extends ContentProvider {
     private static final String SHOPPING_LIST_CONTENT_TABLE_NAME = "SHOPPING_LIST_CONTENT";
     private static final String CATEGORIES_TABLE_NAME = "CATEGORIES";
     private static final String UNITS_TABLE_NAME = "UNITS";
+    private static final String PRICE_CHANGE_HISTORY_TABLE_NAME = "PRICE_CHANGE_HISTORY";
     private static final int DATABASE_VERSION = 12;
 
     /**
@@ -127,6 +134,7 @@ public class SL_ContentProvider extends ContentProvider {
             case CATEGORIES_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.categories";
             case UNITS_ALL_ROWS: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.units";
             case UNITS_SINGLE_ROW: return "vnd.android.cursor.item/vnd.RightDirection.ShoppingList.units";
+            case PRICE_CHANGE_HISTORY: return "vnd.android.cursor.dir/vnd.RightDirection.ShoppingList.price_change_history";
             default: throw new IllegalArgumentException("Неподдерживаемый URI:" + uri);
         }
     }
@@ -238,6 +246,14 @@ public class SL_ContentProvider extends ContentProvider {
                 + " IN (SELECT " + SL_ContentProvider.KEY_ID
                 + " FROM " + PRODUCTS_TABLE_NAME + " WHERE " + selection + ")";
         delete(SHOPPING_LIST_CONTENT_CONTENT_URI, newSelection, selectionArgs);
+
+        // Удалим из таблицы истории изменения цен
+        contentValues = new ContentValues();
+        contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, 0);
+        newSelection = SL_ContentProvider.KEY_PRODUCT_ID
+                + " IN (SELECT " + SL_ContentProvider.KEY_ID
+                + " FROM " + PRODUCTS_TABLE_NAME + " WHERE " + selection + ")";
+        delete(PRICE_CHANGE_HISTORY_URI, newSelection, selectionArgs);
     }
 
     private void deleteShoppingListRowsByShoppingListId(String selection, String[] selectionArgs) {
@@ -315,6 +331,9 @@ public class SL_ContentProvider extends ContentProvider {
             case UNITS_SINGLE_ROW:
                 contentUri = UNITS_CONTENT_URI;
                 break;
+            case PRICE_CHANGE_HISTORY:
+                contentUri = PRICE_CHANGE_HISTORY_URI;
+                break;
             default: break;
         }
         return contentUri;
@@ -357,6 +376,9 @@ public class SL_ContentProvider extends ContentProvider {
             case UNITS_ALL_ROWS:
             case UNITS_SINGLE_ROW:
                 tableName = UNITS_TABLE_NAME;
+                break;
+            case PRICE_CHANGE_HISTORY:
+                tableName = PRICE_CHANGE_HISTORY_TABLE_NAME;
                 break;
             default: break;
         }

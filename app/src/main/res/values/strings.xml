@@ -153,7 +153,7 @@
     <string name="product_image_activity_title">Image of %1$s</string>
     <string name="pref_key_show_prices" translatable="false">pref_key_show_prices</string>
     <string name="pref_show_prices">Show prices</string>
-    <string name="shopping_list_info">Total sum: %1$s. Already purchased for: %2$s</string>
+    <string name="shopping_list_info">Total sum: %1$s. Left to by on: %2$s</string>
     <string name="count">Qty:</string>
     <string name="price">Price:</string>
     <string name="default_unit">pc.</string>

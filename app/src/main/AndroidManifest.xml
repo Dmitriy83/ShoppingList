@@ -91,6 +91,14 @@
                 android:value=".activities.ProductActivity" />
         </activity>
         <activity
+            android:name=".activities.PriceChangeHistoryActivity"
+            android:parentActivityName=".activities.ProductActivity"
+            android:theme="@style/AppThemeNoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ProductActivity" />
+        </activity>
+        <activity
             android:name=".activities.CategoryActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity

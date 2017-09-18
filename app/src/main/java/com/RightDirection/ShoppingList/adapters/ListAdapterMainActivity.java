@@ -54,14 +54,14 @@ public class ListAdapterMainActivity extends BaseListAdapter {
             if (Utils.showPrices(mParentActivity)) {
                 viewHolder.llShoppingListInfo.setVisibility(View.VISIBLE);
 
+                ShoppingList item = (ShoppingList)mObjects.get(position);
                 TextView tvSumInfo = (TextView)viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
                 if (tvSumInfo != null){
                     tvSumInfo.setText(mParentActivity.getString(R.string.shopping_list_info,
-                            String.valueOf(0),
-                            String.valueOf(0)));
+                            String.valueOf(item.getTotalSum()),
+                            String.valueOf(item.getLeftToBuyOn())));
                 }
 
-                ShoppingList item = (ShoppingList)mObjects.get(position);
                 int totalCountOfProducts = 0;
                 int numberOfCrossedOutProducts = 0;
                 if (item != null){

@@ -89,8 +89,10 @@ public class ListAdapterChooseUnit extends RecyclerView.Adapter{
         Intent intent = new Intent();
         Unit chosenUnit = mUnits.get(viewHolder.getAdapterPosition());
         intent.putExtra(EXTRAS_KEYS.UNIT.getValue(), chosenUnit); // Для случая вызова из активности ProductActivity
-        mProduct.setCurrentUnit(chosenUnit); // Для случая вызова из активности ShoppingListEditingActivity
-        intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct); // Товар, отображение которого необходимо обновить
+        if (mProduct != null) {
+            mProduct.setCurrentUnit(chosenUnit); // Для случая вызова из активности ShoppingListEditingActivity
+            intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct); // Товар, отображение которого необходимо обновить
+        }
         activity.setResult(Activity.RESULT_OK, intent);
         activity.finish();
     }

@@ -100,7 +100,10 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         // Подключим обработчики
         FloatingActionButton fabAddNewShoppingList = (FloatingActionButton) findViewById(R.id.fabAddNewShoppingList);
         if (fabAddNewShoppingList != null) {
-            fabAddNewShoppingList.setOnClickListener(onFabAddNewShoppingListClick);
+            fabAddNewShoppingList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onFabAddNewShoppingListClick(view); }
+            });
         }
 
         CustomRecyclerView recyclerView = (CustomRecyclerView) findViewById(R.id.rvShoppingLists);
@@ -274,13 +277,10 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         mShoppingListsAdapter.notifyDataSetChanged();
     }
 
-    private final View.OnClickListener onFabAddNewShoppingListClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
-            startActivity(intent);
-        }
-    };
+    private void onFabAddNewShoppingListClick(View view) {
+        Intent intent = new Intent(view.getContext(), ShoppingListEditingActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {

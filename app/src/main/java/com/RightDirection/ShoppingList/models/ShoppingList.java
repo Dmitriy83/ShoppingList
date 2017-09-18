@@ -48,6 +48,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     // Переменные заполняются при чтении инфо о списках покупок из БД. При этом сами продукты не загружаются (например, в MainActivity)
     private int totalCountOfProducts = 0;
     private int numberOfCrossedOutProducts = 0;
+    private float totalSum = 0;
+    private float leftToBuyOn = 0;
 
     public ShoppingList(long id, String name) {
         super(id, name);
@@ -81,11 +83,31 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             Log.e(TAG, e.getMessage());
             numberOfCrossedOutProducts = 0;
         }
+        try {
+            totalSum = data.getFloat(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_TOTAL_SUM));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            totalSum = 0;
+        }
+        try {
+            leftToBuyOn = data.getFloat(data.getColumnIndexOrThrow(SL_ContentProvider.KEY_LEFT_TO_BUY_ON));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+            leftToBuyOn = 0;
+        }
     }
 
     private ShoppingList(Parcel in) {
         super(in);
         isFiltered = in.readByte() != 0;
+    }
+
+    public float getTotalSum() {
+        return totalSum;
+    }
+
+    public float getLeftToBuyOn() {
+        return leftToBuyOn;
     }
 
     public int getTotalCountOfProducts() {
@@ -310,9 +332,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 Product productFromDB = foundProducts.get(currentProduct.getName());
                 if (productFromDB == null) {
                     // Товар не найден в базе данных, и его необходимо добавить
-                    contentValues.put(SL_ContentProvider.KEY_NAME, currentProduct.getName());
-                    Uri insertedId = contentResolver.insert(SL_ContentProvider.PRODUCTS_CONTENT_URI, contentValues);
-                    currentProduct.setId(ContentUris.parseId(insertedId));
+                    currentProduct.addToDB(context);
                 }else{
                     // Товар найден в базе данных, установим корректный id для него.
                     currentProduct.setId(productFromDB.getId());

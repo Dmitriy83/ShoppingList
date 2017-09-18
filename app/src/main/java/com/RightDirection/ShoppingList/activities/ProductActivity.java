@@ -155,7 +155,9 @@ public class ProductActivity extends BaseActivity {
     }
 
     private void onImgPriceChangeGraphClick() {
-        Toast.makeText(this, R.string.in_developing, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), PriceChangeHistoryActivity.class);
+        intent.putExtra(EXTRAS_KEYS.PRODUCT.getValue(), mProduct);
+        startActivity(intent);
     }
 
     private void onClearImageClick() {
@@ -193,7 +195,7 @@ public class ProductActivity extends BaseActivity {
 
         EditText etLastPrice = (EditText) findViewById(R.id.etLastPrice);
         try {
-            if (etLastPrice != null) mProduct.setLastPrice(Long.valueOf(etLastPrice.getText().toString()));
+            if (etLastPrice != null) mProduct.setLastPrice(Float.valueOf(etLastPrice.getText().toString()));
         }catch (Exception e){
             Log.e(TAG, e.getMessage());
         }
