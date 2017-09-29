@@ -2,6 +2,7 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.filters.MediumTest;
+import android.support.test.filters.SmallTest;
 
 import com.RightDirection.ShoppingList.R;
 
@@ -20,6 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
@@ -68,8 +70,12 @@ public class ProductActivitiesTest extends ActivitiesTest {
         pressBack();
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
 
-        // Протестируем выбор категорий
+    @Test
+    @SmallTest
+    public void testChoosingCategory() {
+        String textForTyping;
         addNewCategory();
         pressBack();
         onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
@@ -106,6 +112,89 @@ public class ProductActivitiesTest extends ActivitiesTest {
         onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
         onView(withId(R.id.btnChooseCategory)).check(matches(withText(
                 mActivity.getString(R.string.three_dots, mNewCategoryNamePattern))));
+
+        // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @SmallTest
+    public void testChoosingUnit() {
+        String textForTyping;
+        addNewUnit();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+        // Нажимаем кнопку вызова подменю
+        openMainMenu();
+        // Выбираем "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
+        // Проверяем, что открылась активность "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).check(matches(isDisplayed()));
+        // Нажимаем кнопку добавления нового продукта
+        onView(withId(R.id.fabProductListAddProduct)).perform(click());
+        textForTyping = mNewProductNamePattern + "testProducts'3";
+        onView(withId(R.id.etProductName)).perform(typeText(textForTyping));
+        // Скроем клавиатуру
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        // Проверяем, что в поле Ед. измерения написано выражение по умолчанию
+        onView(withId(R.id.btnUnit))
+                .check(matches(withText(R.string.default_unit)));
+        onView(withId(R.id.btnUnit)).perform(click());
+        // Выбираем созданную ед. измерения
+        onView(withId(R.id.rvUnits)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(mNewUnitNamePlusShortNamePattern))));
+        onView(recyclerViewItemWithText(mNewUnitNamePlusShortNamePattern)).perform(click());
+        // Проверяем, что категория отобразилась в активности
+        onView(withId(R.id.btnUnit)).check(matches(withText(mNewUnitShortNamePattern)));
+        onView(withId(R.id.btnSave)).perform(click());
+        // Проверяем, что новый продукт отобразился в списке
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(textForTyping))));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        // Еще раз зайдем в продукт и убедимся, что категория сохранилась
+        onView(recyclerViewItemWithText(textForTyping)).perform(click());
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        onView(withId(R.id.btnUnit)).check(matches(withText(mNewUnitShortNamePattern)));
+
+        // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
+        pressBack();
+        pressBack();
+        onView(withId(R.id.fabAddNewShoppingList)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    @SmallTest
+    public void testChangingPrice() {
+        String textForTyping;
+        // Нажимаем кнопку вызова подменю
+        openMainMenu();
+        // Выбираем "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).perform(click());
+        // Проверяем, что открылась активность "Список продуктов"
+        onView(withText(mActivity.getString(R.string.action_edit_products_list))).check(matches(isDisplayed()));
+        // Нажимаем кнопку добавления нового продукта
+        onView(withId(R.id.fabProductListAddProduct)).perform(click());
+        textForTyping = mNewProductNamePattern + "testProducts'3";
+        onView(withId(R.id.etProductName)).perform(typeText(textForTyping));
+        // Скроем клавиатуру
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        // Проверяем, что в поле "Последняя цена" написано выражение по умолчанию
+        onView(withId(R.id.etLastPrice))
+                .check(matches(withHint(R.string.enter_price)));
+        onView(withId(R.id.etLastPrice))
+                .check(matches(withText("")));
+        onView(withId(R.id.etLastPrice)).perform(clearText());
+        onView(withId(R.id.etLastPrice)).perform(typeText("123.1"));
+        onView(withId(R.id.btnSave)).perform(click());
+        // Проверяем, что новый продукт отобразился в списке
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
+                .scrollTo(hasDescendant(withText(textForTyping))));
+        onView(recyclerViewItemWithText(textForTyping)).check(matches(isDisplayed()));
+        // Еще раз зайдем в продукт и убедимся, что цена сохранилась
+        onView(recyclerViewItemWithText(textForTyping)).perform(click());
+        onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
+        onView(withId(R.id.etLastPrice)).check(matches(withText("123.10")));
 
         // Нажимаем кнопку "Назад" и проверяем, что вернулись к основной активности
         pressBack();

@@ -19,10 +19,6 @@ import com.RightDirection.ShoppingList.interfaces.IDataBaseOperations;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 public class Product extends ListItem implements IDataBaseOperations {
 
     private Category category;
@@ -256,13 +252,15 @@ public class Product extends ListItem implements IDataBaseOperations {
         addPriceChangeHistory(context);
     }
 
+    @SuppressWarnings({"EmptyMethod", "UnusedParameters"})
     private void addPriceChangeHistory(Context context) {
-        ContentResolver contentResolver = context.getContentResolver();
+        // Пока не будем добавлять кнопку "История цены", т.к. на мой взгяд этот график бесполезен
+        /*ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_DATE, System.currentTimeMillis());
         contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, getId());
         contentValues.put(SL_ContentProvider.KEY_PRICE, getLastPrice());
-        contentResolver.insert(SL_ContentProvider.PRICE_CHANGE_HISTORY_URI, contentValues);
+        contentResolver.insert(SL_ContentProvider.PRICE_CHANGE_HISTORY_URI, contentValues);*/
     }
 
     @Override

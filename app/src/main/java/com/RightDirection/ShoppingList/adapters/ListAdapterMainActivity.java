@@ -22,6 +22,7 @@ import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ListAdapterMainActivity extends BaseListAdapter {
 
@@ -58,8 +59,8 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                 TextView tvSumInfo = (TextView)viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
                 if (tvSumInfo != null){
                     tvSumInfo.setText(mParentActivity.getString(R.string.shopping_list_info,
-                            String.valueOf(item.getTotalSum()),
-                            String.valueOf(item.getLeftToBuyOn())));
+                            String.format(Locale.getDefault(), "%.2f", item.getTotalSum()),
+                            String.format(Locale.getDefault(), "%.2f", item.getLeftToBuyOn())));
                 }
 
                 int totalCountOfProducts = 0;

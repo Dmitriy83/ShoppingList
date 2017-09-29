@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
@@ -27,6 +26,8 @@ import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.utils.DecimalDigitsInputFilter;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.squareup.picasso.Picasso;
+
+import java.util.Locale;
 
 public class ProductActivity extends BaseActivity {
 
@@ -142,7 +143,9 @@ public class ProductActivity extends BaseActivity {
         if (etPrice != null) {
             etPrice.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
             try {
-                etPrice.setText(String.valueOf(mProduct.getLastPrice()));
+                if (mProduct.getLastPrice() != 0) {
+                    etPrice.setText(String.format(Locale.getDefault(), "%.2f", mProduct.getLastPrice()));
+                }
             }catch (Exception e){
                 Log.e(TAG, e.getMessage());
             }

@@ -159,7 +159,6 @@
     <string name="default_unit">pc.</string>
     <string name="enter_price">Enter price</string>
     <string name="unit">Unit:</string>
-    <string name="in_developing">In developing…</string>
     <string name="pref_key_show_units" translatable="false">pref_key+show_units</string>
     <string name="pref_show_units">Show units</string>
     <string name="unit_not_named">Unit was not named</string>

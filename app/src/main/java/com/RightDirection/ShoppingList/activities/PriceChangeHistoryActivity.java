@@ -3,27 +3,17 @@ package com.RightDirection.ShoppingList.activities;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.MenuItem;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.util.Date;
 
 public class PriceChangeHistoryActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{

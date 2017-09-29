@@ -2,10 +2,7 @@ package com.RightDirection.ShoppingList.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;

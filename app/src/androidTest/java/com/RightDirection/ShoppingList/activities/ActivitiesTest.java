@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -23,6 +24,7 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.BaseListAdapter;
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -76,6 +78,8 @@ abstract class ActivitiesTest {
         mActivity = mActivityRule.getActivity();
         mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
+        setSettingsShowUnits(false);
+        setSettingsShowPrices(false);
         // Сначала выключим появление подсказок
         switchOffHelpActivities();
         // Включим отображение картинок
@@ -84,14 +88,29 @@ abstract class ActivitiesTest {
 
     @After
     public void tearDown() throws Exception {
-        ContentResolver contentResolver = mActivity.getContentResolver();
+        removeTestData();
+    }
 
+    private void removeTestData() {
+        ContentResolver contentResolver = mActivity.getContentResolver();
         contentResolver.delete(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI,
                 SL_ContentProvider.KEY_NAME +  " LIKE '%Test%'", null);
         contentResolver.delete(SL_ContentProvider.PRODUCTS_CONTENT_URI,
                 SL_ContentProvider.KEY_NAME +  " LIKE '%test%'", null);
         contentResolver.delete(SL_ContentProvider.CATEGORIES_CONTENT_URI,
                 SL_ContentProvider.KEY_CATEGORY_NAME +  " LIKE '%test%'", null);
+        contentResolver.delete(SL_ContentProvider.UNITS_CONTENT_URI,
+                SL_ContentProvider.KEY_UNIT_NAME +  " LIKE '%test%'", null);
+    }
+
+    ViewInteraction getEtCountViewInteraction(String productName) {
+        if (!Utils.showPrices(mActivity)) {
+            return onView(allOf(withId(getEtCountId()),
+                    withParent(hasSibling(recyclerViewItemWithText(productName)))));
+        }else{
+            return onView(allOf(withId(getEtCountId()),
+                    withParent(withParent(hasSibling(recyclerViewItemWithText(productName))))));
+        }
     }
 
     private void switchOffHelpActivities(){
@@ -215,8 +234,7 @@ abstract class ActivitiesTest {
         addProductInList(textForTyping, pressImeActionButton);
 
         // Изменим количество
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText(textForTyping)))))
+        getEtCountViewInteraction(textForTyping)
                 .perform(clearText())
                 .perform(typeText(String.valueOf(count)));
     }
@@ -269,25 +287,15 @@ abstract class ActivitiesTest {
 
         // Проверим загружены ли элементы
         onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText("test1")))))
-                .check(matches(withText("5.0")));
+        getEtCountViewInteraction("test1").check(matches(withText("5.0")));
         onView(recyclerViewItemWithText("test2")).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText("test2")))))
-                .check(matches(withText("3.0")));
+        getEtCountViewInteraction("test2").check(matches(withText("3.0")));
         onView(recyclerViewItemWithText("test3")).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText("test3")))))
-                .check(matches(withText("1.0")));
+        getEtCountViewInteraction("test3").check(matches(withText("1.0")));
         onView(recyclerViewItemWithText("test4")).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText("test4")))))
-                .check(matches(withText("1.0")));
+        getEtCountViewInteraction("test4").check(matches(withText("1.0")));
         onView(recyclerViewItemWithText("test5 555")).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText("test5 555")))))
-                .check(matches(withText("2.3")));
+        getEtCountViewInteraction("test5 555").check(matches(withText("2.3")));
 
         onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());
         onView(recyclerViewItemWithText("testNewProduct2")).check(doesNotExist());
@@ -332,7 +340,25 @@ abstract class ActivitiesTest {
         }
     }
 
+    void setSettingsShowPrices(boolean show){
+        // Прочитаем настройки приложения
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        boolean showPrices = sharedPref.getBoolean(mActivity.getString(R.string.pref_key_show_prices), false);
+        if (show != showPrices) {
+            // Установим нужную настройку
+            openSettings();
+            onView(withText(mActivity.getString(R.string.pref_show_prices))).perform(click());
+
+            // Возвращаемся к основной активности
+            pressBack();
+        }
+    }
+
     void addNewUnit(){
+        addNewUnit(mNewUnitNamePattern, mNewUnitShortNamePattern);
+    }
+
+    void addNewUnit(String name, String shortName){
         setSettingsShowUnits(true);
 
         // Нажимаем кнопку вызова подменю
@@ -345,14 +371,16 @@ abstract class ActivitiesTest {
         onView(withId(R.id.fabAddUnit)).perform(click());
 
         // Вводим название новой ед. измерения, и нажимаем кнопку сохранения
-        onView(withId(R.id.etName)).perform(typeText(mNewUnitNamePattern));
-        onView(withId(R.id.etShortName)).perform(typeText(mNewUnitShortNamePattern));
+        onView(withId(R.id.etName)).perform(typeText(name));
+        onView(withId(R.id.etShortName)).perform(typeText(shortName));
         onView(withId(R.id.btnSave)).perform(click());
 
         // Проверяем, что новая ед. измерения отобразилась в списке
         onView(withId(R.id.rvUnits)).perform(RecyclerViewActions
-                .scrollTo(hasDescendant(withText(mNewUnitNamePattern))));
-        onView(recyclerViewItemWithText(mNewUnitNamePattern)).check(matches(isDisplayed()));
+                .scrollTo(hasDescendant(withText(name))));
+        onView(recyclerViewItemWithText(name)).check(matches(isDisplayed()));
+
+        pressBack();
     }
 
     class RecyclerViewItemCountAssertion implements ViewAssertion {
@@ -420,5 +448,53 @@ abstract class ActivitiesTest {
                 IMAGE_PATH);
         contentResolver.update(SL_ContentProvider.PRODUCTS_CONTENT_URI,
                 contentValues, SL_ContentProvider.KEY_NAME + " = ?", new String[]{productName});
+    }
+
+    private int getEtCountId(){
+        if (Utils.showPrices(mActivity)) {
+            return R.id.etCount_CountAndPrice;            
+        }else {
+            if (Utils.showUnits(mActivity)){
+                return R.id.etCount_CountAndUnit;                
+            }else {
+                return R.id.etCount;                
+            }
+        }
+    }
+
+    int getTvUnitId(){
+        if (Utils.showPrices(mActivity)) {
+            return R.id.tvUnit_CountAndPrice;            
+        }else {
+            return R.id.tvUnit_CountAndUnit;            
+        }
+    }
+
+    int getImgIncreaseId(){
+        if (Utils.showPrices(mActivity)) {
+            return R.id.imgIncrease_CountAndPrice;            
+        }else {
+            if (Utils.showUnits(mActivity)){
+                return R.id.imgIncrease_CountAndUnit;                
+            }else {
+                return R.id.imgIncrease;                
+            }
+        }
+    }
+
+    int getImgDecreaseId(){
+        if (Utils.showPrices(mActivity)) {
+            return R.id.imgDecrease_CountAndPrice;
+        }else {
+            if (Utils.showUnits(mActivity)){
+                return R.id.imgDecrease_CountAndUnit;
+            }else {
+                return R.id.imgDecrease;
+            }
+        }
+    }
+
+    ViewInteraction getTvCountViewInteraction(String productName){
+        return onView(allOf(withId(R.id.txtCount), hasSibling(recyclerViewItemWithText(productName))));
     }
 }

@@ -3,6 +3,7 @@ package com.RightDirection.ShoppingList.activities;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.filters.LargeTest;
+import android.support.test.filters.MediumTest;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import com.RightDirection.ShoppingList.R;
@@ -22,13 +23,10 @@ import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
-import static org.hamcrest.Matchers.allOf;
 
 public class InShopActivityTest extends ActivitiesTest {
 
@@ -95,8 +93,7 @@ public class InShopActivityTest extends ActivitiesTest {
         // В меню действий нажимаем кнопку редактирования списка
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
 
-        onView(allOf(withId(R.id.etCount),
-                withParent(hasSibling(recyclerViewItemWithText(mNewProductNamePattern + "3")))))
+        getEtCountViewInteraction(mNewProductNamePattern + "3")
                 .perform(clearText())
                 .perform(typeText("1.3"));
         onView(withId(R.id.action_save_list)).perform(click());
@@ -527,5 +524,22 @@ public class InShopActivityTest extends ActivitiesTest {
         addProductInList(mNewProductNamePattern + 1, false);
         addProductInList(mNewProductNamePattern + 3, false, 1.3);
         onView(withId(R.id.action_save_list)).perform(click());
+    }
+
+    @Test
+    @MediumTest
+    public void inShopActivity_ChangeProductNameTest(){
+        addNewShoppingList();
+        onView(recyclerViewItemWithText(mNewListName)).perform(click());
+        onView(withId(R.id.btnInShop)).perform(click());
+        // Открываем карточку товара
+        onView(recyclerViewItemWithText(mNewProductNamePattern + "2")).perform(longClick());
+        // Изменяем наименование
+        onView(withId(R.id.etProductName)).perform(clearText());
+        onView(withId(R.id.etProductName)).perform(typeText(mNewProductNamePattern + "5"));
+        onView(withId(R.id.btnSave)).perform(click());
+        // Возвращаемся в активность редактирования, и проверяем, что наименование поменялось
+        onView(recyclerViewItemWithText(mNewProductNamePattern + "5")).check(matches(isDisplayed()));
+        onView(recyclerViewItemWithText(mNewProductNamePattern + "2")).check(doesNotExist());
     }
 }

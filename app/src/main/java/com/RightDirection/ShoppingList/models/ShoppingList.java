@@ -184,12 +184,10 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         Uri insertedId = contentResolver.insert(SL_ContentProvider.SHOPPING_LISTS_CONTENT_URI, contentValues);
         setId(ContentUris.parseId(insertedId));
 
-        contentValues.clear(); // Очистим значения для вставки для дальнейшей записи составляющих списка покупок
-
         if (mProducts == null) return;
 
         // Запишем составлящие списка покупок в базу данных
-        writeShoppingListProductsToDB(context, contentResolver, contentValues);
+        writeShoppingListProductsToDB(context, contentResolver);
 
         // Список покупок более не новый
         isNew = false;
@@ -209,18 +207,18 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
         // Обновим текущий список покупок
         ContentResolver contentResolver = context.getContentResolver();
-        ContentValues contentValues = new ContentValues();
 
         // Сначала удалим все записи редактируемого списка покупок из БД
         contentResolver.delete(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI,
                 SL_ContentProvider.KEY_SHOPPING_LIST_ID + "= ?", new String[]{String.valueOf(getId())});
 
         // Запишем составлящие списка покупок в базу данных
-        writeShoppingListProductsToDB(context, contentResolver, contentValues);
+        writeShoppingListProductsToDB(context, contentResolver);
     }
 
-    private void writeShoppingListProductsToDB(Context context, ContentResolver contentResolver, ContentValues contentValues) {
+    private void writeShoppingListProductsToDB(Context context, ContentResolver contentResolver) {
         for (IListItem item: mProducts) {
+            ContentValues contentValues = new ContentValues();
             contentValues.put(SL_ContentProvider.KEY_SHOPPING_LIST_ID, getId());
             contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, item.getId());
             contentValues.put(SL_ContentProvider.KEY_COUNT, item.getCount());
@@ -228,8 +226,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             Product product = (Product)item;
             contentValues.put(SL_ContentProvider.KEY_PRICE, product.getCurrentPrice());
             Unit currentUnit = product.getCurrentUnit();
-            if (currentUnit != null && product.getCurrentUnit().getId() != Utils.EMPTY_ID) {
-                contentValues.put(SL_ContentProvider.KEY_UNIT_ID, product.getCurrentUnit().getId());
+            if (currentUnit != null && currentUnit.getId() != Utils.EMPTY_ID) {
+                contentValues.put(SL_ContentProvider.KEY_UNIT_ID, currentUnit.getId());
             }
             contentResolver.insert(SL_ContentProvider.SHOPPING_LIST_CONTENT_CONTENT_URI, contentValues);
 
@@ -239,7 +237,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
                 product.setLastPrice(product.getCurrentPrice());
                 needToUpdate = true;
             }
-            if (currentUnit != null && product.getCurrentUnit().getId() != Utils.EMPTY_ID && currentUnit != product.getDefaultUnit()) {
+            if (currentUnit != null && currentUnit.getId() != Utils.EMPTY_ID && currentUnit != product.getDefaultUnit()) {
                 product.setDefaultUnit(currentUnit);
                 needToUpdate = true;
             }
@@ -326,7 +324,6 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             data.close();
 
             // Добавим несуществующие продукты в базу данных. Присвоим корректные id всем товарам
-            ContentValues contentValues = new ContentValues();
             for (int i = 0; i < mProducts.size(); i++) {
                 Product currentProduct = (Product) mProducts.get(i);
                 Product productFromDB = foundProducts.get(currentProduct.getName());

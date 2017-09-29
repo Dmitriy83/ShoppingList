@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * Класс с глобальными константами и методами
@@ -288,7 +289,7 @@ public class Utils {
         }
 
         tvSumInfo.setText(activity.getString(R.string.shopping_list_info,
-                String.valueOf(totalSum),
-                String.valueOf(leftToBuyOn)));
+                String.format(Locale.getDefault(), "%.2f", totalSum),
+                String.format(Locale.getDefault(), "%.2f", leftToBuyOn)));
     }
 }

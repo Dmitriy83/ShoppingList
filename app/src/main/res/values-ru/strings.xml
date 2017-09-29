@@ -137,7 +137,6 @@
     <string name="category">Категория:</string>
     <string name="enter_price">Введите цену</string>
     <string name="unit">Ед. изм.:</string>
-    <string name="in_developing">В разработке…</string>
     <string name="pref_show_units">Показывать единицы измерения</string>
     <string name="unit_not_named">\'Без имени\'</string>
     <string name="units_list_activity_no_data_text">Добавьте новую единицу измерения</string>

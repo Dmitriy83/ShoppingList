@@ -149,7 +149,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
 
     private void removeAllItems(){
         mProducts.clear();
-        mShoppingListItemsAdapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -159,7 +159,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         // Если элемент уже присутствует в списке, то добавлять не нужно
         if (!mProducts.contains(newItem)) {
             mProducts.add(0, newItem);
-            mShoppingListItemsAdapter.notifyDataSetChanged();
+            notifyDataSetChanged();
         }else{
             // Сообщим о том, что элемент уже есть в списке
             Toast.makeText(this, getString(R.string.item_already_added), Toast.LENGTH_LONG).show();
@@ -221,6 +221,10 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
             mProducts.add(new Product(data, new Category(data), defaultUnit, currentUnit));
         }
 
+        notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged() {
         mShoppingListItemsAdapter.notifyDataSetChanged();
         Utils.calculateTotalSum(this, mProducts);
     }

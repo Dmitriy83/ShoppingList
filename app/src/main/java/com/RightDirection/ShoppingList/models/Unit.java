@@ -25,11 +25,13 @@ public class Unit extends ListItem implements Parcelable, IDataBaseOperations {
     public Unit(long id, String name, String shortName) {
         super(id, name);
         this.shortName = shortName;
+        if (id == 0){ this.id = Utils.EMPTY_ID; }
     }
 
     private Unit(Parcel in) {
         super(in);
         shortName = in.readString();
+        if (id == 0){ this.id = Utils.EMPTY_ID; }
     }
 
     @Override

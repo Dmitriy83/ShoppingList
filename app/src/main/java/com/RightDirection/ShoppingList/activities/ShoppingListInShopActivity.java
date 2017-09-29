@@ -118,6 +118,10 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        refreshTotalSum();
+    }
+
+    private void refreshTotalSum() {
         if (mProductsAdapter.getOriginalValues() != null) {
             Utils.calculateTotalSum(this, mProductsAdapter.getOriginalValues());
         }else {
@@ -163,8 +167,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         Utils.sortArrayListByCategories(mProducts);
         if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
         mProductsAdapter.notifyDataSetChanged();
-
-        Utils.calculateTotalSum(this, mProducts);
+        refreshTotalSum();
 
         // Отфильтруем список, если он ранее был отфильтрован
         if (mShoppingList.isFiltered()) {
@@ -242,6 +245,8 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
                 ArrayList<IListItem> originalValues = new ArrayList<>(mProducts);
                 mProductsAdapter.setOriginalValues(originalValues);
                 mProductsAdapter.notifyDataSetChanged();
+                refreshTotalSum();
+
                 break;
             }
             case R.id.action_deselect_all: {
@@ -306,6 +311,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
                     Utils.sortArrayListByCategories(mProducts);
                     if (showCategories()) Utils.addCategoriesInArrayListOfProducts(this, mProducts);
                     mProductsAdapter.notifyDataSetChanged();
+                    refreshTotalSum();
                 }
         }
     }

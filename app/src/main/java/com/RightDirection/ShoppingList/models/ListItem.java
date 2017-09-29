@@ -8,7 +8,7 @@ import com.RightDirection.ShoppingList.interfaces.IListItem;
 
 public class ListItem implements IListItem {
 
-    private long id;
+    long id;
     private String name;
     boolean isChecked;
     private Uri imageUri;

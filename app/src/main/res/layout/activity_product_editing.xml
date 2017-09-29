@@ -149,7 +149,8 @@
                     android:layout_toEndOf="@+id/etLastPrice"
                     android:layout_toRightOf="@+id/etLastPrice"
                     android:contentDescription="@string/price_change_graph"
-                    app:srcCompat="@drawable/ic_price_change_graph" />
+                    app:srcCompat="@drawable/ic_price_change_graph"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/tvUnit_CountAndPrice"
