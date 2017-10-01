@@ -118,6 +118,12 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Utils.calculateTotalSum(this, mProducts);
+    }
+
     private void saveListAndGoToInShopActivity(){
         // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
         // данный момент редактируется количество с помощью клавиватуры (сохранение количества

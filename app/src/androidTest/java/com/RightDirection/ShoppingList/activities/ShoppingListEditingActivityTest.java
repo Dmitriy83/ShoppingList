@@ -64,29 +64,9 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         }
     }
 
-    private ViewInteraction getTvUnitViewInteraction(String productName) {
-        if (!Utils.showPrices(mActivity)) {
-            return onView(allOf(withId(getTvUnitId()),
-                    withParent(hasSibling(recyclerViewItemWithText(productName)))));
-        }else{
-            return onView(allOf(withId(getTvUnitId()),
-                    withParent(withParent(hasSibling(recyclerViewItemWithText(productName))))));
-        }
-    }
-
     private ViewInteraction getImgDeleteViewInteraction(String productName) {
         return onView(allOf(withId(R.id.imgDelete),
                     hasSibling(recyclerViewItemWithText(productName))));
-    }
-
-    private ViewInteraction getEtPriceViewInteraction(String productName) {
-        if (!Utils.showPrices(mActivity)) {
-            return onView(allOf(withId(R.id.etLastPrice),
-                    withParent(hasSibling(recyclerViewItemWithText(productName)))));
-        } else {
-            return onView(allOf(withId(R.id.etLastPrice),
-                    withParent(withParent(hasSibling(recyclerViewItemWithText(productName))))));
-        }
     }
 
     private ViewInteraction getRecyclerViewItemTvSumInfoViewInteraction(String listName) {
@@ -364,12 +344,12 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
     @LargeTest
     public void shoppingListEditingActivity_LoadShoppingList(){
         // Проводим тест для различных значений настроек
-        setSettingsShowUnits(false);
-        setSettingsShowPrices(false);
-        loadShoppingList();
-        removeShoppingList(mNewListName);
         setSettingsShowUnits(true);
         setSettingsShowPrices(true);
+        loadShoppingList();
+        removeShoppingList(mNewListName);
+        setSettingsShowUnits(false);
+        setSettingsShowPrices(false);
         loadShoppingList();
         removeShoppingList(mNewListName);
         setSettingsShowUnits(false);
@@ -602,23 +582,23 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         getEtPriceViewInteraction(mNewProductNamePattern + "2").check(matches(withText("0.00")));
         getEtPriceViewInteraction(mNewProductNamePattern + "3").check(matches(withText("0.00")));
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
-        getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("0.0"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("0.0"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("0.00"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("0.00"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         // В режиме редактировпния меняем цену у первой позиции (вводим в поле). Проверяем корректность изменения в активности В магазине. При этом у остальных должен остаться 0.
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
         getEtPriceViewInteraction(mNewProductNamePattern + "1").perform(clearText()).perform(typeText("1.23"));
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("0.00"))));
         getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
         // Меняем цену у второй позиции (кнопками плюс и минус). Проверяем В магазине.
         onView(withId(R.id.action_edit_shopping_list)).perform(click());
-        getEtPriceViewInteraction(mNewProductNamePattern + "2").perform(clearText()).perform(typeText("4.0"));
+        getEtPriceViewInteraction(mNewProductNamePattern + "2").perform(clearText()).perform(typeText("4"));
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("4.0"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("4.00"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         // Открываем товары первой, второй и третьей позиции. Проверяем, что последняя цена заполнена верно.
         onView(recyclerViewItemWithText(mNewProductNamePattern + "1")).perform(longClick());
         onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
@@ -639,7 +619,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
         getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("5.32"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         onView(recyclerViewItemWithText(mNewProductNamePattern + "2")).perform(longClick());
         onView(withId(R.id.etProductName)).perform(closeSoftKeyboard());
         onView(withId(R.id.etLastPrice)).check(matches(withText("5.32")));
@@ -654,7 +634,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
         getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("5.32"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         onView(withId(R.id.tvSumInfo)).check(matches(withText(mActivity.getString(R.string.shopping_list_info, "6.55", "6.55"))));
         // Создаем новый товар, указываем цену в карточке товара. Добавляем товар в список. Проверяем цену и итоговую запись в списках. Проверяем итоговую надпись списка на основном экране.
         pressBack();
@@ -676,7 +656,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
         getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("5.32"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         getTvCountViewInteraction(mNewProductNamePattern + "4").check(matches(withText(containsString("250.25"))));
         onView(withId(R.id.tvSumInfo)).check(matches(withText(mActivity.getString(R.string.shopping_list_info, "256.80", "256.80"))));
         pressBack();
@@ -711,7 +691,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         onView(withId(R.id.action_go_to_in_shop_activity)).perform(click());
         getTvCountViewInteraction(mNewProductNamePattern + "1").check(matches(withText(containsString("1.23"))));
         getTvCountViewInteraction(mNewProductNamePattern + "2").check(matches(withText(containsString("5.32"))));
-        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.0"))));
+        getTvCountViewInteraction(mNewProductNamePattern + "3").check(matches(withText(containsString("0.00"))));
         getTvCountViewInteraction(mNewProductNamePattern + "4").check(matches(withText(containsString("250.25"))));
         onView(withId(R.id.tvSumInfo)).check(matches(withText(mActivity.getString(R.string.shopping_list_info, "272.76", "251.48"))));
         pressBack();

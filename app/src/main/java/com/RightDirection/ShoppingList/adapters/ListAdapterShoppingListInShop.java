@@ -22,6 +22,7 @@ import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ListAdapterShoppingListInShop extends BaseListAdapter {
     private ArrayList<IListItem> mOriginalValues;
@@ -83,12 +84,12 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
                 String propsText;
                 if (Utils.showPrices(mParentActivity) && Utils.showUnits(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_price_and_unit,
-                            String.valueOf(product.getPrice()),
+                            String.format(Locale.getDefault(), "%.2f", product.getPrice()),
                             String.valueOf(product.getCount()),
                             product.getUnitShortName(mParentActivity));
                 } else if (Utils.showPrices(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_price_only,
-                            String.valueOf(product.getPrice()),
+                            String.format(Locale.getDefault(), "%.2f", product.getPrice()),
                             String.valueOf(product.getCount()));
                 } else if (Utils.showUnits(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_unit_only,

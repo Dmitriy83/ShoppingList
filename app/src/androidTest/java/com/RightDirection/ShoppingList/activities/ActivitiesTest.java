@@ -33,7 +33,9 @@ import org.junit.Rule;
 
 import java.util.Date;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -276,15 +278,12 @@ abstract class ActivitiesTest {
     }
 
     void loadAndCheckList(){
-        // В текстовое поле вставляем текст для загрузки
+        // В текстовое поле вставляем текст для загрузки (без ед. измерения и цен)
         onView(withId(R.id.etTextForLoading)).perform(typeText("test1, 5; test2, 3; test3; test4; test5 555, 2.3"));
-
         // Нажимаем кнопку загрузить
         onView(withId(R.id.btnLoad)).perform(click());
-
         // Скроем клавиатуру
         onView(withId(R.id.newItemFragment)).perform(closeSoftKeyboard());
-
         // Проверим загружены ли элементы
         onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
         getEtCountViewInteraction("test1").check(matches(withText("5.0")));
@@ -300,6 +299,76 @@ abstract class ActivitiesTest {
         onView(recyclerViewItemWithText("testNewProduct1")).check(doesNotExist());
         onView(recyclerViewItemWithText("testNewProduct2")).check(doesNotExist());
 
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        // В меню нажимаем кнопку отправки списка по почте
+        onView(withText(R.string.load)).perform(click());
+        // В текстовое поле вставляем текст для загрузки (с ед. измерения, но без цен)
+        onView(withId(R.id.etTextForLoading)).perform(typeText("test1, 5, test1.; test2, 3, test2.; test3, test1.; test4; test5 555, 2.3, test3."));
+        // Нажимаем кнопку загрузить
+        onView(withId(R.id.btnLoad)).perform(click());
+        // Скроем клавиатуру
+        onView(withId(R.id.newItemFragment)).perform(closeSoftKeyboard());
+        // Проверим загружены ли элементы
+        onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test1").check(matches(withText("5.0")));
+        onView(recyclerViewItemWithText("test2")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test2").check(matches(withText("3.0")));
+        onView(recyclerViewItemWithText("test3")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test3").check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test4")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test4").check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test5 555")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test5 555").check(matches(withText("2.3")));
+        // Проверим, загрузились ли ед. измерения
+        if (Utils.showUnits(mActivity)){
+            getTvUnitViewInteraction("test1").check(matches(withText("test1.")));
+            getTvUnitViewInteraction("test2").check(matches(withText("test2.")));
+            getTvUnitViewInteraction("test3").check(matches(withText(R.string.default_unit)));
+            getTvUnitViewInteraction("test4").check(matches(withText(R.string.default_unit)));
+            getTvUnitViewInteraction("test5 555").check(matches(withText("test3.")));
+        }
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        // В меню нажимаем кнопку отправки списка по почте
+        onView(withText(R.string.load)).perform(click());
+        // В текстовое поле вставляем текст для загрузки (с ед. измерения и с ценами)
+        onView(withId(R.id.etTextForLoading)).perform(typeText("test1, 5, test1., 50; test2, 3, test2., 100; test3, test1.; test4, ,, 200; test5 555, 2.3, test9., 650"));
+        // Нажимаем кнопку загрузить
+        onView(withId(R.id.btnLoad)).perform(click());
+        // Скроем клавиатуру
+        onView(withId(R.id.newItemFragment)).perform(closeSoftKeyboard());
+        // Проверим загружены ли элементы
+        onView(recyclerViewItemWithText("test1")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test1").check(matches(withText("5.0")));
+        onView(recyclerViewItemWithText("test2")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test2").check(matches(withText("3.0")));
+        onView(recyclerViewItemWithText("test3")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test3").check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test4")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test4").check(matches(withText("1.0")));
+        onView(recyclerViewItemWithText("test5 555")).check(matches(isDisplayed()));
+        getEtCountViewInteraction("test5 555").check(matches(withText("2.3")));
+        // Проверим, загрузились ли ед. измерения
+        if (Utils.showUnits(mActivity)){
+            getTvUnitViewInteraction("test1").check(matches(withText("test1.")));
+            getTvUnitViewInteraction("test2").check(matches(withText("test2.")));
+            getTvUnitViewInteraction("test3").check(matches(withText(R.string.default_unit)));
+            getTvUnitViewInteraction("test4").check(matches(withText(R.string.default_unit)));
+            getTvUnitViewInteraction("test5 555").check(matches(withText("test9.")));
+        }
+        // Проверим, загрузились ли цены
+        if (Utils.showPrices(mActivity)){
+            getEtPriceViewInteraction("test1").check(matches(withText("50.00")));
+            getEtPriceViewInteraction("test2").check(matches(withText("100.00")));
+            getEtPriceViewInteraction("test3").check(matches(withText("0.00")));
+            getEtPriceViewInteraction("test4").check(matches(withText("200.00")));
+            getEtPriceViewInteraction("test5 555").check(matches(withText("650.00")));
+        }
+
+        pressBack();
+        pressBack();
         pressBack();
     }
 
@@ -462,7 +531,7 @@ abstract class ActivitiesTest {
         }
     }
 
-    int getTvUnitId(){
+    private int getTvUnitId(){
         if (Utils.showPrices(mActivity)) {
             return R.id.tvUnit_CountAndPrice;            
         }else {
@@ -496,5 +565,25 @@ abstract class ActivitiesTest {
 
     ViewInteraction getTvCountViewInteraction(String productName){
         return onView(allOf(withId(R.id.txtCount), hasSibling(recyclerViewItemWithText(productName))));
+    }
+
+    ViewInteraction getTvUnitViewInteraction(String productName) {
+        if (!Utils.showPrices(mActivity)) {
+            return onView(allOf(withId(getTvUnitId()),
+                    withParent(hasSibling(recyclerViewItemWithText(productName)))));
+        }else{
+            return onView(allOf(withId(getTvUnitId()),
+                    withParent(withParent(hasSibling(recyclerViewItemWithText(productName))))));
+        }
+    }
+
+    ViewInteraction getEtPriceViewInteraction(String productName) {
+        if (!Utils.showPrices(mActivity)) {
+            return onView(allOf(withId(R.id.etLastPrice),
+                    withParent(hasSibling(recyclerViewItemWithText(productName)))));
+        } else {
+            return onView(allOf(withId(R.id.etLastPrice),
+                    withParent(withParent(hasSibling(recyclerViewItemWithText(productName))))));
+        }
     }
 }

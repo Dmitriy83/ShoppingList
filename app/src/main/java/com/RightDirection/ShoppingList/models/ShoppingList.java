@@ -657,7 +657,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     private Unit getUnitFromArray(String[] productArray, Context context){
         String unitShortName = null;
         if (productArray.length >= 3){
-            unitShortName = productArray[2];
+            unitShortName = productArray[2].trim();
         }
 
         // Создаем "техническую" ед. измерения, которой в дальнейшем будет назначено корректное id и имя
