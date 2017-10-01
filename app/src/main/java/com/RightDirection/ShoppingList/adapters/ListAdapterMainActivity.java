@@ -59,8 +59,8 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                 TextView tvSumInfo = (TextView)viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
                 if (tvSumInfo != null){
                     tvSumInfo.setText(mParentActivity.getString(R.string.shopping_list_info,
-                            String.format(Locale.getDefault(), "%.2f", item.getTotalSum()),
-                            String.format(Locale.getDefault(), "%.2f", item.getLeftToBuyOn())));
+                            String.format(Locale.ENGLISH, "%.2f", item.getTotalSum()),
+                            String.format(Locale.ENGLISH, "%.2f", item.getLeftToBuyOn())));
                 }
 
                 int totalCountOfProducts = 0;

@@ -84,12 +84,12 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
                 String propsText;
                 if (Utils.showPrices(mParentActivity) && Utils.showUnits(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_price_and_unit,
-                            String.format(Locale.getDefault(), "%.2f", product.getPrice()),
+                            String.format(Locale.ENGLISH, "%.2f", product.getPrice()),
                             String.valueOf(product.getCount()),
                             product.getUnitShortName(mParentActivity));
                 } else if (Utils.showPrices(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_price_only,
-                            String.format(Locale.getDefault(), "%.2f", product.getPrice()),
+                            String.format(Locale.ENGLISH, "%.2f", product.getPrice()),
                             String.valueOf(product.getCount()));
                 } else if (Utils.showUnits(mParentActivity)) {
                     propsText = mParentActivity.getString(R.string.props_text_with_unit_only,

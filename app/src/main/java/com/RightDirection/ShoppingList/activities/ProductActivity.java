@@ -144,7 +144,7 @@ public class ProductActivity extends BaseActivity {
             etPrice.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
             try {
                 if (mProduct.getLastPrice() != 0) {
-                    etPrice.setText(String.format(Locale.getDefault(), "%.2f", mProduct.getLastPrice()));
+                    etPrice.setText(String.format(Locale.ENGLISH, "%.2f", mProduct.getLastPrice()));
                 }
             }catch (Exception e){
                 Log.e(TAG, e.getMessage());

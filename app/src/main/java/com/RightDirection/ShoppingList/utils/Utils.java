@@ -289,7 +289,7 @@ public class Utils {
         }
 
         tvSumInfo.setText(activity.getString(R.string.shopping_list_info,
-                String.format(Locale.getDefault(), "%.2f", totalSum),
-                String.format(Locale.getDefault(), "%.2f", leftToBuyOn)));
+                String.format(Locale.ENGLISH, "%.2f", totalSum),
+                String.format(Locale.ENGLISH, "%.2f", leftToBuyOn)));
     }
 }
