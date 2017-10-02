@@ -252,6 +252,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             case R.id.action_deselect_all: {
                 mProductsAdapter.deselectAll();
                 mProductsAdapter.notifyDataSetChanged();
+                refreshTotalSum();
                 break;
             }
             case R.id.action_send_to_friend: {

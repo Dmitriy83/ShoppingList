@@ -130,6 +130,8 @@ public class ProductActivity extends BaseActivity {
         }
         Button btnUnit = (Button) findViewById(R.id.btnUnit);
         if (btnUnit != null) {
+            // Исключим вывод всего текста прописными (для Android старше 4)
+            btnUnit.setTransformationMethod(null);
             btnUnit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
