@@ -195,7 +195,7 @@ public class Product extends ListItem implements IDataBaseOperations {
                 SL_ContentProvider.KEY_NAME + " = ?", new String[]{getName()}, null);
         if (data != null){
             if (data.moveToNext()) {
-                int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_ID);
+                int keyIdIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_PRODUCT_ID);
                 setId(data.getLong(keyIdIndex));
                 Toast.makeText(context, context.getString(R.string.product_is_exist),
                         Toast.LENGTH_SHORT).show();

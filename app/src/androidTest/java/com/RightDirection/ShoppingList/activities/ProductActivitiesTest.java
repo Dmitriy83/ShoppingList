@@ -24,8 +24,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withContentDesc
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 public class ProductActivitiesTest extends ActivitiesTest {
@@ -205,7 +207,7 @@ public class ProductActivitiesTest extends ActivitiesTest {
     @Test
     @MediumTest
     public void testShowClearImageButtons() {
-        // Добавим новый товар ии открываем карточке товара
+        // Добавим новый товар и открываем карточке товара
         addNewProduct(mNewProductNamePattern);
         onView(withId(R.id.rvProducts)).perform(RecyclerViewActions
                 .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
@@ -270,6 +272,21 @@ public class ProductActivitiesTest extends ActivitiesTest {
                 .scrollTo(hasDescendant(withText(mNewProductNamePattern))));
         onView(recyclerViewItemWithImageAndText(R.drawable.ic_default_product_image, mNewProductNamePattern))
                 .check(matches(isDisplayed()));
+    }
+
+    @Test
+    @SmallTest
+    public void testAddProductWithTheSameName() {
+        addNewProduct(mNewProductNamePattern);
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions.scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithText(mNewProductNamePattern)).check(matches(isDisplayed()));
+        pressBack();
+        addNewProduct(mNewProductNamePattern);
+        // К сожалению, нет способа проверить появление Toast. Нижеприведенный вариант и с помощью создания вспомогательного класса ToastMatcher не работают. https://stackoverflow.com/questions/2405080/how-to-test-for-the-appearance-of-a-toast-message
+        //onView(withText(mActivity.getString(R.string.product_is_exist))).inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView())))).check(matches(isDisplayed()));
+        // Если будет найдено два элемента Espresso выдаст ошибку
+        onView(withId(R.id.rvProducts)).perform(RecyclerViewActions.scrollTo(hasDescendant(withText(mNewProductNamePattern))));
+        onView(recyclerViewItemWithText(mNewProductNamePattern)).check(matches(isDisplayed()));
     }
 
 }
