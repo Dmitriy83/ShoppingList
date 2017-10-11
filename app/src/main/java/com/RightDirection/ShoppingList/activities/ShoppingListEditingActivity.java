@@ -272,7 +272,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
     @Override
     public void onBackPressed() {
         saveListAndGoToInShopActivity();
-        super.onBackPressed();
+        //super.onBackPressed();
     }
 
     @Override
@@ -287,7 +287,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
             case R.id.action_save_list:
             case android.R.id.home: { // Нажатие на стрелку (кнопка Up){
                 saveListAndGoToInShopActivity();
-                break;
+                return true; // чтобы активность не закрылась по onOptionsItemSelected
             }
             case R.id.action_remove_all_items: {
                 removeAllItems();
