@@ -202,9 +202,9 @@ public class InShopActivityTest extends ActivitiesTest {
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
-                "" + mNewProductNamePattern + "1, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;"
-                        + "\n" + mNewProductNamePattern + "2, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;"
-                        + "\n" + mNewProductNamePattern + "3, 1.3, " + mActivity.getString(R.string.default_unit) + ", 0.0;");
+                "" + mNewProductNamePattern + "1, 1.0;"
+                        + "\n" + mNewProductNamePattern + "2, 1.0;"
+                        + "\n" + mNewProductNamePattern + "3, 1.3;");
     }
 
     private void inShopActivity_LoadShoppingList(){
@@ -220,8 +220,6 @@ public class InShopActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
-
-        pressBack();
     }
 
     private void inShopActivity_DeselectAll(){

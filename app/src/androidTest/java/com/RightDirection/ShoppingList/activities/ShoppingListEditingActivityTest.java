@@ -336,8 +336,7 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
-                "" + mNewProductNamePattern + "2, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;"
-                        + "\n" + mNewProductNamePattern + "1, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;");
+                "" + mNewProductNamePattern + "2, 1.0;\n" + mNewProductNamePattern + "1, 1.0;");
     }
 
     @Test
@@ -347,19 +346,55 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
         setSettingsShowUnits(true);
         setSettingsShowPrices(true);
         loadShoppingList();
+        try {
+            sendEmailWithUnitsAndPrices("test1, 5.0, test1., 50.0;\ntest2, 3.0, test2., 100.0;\ntest3, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;\ntest4, 1.0, " + mActivity.getString(R.string.default_unit) + ", 200.0;\ntest5 555, 2.3, test9., 650.0;");
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
         removeShoppingList(mNewListName);
         setSettingsShowUnits(false);
         setSettingsShowPrices(false);
         loadShoppingList();
+        try {
+            sendEmailWithUnitsAndPrices("test1, 5.0;\ntest2, 3.0;\ntest3, 1.0;\ntest4, 1.0;\ntest5 555, 2.3;");
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
         removeShoppingList(mNewListName);
         setSettingsShowUnits(false);
         setSettingsShowPrices(true);
         loadShoppingList();
+        try {
+            sendEmailWithUnitsAndPrices("test1, 5.0, test1., 50.0;\ntest2, 3.0, test2., 100.0;\ntest3, 1.0, " + mActivity.getString(R.string.default_unit) + ", 0.0;\ntest4, 1.0, " + mActivity.getString(R.string.default_unit) + ", 200.0;\ntest5 555, 2.3, test9., 650.0;");
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
         removeShoppingList(mNewListName);
         setSettingsShowUnits(true);
         setSettingsShowPrices(false);
         loadShoppingList();
+        try {
+            sendEmailWithUnitsAndPrices("test1, 5.0, test1.;\ntest2, 3.0, test2.;\ntest3, 1.0, " + mActivity.getString(R.string.default_unit) + ";\ntest4, 1.0, " + mActivity.getString(R.string.default_unit) + ";\ntest5 555, 2.3, test9.;");
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
         removeShoppingList(mNewListName);
+    }
+
+    private void sendEmailWithUnitsAndPrices(String emailBody) throws UiObjectNotFoundException {
+        // Переходим в активность "Редактирование списка"
+        onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
+        onView(withId(R.id.action_edit_shopping_list)).perform(click());
+
+        // Нажимаем на кнопку вызова подменю
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Нажимаем кнопку отправки списка покупок по почте
+        onView(withText(mActivity.getString(R.string.share))).perform(click());
+
+        checkEmailAppearing(
+                mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
+                emailBody);
     }
 
     private void loadShoppingList(){
@@ -377,10 +412,6 @@ public class ShoppingListEditingActivityTest extends ActivitiesTest {
 
         // Открылась форма загрузки
         loadAndCheckList();
-
-        pressBack();
-
-        timeout(1000);
     }
 
     @Test

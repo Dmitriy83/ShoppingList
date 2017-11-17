@@ -472,8 +472,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             Product product = (Product)item;
             result = result + product.getName()
                     + divider + " " + String.valueOf(product.getCount())
-                    + divider + " " + String.valueOf(product.getUnitShortName(context))
-                    + divider + " " + String.valueOf(product.getPrice())
+                    + (Utils.showUnits(context) || Utils.showPrices(context) ? divider + " " + String.valueOf(product.getUnitShortName(context)) : "")
+                    + (Utils.showPrices(context) ? divider + " " + String.valueOf(product.getPrice()) : "")
                     + productDivider;
         }
 

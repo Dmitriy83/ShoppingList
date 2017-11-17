@@ -45,11 +45,6 @@ public class LoadShoppingListActivity extends BaseActivity {
 
             // Откроем активность редактирования списка покупок
             mShoppingList.startEditingActivity(mContext);
-            Intent intent = new Intent(mContext, ShoppingListEditingActivity.class);
-            intent.putExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() , mShoppingList);
-            if (mShoppingList.isNew) intent.putExtra(EXTRAS_KEYS.PRODUCTS.getValue(), mShoppingList.getProducts());
-            mContext.startActivity(intent);
-
             finish();
         }
     };

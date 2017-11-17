@@ -367,8 +367,8 @@ abstract class ActivitiesTest {
             getEtPriceViewInteraction("test5 555").check(matches(withText("650.00")));
         }
 
-        pressBack();
-        pressBack();
+        // Сохраним список покупок и вернемся на главный экран
+        //onView(withId(R.id.action_save_list)).perform(click());
         pressBack();
     }
 
