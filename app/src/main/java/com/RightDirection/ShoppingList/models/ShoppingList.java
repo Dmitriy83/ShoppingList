@@ -455,7 +455,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
 
     public String convertShoppingListToString(Context context){
         if (mProducts == null || mProducts.size() == 0) {
-            // Попробуем получить товары из БД. Такое возможно, когда вызов метода происходит
+            // Попробуем получить товары из БД. Такое возможно, когда вызов метода происходит из
             // основной активности (товары для списков в ней не загружаются)
             getProductsFromDB(context);
             if (mProducts == null || mProducts.size() == 0) return "";
@@ -466,10 +466,12 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         String productDivider = context.getString(R.string.product_divider);
         boolean firstLine = true;
         for (IListItem item: mProducts) {
+            Product product = (Product)item;
+            if (product.isChecked()) continue; // вычеркрнутые товары не передаем
+
             if (!firstLine) result = result + "\n";
             else firstLine = false;
 
-            Product product = (Product)item;
             result = result + product.getName()
                     + divider + " " + String.valueOf(product.getCount())
                     + (Utils.showUnits(context) || Utils.showPrices(context) ? divider + " " + String.valueOf(product.getUnitShortName(context)) : "")

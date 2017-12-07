@@ -196,6 +196,9 @@ public class InShopActivityTest extends ActivitiesTest {
         onView(recyclerViewItemWithText(mNewListName)).perform(click());
         onView(withId(R.id.btnInShop)).perform(click());
 
+        // Вычеркнем один товар, чтобы проверить, что передаются только не вычеркнутые
+        onView(recyclerViewItemWithText(mNewProductNamePattern + 2)).perform(swipeRight());
+
         // Нажимаем кнопку отправки списка покупок по почте
         openActionBarOverflowOrOptionsMenu(getTargetContext());
         onView(withText(mActivity.getString(R.string.share))).perform(click());
@@ -203,7 +206,7 @@ public class InShopActivityTest extends ActivitiesTest {
         checkEmailAppearing(
                 mActivity.getString(R.string.json_file_identifier) + " '" + mNewListName + "'",
                 "" + mNewProductNamePattern + "1, 1.0;"
-                        + "\n" + mNewProductNamePattern + "2, 1.0;"
+                        //+ "\n" + mNewProductNamePattern + "2, 1.0;"
                         + "\n" + mNewProductNamePattern + "3, 1.3;");
     }
 
