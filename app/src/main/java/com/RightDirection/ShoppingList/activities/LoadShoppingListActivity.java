@@ -29,14 +29,14 @@ public class LoadShoppingListActivity extends BaseActivity {
         // Получаем список покупок. При этом продукты списка становятся равны null
         mShoppingList = sourceIntent.getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue());
 
-        Button btnGotIt = (Button) findViewById(R.id.btnLoad);
+        Button btnGotIt = findViewById(R.id.btnLoad);
         if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnLoadClick);
     }
 
     private final View.OnClickListener onBtnLoadClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            EditText etText = (EditText)findViewById(R.id.etTextForLoading);
+            EditText etText = findViewById(R.id.etTextForLoading);
             if (etText == null || etText.getText() == null) finish();
 
             assert etText != null;

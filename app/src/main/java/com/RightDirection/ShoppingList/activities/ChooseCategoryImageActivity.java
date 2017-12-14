@@ -19,7 +19,7 @@ public class ChooseCategoryImageActivity extends BaseActivity{
 
         setContentView(R.layout.activity_choose_category_image);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rvCategoryImages);
+        RecyclerView recyclerView = findViewById(R.id.rvCategoryImages);
         if (recyclerView == null) return;
 
         // Используем этот метод для увеличения производительности,
@@ -34,7 +34,7 @@ public class ChooseCategoryImageActivity extends BaseActivity{
         // Привяжем адаптер к элементу управления
         recyclerView.setAdapter(gridAdapter);
 
-        Button btnCategoryEmpty = (Button)findViewById(R.id.btnCategoryEmpty);
+        Button btnCategoryEmpty = findViewById(R.id.btnCategoryEmpty);
         if (btnCategoryEmpty != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnCategoryEmpty.setTransformationMethod(null);

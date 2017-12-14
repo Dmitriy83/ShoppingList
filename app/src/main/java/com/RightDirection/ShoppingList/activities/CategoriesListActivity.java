@@ -38,12 +38,12 @@ public class CategoriesListActivity extends BaseActivity implements LoaderManage
         setTitle(R.string.action_edit_categories_list);
 
         // Добавим обработчики кликов по кнопкам
-        FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabAddCategory);
+        FloatingActionButton fabAddProduct = findViewById(R.id.fabAddCategory);
         if (fabAddProduct != null) {
             fabAddProduct.setOnClickListener(onFabAddCategoryClick);
         }
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvCategories);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvCategories);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -62,19 +62,19 @@ public class CategoriesListActivity extends BaseActivity implements LoaderManage
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 

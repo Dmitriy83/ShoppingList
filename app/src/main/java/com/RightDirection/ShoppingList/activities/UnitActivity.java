@@ -39,13 +39,13 @@ public class UnitActivity extends BaseActivity{
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
-        EditText etUnitName = (EditText) findViewById(R.id.etName);
+        EditText etUnitName = findViewById(R.id.etName);
         if (etUnitName != null) etUnitName.setText(mUnit.getName());
-        EditText etUnitShortName = (EditText) findViewById(R.id.etShortName);
+        EditText etUnitShortName = findViewById(R.id.etShortName);
         if (etUnitShortName != null) etUnitShortName.setText(mUnit.getShortName());
 
         // Добавим обработчики кликов по кнопкам
-        Button btnSave = (Button)findViewById(R.id.btnSave);
+        Button btnSave = findViewById(R.id.btnSave);
         if (btnSave != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnSave.setTransformationMethod(null);
@@ -71,8 +71,8 @@ public class UnitActivity extends BaseActivity{
     }
 
     private void onBtnSaveClick() {
-        EditText etUnitName = (EditText) findViewById(R.id.etName);
-        EditText etUnitShortName = (EditText) findViewById(R.id.etShortName);
+        EditText etUnitName = findViewById(R.id.etName);
+        EditText etUnitShortName = findViewById(R.id.etShortName);
         if (etUnitName != null && etUnitShortName != null) {
             mUnit.setName(etUnitName.getText().toString());
             mUnit.setShortName(etUnitShortName.getText().toString());

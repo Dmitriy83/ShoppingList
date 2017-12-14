@@ -41,7 +41,7 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
         setTitle(R.string.action_edit_products_list);
 
         // Добавим обработчики кликов по кнопкам
-        FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabProductListAddProduct);
+        FloatingActionButton fabAddProduct = findViewById(R.id.fabProductListAddProduct);
         if (fabAddProduct != null) {
             fabAddProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -49,7 +49,7 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
             });
         }
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -69,19 +69,19 @@ public class ProductsListActivity extends BaseActivity implements LoaderManager.
         // Обновим список товаров из базы данных - запускается в onResume
         getLoaderManager().initLoader(0, null, this);
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 

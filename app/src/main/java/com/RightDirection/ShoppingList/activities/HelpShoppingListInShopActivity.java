@@ -27,7 +27,7 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
         fragment1 = new InShopHelp1Fragment();
         fragment2 = new InShopHelp2Fragment();
 
-        FrameLayout fragmentContainer = (FrameLayout) findViewById(R.id.fragment_container);
+        FrameLayout fragmentContainer = findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
@@ -46,7 +46,7 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
             fragmentContainer.setOnClickListener(onFragmentContainerClick);
         }
 
-        Button btnGotIt = (Button) findViewById(R.id.btnGotIt);
+        Button btnGotIt = findViewById(R.id.btnGotIt);
         if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnGotItClick);
     }
 

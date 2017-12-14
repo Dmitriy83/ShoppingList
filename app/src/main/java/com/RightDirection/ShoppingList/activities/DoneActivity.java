@@ -14,7 +14,7 @@ public class DoneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_done);
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.done_container);
+        LinearLayout layout = findViewById(R.id.done_container);
         if (layout != null) layout.setOnClickListener(onLayoutClick);
     }
 

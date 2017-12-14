@@ -32,7 +32,7 @@ public class ChooseUnitActivity extends BaseActivity
 
         setContentView(R.layout.activity_choose_unit);
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvUnits);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvUnits);
         if (recyclerView == null) return;
 
         // Используем этот метод для увеличения производительности,
@@ -63,7 +63,7 @@ public class ChooseUnitActivity extends BaseActivity
         getLoaderManager().initLoader(0, null, this);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 

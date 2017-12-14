@@ -53,13 +53,13 @@ public class ChooseRecipientActivity extends BaseActivity implements
             finish();
         }
 
-        FloatingActionButton fabAddNewFriends = (FloatingActionButton) findViewById(R.id.fabAddNewFriends);
+        FloatingActionButton fabAddNewFriends = findViewById(R.id.fabAddNewFriends);
         assert fabAddNewFriends != null;
         fabAddNewFriends.setOnClickListener(fabAddNewFriendsOnClickListener);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvRecipients);
+        TextView emptyView = findViewById(R.id.empty_view);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvRecipients);
         if (emptyView != null && recyclerView != null) recyclerView.setEmptyView(emptyView);
     }
 
@@ -81,7 +81,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
         super.onStart();
 
         // Обновление списка производим при каждом рестарте активности
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvRecipients);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvRecipients);
         assert recyclerView != null;
         showRecyclerViewProgressBar();
         // Используем этот метод для увеличения производительности,
@@ -111,7 +111,7 @@ public class ChooseRecipientActivity extends BaseActivity implements
                                     Toast.makeText(getApplicationContext(),
                                             R.string.connection_timeout_exceeded,
                                             Toast.LENGTH_LONG).show();
-                                    TextView emptyView = (TextView) findViewById(R.id.empty_view);
+                                    TextView emptyView = findViewById(R.id.empty_view);
                                     assert emptyView != null;
                                     emptyView.setText(R.string.connection_timeout_exceeded);
                                 } else{
@@ -129,12 +129,12 @@ public class ChooseRecipientActivity extends BaseActivity implements
     }
 
     private void showRecyclerViewProgressBar(){
-        FrameLayout pb = (FrameLayout)findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.VISIBLE);
     }
 
     private void hideRecyclerViewProgressBar(){
-        FrameLayout pb = (FrameLayout)findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.GONE);
     }
 

@@ -272,7 +272,7 @@ public class Utils {
     }
 
     public static void calculateTotalSum(Activity activity, ArrayList<IListItem> products){
-        TextView tvSumInfo = (TextView)activity.findViewById(R.id.tvSumInfo);
+        TextView tvSumInfo = activity.findViewById(R.id.tvSumInfo);
         if (tvSumInfo == null) { return; }
 
         float totalSum = 0;

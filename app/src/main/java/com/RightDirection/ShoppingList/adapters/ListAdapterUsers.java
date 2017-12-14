@@ -34,9 +34,9 @@ public class ListAdapterUsers extends FirebaseRecyclerAdapter<User, ListAdapterU
             // to access the context from any ViewHolder instance.
             super(rowView);
 
-            txtName = (TextView) rowView.findViewById(R.id.txtName);
-            imgUserPhoto = (ImageView) rowView.findViewById(R.id.imgFriendPhoto);
-            imgDelete = (ImageView) rowView.findViewById(R.id.imgDelete);
+            txtName = rowView.findViewById(R.id.txtName);
+            imgUserPhoto = rowView.findViewById(R.id.imgFriendPhoto);
+            imgDelete = rowView.findViewById(R.id.imgDelete);
             imgDelete.setTag(this);
         }
     }

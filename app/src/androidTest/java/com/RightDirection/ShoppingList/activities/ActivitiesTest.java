@@ -250,7 +250,7 @@ abstract class ActivitiesTest {
     }
 
     void checkDataNotExistInList(String text) {
-        RecyclerView rv = (RecyclerView)mActivity.findViewById(R.id.rvShoppingLists);
+        RecyclerView rv = mActivity.findViewById(R.id.rvShoppingLists);
         assertNotNull(rv);
         BaseListAdapter listAdapter = (BaseListAdapter) rv.getAdapter();
         for (int i = 0; i < listAdapter.getItemCount(); i++) {

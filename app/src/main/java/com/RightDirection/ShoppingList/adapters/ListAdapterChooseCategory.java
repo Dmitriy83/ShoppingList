@@ -41,7 +41,7 @@ public class ListAdapterChooseCategory extends RecyclerView.Adapter{
             // to access the context from any ViewHolder instance.
             super(rowView);
 
-            txtName = (TextView) rowView.findViewById(R.id.txtName);
+            txtName = rowView.findViewById(R.id.txtName);
         }
     }
 

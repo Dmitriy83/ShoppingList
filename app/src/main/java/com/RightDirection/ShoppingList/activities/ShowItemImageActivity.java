@@ -42,7 +42,7 @@ public class ShowItemImageActivity extends BaseActivity{
     }
 
     private void setProductImage() {
-        final PhotoView imgProduct = (PhotoView) findViewById(R.id.imgItemImage);
+        final PhotoView imgProduct = findViewById(R.id.imgItemImage);
         if (imgProduct != null) {
             // Установим картинку
             Picasso.with(this)

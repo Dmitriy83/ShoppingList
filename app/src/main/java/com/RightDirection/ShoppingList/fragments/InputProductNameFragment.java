@@ -64,7 +64,7 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
 
         mAdapter = new ArrayAdapter<>(getActivity(), R.layout.dropdown_item, mAllProductsNames);
 
-        mTvNewItem = (AutoCompleteTextView)view.findViewById(R.id.newItemEditText);
+        mTvNewItem = view.findViewById(R.id.newItemEditText);
         if (mTvNewItem != null) {
             mTvNewItem.setOnEditorActionListener(new AutoCompleteTextView.OnEditorActionListener() {
                 @Override
@@ -76,7 +76,7 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
             });
         }
         // Добавим обработчик нажатия для кнопки добавляния нового элемента в базу данных
-        Button btnAddProductToShoppingList = (Button) view.findViewById(R.id.btnAddProductToShoppingList);
+        Button btnAddProductToShoppingList = view.findViewById(R.id.btnAddProductToShoppingList);
         if (btnAddProductToShoppingList != null) {
             btnAddProductToShoppingList.setOnClickListener(new Button.OnClickListener() {
                 @Override

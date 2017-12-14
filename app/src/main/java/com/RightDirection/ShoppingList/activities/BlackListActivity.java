@@ -40,15 +40,15 @@ public class BlackListActivity extends BaseActivity implements
         setTitle(R.string.action_black_list);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvBlackList);
+        TextView emptyView = findViewById(R.id.empty_view);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvBlackList);
         assert recyclerView != null; assert emptyView != null;
         recyclerView.setEmptyView(emptyView);
     }
@@ -63,7 +63,7 @@ public class BlackListActivity extends BaseActivity implements
         super.onStart();
 
         // Обновление списка производим при каждом рестарте активности
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvBlackList);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvBlackList);
         assert recyclerView != null;
         showRecyclerViewProgressBar();
         // Используем этот метод для увеличения производительности,
@@ -93,7 +93,7 @@ public class BlackListActivity extends BaseActivity implements
                                     Toast.makeText(getApplicationContext(),
                                             R.string.connection_timeout_exceeded,
                                             Toast.LENGTH_LONG).show();
-                                    TextView emptyView = (TextView) findViewById(R.id.empty_view);
+                                    TextView emptyView = findViewById(R.id.empty_view);
                                     assert emptyView != null;
                                     emptyView.setText(R.string.connection_timeout_exceeded);
                                 } else{
@@ -128,12 +128,12 @@ public class BlackListActivity extends BaseActivity implements
     }
 
     private void showRecyclerViewProgressBar(){
-        FrameLayout pb = (FrameLayout)findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.VISIBLE);
     }
 
     private void hideRecyclerViewProgressBar(){
-        FrameLayout pb = (FrameLayout)findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.GONE);
     }
 }

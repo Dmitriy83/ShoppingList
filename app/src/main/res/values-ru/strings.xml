@@ -79,8 +79,6 @@
     <string name="pref_show_activity_opening_option_choice_summary">Показывать диалог выбора режима при клике на списке покупок на главном экране</string>
     <string name="pref_show_activity_opening_option_choice">Диалог выбора режима</string>
     <string name="action_deselect_all">Снять выделение со всех продуктов</string>
-    <string name="navigation_drawer_open">Открыть панель навигации</string>
-    <string name="navigation_drawer_close">Закрыть панель навигации</string>
     <string name="def_user_name">Вход не выполнен</string>
     <string name="action_sign_in">Войти</string>
     <string name="action_profile">Профиль</string>

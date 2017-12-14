@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -49,20 +49,20 @@ public class FriendsActivity extends BaseActivity implements
         setTitle(R.string.action_friends);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button btnSearchFriend = (Button) findViewById(R.id.btnSearchFriend);
+        Button btnSearchFriend = findViewById(R.id.btnSearchFriend);
         if (btnSearchFriend != null) {
             btnSearchFriend.setOnClickListener(btnSearchFriendOnClickListener);
         }
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView) findViewById(R.id.empty_view);
-        CustomRecyclerView recyclerView = (CustomRecyclerView) findViewById(R.id.rvFriends);
+        TextView emptyView = findViewById(R.id.empty_view);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvFriends);
         if (emptyView != null && recyclerView != null) recyclerView.setEmptyView(emptyView);
 
         mActivity = this;
@@ -71,7 +71,7 @@ public class FriendsActivity extends BaseActivity implements
     private final Button.OnClickListener btnSearchFriendOnClickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            EditText etFriendEmail = (EditText) findViewById(R.id.etFriendEmail);
+            EditText etFriendEmail = findViewById(R.id.etFriendEmail);
             assert etFriendEmail != null;
             showProgressDialog(getString(R.string.searching));
             FirebaseObservables.addFriendsByEmailObservable(etFriendEmail.getText().toString())
@@ -139,7 +139,7 @@ public class FriendsActivity extends BaseActivity implements
         super.onStart();
 
         // Обновление списка производим при каждом рестарте активности
-        CustomRecyclerView recyclerView = (CustomRecyclerView) findViewById(R.id.rvFriends);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvFriends);
         assert recyclerView != null;
         showRecyclerViewProgressBar();
         // Используем этот метод для увеличения производительности,
@@ -169,7 +169,7 @@ public class FriendsActivity extends BaseActivity implements
                                     Toast.makeText(getApplicationContext(),
                                             R.string.connection_timeout_exceeded,
                                             Toast.LENGTH_LONG).show();
-                                    TextView emptyView = (TextView) findViewById(R.id.empty_view);
+                                    TextView emptyView = findViewById(R.id.empty_view);
                                     assert emptyView != null;
                                     emptyView.setText(R.string.connection_timeout_exceeded);
                                 } else{
@@ -187,12 +187,12 @@ public class FriendsActivity extends BaseActivity implements
     }
 
     private void showRecyclerViewProgressBar() {
-        FrameLayout pb = (FrameLayout) findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.VISIBLE);
     }
 
     private void hideRecyclerViewProgressBar() {
-        FrameLayout pb = (FrameLayout) findViewById(R.id.frameProgressBar);
+        FrameLayout pb = findViewById(R.id.frameProgressBar);
         pb.setVisibility(View.GONE);
     }
 

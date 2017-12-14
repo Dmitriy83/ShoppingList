@@ -96,32 +96,32 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
         ViewHolder(View itemView) {
             super(itemView);
 
-            nameView = (TextView) itemView.findViewById(R.id.txtName);
-            imgDelete = (ImageButton) itemView.findViewById(R.id.imgDelete);
-            itemImage = (ImageView) itemView.findViewById(R.id.imgItemImage);
-            represent = (RelativeLayout) itemView.findViewById(R.id.itemRepresent);
-            txtCount = (TextView) itemView.findViewById(R.id.txtCount);
-            llShoppingListInfo = (LinearLayout) itemView.findViewById(R.id.llShoppingListInfo);
-            etPrice = (EditText) itemView.findViewById(R.id.etLastPrice);
-            rlCount = (RelativeLayout) itemView.findViewById(R.id.rlCount);
-            rlCountAndUnit = (RelativeLayout) itemView.findViewById(R.id.rlCountAndUnit);
-            rlCountAndPrice = (RelativeLayout) itemView.findViewById(R.id.rlCountAndPriceAndUnit);
+            nameView = itemView.findViewById(R.id.txtName);
+            imgDelete = itemView.findViewById(R.id.imgDelete);
+            itemImage = itemView.findViewById(R.id.imgItemImage);
+            represent = itemView.findViewById(R.id.itemRepresent);
+            txtCount = itemView.findViewById(R.id.txtCount);
+            llShoppingListInfo = itemView.findViewById(R.id.llShoppingListInfo);
+            etPrice = itemView.findViewById(R.id.etLastPrice);
+            rlCount = itemView.findViewById(R.id.rlCount);
+            rlCountAndUnit = itemView.findViewById(R.id.rlCountAndUnit);
+            rlCountAndPrice = itemView.findViewById(R.id.rlCountAndPriceAndUnit);
 
             if (Utils.showPrices(mParentActivity)) {
-                tvUnit = (TextView) itemView.findViewById(R.id.tvUnit_CountAndPrice);
-                etCount = (EditText) itemView.findViewById(R.id.etCount_CountAndPrice);
-                imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease_CountAndPrice);
-                imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease_CountAndPrice);
+                tvUnit = itemView.findViewById(R.id.tvUnit_CountAndPrice);
+                etCount = itemView.findViewById(R.id.etCount_CountAndPrice);
+                imgIncrease = itemView.findViewById(R.id.imgIncrease_CountAndPrice);
+                imgDecrease = itemView.findViewById(R.id.imgDecrease_CountAndPrice);
             }else {
-                tvUnit = (TextView) itemView.findViewById(R.id.tvUnit_CountAndUnit);
+                tvUnit = itemView.findViewById(R.id.tvUnit_CountAndUnit);
                 if (Utils.showUnits(mParentActivity)){
-                    etCount = (EditText) itemView.findViewById(R.id.etCount_CountAndUnit);
-                    imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease_CountAndUnit);
-                    imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease_CountAndUnit);
+                    etCount = itemView.findViewById(R.id.etCount_CountAndUnit);
+                    imgIncrease = itemView.findViewById(R.id.imgIncrease_CountAndUnit);
+                    imgDecrease = itemView.findViewById(R.id.imgDecrease_CountAndUnit);
                 }else {
-                    etCount = (EditText) itemView.findViewById(R.id.etCount);
-                    imgIncrease = (ImageButton) itemView.findViewById(R.id.imgIncrease);
-                    imgDecrease = (ImageButton) itemView.findViewById(R.id.imgDecrease);
+                    etCount = itemView.findViewById(R.id.etCount);
+                    imgIncrease = itemView.findViewById(R.id.imgIncrease);
+                    imgDecrease = itemView.findViewById(R.id.imgDecrease);
                 }
             }
         }

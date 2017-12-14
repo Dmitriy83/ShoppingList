@@ -64,7 +64,7 @@ public class ProfileActivity extends BaseActivity implements
         setContentView(R.layout.activity_profile);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
@@ -85,11 +85,11 @@ public class ProfileActivity extends BaseActivity implements
                                 .build())
                 .build();
 
-        mSignInUi = (ViewGroup) findViewById(R.id.sign_in_ui);
-        mProfileUi = (ViewGroup) findViewById(R.id.profile);
+        mSignInUi = findViewById(R.id.sign_in_ui);
+        mProfileUi = findViewById(R.id.profile);
 
-        mProfilePhoto = (CircleImageView) findViewById(R.id.profile_user_photo);
-        mProfileUsername = (TextView) findViewById(R.id.profile_user_name);
+        mProfilePhoto = findViewById(R.id.profile_user_photo);
+        mProfileUsername = findViewById(R.id.profile_user_name);
 
         findViewById(R.id.launch_sign_in).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);

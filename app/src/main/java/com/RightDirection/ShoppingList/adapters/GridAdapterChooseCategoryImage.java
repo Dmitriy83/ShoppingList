@@ -38,7 +38,7 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
             // to access the context from any ViewHolder instance.
             super(rowView);
 
-            imageView = (ImageView) rowView.findViewById(R.id.imageView);
+            imageView = rowView.findViewById(R.id.imageView);
         }
     }
 

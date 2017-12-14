@@ -28,7 +28,7 @@ public class ChooseCategoryActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_category);
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvCategories);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvCategories);
         if (recyclerView == null) return;
 
         // Используем этот метод для увеличения производительности,
@@ -49,7 +49,7 @@ public class ChooseCategoryActivity extends BaseActivity
         getLoaderManager().initLoader(0, null, this);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 

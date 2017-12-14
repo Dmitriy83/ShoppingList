@@ -75,7 +75,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         // Создадим новый адаптер для работы со списком покупок
         mShoppingListItemsAdapter = new ListAdapterShoppingListEditing(this, listItemLayout, mProducts);
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -90,18 +90,18 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         }
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
 
         // Покажем общую информацию о списке покупок
-        TextView tvSumInfo = (TextView)findViewById(R.id.tvSumInfo);
+        TextView tvSumInfo = findViewById(R.id.tvSumInfo);
         if (tvSumInfo != null) {
             if (Utils.showPrices(this)) {
                 tvSumInfo.setVisibility(View.VISIBLE);
@@ -128,7 +128,7 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
         // Перед сохранением передадим фокус полю ввода наименования продукта, на случай, если в
         // данный момент редактируется количество с помощью клавиватуры (сохранение количества
         // происходит при потере фокуса)
-        AutoCompleteTextView textView = (AutoCompleteTextView)findViewById(R.id.newItemEditText);
+        AutoCompleteTextView textView = findViewById(R.id.newItemEditText);
         if (textView != null)
             textView.requestFocus();
 

@@ -36,7 +36,7 @@ public class UnitsListActivity extends BaseActivity implements LoaderManager.Loa
         setTitle(R.string.action_edit_units_list);
 
         // Добавим обработчики кликов по кнопкам
-        FloatingActionButton fabAddProduct = (FloatingActionButton) findViewById(R.id.fabAddUnit);
+        FloatingActionButton fabAddProduct = findViewById(R.id.fabAddUnit);
         if (fabAddProduct != null) {
             fabAddProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -44,7 +44,7 @@ public class UnitsListActivity extends BaseActivity implements LoaderManager.Loa
             });
         }
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvUnits);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvUnits);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -64,14 +64,14 @@ public class UnitsListActivity extends BaseActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(0, null, this);
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
     }
 

@@ -8,7 +8,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -45,7 +45,7 @@ public class InputNameDialogFragment extends DialogFragment{
         // случай с диалогом - это исключение из правил и предупреждение при синтаксическом контроле можно игнорировать
         @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.input_new_list_name_dialog, null);
-        final EditText inputNewListName = (EditText)view.findViewById(R.id.inputNewListName);
+        final EditText inputNewListName = view.findViewById(R.id.inputNewListName);
         inputNewListName.setText(mInitName);
 
         builder.setView(view);
