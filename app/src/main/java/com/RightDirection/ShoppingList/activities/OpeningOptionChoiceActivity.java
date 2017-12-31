@@ -24,10 +24,10 @@ public class OpeningOptionChoiceActivity extends AppCompatActivity {
 
         mShoppingList = getIntent().getParcelableExtra(EXTRAS_KEYS.SHOPPING_LIST.getValue() );
 
-        Button btnInShop = (Button) findViewById(R.id.btnInShop);
+        Button btnInShop = findViewById(R.id.btnInShop);
         if (btnInShop != null) btnInShop.setOnClickListener(onBtnInShopClick);
 
-        Button btnEdit = (Button) findViewById(R.id.btnEdit);
+        Button btnEdit = findViewById(R.id.btnEdit);
         if (btnEdit != null) btnEdit.setOnClickListener(onBtnEditClick);
     }
 

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <issue id="GifUsage">
+        <ignore path="src/main/res/drawable-hdpi/help_edit_button.gif" />
+        <ignore path="src/main/res/drawable-hdpi/help_product_cross_out.gif" />
         <ignore path="src/main/res/drawable-mdpi-v11/help_edit_button.gif" />
         <ignore path="src/main/res/drawable-mdpi-v11/help_product_cross_out.gif" />
         <ignore path="src/main/res/drawable-mdpi/help_edit_button.gif" />
         <ignore path="src/main/res/drawable-mdpi/help_product_cross_out.gif" />
+        <ignore path="src/main/res/drawable-nodpi/help_edit_button.gif" />
+        <ignore path="src/main/res/drawable-nodpi/help_product_cross_out.gif" />
+        <ignore path="src/main/res/drawable-xhdpi/help_edit_button.gif" />
+        <ignore path="src/main/res/drawable-xhdpi/help_product_cross_out.gif" />
+        <ignore path="src/main/res/drawable-xxhdpi/help_edit_button.gif" />
+        <ignore path="src/main/res/drawable-xxhdpi/help_product_cross_out.gif" />
     </issue>
 </lint>

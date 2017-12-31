@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.RightDirection.ShoppingList.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:background="@drawable/item_selector"
@@ -53,4 +53,4 @@
         android:layout_below="@+id/llShoppingListInfo"
         android:background="@color/border_color"/>
 
-</RelativeLayout>
+</com.RightDirection.ShoppingList.views.CustomRelativeLayout>

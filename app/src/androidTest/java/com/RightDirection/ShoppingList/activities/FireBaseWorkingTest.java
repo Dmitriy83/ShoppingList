@@ -32,7 +32,10 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     private static boolean isConnected(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -64,11 +67,11 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         onView(withText(mActivity.getString(R.string.action_sign_in))).check(doesNotExist());
 
         // Нажимаем на имени пользователя
-        onView(withBackground(R.drawable.ic_drop_down_arrow)).check(matches(isDisplayed())); // перед нажатием стрелка смотрит вниз
+        onView(withId(R.id.imgArrowDropDown)).check(matches(isDisplayed())); // перед нажатием стрелка смотрит вниз
         onView(withText("Dmitriy Zhikharev")).perform(click());
         // Проверяем, что элементы меню изменились, стрелка стала Вверх
         onView(withText(mActivity.getString(R.string.action_friends))).check(matches(isDisplayed()));
-        onView(withBackground(R.drawable.ic_drop_up_arrow)).check(matches(isDisplayed())); // после нажатия стрелка смотрит вверх
+        onView(withId(R.id.imgArrowDropUp)).check(matches(isDisplayed())); // после нажатия стрелка смотрит вверх
 
         // Нажимаем Профиль
         onView(withText(mActivity.getString(R.string.action_profile))).perform(click());
@@ -346,7 +349,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     private void openUserSubmenu(){
         openMainMenu();
         try {
-            onView(withBackground(R.drawable.ic_drop_down_arrow)).perform(click());
+            onView(withId(R.id.imgArrowDropDown)).perform(click());
         }catch(Exception e){
             // При прохождении теста иногда программа не успевает закрыть подменю пользователя. Поэтому здесь ошибку показывать не будем.
         }

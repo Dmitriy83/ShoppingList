@@ -19,5 +19,6 @@ public interface IListItem extends Parcelable, IGetType {
     float getCount();
     @SuppressWarnings("unused")
     void setCount(String stringCount);
+    @SuppressWarnings("unused")
     void setId(long id);
 }

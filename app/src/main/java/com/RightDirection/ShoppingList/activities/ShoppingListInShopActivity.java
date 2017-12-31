@@ -50,7 +50,7 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
         // Установим заголовок активности
         setTitle(mShoppingList.getName());
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView)findViewById(R.id.rvProducts);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvProducts);
         if (recyclerView == null) return;
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
@@ -91,18 +91,18 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
             startActivity(new Intent(this, HelpShoppingListInShopActivity.class));
 
         // Подключим меню
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Добавим кнопку Up на toolbar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView)findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
 
         // Покажем общую информацию о списке покупок
-        TextView tvSumInfo = (TextView)findViewById(R.id.tvSumInfo);
+        TextView tvSumInfo = findViewById(R.id.tvSumInfo);
         if (tvSumInfo != null) {
             if (Utils.showPrices(this)) {
                 tvSumInfo.setVisibility(View.VISIBLE);

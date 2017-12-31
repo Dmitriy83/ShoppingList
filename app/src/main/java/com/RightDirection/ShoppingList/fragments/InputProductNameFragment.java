@@ -30,6 +30,7 @@ import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class InputProductNameFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -38,12 +39,12 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
 
     // Синхронизируемые массивы (по индексу в списке). Должны изменяться одновременно.
     // 1. Хранит объекты ListItem. Необходим для работы с базой данных
-    private ArrayList<Product> mAllProducts;
+    private static ArrayList<Product> mAllProducts;
     // 2. Хранит имена объектов ListItem. Необходим для работы с AutoCompleteTextView
-    private ArrayList<String> mAllProductsNames;
+    private static ArrayList<String> mAllProductsNames;
 
     private Product mCurrentItem = null;
-    private ArrayAdapter<String> mAdapter;
+    private static ArrayAdapter<String> mAdapter;
 
     private AutoCompleteTextView mTvNewItem;
 
@@ -223,11 +224,19 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
     }
 
     public void updateProductName(Product product){
-        AsyncTaskUpdateProductName asyncTaskUpdateProductName = new AsyncTaskUpdateProductName();
+        AsyncTaskUpdateProductName asyncTaskUpdateProductName = new AsyncTaskUpdateProductName(this);
         asyncTaskUpdateProductName.execute(product);
     }
 
-    private class AsyncTaskUpdateProductName extends AsyncTask<Product, Integer, Boolean> {
+    private static class AsyncTaskUpdateProductName extends AsyncTask<Product, Integer, Boolean> {
+        private final WeakReference<InputProductNameFragment> fragmentReference;
+
+        // В конструкторе получим слабую ссылку на фрагмент (чтобы избежать утечек памяти - см.
+        // https://stackoverflow.com/questions/44309241/warning-this-asynctask-class-should-be-static-or-leaks-might-occur)
+        AsyncTaskUpdateProductName(InputProductNameFragment fragment) {
+            fragmentReference = new WeakReference<>(fragment);
+        }
+
         @Override
         protected Boolean doInBackground(Product... params) {
             Boolean success = false;
@@ -251,9 +260,13 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
         protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
 
+            // Получим ссылку на фрагмент, если она все еще существует
+            InputProductNameFragment fragment = fragmentReference.get();
+            if (fragment == null) return;
+
             // Обновим адаптер
-            mAdapter = new ArrayAdapter<>(getActivity(), R.layout.dropdown_item, mAllProductsNames);
-            mTvNewItem.setAdapter(mAdapter);
+            mAdapter = new ArrayAdapter<>(fragment.getActivity(), R.layout.dropdown_item, mAllProductsNames);
+            fragment.mTvNewItem.setAdapter(mAdapter);
         }
     }
 }

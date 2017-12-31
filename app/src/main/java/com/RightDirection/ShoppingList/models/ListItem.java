@@ -45,6 +45,7 @@ public class ListItem implements IListItem {
         isNew = in.readByte() != 0;
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<ListItem> CREATOR = new Creator<ListItem>() {
         @Override
         public ListItem createFromParcel(Parcel in) {

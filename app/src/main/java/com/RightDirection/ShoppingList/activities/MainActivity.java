@@ -49,6 +49,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,9 +80,9 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         setTitle(getString(R.string.main_activity_title));
 
         // Подключим панель навигации
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close){
@@ -94,11 +95,11 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         };
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Подключим обработчики
-        FloatingActionButton fabAddNewShoppingList = (FloatingActionButton) findViewById(R.id.fabAddNewShoppingList);
+        FloatingActionButton fabAddNewShoppingList = findViewById(R.id.fabAddNewShoppingList);
         if (fabAddNewShoppingList != null) {
             fabAddNewShoppingList.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,7 +107,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             });
         }
 
-        CustomRecyclerView recyclerView = (CustomRecyclerView) findViewById(R.id.rvShoppingLists);
+        CustomRecyclerView recyclerView = findViewById(R.id.rvShoppingLists);
         // Используем этот метод для увеличения производительности,
         // т.к. содержимое не изменяет размер макета
         recyclerView.setHasFixedSize(true);
@@ -125,7 +126,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         getLoaderManager().initLoader(0, null, this);
 
         // Добавим текстовое поле для пустого списка
-        TextView emptyView = (TextView) findViewById(R.id.empty_view);
+        TextView emptyView = findViewById(R.id.empty_view);
         if (emptyView != null) recyclerView.setEmptyView(emptyView);
 
         if (FirebaseUtil.userSignedIn(this)) scheduleStartServiceReceiveShoppingListsAlarm();
@@ -141,7 +142,9 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         // Запускаем AlarmManager с текущего момента
         long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, CHECK_INTERVAL, pIntent);
+        if (alarm != null) {
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, CHECK_INTERVAL, pIntent);
+        }
     }
 
     @Override
@@ -152,7 +155,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
     private void configNavView() {
         // Скроем/отобразим кнопки "Sign in"/"Profile"
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
         assert navView != null;
         View headerLayout = navView.getHeaderView(0);
         View appTitle = headerLayout.findViewById(R.id.appTitle);
@@ -169,9 +172,9 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
             User user = FirebaseUtil.readUserFromPref(this);
             if (user != null) {
-                TextView txtUserName = (TextView) userSignInInfo.findViewById(R.id.txtUserName);
+                TextView txtUserName = userSignInInfo.findViewById(R.id.txtUserName);
                 txtUserName.setText(user.getName());
-                ImageView userPhoto = (ImageView) userSignInInfo.findViewById(R.id.imgUserPhoto);
+                ImageView userPhoto = userSignInInfo.findViewById(R.id.imgUserPhoto);
                 Picasso.with(this)
                         .load(user.getPhotoUrl())
                         .placeholder(android.R.drawable.sym_def_app_icon)
@@ -195,25 +198,31 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
             }
         }
 
-        final View arrow = userSignInInfo.findViewById(R.id.imgArrow);
-        arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow); // по умолчанию
+        final View arrowDropDown = userSignInInfo.findViewById(R.id.imgArrowDropDown);
+        arrowDropDown.setVisibility(View.VISIBLE); // по умолчанию
+        final View arrowDropUp = userSignInInfo.findViewById(R.id.imgArrowDropUp);
+        arrowDropUp.setVisibility(View.GONE);
         userSignInInfo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { onUserSignInInfoClick(arrow); }
+            public void onClick(View v) { onUserSignInInfoClick(v); }
         });
     }
 
-    private void onUserSignInInfoClick(View arrow) {
+    private void onUserSignInInfoClick(View userSignInInfo) {
         // Изменяем стрелку и подменяем меню
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
+        final View arrowDropDown = userSignInInfo.findViewById(R.id.imgArrowDropDown);
+        final View arrowDropUp = userSignInInfo.findViewById(R.id.imgArrowDropUp);
         if (mUserSignInInfoExpanded){
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.activity_main_menu_authorized);
-            arrow.setBackgroundResource(R.drawable.ic_drop_down_arrow);
+            arrowDropDown.setVisibility(View.VISIBLE);
+            arrowDropUp.setVisibility(View.GONE);
         }else{
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.activity_main_user_authorized_actions);
-            arrow.setBackgroundResource(R.drawable.ic_drop_up_arrow);
+            arrowDropDown.setVisibility(View.GONE);
+            arrowDropUp.setVisibility(View.VISIBLE);
         }
         mUserSignInInfoExpanded = !mUserSignInInfoExpanded;
     }
@@ -251,7 +260,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         mServiceReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent == null) return;
+                if (intent == null || intent.getAction() == null) return;
 
                 if (intent.getAction().equals(Utils.ACTION_UPDATE_MAIN_ACTIVITY)) {
                     ArrayList<ShoppingList> loadedShoppingLists = intent.getParcelableArrayListExtra(EXTRAS_KEYS.SHOPPING_LISTS.getValue());
@@ -366,7 +375,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                     String password = sharedPref.getString(getApplicationContext().getString(R.string.pref_key_email_password), "");
 
                     // В отдельном потоке скачем и обработаем электронные письма
-                    AsyncTaskDownloadEmail asyncTaskDownloadEmail = new AsyncTaskDownloadEmail();
+                    AsyncTaskDownloadEmail asyncTaskDownloadEmail = new AsyncTaskDownloadEmail(this);
                     EmailReceiver receiver = new EmailReceiver(this);
                     receiver.setServerProperties(host, port);
                     receiver.setLogin(userName);
@@ -451,13 +460,23 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         Log.w(TAG, "onConnectionFailed:" + connectionResult);
     }
 
-    private class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>> {
+    private static class AsyncTaskDownloadEmail extends AsyncTask<EmailReceiver, Integer, ArrayList<ShoppingList>> {
+        private final WeakReference<MainActivity> activityReference;
+
+        // В конструкторе получим слабую ссылку на активность (чтобы избежать утечек памяти - см.
+        // https://stackoverflow.com/questions/44309241/warning-this-asynctask-class-should-be-static-or-leaks-might-occur)
+        AsyncTaskDownloadEmail(MainActivity activity) {
+            activityReference = new WeakReference<>(activity);
+        }
+
         @Override
         protected ArrayList<ShoppingList> doInBackground(EmailReceiver... params) {
 
             ArrayList<ShoppingList> loadedShoppingLists = new ArrayList<>();
 
-            if (params.length <= 0) return loadedShoppingLists;
+            MainActivity activity = activityReference.get();
+
+            if ((params.length <= 0) || (activity == null)) return loadedShoppingLists;
 
             try {
                 EmailReceiver receiver = params[0];
@@ -471,9 +490,9 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
                     // Сформируем имя нового списка покупок
                     Calendar calendar = Calendar.getInstance();
-                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+                    DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(activity.getApplicationContext());
                     String newListName = Utils.getListNameFromJSON(jsonStr) + " "
-                            + getString(R.string.loaded) + " "
+                            + activity.getString(R.string.loaded) + " "
                             + dateFormat.format(calendar.getTime());
 
                     // Создадим  новый объект-лист покупок
@@ -481,10 +500,10 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
 
                     // Сначала нужно добавить новые продукты из списка в базу данных.
                     // Синхронизацияя должна производиться по полю Name
-                    newShoppingList.addNotExistingProductsToDBandSetId(getApplicationContext());
+                    newShoppingList.addNotExistingProductsToDBandSetId(activity.getApplicationContext());
 
                     // Сохраним новый лист покупок в базе данных
-                    newShoppingList.addToDB(getApplicationContext());
+                    newShoppingList.addToDB(activity.getApplicationContext());
                     loadedShoppingLists.add(newShoppingList);
                 }
 
@@ -499,11 +518,14 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
         protected void onPostExecute(ArrayList<ShoppingList> loadedShoppingLists) {
             super.onPostExecute(loadedShoppingLists);
 
+            MainActivity activity = activityReference.get();
+            if (activity == null) return;
+
             // В случае, успешной загрузки оповестим адаптер об изменении
             if (loadedShoppingLists.size() > 0) {
-                updateWithLoadedShoppingLists(loadedShoppingLists);
+                activity.updateWithLoadedShoppingLists(loadedShoppingLists);
             } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.no_emails_for_loading),
+                Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.no_emails_for_loading),
                         Toast.LENGTH_LONG).show();
             }
         }

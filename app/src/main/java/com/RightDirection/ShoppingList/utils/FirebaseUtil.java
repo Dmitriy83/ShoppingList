@@ -96,8 +96,10 @@ public class FirebaseUtil {
         ArrayList<FirebaseShoppingList> firebaseLists = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
             FirebaseShoppingList firebaseShoppingList = childDataSnapshot.getValue(FirebaseShoppingList.class);
-            firebaseShoppingList.setId(childDataSnapshot.getKey());
-            firebaseLists.add(firebaseShoppingList);
+            if (firebaseShoppingList != null) {
+                firebaseShoppingList.setId(childDataSnapshot.getKey());
+                firebaseLists.add(firebaseShoppingList);
+            }
         }
 
         return firebaseLists;

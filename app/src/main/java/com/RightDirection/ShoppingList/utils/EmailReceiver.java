@@ -333,13 +333,15 @@ public class EmailReceiver{
      */
     private String parseAddresses(Address[] address) {
 
-        String listAddress = "";
-
+        StringBuilder listAddressBuilder = new StringBuilder();
+        listAddressBuilder.append("");
         if (address != null) {
             for (Address a : address) {
-                listAddress += a.toString() + ", ";
+                listAddressBuilder.append(a.toString()).append(", ");
             }
         }
+
+        String listAddress = listAddressBuilder.toString();
         if (listAddress.length() > 1) {
             listAddress = listAddress.substring(0, listAddress.length() - 2);
         }

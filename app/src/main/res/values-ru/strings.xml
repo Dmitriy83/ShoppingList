@@ -148,4 +148,6 @@
     <string name="props_text_with_price_only">ц.: %1$s, %2$s</string>
     <string name="props_text_with_unit_only">%1$s %2$s</string>
     <string name="price_change_graph">График изменения цены</string>
+    <string name="navigation_drawer_open" tools:ignore="UnusedResources">Открыть панель навигации</string>
+    <string name="navigation_drawer_close" tools:ignore="UnusedResources">Закрыть панель навигации</string>
 </resources>

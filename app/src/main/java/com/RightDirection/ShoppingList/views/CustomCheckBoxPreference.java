@@ -32,7 +32,7 @@ class CustomCheckBoxPreference extends CheckBoxPreference {
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        TextView title = (TextView) view.findViewById(android.R.id.title);
+        TextView title = view.findViewById(android.R.id.title);
         title.setTextColor(Color.BLACK);
     }
 }

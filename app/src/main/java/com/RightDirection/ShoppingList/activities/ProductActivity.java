@@ -60,12 +60,12 @@ public class ProductActivity extends BaseActivity {
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
-        EditText etProductName = (EditText) findViewById(R.id.etProductName);
+        EditText etProductName = findViewById(R.id.etProductName);
         if (etProductName != null) {
             etProductName.setText(mProduct.getName());
         }
 
-        Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
+        Button btnChooseCategory = findViewById(R.id.btnChooseCategory);
         if (btnChooseCategory != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnChooseCategory.setTransformationMethod(null);
@@ -76,7 +76,7 @@ public class ProductActivity extends BaseActivity {
             setBtnChooseCategoryText();
         }
 
-        Button btnSaveProduct = (Button) findViewById(R.id.btnSave);
+        Button btnSaveProduct = findViewById(R.id.btnSave);
         if (btnSaveProduct != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnSaveProduct.setTransformationMethod(null);
@@ -85,7 +85,7 @@ public class ProductActivity extends BaseActivity {
                 public void onClick(View view) { onBtnSaveClick(); }
             });
         }
-        ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
+        ImageView imgProduct = findViewById(R.id.imgItemImage);
         if (imgProduct != null) {
             imgProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +102,7 @@ public class ProductActivity extends BaseActivity {
 
         setProductImage();
 
-        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        ImageButton ibShowImage = findViewById(R.id.ibShowImage);
         if (ibShowImage != null){
             ibShowImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,7 +111,7 @@ public class ProductActivity extends BaseActivity {
                 }
             });
         }
-        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        ImageButton ibClearImage = findViewById(R.id.ibClearImage);
         if (ibClearImage != null){
             ibClearImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,14 +121,14 @@ public class ProductActivity extends BaseActivity {
             });
         }
 
-        ImageButton imgPriceChangeGraph = (ImageButton) findViewById(R.id.imgPriceChangeGraph);
+        ImageButton imgPriceChangeGraph = findViewById(R.id.imgPriceChangeGraph);
         if (imgPriceChangeGraph != null) {
             imgPriceChangeGraph.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) { onImgPriceChangeGraphClick(); }
             });
         }
-        Button btnUnit = (Button) findViewById(R.id.btnUnit);
+        Button btnUnit = findViewById(R.id.btnUnit);
         if (btnUnit != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnUnit.setTransformationMethod(null);
@@ -141,7 +141,7 @@ public class ProductActivity extends BaseActivity {
             setBtnUnitText();
         }
         // Ограничим ввод цены двумя знаками после запятой
-        EditText etPrice = (EditText) findViewById(R.id.etLastPrice);
+        EditText etPrice = findViewById(R.id.etLastPrice);
         if (etPrice != null) {
             etPrice.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(2)});
             try {
@@ -176,7 +176,7 @@ public class ProductActivity extends BaseActivity {
 
         Intent intent = new Intent(getApplicationContext(), ShowItemImageActivity.class);
         intent.putExtra(EXTRAS_KEYS.ITEM_IMAGE.getValue(), imageUri.toString());
-        EditText etProductName = (EditText) findViewById(R.id.etProductName);
+        EditText etProductName = findViewById(R.id.etProductName);
         if (etProductName != null) {
             intent.putExtra(EXTRAS_KEYS.PRODUCT_NAME.getValue(), etProductName.getText().toString());
         }
@@ -195,10 +195,10 @@ public class ProductActivity extends BaseActivity {
     }
 
     private void onBtnSaveClick() {
-        EditText etProductName = (EditText) findViewById(R.id.etProductName);
+        EditText etProductName = findViewById(R.id.etProductName);
         if (etProductName != null) mProduct.setName(etProductName.getText().toString());
 
-        EditText etLastPrice = (EditText) findViewById(R.id.etLastPrice);
+        EditText etLastPrice = findViewById(R.id.etLastPrice);
         try {
             if (etLastPrice != null) mProduct.setLastPrice(Float.valueOf(etLastPrice.getText().toString()));
         }catch (Exception e){
@@ -267,7 +267,7 @@ public class ProductActivity extends BaseActivity {
 
     private void setBtnUnitText() {
         Unit unit = mProduct.getDefaultUnit();
-        Button btnUnit = (Button) findViewById(R.id.btnUnit);
+        Button btnUnit = findViewById(R.id.btnUnit);
         if (btnUnit != null && unit != null && unit.getShortName() != null) {
             btnUnit.setText(unit.getShortName());
         }
@@ -275,7 +275,7 @@ public class ProductActivity extends BaseActivity {
 
     private void setBtnChooseCategoryText() {
         Category category = mProduct.getCategory();
-        Button btnChooseCategory = (Button) findViewById(R.id.btnChooseCategory);
+        Button btnChooseCategory = findViewById(R.id.btnChooseCategory);
         if (btnChooseCategory != null && category != null && category.getName() != null) {
             btnChooseCategory.setText(getString(R.string.three_dots, category.getName()));
         }
@@ -308,7 +308,7 @@ public class ProductActivity extends BaseActivity {
     }
 
     private void setProductImage() {
-        final ImageView imgProduct = (ImageView) findViewById(R.id.imgItemImage);
+        final ImageView imgProduct = findViewById(R.id.imgItemImage);
         if (imgProduct != null && mProduct != null) {
             // Установим картинку
             Picasso.with(this)
@@ -342,22 +342,22 @@ public class ProductActivity extends BaseActivity {
     }
 
     private void showImageButtons(){
-        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        ImageButton ibShowImage = findViewById(R.id.ibShowImage);
         if (ibShowImage != null){
             ibShowImage.setVisibility(View.VISIBLE);
         }
-        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        ImageButton ibClearImage = findViewById(R.id.ibClearImage);
         if (ibClearImage != null){
             ibClearImage.setVisibility(View.VISIBLE);
         }
     }
 
     private void clearImageButtons(){
-        ImageButton ibShowImage = (ImageButton)findViewById(R.id.ibShowImage);
+        ImageButton ibShowImage = findViewById(R.id.ibShowImage);
         if (ibShowImage != null){
             ibShowImage.setVisibility(View.GONE);
         }
-        ImageButton ibClearImage = (ImageButton)findViewById(R.id.ibClearImage);
+        ImageButton ibClearImage = findViewById(R.id.ibClearImage);
         if (ibClearImage != null){
             ibClearImage.setVisibility(View.GONE);
         }

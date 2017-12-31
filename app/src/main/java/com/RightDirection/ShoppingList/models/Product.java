@@ -29,7 +29,7 @@ public class Product extends ListItem implements IDataBaseOperations {
     private float currentPrice = EMPTY_CURRENT_PRICE;
     public static final float EMPTY_CURRENT_PRICE = -999.99999f;
 
-    public Product(long id) {
+    public Product(@SuppressWarnings("SameParameterValue") long id) {
         super(id, "");
     }
 
@@ -41,7 +41,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         super(id, name, count);
     }
 
-    public Product(long id, String name, float count, float currentPrice, Unit currentUnit) {
+    public Product(@SuppressWarnings("SameParameterValue") long id, String name, float count, float currentPrice, Unit currentUnit) {
         super(id, name, count);
         this.currentPrice = currentPrice;
         this.currentUnit = currentUnit;
@@ -87,6 +87,7 @@ public class Product extends ListItem implements IDataBaseOperations {
         currentPrice = in.readFloat();
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
         public Product createFromParcel(Parcel in) {

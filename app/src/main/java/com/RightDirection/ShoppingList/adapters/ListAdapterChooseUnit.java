@@ -75,7 +75,7 @@ public class ListAdapterChooseUnit extends RecyclerView.Adapter{
         if (unit.getShortName() != null){
             shortName = unit.getShortName();
         }
-        viewHolder.txtName.setText(name + ", " + shortName);
+        viewHolder.txtName.setText(mContext.getString(R.string.unit_name, name, shortName));
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

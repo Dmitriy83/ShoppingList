@@ -171,4 +171,7 @@
     <string name="props_text_with_price_only">price: %1$s, %2$s</string>
     <string name="props_text_with_unit_only">%1$s %2$s</string>
     <string name="price_change_graph">Price change graph</string>
+    <string name="unit_name" translatable="false">%1$s, %2$s</string>
+    <string name="navigation_drawer_open" tools:ignore="UnusedResources">Open navigation drawer</string>
+    <string name="navigation_drawer_close" tools:ignore="UnusedResources">Close navigation drawer</string>
 </resources>

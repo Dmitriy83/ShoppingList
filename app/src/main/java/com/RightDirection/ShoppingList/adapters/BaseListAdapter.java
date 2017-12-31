@@ -20,6 +20,8 @@ import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
+import com.RightDirection.ShoppingList.views.CustomImageButton;
+import com.RightDirection.ShoppingList.views.CustomRelativeLayout;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -81,9 +83,9 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
         final TextView nameView;
         final ImageButton imgDelete;
         final ImageView itemImage;
-        final RelativeLayout represent;
-        final ImageButton imgDecrease;
-        final ImageButton imgIncrease;
+        final CustomRelativeLayout represent;
+        final CustomImageButton imgDecrease;
+        final CustomImageButton imgIncrease;
         final EditText etCount;
         final TextView txtCount;
         final LinearLayout llShoppingListInfo;

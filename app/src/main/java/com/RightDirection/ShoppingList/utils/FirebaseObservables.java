@@ -141,8 +141,10 @@ public class FirebaseObservables {
         ArrayList<User> blackList = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
             User user = childDataSnapshot.getValue(User.class);
-            user.setUid(childDataSnapshot.getKey());
-            blackList.add(user);
+            if (user != null) {
+                user.setUid(childDataSnapshot.getKey());
+                blackList.add(user);
+            }
         }
         return blackList;
     }
@@ -212,8 +214,10 @@ public class FirebaseObservables {
         ArrayList<User> users = new ArrayList<>();
         for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
             User friend = childDataSnapshot.getValue(User.class);
-            friend.setUid(childDataSnapshot.getKey());
-            users.add(friend);
+            if (friend != null) {
+                friend.setUid(childDataSnapshot.getKey());
+                users.add(friend);
+            }
         }
         return users;
     }

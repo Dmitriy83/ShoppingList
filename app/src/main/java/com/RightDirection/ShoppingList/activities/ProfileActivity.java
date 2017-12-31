@@ -242,7 +242,9 @@ public class ProfileActivity extends BaseActivity implements
         final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(pIntent);
+        if (alarm != null) {
+            alarm.cancel(pIntent);
+        }
     }
 
     @Override

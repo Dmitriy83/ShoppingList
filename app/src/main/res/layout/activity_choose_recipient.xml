@@ -47,7 +47,7 @@
         android:layout_marginRight="@dimen/fab_margin_right"
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white"
+        app:srcCompat="@drawable/ic_add_white"
         app:backgroundTint="@android:color/holo_green_dark"
         app:fabSize="normal" />
 

@@ -53,6 +53,7 @@ class CustomMatchers {
         return false;
     }
 
+    @SuppressWarnings("unused")
     static Matcher<View> withBackground(final int resourceId) {
         return new TypeSafeMatcher<View>() {
 

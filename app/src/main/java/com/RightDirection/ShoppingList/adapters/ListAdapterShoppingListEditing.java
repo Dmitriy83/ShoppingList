@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +35,7 @@ public class ListAdapterShoppingListEditing extends BaseListAdapter {
         super(context, resource, products);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -200,8 +202,9 @@ public class ListAdapterShoppingListEditing extends BaseListAdapter {
                 stopTimer();
                 changeCount(v, mIncrement);
                 refreshTotalSum();
+                v.performClick();
                 return true;
-            }else if (event.getAction() == MotionEvent.ACTION_CANCEL){
+            }else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
                 stopTimer();
                 return true;
             }
@@ -273,6 +276,7 @@ public class ListAdapterShoppingListEditing extends BaseListAdapter {
         etCount.setText(String.valueOf(item.getCount()));
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean onProductRepresentLongClick(View view) {
         Product product = (Product) view.getTag();
         // Откроем активность редактирования продукта

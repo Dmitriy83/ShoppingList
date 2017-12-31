@@ -44,21 +44,21 @@ public class CategoryActivity extends BaseActivity{
                     | WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
 
-        EditText etCategoryName = (EditText) findViewById(R.id.etCategoryName);
+        EditText etCategoryName = findViewById(R.id.etCategoryName);
         if (etCategoryName != null) etCategoryName.setText(mCategory.getName());
 
-        EditText etCategoryOrder = (EditText) findViewById(R.id.etOrder);
+        EditText etCategoryOrder = findViewById(R.id.etOrder);
         if (etCategoryOrder != null) etCategoryOrder.setText(String.valueOf(mCategory.getOrder()));
 
         // Добавим обработчики кликов по кнопкам
-        Button btnSave = (Button)findViewById(R.id.btnSave);
+        Button btnSave = findViewById(R.id.btnSave);
         if (btnSave != null) {
             // Исключим вывод всего текста прописными (для Android старше 4)
             btnSave.setTransformationMethod(null);
             btnSave.setOnClickListener(onBtnSaveClick);
         }
 
-        ImageView imgCategory = (ImageView)findViewById(R.id.imgItemImage);
+        ImageView imgCategory = findViewById(R.id.imgItemImage);
         if (imgCategory != null){
             imgCategory.setOnClickListener(onImgItemClick);
         }
@@ -83,8 +83,8 @@ public class CategoryActivity extends BaseActivity{
     private final View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            EditText etCategoryName = (EditText) findViewById(R.id.etCategoryName);
-            EditText etCategoryOrder = (EditText) findViewById(R.id.etOrder);
+            EditText etCategoryName = findViewById(R.id.etCategoryName);
+            EditText etCategoryOrder = findViewById(R.id.etOrder);
             if (etCategoryName != null && etCategoryOrder != null) {
                 mCategory.setName(etCategoryName.getText().toString());
 
@@ -134,7 +134,7 @@ public class CategoryActivity extends BaseActivity{
     }
 
     private void setCategoryImage() {
-        final ImageView imgCategory = (ImageView) findViewById(R.id.imgItemImage);
+        final ImageView imgCategory = findViewById(R.id.imgItemImage);
         if (imgCategory != null && mCategory != null) {
             int imageResource = R.drawable.ic_default_product_image;
             if (mCategory.getImageUri() != null)

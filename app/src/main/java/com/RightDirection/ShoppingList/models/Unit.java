@@ -45,6 +45,7 @@ public class Unit extends ListItem implements Parcelable, IDataBaseOperations {
         dest.writeString(shortName);
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<Unit> CREATOR = new Creator<Unit>() {
         @Override
         public Unit createFromParcel(Parcel in) {

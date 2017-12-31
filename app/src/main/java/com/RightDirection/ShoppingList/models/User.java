@@ -28,6 +28,7 @@ public class User implements Parcelable{
         uid = in.readString();
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {

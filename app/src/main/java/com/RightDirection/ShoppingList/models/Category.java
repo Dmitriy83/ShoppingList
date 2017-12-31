@@ -21,7 +21,7 @@ public class Category extends ListItem implements IDataBaseOperations {
 
     private int order;
 
-    public Category(long id, String name, int order) {
+    public Category(@SuppressWarnings("SameParameterValue") long id, String name, int order) {
         super(id, name);
         this.order = order;
     }
@@ -38,6 +38,7 @@ public class Category extends ListItem implements IDataBaseOperations {
         order = in.readInt();
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<Category> CREATOR = new Creator<Category>() {
         @Override
         public Category createFromParcel(Parcel in) {

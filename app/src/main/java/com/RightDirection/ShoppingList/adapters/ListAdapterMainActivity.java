@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -56,7 +56,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                 viewHolder.llShoppingListInfo.setVisibility(View.VISIBLE);
 
                 ShoppingList item = (ShoppingList)mObjects.get(position);
-                TextView tvSumInfo = (TextView)viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
+                TextView tvSumInfo = viewHolder.llShoppingListInfo.findViewById(R.id.tvSumInfo);
                 if (tvSumInfo != null){
                     tvSumInfo.setText(mParentActivity.getString(R.string.shopping_list_info,
                             String.format(Locale.ENGLISH, "%.2f", item.getTotalSum()),
@@ -69,7 +69,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
                     totalCountOfProducts = item.getTotalCountOfProducts();
                     numberOfCrossedOutProducts = item.getNumberOfCrossedOutProducts();
                 }
-                ProgressBar pbShoppingListProgress = (ProgressBar)viewHolder.llShoppingListInfo.findViewById(R.id.pbShoppingListProgress);
+                ProgressBar pbShoppingListProgress = viewHolder.llShoppingListInfo.findViewById(R.id.pbShoppingListProgress);
                 if (pbShoppingListProgress != null){
                     pbShoppingListProgress.setMax(totalCountOfProducts);
                     pbShoppingListProgress.setProgress(numberOfCrossedOutProducts);
@@ -93,6 +93,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean onShoppingListRepresentLongClick(View view){
         mSelectedItem = (ShoppingList) view.getTag();
 
@@ -103,7 +104,7 @@ public class ListAdapterMainActivity extends BaseListAdapter {
         // Start the CAB using the ActionMode.Callback defined above
         //mActionMode = mParentActivity.startActionMode(mActionModeCallback);
         if (mActionMode == null) {
-            Toolbar toolbar = (Toolbar) mParentActivity.findViewById(R.id.toolbar);
+            Toolbar toolbar = mParentActivity.findViewById(R.id.toolbar);
             if (toolbar != null) mActionMode = toolbar.startActionMode(mActionModeCallback);
         }
         return true;

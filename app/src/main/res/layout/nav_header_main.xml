@@ -67,20 +67,32 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="@dimen/text_size_large"
             android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/imgArrow"
+            android:layout_toStartOf="@+id/imgArrowDropDown"
             android:layout_toRightOf="@+id/imgUserPhoto"
             android:layout_toEndOf="@+id/imgUserPhoto"
-            android:layout_toLeftOf="@+id/imgArrow" />
+            android:layout_toLeftOf="@+id/imgArrowDropDown" />
 
         <ImageView
-            android:id="@+id/imgArrow"
+            android:id="@+id/imgArrowDropDown"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_drop_down_arrow"
-            android:contentDescription="@string/arrow" />
+            android:contentDescription="@string/arrow"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/imgArrowDropUp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_drop_up_arrow"
+            android:contentDescription="@string/arrow"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

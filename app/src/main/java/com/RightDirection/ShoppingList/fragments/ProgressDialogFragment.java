@@ -22,7 +22,10 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         ProgressDialog dialog = new ProgressDialog(getActivity(), getTheme());
-        dialog.setMessage(getArguments().getString(KEY_TITLE));
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            dialog.setMessage(arguments.getString(KEY_TITLE));
+        }
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);

@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
         mServiceReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent == null) return;
+                if (intent == null || intent.getAction() == null) return;
                 if (intent.getAction().equals(Utils.ACTION_NOTIFICATION)){
                     String msg = intent.getStringExtra(EXTRAS_KEYS.NOTIFICATION.getValue());
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -79,25 +79,4 @@ public class BaseActivity extends AppCompatActivity {
     private Fragment getExistingDialogFragment() {
         return getSupportFragmentManager().findFragmentByTag(TAG_DIALOG_FRAGMENT);
     }
-
-    /*@Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        notify("onSaveInstanceState");
-    }
-
-    public void notify(String methodName) {
-        String name = this.getClass().getName();
-
-        if (name.contains("MainActivity")) return;
-
-        String[] strings = name.split("\\.");
-        Notification noti = new Notification.Builder(this)
-                .setContentTitle(methodName + " " + strings[strings.length - 1]).setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(name).build();
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify((int) System.currentTimeMillis(), noti);
-    }*/
 }

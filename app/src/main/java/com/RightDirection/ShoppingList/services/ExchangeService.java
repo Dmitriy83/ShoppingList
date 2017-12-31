@@ -1,10 +1,13 @@
 package com.RightDirection.ShoppingList.services;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -41,6 +44,7 @@ public class ExchangeService extends Service {
     private static final String TAG = "ReceiveShoppingLists";
     private static boolean mNotifySourceActivity = false;
     private Disposable mSubscriber;
+    private static final String NOTIFICATION_CHANNEL_ID = "notification_channel_id_01";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -198,7 +202,23 @@ public class ExchangeService extends Service {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "JustBuyingNotifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         builder.setStyle(new NotificationCompat.BigTextStyle(builder)
                 .bigText(notificationText)
                 .setSummaryText(notificationSummary));
@@ -207,15 +227,19 @@ public class ExchangeService extends Service {
                 .setAutoCancel(true)
                 .setContentText(notificationSummary)
                 .setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, builder.build());
+        if (notificationManager != null) {
+            notificationManager.notify(0, builder.build());
+        }
     }
 
     private String getLoadedShoppingListsNamesString(ArrayList<ShoppingList> loadedShoppingLists) {
-        String msg = getString(R.string.received_new_shopping_lists) + "\n";
+
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append(getString(R.string.received_new_shopping_lists)).append("\n");
         for (ShoppingList list : loadedShoppingLists) {
-            msg += list.getName() + ",\n";
+            msgBuilder.append(list.getName()).append(",\n");
         }
+        String msg = msgBuilder.toString();
         // Уберем последнюю запятую и символ переноса
         msg = msg.substring(0, msg.length() - 2);
         return msg;

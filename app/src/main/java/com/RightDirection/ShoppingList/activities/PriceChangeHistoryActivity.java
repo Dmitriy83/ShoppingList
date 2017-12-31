@@ -17,6 +17,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.Date;
 
 public class PriceChangeHistoryActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
+    @SuppressWarnings("unused")
     private final String TAG = PriceChangeHistoryActivity.class.getSimpleName();
     private Product mProduct;
 
@@ -51,7 +52,7 @@ public class PriceChangeHistoryActivity extends BaseActivity implements android.
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data == null) return;
-        GraphView graph = (GraphView) findViewById(R.id.gvPriceChangeHistory);
+        GraphView graph = findViewById(R.id.gvPriceChangeHistory);
         DataPoint[] dataPoints = new DataPoint[data.getCount()];
         int i = 0;
         int keyDateIndex = data.getColumnIndexOrThrow(SL_ContentProvider.KEY_DATE);

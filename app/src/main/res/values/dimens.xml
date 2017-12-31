@@ -18,4 +18,5 @@
     <dimen name="nav_header_vertical_spacing">10dp</dimen>
     <dimen name="nav_text_padding">10dp</dimen>
     <dimen name="profile_user_photo_size">200dp</dimen>
+    <dimen name="decrease_increase_buttons_padding">4dp</dimen>
 </resources>

@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -60,6 +61,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         return new ViewHolder(rowView);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -68,6 +70,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         if (viewHolder == null) return;
         if (viewHolder.represent != null) {
             viewHolder.represent.setOnTouchListener(new View.OnTouchListener() {
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public boolean onTouch(View v, MotionEvent event) { return onProductTouch(v, event); }
             });
@@ -121,6 +124,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
     // Если произошло движение пальца, то обрабатывать долгое нажатие не нужно
     private boolean mFingerMoved = false;
 
+    @SuppressWarnings("SameReturnValue")
     private boolean onProductTouch(View v, MotionEvent event) {
         if (!mCrossOutProduct && event.getAction() == MotionEvent.ACTION_UP) {
             // Получим объект item, свзяанный с элементом View
@@ -168,6 +172,7 @@ public class ListAdapterShoppingListInShop extends BaseListAdapter {
         // также следует использовать
     }
 
+    @SuppressWarnings("SameReturnValue")
     private boolean onRepresentLongClick(View view) {
         if (mFingerMoved) return false;
         Product product = (Product) view.getTag();

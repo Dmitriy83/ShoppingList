@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.RightDirection.ShoppingList.views.CustomRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
@@ -37,7 +38,8 @@
         android:id="@+id/imgDelete"
         android:layout_width="@dimen/normal_size"
         android:layout_height="@dimen/normal_size"
-        android:background="@drawable/ic_delete"
+        app:srcCompat="@drawable/ic_delete"
+        android:background="@null"
         android:contentDescription="@string/delete"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
@@ -49,4 +51,4 @@
         android:layout_below="@+id/imgFriendPhoto"
         android:background="@color/border_color"    />
 
-</RelativeLayout>
+</com.RightDirection.ShoppingList.views.CustomRelativeLayout>

@@ -56,7 +56,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         isFiltered = false;
     }
 
-    public ShoppingList(long id, String name, ArrayList<IListItem> products) {
+    public ShoppingList(@SuppressWarnings("SameParameterValue") long id, String name, ArrayList<IListItem> products) {
         super(id, name);
         mProducts = products;
         isFiltered = false;
@@ -126,6 +126,7 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
         numberOfCrossedOutProducts = _numberOfCrossedOutProducts;
     }
 
+    @SuppressWarnings("unused")
     public static final Creator<ShoppingList> CREATOR = new Creator<ShoppingList>() {
         @Override
         public ShoppingList createFromParcel(Parcel in) {
@@ -385,16 +386,17 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
     private String getWhere(String key) {
         if (mProducts == null) return null;
 
-        String where = null;
+        StringBuilder whereBuilder = new StringBuilder();
+        whereBuilder.append("");
         if (mProducts.size() > 0) {
-            where = key + " IN (";
-            where += "?"; // первый раз без запятой в начале
+            whereBuilder.append(key).append(" IN (");
+            whereBuilder.append("?"); // первый раз без запятой в начале
             for (int i = 1; i < mProducts.size(); i++) {
-                where += ",?";
+                whereBuilder.append(",?");
             }
-            where += ")";
+            whereBuilder.append(")");
         }
-        return where;
+        return whereBuilder.toString();
     }
 
     private String[] getWhereArgs(String key, Context context) {
@@ -461,7 +463,8 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             if (mProducts == null || mProducts.size() == 0) return "";
         }
 
-        String result = "";
+        StringBuilder resultBuilder = new StringBuilder();
+        resultBuilder.append("");
         String divider = context.getString(R.string.divider);
         String productDivider = context.getString(R.string.product_divider);
         boolean firstLine = true;
@@ -469,17 +472,19 @@ public class ShoppingList extends ListItem implements IDataBaseOperations {
             Product product = (Product)item;
             if (product.isChecked()) continue; // вычеркрнутые товары не передаем
 
-            if (!firstLine) result = result + "\n";
+            if (!firstLine) resultBuilder.append("\n");
             else firstLine = false;
 
-            result = result + product.getName()
-                    + divider + " " + String.valueOf(product.getCount())
-                    + (Utils.showUnits(context) || Utils.showPrices(context) ? divider + " " + String.valueOf(product.getUnitShortName(context)) : "")
-                    + (Utils.showPrices(context) ? divider + " " + String.valueOf(product.getPrice()) : "")
-                    + productDivider;
+            resultBuilder
+                    .append(product.getName())
+                    .append(divider).append(" ")
+                    .append(String.valueOf(product.getCount()))
+                    .append(Utils.showUnits(context) || Utils.showPrices(context) ? divider + " " + String.valueOf(product.getUnitShortName(context)) : "")
+                    .append(Utils.showPrices(context) ? divider + " " + String.valueOf(product.getPrice()) : "")
+                    .append(productDivider);
         }
 
-        return result;
+        return resultBuilder.toString();
     }
 
     private void getProductsFromDB(Context context) {
