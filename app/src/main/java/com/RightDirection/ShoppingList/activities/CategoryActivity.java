@@ -1,8 +1,10 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -13,7 +15,12 @@ import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
 import com.RightDirection.ShoppingList.models.Category;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 public class CategoryActivity extends BaseActivity{
 
@@ -141,23 +148,31 @@ public class CategoryActivity extends BaseActivity{
                 imageResource = getResources().getIdentifier(
                     mCategory.getImageUri().toString(), null, getPackageName());
             final int finalImageResource = imageResource;
-            Picasso.with(this)
+            Glide.with(this)
                     .load(imageResource)
-                    .placeholder(R.drawable.ic_default_product_image)
-                    .fit()
-                    .into(imgCategory, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            // Для поиска элемента при тестировании запишем imageId в contentDescription
-                            imgCategory.setContentDescription(String.valueOf(finalImageResource));
-                        }
+                    .listener(new RequestListener<Drawable>() {
+                                  @Override
+                                  public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                      // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                      imgCategory.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
+                                      return false;
+                                  }
 
-                        @Override
-                        public void onError() {
-                            // Для поиска элемента при тестировании запишем imageId в contentDescription
-                            imgCategory.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
-                        }
-                    });
+                                  @Override
+                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                      // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                      imgCategory.setContentDescription(String.valueOf(finalImageResource));
+                                      return false;
+                                  }
+                              }
+                    )
+                    .apply(new RequestOptions()
+                            .placeholder(android.R.drawable.ic_menu_crop)
+                            .centerInside()
+                            .dontAnimate()
+                            .dontTransform())
+                    .into(imgCategory);
+
             // Если mCategory.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
             if (mCategory.getImageUri() == null) imgCategory.setContentDescription(
                     String.valueOf(R.drawable.ic_default_product_image));

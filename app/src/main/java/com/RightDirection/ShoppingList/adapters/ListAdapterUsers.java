@@ -8,9 +8,10 @@ import android.widget.TextView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
-import com.squareup.picasso.Picasso;
 
 public class ListAdapterUsers extends FirebaseRecyclerAdapter<User, ListAdapterUsers.ViewHolder> {
     private final Context mContext;
@@ -45,10 +46,13 @@ public class ListAdapterUsers extends FirebaseRecyclerAdapter<User, ListAdapterU
     protected void populateViewHolder(ViewHolder viewHolder, User friend, int position) {
         // Set item views based on our views and data model
         viewHolder.txtName.setText(friend.getName());
-        Picasso.with(mContext)
+        Glide.with(mContext)
                 .load(friend.getPhotoUrl())
-                .placeholder(R.drawable.ic_person_outline)
-                .fit()
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.ic_person_outline)
+                        .fitCenter()
+                        .dontAnimate()
+                        .dontTransform())
                 .into(viewHolder.imgUserPhoto);
 
         viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {

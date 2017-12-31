@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="@dimen/help_screen_height">
+    android:layout_height="@dimen/help_screen_height"
+    tools:ignore="UseCompoundDrawables">
 
     <TextView
         android:text="@string/HelpInShop2"
@@ -9,10 +11,12 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/help_text_size" />
 
-    <pl.droidsonroids.gif.GifImageView
+    <ImageView
+        android:id="@+id/imgHelpEditButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
         android:src="@drawable/help_edit_button"
-        android:paddingTop="10dp" />
+        android:contentDescription="@string/how_to_edit_shopping_list" />
 
 </LinearLayout>

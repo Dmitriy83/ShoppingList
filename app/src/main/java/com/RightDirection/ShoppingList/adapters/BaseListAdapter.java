@@ -2,7 +2,9 @@ package com.RightDirection.ShoppingList.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,12 @@ import com.RightDirection.ShoppingList.models.ShoppingList;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.views.CustomImageButton;
 import com.RightDirection.ShoppingList.views.CustomRelativeLayout;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -199,23 +206,31 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
 
         // Установим картинку
         final int finalPlaceholder = placeholder; // для использования в Callback
-        Picasso.with(mParentActivity)
+        Glide.with(mParentActivity)
                 .load(imageUri)
-                .placeholder(placeholder)
-                .fit()
-                .into(imgItemImage, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {
-                        // Для поиска элемента при тестировании запишем imageId в contentDescription
-                        imgItemImage.setContentDescription(String.valueOf(imageUri));
-                    }
+                .listener(new RequestListener<Drawable>() {
+                              @Override
+                              public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                  // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                  imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
+                                  return false;
+                              }
 
-                    @Override
-                    public void onError() {
-                        // Для поиска элемента при тестировании запишем imageId в contentDescription
-                        imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));
-                    }
-                });
+                              @Override
+                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                  // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                  imgItemImage.setContentDescription(String.valueOf(imageUri));
+                                  return false;
+                              }
+                          }
+                )
+                .apply(new RequestOptions()
+                        .placeholder(placeholder)
+                        .centerInside()
+                        .dontAnimate()
+                        .dontTransform())
+                .into(imgItemImage);
+
         // Если imageUri == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
         if (imageUri == null || item instanceof Category)
             imgItemImage.setContentDescription(String.valueOf(finalPlaceholder));

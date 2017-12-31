@@ -174,4 +174,6 @@
     <string name="unit_name" translatable="false">%1$s, %2$s</string>
     <string name="navigation_drawer_open" tools:ignore="UnusedResources">Open navigation drawer</string>
     <string name="navigation_drawer_close" tools:ignore="UnusedResources">Close navigation drawer</string>
+    <string name="how_to_edit_shopping_list">How to edit shopping list</string>
+    <string name="how_to_cross_out_products">How to cross out products</string>
 </resources>

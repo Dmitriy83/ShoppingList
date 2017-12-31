@@ -19,6 +19,8 @@ import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.services.AlarmReceiver;
 import com.RightDirection.ShoppingList.utils.FirebaseObservables;
 import com.RightDirection.ShoppingList.utils.Utils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -33,7 +35,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -220,10 +221,13 @@ public class ProfileActivity extends BaseActivity implements
     }
 
     private void loadProfileIcon(String url) {
-        Picasso.with(this)
+        Glide.with(this)
                 .load(url)
-                .placeholder(R.drawable.ic_person_outline)
-                .fit()
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.ic_person_outline)
+                        .fitCenter()
+                        .dontAnimate()
+                        .dontTransform())
                 .into(mProfilePhoto);
     }
 

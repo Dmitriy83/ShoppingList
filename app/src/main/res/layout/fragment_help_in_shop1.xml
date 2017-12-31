@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="@dimen/help_screen_height">
+    android:layout_height="@dimen/help_screen_height"
+    tools:ignore="UseCompoundDrawables">
 
     <TextView
         android:text="@string/HelpInShop1"
@@ -9,9 +11,11 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/help_text_size" />
 
-    <pl.droidsonroids.gif.GifImageView
+    <ImageView
+        android:id="@+id/imgHelpProductCrossOut"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/help_product_cross_out" />
+        android:layout_height="match_parent"
+        android:src="@drawable/help_product_cross_out"
+        android:contentDescription="@string/how_to_cross_out_products" />
 
 </LinearLayout>

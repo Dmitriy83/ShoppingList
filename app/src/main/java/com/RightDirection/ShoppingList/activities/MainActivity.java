@@ -44,10 +44,11 @@ import com.RightDirection.ShoppingList.utils.SL_ContentProvider;
 import com.RightDirection.ShoppingList.utils.Utils;
 import com.RightDirection.ShoppingList.utils.WrongEmailProtocolException;
 import com.RightDirection.ShoppingList.views.NpaLinearLayoutManager;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -175,10 +176,13 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                 TextView txtUserName = userSignInInfo.findViewById(R.id.txtUserName);
                 txtUserName.setText(user.getName());
                 ImageView userPhoto = userSignInInfo.findViewById(R.id.imgUserPhoto);
-                Picasso.with(this)
+                Glide.with(this)
                         .load(user.getPhotoUrl())
-                        .placeholder(android.R.drawable.sym_def_app_icon)
-                        .fit()
+                        .apply(new RequestOptions()
+                                .placeholder(android.R.drawable.sym_def_app_icon)
+                                .fitCenter()
+                                .dontAnimate()
+                                .dontTransform())
                         .into(userPhoto);
             }
 

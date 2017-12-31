@@ -1,6 +1,8 @@
 package com.RightDirection.ShoppingList.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,12 @@ import android.widget.ImageView;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.ChooseCategoryImageActivity;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
 
@@ -90,24 +97,30 @@ public class GridAdapterChooseCategoryImage extends RecyclerView.Adapter {
         final ViewHolder viewHolder = (ViewHolder) holder;
 
         // Установим картинку
-        Picasso.with(mContext)
+        Glide.with(mContext)
                 .load(imageId)
-                .placeholder(R.drawable.ic_default_product_image)
-                .fit()
-                .into(viewHolder.imageView, new com.squareup.picasso.Callback() {
-                            @Override
-                            public void onSuccess() {
-                                // Для поиска элемента при тестировании запишем imageId в contentDescription
-                                viewHolder.imageView.setContentDescription(String.valueOf(imageId));
-                            }
+                .listener(new RequestListener<Drawable>() {
+                              @Override
+                              public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                  // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                  viewHolder.imageView.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
+                                  return false;
+                              }
 
-                            @Override
-                            public void onError() {
-                                // Для поиска элемента при тестировании запишем imageId в contentDescription
-                                viewHolder.imageView.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
-                            }
-                        }
-                );
+                              @Override
+                              public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                  // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                  viewHolder.imageView.setContentDescription(String.valueOf(imageId));
+                                  return false;
+                              }
+                          }
+                )
+                .apply(new RequestOptions()
+                        .placeholder(android.R.drawable.ic_menu_crop)
+                        .centerInside()
+                        .dontAnimate()
+                        .dontTransform())
+                .into(viewHolder.imageView);
 
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

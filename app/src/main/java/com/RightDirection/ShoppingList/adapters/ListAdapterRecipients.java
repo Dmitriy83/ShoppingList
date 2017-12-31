@@ -10,8 +10,9 @@ import android.widget.TextView;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.User;
 import com.RightDirection.ShoppingList.utils.FirebaseUtil;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.squareup.picasso.Picasso;
 
 public class ListAdapterRecipients extends FirebaseRecyclerAdapter<User, ListAdapterRecipients.ViewHolder> {
     private final Context mContext;
@@ -39,10 +40,13 @@ public class ListAdapterRecipients extends FirebaseRecyclerAdapter<User, ListAda
     @Override
     protected void populateViewHolder(ViewHolder viewHolder, User friend, int position) {
         viewHolder.txtName.setText(friend.getName());
-        Picasso.with(mContext)
+        Glide.with(mContext)
                 .load(friend.getPhotoUrl())
-                .placeholder(R.drawable.ic_person_outline)
-                .fit()
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.ic_person_outline)
+                        .fitCenter()
+                        .dontAnimate()
+                        .dontTransform())
                 .into(viewHolder.imgFriendPhoto);
         viewHolder.productRepresent.setOnClickListener(new View.OnClickListener() {
             @Override

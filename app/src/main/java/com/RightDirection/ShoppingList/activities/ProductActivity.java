@@ -3,10 +3,12 @@ package com.RightDirection.ShoppingList.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
@@ -25,7 +27,12 @@ import com.RightDirection.ShoppingList.models.Product;
 import com.RightDirection.ShoppingList.models.Unit;
 import com.RightDirection.ShoppingList.utils.DecimalDigitsInputFilter;
 import com.RightDirection.ShoppingList.utils.Utils;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.Locale;
 
@@ -311,27 +318,35 @@ public class ProductActivity extends BaseActivity {
         final ImageView imgProduct = findViewById(R.id.imgItemImage);
         if (imgProduct != null && mProduct != null) {
             // Установим картинку
-            Picasso.with(this)
+            Glide.with(this)
                     .load(mProduct.getImageUri())
-                    .placeholder(android.R.drawable.ic_menu_crop)
-                    .fit()
-                    .into(imgProduct, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            // Для поиска элемента при тестировании запишем imageId в contentDescription
-                            imgProduct.setContentDescription(String.valueOf(mProduct.getImageUri()));
-                            // Посде загрузки картинки отобразим кнопки "Посмотреть картинку" и "Очистить картинку"
-                            showImageButtons();
-                        }
+                    .listener(new RequestListener<Drawable>() {
+                                  @Override
+                                  public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                      // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                      imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
+                                      // Если произошла ошибка при загрузке картинки, то нужно скрыть кнопки "Посмотреть картинку" и "Очистить картинку"
+                                      clearImageButtons();
+                                      return false;
+                                  }
 
-                        @Override
-                        public void onError() {
-                            // Для поиска элемента при тестировании запишем imageId в contentDescription
-                            imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));
-                            // Если произошла ошибка при загрузке картинки, то нужно скрыть кнопки "Посмотреть картинку" и "Очистить картинку"
-                            clearImageButtons();
-                        }
-                    });
+                                  @Override
+                                  public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                      // Для поиска элемента при тестировании запишем imageId в contentDescription
+                                      imgProduct.setContentDescription(String.valueOf(mProduct.getImageUri()));
+                                      // Посде загрузки картинки отобразим кнопки "Посмотреть картинку" и "Очистить картинку"
+                                      showImageButtons();
+                                      return false;
+                                  }
+                              }
+                    )
+                    .apply(new RequestOptions()
+                            .placeholder(android.R.drawable.ic_menu_crop)
+                            .centerInside()
+                            .dontAnimate()
+                            .dontTransform())
+                    .into(imgProduct);
+
             // Если mProduct.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
             if (mProduct.getImageUri() == null) {
                 imgProduct.setContentDescription(String.valueOf(android.R.drawable.ic_menu_crop));

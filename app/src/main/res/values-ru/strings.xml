@@ -150,4 +150,6 @@
     <string name="price_change_graph">График изменения цены</string>
     <string name="navigation_drawer_open" tools:ignore="UnusedResources">Открыть панель навигации</string>
     <string name="navigation_drawer_close" tools:ignore="UnusedResources">Закрыть панель навигации</string>
+    <string name="how_to_edit_shopping_list">Как редактировать лист покупок</string>
+    <string name="how_to_cross_out_products">Как вычеркивать товары</string>
 </resources>
