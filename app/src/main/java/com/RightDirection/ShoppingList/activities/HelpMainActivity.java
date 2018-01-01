@@ -14,15 +14,12 @@ import com.RightDirection.ShoppingList.fragments.MainHelp1Fragment;
 
 public class HelpMainActivity extends AppCompatActivity {
 
-    //private Fragment fragment2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help_main);
 
         Fragment fragment1 = new MainHelp1Fragment();
-        //fragment2 = new InShopHelp2Fragment();
 
         FrameLayout fragmentContainer = findViewById(R.id.fragment_container);
         if (fragmentContainer != null) {
@@ -39,56 +36,35 @@ public class HelpMainActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, fragment1, null)
                     .addToBackStack(null)
                     .commit();
-
-            //fragmentContainer.setOnClickListener(onFragmentContainerClick);
         }
 
         Button btnGotIt = findViewById(R.id.btnGotIt);
-        if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnGotItClick);
+        if (btnGotIt != null) btnGotIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { onBtnGotItClick(); }
+        });
     }
 
-    /*
-    private final View.OnClickListener onFragmentContainerClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // Заменим фрагмент
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            if (fragment1.isVisible()){
-                ft.replace(R.id.fragment_container, fragment2, null);
-            }else{
-                ft.replace(R.id.fragment_container, fragment1, null);
-            }
-            ft.addToBackStack(null).commit();
-        }
-    };
-    */
+    private void onBtnGotItClick() {
+        finish();
+    }
 
-    private final View.OnClickListener onBtnGotItClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_in_main_activity), false);
-            editor.apply();
-
+    @Override
+    public void onBackPressed() {
+        // Если в стеке всего один фрагмент, то не будем его убирать (иначе останется на форме одна кнопка), а закроем активность
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
-
-            /*
-            if (fragment2.isVisible()){
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), false);
-                editor.apply();
-
-                finish();
-            }
-
-            // Заменим на следующий фрагмент
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment2, null)
-                    .commit();
-                    */
+        } else {
+            super.onBackPressed();
         }
-    };
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_in_main_activity), false);
+        editor.apply();
+        super.onPause();
+    }
 }

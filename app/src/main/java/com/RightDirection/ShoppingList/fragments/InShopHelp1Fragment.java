@@ -13,7 +13,6 @@ import com.RightDirection.ShoppingList.R;
 import com.bumptech.glide.Glide;
 
 public class InShopHelp1Fragment extends Fragment {
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

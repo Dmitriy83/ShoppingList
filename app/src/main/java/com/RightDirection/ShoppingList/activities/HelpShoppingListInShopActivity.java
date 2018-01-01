@@ -43,44 +43,64 @@ public class HelpShoppingListInShopActivity extends AppCompatActivity {
                     .addToBackStack(null)
                     .commit();
 
-            fragmentContainer.setOnClickListener(onFragmentContainerClick);
+            fragmentContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { onFragmentContainerClick(); }
+            });
         }
 
         Button btnGotIt = findViewById(R.id.btnGotIt);
-        if (btnGotIt != null) btnGotIt.setOnClickListener(onBtnGotItClick);
+        if (btnGotIt != null) btnGotIt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { onBtnGotItClick(); }
+        });
     }
 
-    private final View.OnClickListener onFragmentContainerClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            // Заменим фрагмент
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            if (fragment1.isVisible()){
-                ft.replace(R.id.fragment_container, fragment2, null);
-            }else{
-                ft.replace(R.id.fragment_container, fragment1, null);
-            }
-            ft.addToBackStack(null).commit();
+    private void onFragmentContainerClick() {
+        // Заменим фрагмент
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (fragment1.isVisible()){
+            ft.replace(R.id.fragment_container, fragment2, null).addToBackStack(null);
+        }else{
+            ft.replace(R.id.fragment_container, fragment1, null).addToBackStack(null);
         }
-    };
+        ft.commit();
+    }
 
-    private final View.OnClickListener onBtnGotItClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (fragment2.isVisible()){
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), false);
-                editor.apply();
+    private void onBtnGotItClick() {
+        setDoNotShowHelp();
+        if (fragment2.isVisible()){ finish(); }
 
-                finish();
-            }
+        // Заменим на следующий фрагмент
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment2, null)
+                .addToBackStack(null)
+                .commit();
+    }
 
-            // Заменим на следующий фрагмент
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment2, null)
-                    .commit();
+    @Override
+    public void onBackPressed() {
+        // Если в стеке всего один фрагмент, то не будем его убирать (иначе останется на форме одна кнопка), а закроем активность
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
         }
-    };
+    }
+
+    @Override
+    protected void onPause() {
+        setDoNotShowHelp();
+        super.onPause();
+    }
+
+    private void setDoNotShowHelp() {
+        if (fragment2.isVisible()){
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean(getApplicationContext().getString(R.string.pref_key_show_help_screens), false);
+            editor.apply();
+        }
+    }
 }
