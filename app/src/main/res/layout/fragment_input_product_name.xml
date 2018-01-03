@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.InputProductNameFragment" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.InputProductNameFragment">
 
     <AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -19,13 +20,14 @@
         android:layout_toLeftOf="@+id/btnAddProductToShoppingList"
         android:layout_alignParentLeft="true" />
 
-    <Button
+    <ImageView
         android:id="@+id/btnAddProductToShoppingList"
         android:layout_width="@dimen/medium_size"
         android:layout_height="@dimen/medium_size"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/ic_add_product"/>
+        app:srcCompat="@drawable/ic_add_product"
+        android:contentDescription="@string/addItemHint" />
 
 </RelativeLayout>

@@ -17,7 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,9 +77,9 @@ public class InputProductNameFragment extends Fragment implements LoaderManager.
             });
         }
         // Добавим обработчик нажатия для кнопки добавляния нового элемента в базу данных
-        Button btnAddProductToShoppingList = view.findViewById(R.id.btnAddProductToShoppingList);
+        ImageView btnAddProductToShoppingList = view.findViewById(R.id.btnAddProductToShoppingList);
         if (btnAddProductToShoppingList != null) {
-            btnAddProductToShoppingList.setOnClickListener(new Button.OnClickListener() {
+            btnAddProductToShoppingList.setOnClickListener(new ImageView.OnClickListener() {
                 @Override
                 public void onClick(View v) { onBtnAddProductToShoppingListClickListener(); }
             });

@@ -88,7 +88,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_toEndOf="@+id/imgItemImage"
                 android:layout_toRightOf="@+id/imgItemImage"
-                android:background="@drawable/ic_show_image"
+                app:srcCompat="@drawable/ic_show_image"
+                android:background="@null"
                 android:contentDescription="@string/show_product_image"
                 android:scaleType="fitStart"
                 android:visibility="visible" />
@@ -102,7 +103,8 @@
                 android:layout_below="@+id/ibShowImage"
                 android:layout_toEndOf="@+id/imgItemImage"
                 android:layout_toRightOf="@+id/imgItemImage"
-                android:background="@drawable/ic_clear_image"
+                app:srcCompat="@drawable/ic_clear_image"
+                android:background="@null"
                 android:contentDescription="@string/clear_product_image" />
 
             <RelativeLayout

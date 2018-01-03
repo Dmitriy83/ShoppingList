@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +56,7 @@ public class FriendsActivity extends BaseActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button btnSearchFriend = findViewById(R.id.btnSearchFriend);
+        ImageView btnSearchFriend = findViewById(R.id.btnSearchFriend);
         if (btnSearchFriend != null) {
             btnSearchFriend.setOnClickListener(btnSearchFriendOnClickListener);
         }
@@ -68,7 +69,7 @@ public class FriendsActivity extends BaseActivity implements
         mActivity = this;
     }
 
-    private final Button.OnClickListener btnSearchFriendOnClickListener = new Button.OnClickListener() {
+    private final ImageView.OnClickListener btnSearchFriendOnClickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             EditText etFriendEmail = findViewById(R.id.etFriendEmail);

@@ -7,8 +7,8 @@ android {
         applicationId 'com.RightDirection.ShoppingList'
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 46
-        versionName "1.3.7"
+        versionCode 47
+        versionName "1.3.8"
         flavorDimensions "default"
         vectorDrawables.useSupportLibrary = true
 
@@ -43,11 +43,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    // required if you want to use Mockito for unit tests
 
-    // add this for intent mocking support
-
-    // Set this dependency to build and run UI Automator tests
     compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.android.support:design:27.0.2'
     compile 'com.android.support:recyclerview-v7:27.0.2'
