@@ -14,7 +14,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent newIntent = new Intent(context, ExchangeService.class);
         // Если сервис был запущен до этого вручную, не будем его останавливать и не будем стартовать новый
         if (!isServiceRunning(ExchangeService.class, context)){
-            context.startService(newIntent);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+                context.startForegroundService(newIntent);
+            } else{
+                context.startService(newIntent);
+            }
         }
     }
 

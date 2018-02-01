@@ -176,4 +176,5 @@
     <string name="navigation_drawer_close" tools:ignore="UnusedResources">Close navigation drawer</string>
     <string name="how_to_edit_shopping_list">How to edit shopping list</string>
     <string name="how_to_cross_out_products">How to cross out products</string>
+    <string name="firebase_exchanging">Getting shopping lists…</string>
 </resources>

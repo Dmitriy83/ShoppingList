@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     private ListAdapterMainActivity mShoppingListsAdapter;
     private DrawerLayout mDrawerLayout;
     private BroadcastReceiver mServiceReceiver;
-    private static final long CHECK_INTERVAL = 30000;
+    private static final long CHECK_INTERVAL = 60000;
     private boolean mUserSignInInfoExpanded = false;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_INVITE = 5;

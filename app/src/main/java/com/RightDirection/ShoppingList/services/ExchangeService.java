@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.services;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -40,15 +41,23 @@ import io.reactivex.functions.Function3;
 import static com.RightDirection.ShoppingList.utils.AppLifecycleHandler.isApplicationInForeground;
 
 // Не используем IntentService, чтобы преркащать работу сервиса самостоятельно. Иначе сервис запустит выполнение Observable и прекратится не дождавшись окончания.
-public class ExchangeService extends Service {
+public class  ExchangeService extends Service {
     private static final String TAG = "ReceiveShoppingLists";
     private static boolean mNotifySourceActivity = false;
     private Disposable mSubscriber;
     private static final String NOTIFICATION_CHANNEL_ID = "notification_channel_id_01";
+    private static final String FOREGROUND_NOTIFICATION_CHANNEL_ID = "notification_channel_id_02";
+    private static int FOREGROUND_ID = 1338;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            // Начиная с OREO сервис из бэкграунда вызвать уже нельзя простым startService.
+            // Разрешается вызывать с помощью startForegroundService, а он требует запуска startForeground в течении 3 секунд.
+            startForeground(FOREGROUND_ID, buildForegroundNotification());
+        }
 
         if (intent != null)
             mNotifySourceActivity = intent.getBooleanExtra(EXTRAS_KEYS.NOTIFY_SOURCE_ACTIVITY.getValue(), false);
@@ -157,6 +166,29 @@ public class ExchangeService extends Service {
                 });
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private Notification buildForegroundNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(FOREGROUND_NOTIFICATION_CHANNEL_ID, "JustBuyingNotifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, FOREGROUND_NOTIFICATION_CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.ic_notification)
+                .setAutoCancel(true)
+                .setContentText(getString(R.string.firebase_exchanging));
+
+        return(builder.build());
     }
 
     @Nullable
