@@ -6,8 +6,8 @@ android {
         applicationId 'com.RightDirection.ShoppingList'
         minSdkVersion 19
         targetSdkVersion 33
-        versionCode 50
-        versionName "1.3.11"
+        versionCode 51
+        versionName "1.3.12"
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         //testInstrumentationRunnerArgument "size", "medium"
