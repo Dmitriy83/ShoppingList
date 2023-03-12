@@ -3,7 +3,7 @@ package com.RightDirection.ShoppingList.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 
 import com.RightDirection.ShoppingList.R;

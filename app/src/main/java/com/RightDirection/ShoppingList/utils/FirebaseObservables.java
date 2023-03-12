@@ -1,7 +1,7 @@
 package com.RightDirection.ShoppingList.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.models.FirebaseShoppingList;

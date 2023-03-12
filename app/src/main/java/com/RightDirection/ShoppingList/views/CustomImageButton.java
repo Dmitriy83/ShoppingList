@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 /**
  * Добавлен, чтобы избежать предупреждения Custom view `'ImageButton'` has 'setOnTouchListener' called on it but does not override 'performClick'
  */
-public class CustomImageButton extends android.support.v7.widget.AppCompatImageButton {
+public class CustomImageButton extends androidx.appcompat.widget.AppCompatImageButton {
     public CustomImageButton(Context context) {
         super(context);
     }

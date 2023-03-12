@@ -3,30 +3,32 @@ package com.RightDirection.ShoppingList.activities;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import com.RightDirection.ShoppingList.R;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.pressBack;
-import static android.support.test.espresso.action.ViewActions.clearText;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.longClick;
-import static android.support.test.espresso.action.ViewActions.typeText;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.clearText;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.RightDirection.ShoppingList.activities.CustomMatchers.*;
 import static com.RightDirection.ShoppingList.utils.FirebaseUtil.userSignedIn;
 import static org.junit.Assert.assertTrue;
 
+//@Ignore
 public class FireBaseWorkingTest extends ActivitiesTest {
 
     private static boolean isConnected(Context context) {
@@ -185,8 +187,8 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     }
 
     private void cleanBlackList() {
-        timeout(1000);
-        // Переходим в список друзей черещ панель навигации
+        timeout(3000);
+        // Переходим в список друзей через панель навигации
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_black_list))).perform(click());
 
@@ -197,13 +199,14 @@ public class FireBaseWorkingTest extends ActivitiesTest {
     }
 
     private void cleanFriendsList() {
-        timeout(1000);
+        timeout(3000);
         // Переходим в список друзей черещ панель навигации
         openUserSubmenu();
         onView(withText(mActivity.getString(R.string.action_friends))).perform(click());
 
         // Если друзья в списке есть, то удаляем их
         pressRemoveUsersIfExist(R.id.rvFriends);
+        timeout(2000);
         pressBack();
     }
 
@@ -216,6 +219,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
             timeout(500);
             openUserSubmenu();
             onView(withText(mActivity.getString(R.string.action_profile))).perform(click());
+            timeout(2000);
             onView(withId(R.id.sign_out_button)).perform(click());
             pressBack();
         }
@@ -343,6 +347,7 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         // Удалим список покупок
         onView(recyclerViewItemWithText(mNewListName)).perform(longClick());
         onView(withId(R.id.imgDelete)).perform(click());
+        timeout(1000);
         onView(withText(mActivity.getString(R.string.ok))).perform(click());
     }
 
@@ -367,10 +372,12 @@ public class FireBaseWorkingTest extends ActivitiesTest {
         onView(withId(R.id.btnSearchFriend)).perform(click());
         // Должно появиться диалоговое окно с вопросом "Пользователь не зарегистрирован. Отправить приглашение другу?". Проверяем текст вопроса.
         onView(withText(mActivity.getString(R.string.wrong_email_dialog_question))).check(matches(isDisplayed()));
+        timeout(2000);
         // Нажимаем Нет.
         onView(withText(mActivity.getString(R.string.no))).perform(click());
         // Снова нажимаем кнопку Найти.
         onView(withId(R.id.btnSearchFriend)).perform(click());
+        timeout(2000);
         // В диалоговом окне выбираем Да.
         onView(withText(mActivity.getString(R.string.yes))).perform(click());
         timeout(1000);

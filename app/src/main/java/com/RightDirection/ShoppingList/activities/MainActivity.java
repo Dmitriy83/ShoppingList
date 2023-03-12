@@ -1,5 +1,6 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
@@ -15,13 +16,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -134,12 +135,20 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     }
 
     // Запустим расписание
+    @SuppressLint("UnspecifiedImmutableFlag")
     private void scheduleStartServiceReceiveShoppingListsAlarm() {
         // Создаем намерение, которое будет выполняться AlarmReceiver-ом
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         // Создаем "ожидающее намерение", которое будет срабатывать на событии AlarmManager-а
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent pIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+        }
+        else{
+            pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         // Запускаем AlarmManager с текущего момента
         long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);

@@ -3,7 +3,7 @@ package com.RightDirection.ShoppingList.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.MotionEvent;

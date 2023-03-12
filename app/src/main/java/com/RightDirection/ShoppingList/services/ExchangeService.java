@@ -10,9 +10,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.RightDirection.ShoppingList.R;
@@ -40,7 +40,7 @@ import io.reactivex.functions.Function3;
 
 import static com.RightDirection.ShoppingList.utils.AppLifecycleHandler.isApplicationInForeground;
 
-// Не используем IntentService, чтобы преркащать работу сервиса самостоятельно. Иначе сервис запустит выполнение Observable и прекратится не дождавшись окончания.
+// Не используем IntentService, чтобы прекращать работу сервиса самостоятельно. Иначе сервис запустит выполнение Observable и прекратится не дождавшись окончания.
 public class  ExchangeService extends Service {
     private static final String TAG = "ReceiveShoppingLists";
     private static boolean mNotifySourceActivity = false;
@@ -231,8 +231,13 @@ public class  ExchangeService extends Service {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+        }
+        else{
+            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

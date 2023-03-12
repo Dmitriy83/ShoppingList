@@ -1,13 +1,14 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.annotation.SuppressLint;									   
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,10 +242,18 @@ public class ProfileActivity extends BaseActivity implements
         FirebaseUtil.removeUserFromPref(this);
     }
 
+	@SuppressLint("UnspecifiedImmutableFlag")										 
     private void cancelReceiveShoppingListsAlarm() {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent pIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+		}
+        else{
+            pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         if (alarm != null) {
             alarm.cancel(pIntent);

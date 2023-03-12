@@ -1,7 +1,7 @@
 package com.RightDirection.ShoppingList.models;
 
-import android.support.test.filters.SmallTest;
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.filters.SmallTest;
+import androidx.test.rule.ActivityTestRule;
 
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.activities.MainActivity;

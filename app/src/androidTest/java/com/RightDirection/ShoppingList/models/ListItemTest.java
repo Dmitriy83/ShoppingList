@@ -2,7 +2,7 @@ package com.RightDirection.ShoppingList.models;
 
 import android.net.Uri;
 import android.os.Parcelable;
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.RightDirection.ShoppingList.interfaces.IListItem;
 
