@@ -36,6 +36,8 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.Locale;
 
+import com.gu.toolargetool.TooLargeTool;
+
 public class ProductActivity extends BaseActivity {
 
     private Product mProduct;
@@ -46,6 +48,9 @@ public class ProductActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TooLargeTool.startLogging(getApplication());
+
         setContentView(R.layout.activity_product_editing);
 
         if (savedInstanceState != null) {

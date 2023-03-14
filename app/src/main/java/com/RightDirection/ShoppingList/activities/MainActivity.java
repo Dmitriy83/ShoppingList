@@ -58,6 +58,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.gu.toolargetool.TooLargeTool;
+
 public class MainActivity extends BaseActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>,
         InputNameDialogFragment.IInputListNameDialogListener, NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.OnConnectionFailedListener {
@@ -75,6 +77,8 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
     protected void onCreate(Bundle savedInstanceState) {
         // Запустим главную активность
         super.onCreate(savedInstanceState);
+
+        TooLargeTool.startLogging(getApplication());
 
         setContentView(R.layout.activity_main);
 
@@ -150,10 +154,9 @@ public class MainActivity extends BaseActivity implements android.app.LoaderMana
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
         // Запускаем AlarmManager с текущего момента
-        long firstMillis = System.currentTimeMillis();
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         if (alarm != null) {
-            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, CHECK_INTERVAL, pIntent);
+            alarm.setInexactRepeating(AlarmManager.RTC, System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pIntent);
         }
     }
 

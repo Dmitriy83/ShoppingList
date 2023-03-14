@@ -131,13 +131,15 @@ public class ShoppingListInShopActivity extends BaseActivity implements android.
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Clear the Activity's bundle of the subsidiary fragments' bundles.
+        // It helps to avoid TransactionTooLargeException
+        outState.clear();
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         //outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
         mProductsAdapter.setOriginalValues(); // На случай, если список до этого не фильтровали
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS_ORIGINAL_VALUES.getValue(), mProductsAdapter.getOriginalValues());
         outState.putBoolean(EXTRAS_KEYS.IS_FILTERED.getValue(), mProductsAdapter.isFiltered());
-
-        super.onSaveInstanceState(outState);
     }
 
     @Override

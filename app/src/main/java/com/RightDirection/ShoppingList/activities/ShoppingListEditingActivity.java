@@ -114,6 +114,9 @@ public class ShoppingListEditingActivity extends BaseActivity implements IOnNewI
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        // Clear the Activity's bundle of the subsidiary fragments' bundles.
+        // It helps to avoid TransactionTooLargeException
+        outState.clear();
         // Сохраним редактируемый список (восстановим его потом, например, при смене ориентации экрана)
         outState.putParcelableArrayList(EXTRAS_KEYS.PRODUCTS.getValue(), mProducts);
     }

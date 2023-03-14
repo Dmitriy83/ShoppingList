@@ -255,8 +255,8 @@ public class Product extends ListItem implements IDataBaseOperations {
 
     @SuppressWarnings({"EmptyMethod", "UnusedParameters"})
     private void addPriceChangeHistory(Context context) {
-        // Пока не будем добавлять кнопку "История цены", т.к. на мой взгяд этот график бесполезен
-        /*ContentResolver contentResolver = context.getContentResolver();
+        /* Пока не будем добавлять кнопку "История цены", т.к. на мой взгяд этот график бесполезен
+        ContentResolver contentResolver = context.getContentResolver();
         ContentValues contentValues = new ContentValues();
         contentValues.put(SL_ContentProvider.KEY_DATE, System.currentTimeMillis());
         contentValues.put(SL_ContentProvider.KEY_PRODUCT_ID, getId());
