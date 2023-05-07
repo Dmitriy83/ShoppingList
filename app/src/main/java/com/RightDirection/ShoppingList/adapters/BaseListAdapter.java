@@ -189,20 +189,23 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
     void setProductImage(final ImageView imgItemImage, IListItem item) {
         if (imgItemImage == null) return;
 
-        final Uri imageUri = item.getImageUri();
+        Uri imageUri = item.getImageUri();
         int placeholder = R.drawable.ic_default_product_image;
         if (item instanceof Product) {
             Product product = (Product) item;
             Category category = product.getCategory();
-            if (category != null && category.getImageUri() != null && category.getImageUri() != Uri.EMPTY)
-                placeholder = mParentActivity.getResources().getIdentifier(
-                        category.getImageUri().toString(), null, mParentActivity.getPackageName());
+            if (category != null && category.getImageUri() != null && category.getImageUri() != Uri.EMPTY) {
+                placeholder = mParentActivity.getResources().getIdentifier(category.getImageUri().toString(), null, mParentActivity.getPackageName());
+                if (placeholder == 0 && imageUri == null)
+                    imageUri = category.getImageUri();
+            }
         } else if (item instanceof Category) {
             Category category = (Category) item;
             if (category.getImageUri() != null && category.getImageUri() != Uri.EMPTY)
-                placeholder = mParentActivity.getResources().getIdentifier(
-                        imageUri.toString(), null, mParentActivity.getPackageName());
+                placeholder = mParentActivity.getResources().getIdentifier(imageUri.toString(), null, mParentActivity.getPackageName());
         }
+
+        final Uri finalImageUri = imageUri;
 
         // Установим картинку
         final int finalPlaceholder = placeholder; // для использования в Callback
@@ -219,7 +222,7 @@ abstract public class BaseListAdapter extends RecyclerView.Adapter {
                               @Override
                               public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                   // Для поиска элемента при тестировании запишем imageId в contentDescription
-                                  imgItemImage.setContentDescription(String.valueOf(imageUri));
+                                  imgItemImage.setContentDescription(String.valueOf(finalImageUri));
                                   return false;
                               }
                           }

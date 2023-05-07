@@ -1,6 +1,7 @@
 package com.RightDirection.ShoppingList.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import com.RightDirection.ShoppingList.R;
 import com.RightDirection.ShoppingList.adapters.GridAdapterChooseCategoryImage;
 import com.RightDirection.ShoppingList.enums.EXTRAS_KEYS;
+import com.RightDirection.ShoppingList.models.Category;
+import com.RightDirection.ShoppingList.models.Unit;
+import com.RightDirection.ShoppingList.utils.Utils;
 
 public class ChooseCategoryImageActivity extends BaseActivity{
 
@@ -40,6 +44,12 @@ public class ChooseCategoryImageActivity extends BaseActivity{
             btnCategoryEmpty.setTransformationMethod(null);
             btnCategoryEmpty.setOnClickListener(onBtnCategoryEmptyClick);
         }
+
+        Button btnPickCategoryCustomImage = findViewById(R.id.btnPickCustomCategoryImage);
+        if (btnPickCategoryCustomImage != null) {
+            btnPickCategoryCustomImage.setTransformationMethod(null);
+            btnPickCategoryCustomImage.setOnClickListener(onBtnPickCustomCategoryImage);
+        }
     }
 
     private final View.OnClickListener onBtnCategoryEmptyClick = new View.OnClickListener() {
@@ -56,5 +66,13 @@ public class ChooseCategoryImageActivity extends BaseActivity{
 
         finish();
     }
+
+    private final View.OnClickListener onBtnPickCustomCategoryImage = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            setResult(CategoryActivity.RESULT_PICK_CUSTOM_IMAGE);
+            finish();
+        }
+    };
 }
 

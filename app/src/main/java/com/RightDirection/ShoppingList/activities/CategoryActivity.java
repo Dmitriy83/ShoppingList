@@ -1,10 +1,18 @@
 package com.RightDirection.ShoppingList.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -26,6 +34,9 @@ public class CategoryActivity extends BaseActivity{
 
     private Category mCategory;
     private final int DEFAULT_ORDER = 100;
+    private static final int PICK_IMAGE = 7;
+    public static final int RESULT_PICK_CUSTOM_IMAGE = 5;
+    private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +147,15 @@ public class CategoryActivity extends BaseActivity{
                     }
                     setCategoryImage();
                 }
+                if (resultCode == RESULT_PICK_CUSTOM_IMAGE) {
+                    chooseCategoryCustomImage();
+                }
+                break;
+            case PICK_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    mCategory.setImageUri(data.getData());
+                    askForPermissionAndSetCategoryImage();
+                }
                 break;
         }
     }
@@ -144,12 +164,21 @@ public class CategoryActivity extends BaseActivity{
         final ImageView imgCategory = findViewById(R.id.imgItemImage);
         if (imgCategory != null && mCategory != null) {
             int imageResource = R.drawable.ic_default_product_image;
-            if (mCategory.getImageUri() != null)
-                imageResource = getResources().getIdentifier(
-                    mCategory.getImageUri().toString(), null, getPackageName());
-            final int finalImageResource = imageResource;
+            Uri imageUri = mCategory.getImageUri();
+            boolean isInnerImage = true;
+            String strImageResource = "";
+            if (imageUri != null) {
+                isInnerImage = imageUri.toString().contains("drawable/");
+                if (isInnerImage) {
+                    imageResource = getResources().getIdentifier(imageUri.toString(), null, getPackageName());
+                    strImageResource = String.valueOf(imageResource);
+                } else{
+                    strImageResource = String.valueOf(imageUri);
+                }
+            }
+            final String finalImageResource = strImageResource;
             Glide.with(this)
-                    .load(imageResource)
+                    .load(isInnerImage ? imageResource : imageUri)
                     .listener(new RequestListener<Drawable>() {
                                   @Override
                                   public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -161,7 +190,7 @@ public class CategoryActivity extends BaseActivity{
                                   @Override
                                   public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                       // Для поиска элемента при тестировании запишем imageId в contentDescription
-                                      imgCategory.setContentDescription(String.valueOf(finalImageResource));
+                                      imgCategory.setContentDescription(finalImageResource);
                                       return false;
                                   }
                               }
@@ -174,8 +203,76 @@ public class CategoryActivity extends BaseActivity{
                     .into(imgCategory);
 
             // Если mCategory.getImageUri() == null, то загрузится placeholder, но в метод onSuccess программа не зайдет
-            if (mCategory.getImageUri() == null) imgCategory.setContentDescription(
-                    String.valueOf(R.drawable.ic_default_product_image));
+            if (imageUri == null) imgCategory.setContentDescription(String.valueOf(R.drawable.ic_default_product_image));
+        }
+    }
+
+    private void chooseCategoryCustomImage(){
+
+        Intent intent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(intent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE);
+
+    }
+
+    private void askForPermissionAndSetCategoryImage() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                //noinspection StatementWithEmptyBody
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                } else {
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+            } else {
+                setCategoryImage();
+            }
+        } else {
+            setCategoryImage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                //noinspection StatementWithEmptyBody
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    setCategoryImage();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 }

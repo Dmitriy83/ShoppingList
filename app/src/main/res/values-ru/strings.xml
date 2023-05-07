@@ -153,4 +153,5 @@
     <string name="how_to_edit_shopping_list">Как редактировать лист покупок</string>
     <string name="how_to_cross_out_products">Как вычеркивать товары</string>
     <string name="firebase_exchanging">Получение списков покупок…</string>
+    <string name="pick_category_custom_image">Выбрать другую картинку</string>
 </resources>

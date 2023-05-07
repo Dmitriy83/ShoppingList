@@ -17,4 +17,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnCategoryEmpty" />
 
+    <Button
+        android:id="@+id/btnPickCustomCategoryImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_category_custom_image" />
+
 </LinearLayout>
